@@ -12,6 +12,6 @@ class FirefighterActivityType {
     @Column(name = "firefighter_activity_type", length = 16, unique = true)
     var firefighterActivityType: String? = null
 
-    @Column(name = "name", length = 64)
-    var name: String? = null
+    @Column(name = "name", length = 64, nullable = false)
+    lateinit var name: String
 }

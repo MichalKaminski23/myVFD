@@ -9,15 +9,15 @@ class Firefighter {
     @Column(name = "firefighter_id")
     var firefighterId: Int? = null
 
-    @OneToOne
+    @OneToOne(optional = false)
     @MapsId
-    @JoinColumn(name = "firefighter_id")
-    var user: User? = null
+    @JoinColumn(name = "firefighter_id", nullable = false)
+    lateinit var user: User
 
-    @ManyToOne
-    @JoinColumn(name = "firedepartment_id")
-    var firedepartment: Firedepartment? = null
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "firedepartment_id", nullable = false)
+    lateinit var firedepartment: Firedepartment
 
-    @Column(name = "role", length = 16)
-    var role: String? = null
+    @Column(name = "role", length = 16, nullable = false)
+    lateinit var role: String
 }

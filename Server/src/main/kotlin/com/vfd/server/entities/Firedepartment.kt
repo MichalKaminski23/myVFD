@@ -10,13 +10,13 @@ class Firedepartment {
     @Column(name = "firedepartment_id")
     var firedepartmentId: Int? = null
 
-    @Column(name = "name", length = 128)
-    var name: String? = null
+    @Column(name = "name", length = 128, nullable = false)
+    lateinit var name: String
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    var address: Address? = null
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "address_id", nullable = false)
+    lateinit var address: Address
 
-    @Column(name = "is_NRFS")
-    var isNRFS: Boolean? = null
+    @Column(name = "is_NRFS", nullable = false)
+    var isNRFS: Boolean = true
 }

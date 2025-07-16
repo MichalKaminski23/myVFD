@@ -10,24 +10,24 @@ class Address {
     @Column(name = "address_id")
     var addressId: Int? = null
 
-    @Column(name = "country", length = 64)
-    var country: String? = null
+    @Column(name = "country", length = 64, nullable = false)
+    lateinit var country: String
 
-    @Column(name = "voivodeship", length = 64)
-    var voivodeship: String? = null
+    @Column(name = "voivodeship", length = 64, nullable = false)
+    lateinit var voivodeship: String
 
     @Column(name = "city", length = 64, nullable = false)
-    var city: String? = null
+    lateinit var city: String
 
-    @Column(name = "postal_code", length = 16)
-    var postalCode: String? = null
+    @Column(name = "postal_code", length = 16, nullable = false)
+    lateinit var postalCode: String
 
-    @Column(name = "street", length = 64)
-    var street: String? = null
+    @Column(name = "street", length = 64, nullable = false)
+    lateinit var street: String
 
-    @Column(name = "house_number", length = 8)
+    @Column(name = "house_number", length = 8, nullable = true)
     var houseNumber: String? = null
 
-    @Column(name = "apart_number", length = 8)
+    @Column(name = "apart_number", length = 8, nullable = true)
     var apartNumber: String? = null
 }

@@ -11,17 +11,17 @@ class Vote {
     @Column(name = "vote_id")
     var voteId: Int? = null
 
-    @ManyToOne
-    @JoinColumn(name = "proposal_id")
-    var proposal: InvestmentProposal? = null
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "proposal_id", nullable = false)
+    lateinit var proposal: InvestmentProposal
 
-    @ManyToOne
-    @JoinColumn(name = "firefighter_id")
-    var firefighter: Firefighter? = null
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "firefighter_id", nullable = false)
+    lateinit var firefighter: Firefighter
 
-    @Column(name = "value")
+    @Column(name = "value", nullable = false)
     var value: Boolean? = null
 
-    @Column(name = "vote_date")
-    var voteDate: LocalDateTime? = null
+    @Column(name = "vote_date", nullable = false)
+    lateinit var voteDate: LocalDateTime
 }

@@ -11,17 +11,17 @@ class Inspection {
     @Column(name = "inspection_id")
     var inspectionId: Int? = null
 
-    @ManyToOne
-    @JoinColumn(name = "asset_id")
-    var asset: Asset? = null
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "asset_id", nullable = false)
+    lateinit var asset: Asset
 
-    @ManyToOne
-    @JoinColumn(name = "inspection_type")
-    var inspectionType: InspectionType? = null
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "inspection_type", nullable = false)
+    lateinit var inspectionType: InspectionType
 
-    @Column(name = "inspection_date")
-    var inspectionDate: LocalDateTime? = null
+    @Column(name = "inspection_date", nullable = false)
+    lateinit var inspectionDate: LocalDateTime
 
-    @Column(name = "date_expiration")
+    @Column(name = "date_expiration", nullable = true)
     var expirationDate: LocalDateTime? = null
 }

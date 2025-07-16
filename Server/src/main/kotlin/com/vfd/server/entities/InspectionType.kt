@@ -12,6 +12,6 @@ class InspectionType {
     @Column(name = "inspection_type", length = 16, unique = true)
     var inspectionType: String? = null
 
-    @Column(name = "name", length = 64)
-    var name: String? = null
+    @Column(name = "name", length = 64, nullable = false)
+    lateinit var name: String
 }

@@ -11,20 +11,20 @@ class FirefighterActivity {
     @Column(name = "firefighter_activity_id")
     var firefighterActivityId: Int? = null
 
-    @ManyToOne
-    @JoinColumn(name = "firefighter_id")
-    var firefighter: Firefighter? = null
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "firefighter_id", nullable = false)
+    lateinit var firefighter: Firefighter
 
-    @ManyToOne
-    @JoinColumn(name = "firefighter_activity_type")
-    var firefighterActivityType: FirefighterActivityType? = null
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "firefighter_activity_type", nullable = false)
+    lateinit var firefighterActivityType: FirefighterActivityType
 
     @Column(name = "activity_date")
-    var activityDate: LocalDateTime? = null
+    lateinit var activityDate: LocalDateTime
 
     @Column(name = "expiration_date", nullable = true)
-    lateinit var expirationDate: LocalDateTime
+    var expirationDate: LocalDateTime? = null
 
-    @Column(name = "description", length = 512)
-    var description: String? = null
+    @Column(name = "description", length = 512, nullable = false)
+    lateinit var description: String
 }
