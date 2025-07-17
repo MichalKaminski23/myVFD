@@ -2,14 +2,14 @@ package com.vfd.server.dtos
 
 import java.time.LocalDateTime
 
-data class UserDto(
-    val userId: Int?,
+data class UserInfoDto(
+    val userId: Int,
     val firstName: String,
     val lastName: String,
-    val address: AddressDto,
-    val phoneNumber: String,
     val emailAddress: String,
+    val phoneNumber: String,
+    val addressId: Int,
     val createdAt: LocalDateTime,
-    val loggedAt: LocalDateTime?,
+    val loggedAt: LocalDateTime,
     val isActive: Boolean
 )
