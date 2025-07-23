@@ -13,10 +13,11 @@ import org.mapstruct.*
 )
 interface UserMapper {
     @Mapping(source = "address", target = "address")
-    @Mapping(source = "password", target = "passwordHash")
+    //@Mapping(source = "password", target = "passwordHash")
     fun registrationDtoToUser(dto: UserRegistrationDto): User
 
     @Mapping(source = "address.addressId", target = "addressId")
+    @Mapping(source = "active", target = "isActive")
     fun toInfoDto(user: User): UserInfoDto
 
     fun toModeratorDto(user: User): UserModeratorDto

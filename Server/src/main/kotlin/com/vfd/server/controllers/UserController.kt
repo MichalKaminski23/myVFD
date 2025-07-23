@@ -1,24 +1,20 @@
-//package com.vfd.server.controllers
-//
-//import com.vfd.server.dtos.UserInfoDto
-//import com.vfd.server.dtos.UserRegistrationDto
-//import com.vfd.server.services.UserService
-//import jakarta.validation.Valid
-//import org.springframework.http.HttpStatus
-//import org.springframework.web.bind.annotation.*
-//
-//@RestController
-//@RequestMapping("/api/users")
-//class UserController(private val userService: UserService) {
-//
-//    @GetMapping
-//    fun all(): List<UserInfoDto> = userService.findAll()
-//
-//    @GetMapping("/{id}")
-//    fun one(@PathVariable id: Int): UserInfoDto = userService.findById(id)
-//
-//    @PostMapping("/register")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    fun register(@Valid @RequestBody dto: UserRegistrationDto): UserInfoDto =
-//        userService.register(dto)
-//}
+package com.vfd.server.controllers
+
+import com.vfd.server.dtos.UserInfoDto
+import com.vfd.server.services.UserService
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/api/users")
+class UserController(private val userService: UserService) {
+
+    @GetMapping
+    fun getAllUsers(): List<UserInfoDto> = userService.getAllUsers()
+
+    @GetMapping("/{id}")
+    fun getUserById(@PathVariable id: Int): UserInfoDto = userService.getUserById(id)
+
+}
