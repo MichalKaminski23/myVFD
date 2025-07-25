@@ -22,6 +22,6 @@ class Inspection {
     @Column(name = "inspection_date", nullable = false)
     lateinit var inspectionDate: LocalDateTime
 
-    @Column(name = "date_expiration", nullable = true)
+    @Column(name = "expiration_date", nullable = true)
     var expirationDate: LocalDateTime? = null
 }

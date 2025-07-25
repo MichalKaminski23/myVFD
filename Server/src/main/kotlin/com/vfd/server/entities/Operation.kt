@@ -1,6 +1,7 @@
 package com.vfd.server.entities
 
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "Operations")
@@ -21,6 +22,9 @@ class Operation {
     @ManyToOne(optional = false)
     @JoinColumn(name = "address_id", nullable = false)
     lateinit var address: Address
+
+    @Column(name = "operation_date", nullable = false)
+    lateinit var operationDate: LocalDateTime
 
     @Column(name = "description", length = 512, nullable = false)
     lateinit var description: String

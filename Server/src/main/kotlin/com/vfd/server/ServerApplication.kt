@@ -8,6 +8,24 @@ class ServerApplication
 
 fun main(args: Array<String>) {
     runApplication<ServerApplication>(*args)
-
     println("Server is running...")
 }
+
+/*
+{
+    "firstName": "Michal",
+    "lastName": "Admin",
+    "address": {
+    "country": "Polska",
+    "voivodeship": "Śląsk",
+    "city": "Dabie",
+    "postalCode": "42-420",
+    "street": "Starawieś",
+    "houseNumber": "12",
+    "apartNumber": ""
+},
+    "emailAddress": "admin@gmail.com",
+    "phoneNumber": "+123321123",
+    "password": "Raczek12345!"
+}
+ */

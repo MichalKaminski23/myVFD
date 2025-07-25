@@ -8,7 +8,7 @@ data class UserInfoDto(
     val lastName: String,
     val emailAddress: String,
     val phoneNumber: String,
-    val addressId: Int,
+    val address: AddressDto,
     val createdAt: LocalDateTime,
     val loggedAt: LocalDateTime,
     val isActive: Boolean
