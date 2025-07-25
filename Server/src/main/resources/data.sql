@@ -70,7 +70,7 @@ INSERT INTO Investment_Proposals (firedepartment_id, description, amount, submis
 VALUES (1, 'Nowy sprzet do remizy', 50000.00, '2025-07-10 12:00:00', 'oczekujace'),
        (2, 'Wymiana ubran ochronnych', 10000.00, '2025-07-12 15:30:00', 'zatwierdzone');
 
-INSERT INTO Votes (proposal_id, firefighter_id, value, vote_date)
+INSERT INTO Votes (proposal_id, firefighter_id, vote_value, vote_date)
 VALUES (1, 1, TRUE, '2025-07-11 10:00:00'),
        (1, 2, FALSE, '2025-07-11 10:05:00'),
        (2, 2, TRUE, '2025-07-13 09:00:00'),

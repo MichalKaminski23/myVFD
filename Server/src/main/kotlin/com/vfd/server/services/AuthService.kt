@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Service
 class AuthService(
@@ -30,7 +31,7 @@ class AuthService(
     fun register(dto: UserRegistrationDto): AuthResponseDto {
         val address = addressRepository.save(addressMapper.toEntity(dto.address))
 
-        val now = LocalDateTime.now()
+        val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
         val userEntity = userMapper.registrationDtoToUser(dto).apply {
             this.address = address
             this.passwordHash = passwordEncoder.encode(dto.password)

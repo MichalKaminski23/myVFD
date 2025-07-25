@@ -32,8 +32,11 @@ class SecurityConfig(
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
+            .headers { h -> h.frameOptions { it.sameOrigin() } }
             .authorizeHttpRequests { auth ->
                 auth
+                    .requestMatchers("/h2-console/**").permitAll()
+                    .requestMatchers("/webjars/**").permitAll()
                     .requestMatchers(
                         "/api/auth/**",
                         "/api/users/register",

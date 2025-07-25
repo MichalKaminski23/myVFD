@@ -19,8 +19,8 @@ class Vote {
     @JoinColumn(name = "firefighter_id", nullable = false)
     lateinit var firefighter: Firefighter
 
-    @Column(name = "value", nullable = false)
-    var value: Boolean? = null
+    @Column(name = "vote_value", nullable = false)
+    var vote_value: Boolean? = null
 
     @Column(name = "vote_date", nullable = false)
     lateinit var voteDate: LocalDateTime

@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
 }
 
 /*
+
 {
     "firstName": "Michal",
     "lastName": "Admin",
@@ -26,6 +27,12 @@ fun main(args: Array<String>) {
 },
     "emailAddress": "admin@gmail.com",
     "phoneNumber": "+123321123",
-    "password": "Raczek12345!"
+    "password": "ZbychuXPompa12345!"
 }
- */
+
+{
+  "emailAddress": "admin@gmail.com",
+  "password": "ZbychuXPompa12345!"
+}
+
+*/
