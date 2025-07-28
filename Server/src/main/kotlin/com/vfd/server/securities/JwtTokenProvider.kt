@@ -13,7 +13,7 @@ import java.util.*
 class JwtTokenProvider(
     @Value("\${jwt.secret}") val jwtSecret: String
 ) {
-    private val key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret))
+    val key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret))
 
     private val jwtExpirationMs: Long = 3600_000
 

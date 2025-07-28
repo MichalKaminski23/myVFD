@@ -19,4 +19,7 @@ class Firedepartment {
 
     @Column(name = "is_NRFS", nullable = false)
     var isNRFS: Boolean = true
+
+    @OneToMany(mappedBy = "firedepartment", fetch = FetchType.LAZY)
+    val firefighters: List<Firefighter> = emptyList()
 }

@@ -16,7 +16,7 @@ class InvestmentProposal {
     @JoinColumn(name = "firedepartment_id", nullable = false)
     lateinit var firedepartment: Firedepartment
 
-    @Column(name = "description", length = 512, nullable = true)
+    @Column(name = "description", length = 512, nullable = false)
     lateinit var description: String
 
     @Column(name = "amount", precision = 10, scale = 2, nullable = false)

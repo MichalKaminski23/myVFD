@@ -6,18 +6,15 @@ import org.mapstruct.*
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 interface AssetMapper {
-
-    // encja → DTO: wyciągamy tylko proste pola
     @Mapping(source = "firedepartment.firedepartmentId", target = "firedepartmentId")
     @Mapping(source = "assetType.assetType", target = "assetType")
     fun toDto(asset: Asset): AssetDto
 
-    // DTO → encja: ignorujemy relacje, żeby nie próbował mapować String → AssetType itp.
-    @Mapping(target = "firedepartment", ignore = true)
-    @Mapping(target = "assetType", ignore = true)
+    @Mapping(target = "assetId", ignore = true)
+    @Mapping(source = "firedepartmentId", target = "firedepartment.firedepartmentId")
+    @Mapping(source = "assetType", target = "assetType.assetType")
     fun toEntity(dto: AssetDto): Asset
 
-    // częściowa aktualizacja: też pomijamy relacje
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "firedepartment", ignore = true)
     @Mapping(target = "assetType", ignore = true)

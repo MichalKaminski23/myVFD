@@ -24,8 +24,12 @@ class JwtAuthenticationFilter(
         val header = request.getHeader("Authorization")
         if (header?.startsWith("Bearer ") == true) {
             val token = header.removePrefix("Bearer ")
-            val claims = Jwts.parser().setSigningKey(jwtTokenProvider.jwtSecret)
-                .parseClaimsJws(token).body
+            val claims = Jwts
+                .parserBuilder()
+                .setSigningKey(jwtTokenProvider.key)
+                .build()
+                .parseClaimsJws(token)
+                .body
             val username = claims.subject
             if (username != null && SecurityContextHolder.getContext().authentication == null) {
                 val userDetails = customUserDetailsService.loadUserByUsername(username)

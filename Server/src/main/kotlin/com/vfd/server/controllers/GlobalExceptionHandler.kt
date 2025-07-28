@@ -15,7 +15,7 @@ class GlobalExceptionHandler {
         val err = ErrorResponse(
             status = HttpStatus.NOT_FOUND.value(),
             message = ex.message ?: "Resource not found",
-            path = req.getDescription(false)
+            path = req.getDescription(false).replace("uri=", "")
         )
         return ResponseEntity(err, HttpStatus.NOT_FOUND)
     }
@@ -25,7 +25,7 @@ class GlobalExceptionHandler {
         val err = ErrorResponse(
             status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
             message = "Internal server error: ${ex.message ?: "An unexpected error occurred."}",
-            path = req.getDescription(false)
+            path = req.getDescription(false).replace("uri=", "")
         )
         return ResponseEntity(err, HttpStatus.INTERNAL_SERVER_ERROR)
     }
