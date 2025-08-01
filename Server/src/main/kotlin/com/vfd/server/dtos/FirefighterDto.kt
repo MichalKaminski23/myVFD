@@ -18,7 +18,7 @@ data class FirefighterDto(
 
     @Schema(
         description = "Role of the firefighter within the department (e.g., President, Volunteer).",
-        example = "Volunteer"
+        example = "MEMBER"
     )
     @field:NotBlank(message = "Firefighter role must not be blank.")
     @field:Size(max = 16, message = "Firefighter role must be at most 16 characters.")

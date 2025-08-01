@@ -8,6 +8,7 @@ import com.vfd.server.repositories.AssetTypeRepository
 import com.vfd.server.repositories.FiredepartmentRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AssetService(
@@ -15,28 +16,33 @@ class AssetService(
     private val assetTypeRepository: AssetTypeRepository, val assetMapper: AssetMapper
 ) {
 
-    fun getAllAssets() = assetRepository.findAll().map(assetMapper::toDto)
+    fun getAllAssets() = assetRepository.findAll().map(assetMapper::fromAssetToAssetDto)
 
     fun getAssetById(id: Int) = assetRepository.findById(id)
-        .map(assetMapper::toDto)
+        .map(assetMapper::fromAssetToAssetDto)
         .orElseThrow { ResourceNotFoundException("Asset with id $id not found.") }
 
-    fun createAsset(assetDto: AssetDto) = assetMapper.toDto(
-        assetRepository.save(assetMapper.toEntity(assetDto))
+    @Transactional
+    fun createAsset(assetDto: AssetDto) = assetMapper.fromAssetToAssetDto(
+        assetRepository.save(assetMapper.fromAssetDtoToAsset(assetDto))
     )
 
+    @Transactional
     fun updateAsset(id: Int, dto: AssetDto) {
         val asset = assetRepository.findById(id)
             .orElseThrow { EntityNotFoundException("Asset with ID $id not found.") }
 
-        assetMapper.updateEntityFromDto(dto, asset)
+        assetMapper.updateAssetFromAssetDto(dto, asset)
 
-        dto.firedepartmentId.let {
-            asset.firedepartment = firedepartmentRepository.getReferenceById(it)
+        dto.firedepartmentId?.let {
+            val firedepartment = firedepartmentRepository.findById(it)
+                .orElseThrow { EntityNotFoundException("Firedepartment with ID $it not found.") }
+            asset.firedepartment = firedepartment
         }
 
-        dto.assetType.let {
-            asset.assetType = assetTypeRepository.getReferenceById(it)
+        dto.assetType?.let {
+            val assetType = assetTypeRepository.findByAssetType(it)
+            asset.assetType = assetType
         }
 
         assetRepository.save(asset)

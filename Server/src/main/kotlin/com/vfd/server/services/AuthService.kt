@@ -29,10 +29,10 @@ class AuthService(
 
     @Transactional
     fun register(dto: UserRegistrationDto): AuthResponseDto {
-        val address = addressRepository.save(addressMapper.toEntity(dto.address))
+        val address = addressRepository.save(addressMapper.fromAddressDtoToAddress(dto.address))
 
         val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-        val userEntity = userMapper.registrationDtoToUser(dto).apply {
+        val userEntity = userMapper.fromUserRegistrationDtoToUser(dto).apply {
             this.address = address
             this.passwordHash = passwordEncoder.encode(dto.password)
             this.createdAt = now

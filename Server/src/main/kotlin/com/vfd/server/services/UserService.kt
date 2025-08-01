@@ -14,12 +14,12 @@ class UserService(
     private val userMapper: UserMapper
 ) {
     fun getAllUsers(): List<UserInfoDto> =
-        userRepository.findAll().map(userMapper::toInfoDto)
+        userRepository.findAll().map(userMapper::fromUserToUserInfoDto)
 
 
     fun getUserById(id: Int): UserInfoDto =
         userRepository.findById(id)
-            .map(userMapper::toInfoDto)
+            .map(userMapper::fromUserToUserInfoDto)
             .orElseThrow { ResourceNotFoundException("User with id $id not found.") }
 
 }

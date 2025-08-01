@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface AssetTypeRepository : JpaRepository<AssetType, String>
+interface AssetTypeRepository : JpaRepository<AssetType, String> {
+    fun findByAssetType(assetType: String): AssetType?
+}

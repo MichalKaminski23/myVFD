@@ -15,7 +15,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableMethodSecurity
 class SecurityConfig(
-    private val jwtAuthFilter: JwtAuthenticationFilter
+    private val jwtAuthFilter: JwtAuthenticationFilter,
+    private val authenticationEntryPoint: CustomAuthenticationEntryPoint,
+    private val accessDeniedHandler: CustomAccessDeniedHandler
 ) {
 
     @Bean
@@ -35,6 +37,7 @@ class SecurityConfig(
             .headers { h -> h.frameOptions { it.sameOrigin() } }
             .authorizeHttpRequests { auth ->
                 auth
+                    //.requestMatchers("/api/firefighters/**").hasRole(Role.ADMIN.name)
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers("/webjars/**").permitAll()
                     .requestMatchers(
@@ -45,8 +48,13 @@ class SecurityConfig(
                         "/swagger-ui.html"
                     ).permitAll()
                     .anyRequest().authenticated()
+
             }
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .exceptionHandling {
+                it.authenticationEntryPoint(authenticationEntryPoint)
+                it.accessDeniedHandler(accessDeniedHandler)
+            }
         return http.build()
     }
 }

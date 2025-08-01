@@ -8,7 +8,7 @@ VALUES ('ciezki', 'Woz strazacki'),
        ('w52', 'Waz strazacki'),
        ('aodo', 'Sprzet ochronny');
 
-INSERT INTO inspection_types (inspection_type, name)
+INSERT INTO Inspection_types (inspection_type, name)
 VALUES ('kon_bezp', 'Kontrola bezpieczenstwa'),
        ('kons', 'Konserwacja'),
        ('ubez', 'Ubezpieczenie');
@@ -37,9 +37,9 @@ VALUES ('OSP Strzyzowice', 1, FALSE),
        ('OSP Dabie', 2, FALSE);
 
 INSERT INTO Firefighters (firefighter_id, firedepartment_id, role)
-VALUES (1, 1, 'Prezes'),
-       (2, 1, 'Wiceprezes'),
-       (3, 2, 'Czlonek');
+VALUES (1, 1, 'PRESIDENT'),
+       (2, 1, 'MEMBER'),
+       (3, 2, 'USER');
 
 INSERT INTO Firefighter_Activities (firefighter_id, firefighter_activity_type, activity_date, expiration_date,
                                     description)

@@ -36,3 +36,4 @@ fun main(args: Array<String>) {
 }
 
 */
+// TODO rozdzielic entity na dto do odczytu, tworzenia i aktualizacji (patch)

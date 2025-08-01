@@ -9,10 +9,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 interface AddressMapper {
-    fun toDto(address: Address): AddressDto
-    
-    fun toEntity(dto: AddressDto): Address
+
+    fun fromAddressDtoToAddress(addressDto: AddressDto): Address
+
+    fun fromAddressToAddressDto(address: Address): AddressDto
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    fun updateEntityFromDto(dto: AddressDto, @MappingTarget address: Address)
+    fun updateAddressFromAddressDto(addressDto: AddressDto, @MappingTarget address: Address)
 }

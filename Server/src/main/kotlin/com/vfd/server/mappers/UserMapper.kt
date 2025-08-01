@@ -12,14 +12,15 @@ import org.mapstruct.*
     uses = [AddressMapper::class]
 )
 interface UserMapper {
+
     @Mapping(source = "address", target = "address")
-    fun registrationDtoToUser(dto: UserRegistrationDto): User
+    fun fromUserRegistrationDtoToUser(dto: UserRegistrationDto): User
 
     @Mapping(source = "active", target = "isActive")
-    fun toInfoDto(user: User): UserInfoDto
+    fun fromUserToUserInfoDto(user: User): UserInfoDto
 
-    fun toModeratorDto(user: User): UserModeratorDto
+    fun fromUserToUserModeratorDto(user: User): UserModeratorDto
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    fun updateEntityFromInfoDto(dto: UserInfoDto, @MappingTarget user: User)
+    fun updateUserFromUserInfoDto(dto: UserInfoDto, @MappingTarget user: User)
 }

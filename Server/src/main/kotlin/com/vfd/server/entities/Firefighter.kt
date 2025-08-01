@@ -18,6 +18,7 @@ class Firefighter {
     @JoinColumn(name = "firedepartment_id", nullable = false)
     lateinit var firedepartment: Firedepartment
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 16, nullable = false)
-    lateinit var role: String
+    lateinit var role: Role
 }
