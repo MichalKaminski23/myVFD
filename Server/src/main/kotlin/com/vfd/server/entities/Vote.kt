@@ -6,22 +6,23 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "Votes")
 class Vote {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vote_id")
     var voteId: Int? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "proposal_id", nullable = false)
-    lateinit var proposal: InvestmentProposal
+    @ManyToOne
+    @JoinColumn(name = "proposal_id")
+    var proposal: InvestmentProposal? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "firefighter_id", nullable = false)
-    lateinit var firefighter: Firefighter
+    @ManyToOne
+    @JoinColumn(name = "firefighter_id")
+    var firefighter: Firefighter? = null
 
-    @Column(name = "vote_value", nullable = false)
-    var vote_value: Boolean? = null
+    @Column(name = "vote_value")
+    var voteValue: Boolean? = null
 
-    @Column(name = "vote_date", nullable = false)
-    lateinit var voteDate: LocalDateTime
+    @Column(name = "vote_date")
+    var voteDate: LocalDateTime? = null
 }

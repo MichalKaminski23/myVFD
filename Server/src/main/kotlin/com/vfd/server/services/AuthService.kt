@@ -1,8 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.AuthResponseDto
-import com.vfd.server.dtos.UserLoginDto
-import com.vfd.server.dtos.UserRegistrationDto
+import com.vfd.server.dtos.UserDtos
 import com.vfd.server.mappers.AddressMapper
 import com.vfd.server.mappers.UserMapper
 import com.vfd.server.repositories.AddressRepository
@@ -28,16 +27,16 @@ class AuthService(
 ) {
 
     @Transactional
-    fun register(dto: UserRegistrationDto): AuthResponseDto {
-        val address = addressRepository.save(addressMapper.fromAddressDtoToAddress(dto.address))
+    fun register(dto: UserDtos.UserCreate): AuthResponseDto {
+        val address = addressRepository.save(addressMapper.toAddressEntity(dto.address))
 
         val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-        val userEntity = userMapper.fromUserRegistrationDtoToUser(dto).apply {
+        val userEntity = userMapper.createNewUser(dto).apply {
             this.address = address
             this.passwordHash = passwordEncoder.encode(dto.password)
             this.createdAt = now
             this.loggedAt = now
-            this.isActive = true
+            this.active = true
         }
         userRepository.save(userEntity)
 
@@ -47,7 +46,7 @@ class AuthService(
         return AuthResponseDto(jwt)
     }
 
-    fun login(dto: UserLoginDto): AuthResponseDto {
+    fun login(dto: UserDtos.UserLogin): AuthResponseDto {
         val authToken = UsernamePasswordAuthenticationToken(dto.emailAddress, dto.password)
         val auth = authenticationManager.authenticate(authToken)
         val jwt = jwtTokenProvider.generateToken(auth)

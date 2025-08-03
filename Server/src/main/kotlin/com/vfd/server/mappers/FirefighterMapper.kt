@@ -1,19 +1,20 @@
 package com.vfd.server.mappers
 
-import com.vfd.server.dtos.FirefighterDto
+import com.vfd.server.dtos.FirefighterDtos
 import com.vfd.server.entities.Firefighter
 import org.mapstruct.*
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = "spring")
 interface FirefighterMapper {
 
-    @Mapping(source = "firedepartment.firedepartmentId", target = "firedepartmentId")
-    fun fromFirefighterToFirefighterDto(firefighter: Firefighter): FirefighterDto
+    fun toFirefighterDto(firefighter: Firefighter): FirefighterDtos.FirefighterResponse
 
     @Mapping(target = "firefighterId", ignore = true)
-    @Mapping(source = "firedepartmentId", target = "firedepartment.firedepartmentId")
-    fun fromFirefighterDtoToFirefighter(firefighterDto: FirefighterDto): Firefighter
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "firedepartment", ignore = true)
+    fun toFirefighterEntity(dto: FirefighterDtos.FirefighterCreate): Firefighter
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    fun updateFirefighterFromFirefighterDto(firefighterDto: FirefighterDto, @MappingTarget firefighter: Firefighter)
+    @Mapping(target = "firedepartment", ignore = true)
+    fun patchFirefighter(dto: FirefighterDtos.FirefighterPatch, @MappingTarget firefighter: Firefighter)
 }

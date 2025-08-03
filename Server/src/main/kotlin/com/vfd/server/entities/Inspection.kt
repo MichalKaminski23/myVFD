@@ -6,22 +6,23 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "Inspections")
 class Inspection {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inspection_id")
     var inspectionId: Int? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "asset_id", nullable = false)
-    lateinit var asset: Asset
+    @ManyToOne
+    @JoinColumn(name = "asset_id")
+    var asset: Asset? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "inspection_type", nullable = false)
-    lateinit var inspectionType: InspectionType
+    @ManyToOne
+    @JoinColumn(name = "inspection_type")
+    var inspectionType: InspectionType? = null
 
-    @Column(name = "inspection_date", nullable = false)
-    lateinit var inspectionDate: LocalDateTime
+    @Column(name = "inspection_date")
+    var inspectionDate: LocalDateTime? = null
 
-    @Column(name = "expiration_date", nullable = true)
+    @Column(name = "expiration_date")
     var expirationDate: LocalDateTime? = null
 }

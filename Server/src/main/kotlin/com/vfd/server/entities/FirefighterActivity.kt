@@ -6,25 +6,26 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "FirefighterActivities")
 class FirefighterActivity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "firefighter_activity_id")
     var firefighterActivityId: Int? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "firefighter_id", nullable = false)
-    lateinit var firefighter: Firefighter
+    @ManyToOne
+    @JoinColumn(name = "firefighter_id")
+    var firefighter: Firefighter? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "firefighter_activity_type", nullable = false)
-    lateinit var firefighterActivityType: FirefighterActivityType
+    @ManyToOne
+    @JoinColumn(name = "firefighter_activity_type")
+    var firefighterActivityType: FirefighterActivityType? = null
 
     @Column(name = "activity_date")
-    lateinit var activityDate: LocalDateTime
+    var activityDate: LocalDateTime? = null
 
-    @Column(name = "expiration_date", nullable = true)
+    @Column(name = "expiration_date")
     var expirationDate: LocalDateTime? = null
 
-    @Column(name = "description", length = 512, nullable = false)
-    lateinit var description: String
+    @Column(name = "description", length = 512)
+    var description: String? = null
 }

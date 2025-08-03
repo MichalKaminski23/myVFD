@@ -1,6 +1,6 @@
 package com.vfd.server.services
 
-import com.vfd.server.dtos.AssetDto
+import com.vfd.server.dtos.AssetDtos
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AssetMapper
 import com.vfd.server.repositories.AssetRepository
@@ -12,27 +12,42 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AssetService(
-    private val assetRepository: AssetRepository, private val firedepartmentRepository: FiredepartmentRepository,
-    private val assetTypeRepository: AssetTypeRepository, val assetMapper: AssetMapper
+    private val assetRepository: AssetRepository,
+    private val firedepartmentRepository: FiredepartmentRepository,
+    private val assetTypeRepository: AssetTypeRepository,
+    val assetMapper: AssetMapper
 ) {
 
-    fun getAllAssets() = assetRepository.findAll().map(assetMapper::fromAssetToAssetDto)
+    fun getAllAssets(): List<AssetDtos.AssetResponse> =
+        assetRepository.findAll().map(assetMapper::toAssetDto)
 
-    fun getAssetById(id: Int) = assetRepository.findById(id)
-        .map(assetMapper::fromAssetToAssetDto)
-        .orElseThrow { ResourceNotFoundException("Asset with id $id not found.") }
-
-    @Transactional
-    fun createAsset(assetDto: AssetDto) = assetMapper.fromAssetToAssetDto(
-        assetRepository.save(assetMapper.fromAssetDtoToAsset(assetDto))
-    )
+    fun getAssetById(id: Int): AssetDtos.AssetResponse =
+        assetRepository.findById(id)
+            .map(assetMapper::toAssetDto)
+            .orElseThrow { ResourceNotFoundException("Asset with id $id not found.") }
 
     @Transactional
-    fun updateAsset(id: Int, dto: AssetDto) {
+    fun createAsset(dto: AssetDtos.AssetCreate): AssetDtos.AssetResponse {
+        val asset = assetMapper.toAssetEntity(dto)
+
+        val firedepartment = firedepartmentRepository.findById(dto.firedepartmentId!!)
+            .orElseThrow { EntityNotFoundException("Firedepartment with ID ${dto.firedepartmentId} not found.") }
+
+        val assetType = assetTypeRepository.findByAssetType(dto.assetType)
+            ?: throw EntityNotFoundException("AssetType '${dto.assetType}' not found.")
+
+        asset.firedepartment = firedepartment
+        asset.assetType = assetType
+
+        return assetMapper.toAssetDto(assetRepository.save(asset))
+    }
+
+    @Transactional
+    fun updateAsset(id: Int, dto: AssetDtos.AssetPatch) {
         val asset = assetRepository.findById(id)
             .orElseThrow { EntityNotFoundException("Asset with ID $id not found.") }
 
-        assetMapper.updateAssetFromAssetDto(dto, asset)
+        assetMapper.patchAsset(dto, asset)
 
         dto.firedepartmentId?.let {
             val firedepartment = firedepartmentRepository.findById(it)
@@ -42,6 +57,7 @@ class AssetService(
 
         dto.assetType?.let {
             val assetType = assetTypeRepository.findByAssetType(it)
+                ?: throw EntityNotFoundException("AssetType '$it' not found.")
             asset.assetType = assetType
         }
 

@@ -4,24 +4,24 @@ VALUES ('Polska', 'Slaskie', 'Strzyzowice', '00-001', 'Ulica Glowna', '1A', '10'
        ('Polska', 'Slaskie', 'Katowice', '40-001', 'Aleja Wolnosci', '2', '20');
 
 INSERT INTO Asset_Types (asset_type, name)
-VALUES ('ciezki', 'Woz strazacki'),
-       ('w52', 'Waz strazacki'),
-       ('aodo', 'Sprzet ochronny');
+VALUES ('WaterPump', 'Heavy water pump'),
+       ('FH52', 'Firehose'),
+       ('RPA', 'Respiratory Protective Apparatus');
 
 INSERT INTO Inspection_types (inspection_type, name)
-VALUES ('kon_bezp', 'Kontrola bezpieczenstwa'),
-       ('kons', 'Konserwacja'),
-       ('ubez', 'Ubezpieczenie');
+VALUES ('SecCheck', 'Security check'),
+       ('MainTen', 'Maintenance'),
+       ('Insu', 'Insurance');
 
 INSERT INTO Operation_Types (operation_type, name)
-VALUES ('akc_rat', 'Akcja ratunkowa'),
-       ('cwi', 'Cwiczenia'),
-       ('kons', 'Prace konserwacyjne');
+VALUES ('ResOpe', 'Rescue operation'),
+       ('Exerc', 'Exercises'),
+       ('MainWor', 'Maintenance work');
 
 INSERT INTO Firefighter_Activity_Types (firefighter_activity_type, name)
-VALUES ('szkol', 'Szkolenie'),
-       ('cert', 'Certyfikacja'),
-       ('pppm', 'Kurs pierwszej pomocy');
+VALUES ('Train', 'Training'),
+       ('Cert', 'Certification'),
+       ('FAC', 'First aid course');
 
 INSERT INTO Users (first_name, last_name, address_id, phone_number, email_address, created_at, logged_at, is_active,
                    password_hash)
@@ -33,7 +33,7 @@ VALUES ('Jan', 'Kowalski', 1, '+48 123 456 789', 'jan.kowalski@example.com', '20
         '2025-07-23 09:20:00', FALSE, 'hash3');
 
 INSERT INTO Firedepartments (name, address_id, is_NRFS)
-VALUES ('OSP Strzyzowice', 1, FALSE),
+VALUES ('OSP Strzyzowice', 1, TRUE),
        ('OSP Dabie', 2, FALSE);
 
 INSERT INTO Firefighters (firefighter_id, firedepartment_id, role)
@@ -43,22 +43,22 @@ VALUES (1, 1, 'PRESIDENT'),
 
 INSERT INTO Firefighter_Activities (firefighter_id, firefighter_activity_type, activity_date, expiration_date,
                                     description)
-VALUES (1, 'szkol', '2025-07-01 09:00:00', '2026-07-01 09:00:00', 'Podstawowe szkolenie strazackie'),
-       (2, 'pppm', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'Kurs pierwszej pomocy'),
-       (3, 'cert', '2025-05-15 08:00:00', '2027-05-15 08:00:00', 'Zaawansowana certyfikacja');
+VALUES (1, 'Train', '2025-07-01 09:00:00', '2026-07-01 09:00:00', 'Basic firefighter training'),
+       (2, 'FAC', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'First aid course'),
+       (3, 'Cert', '2025-05-15 08:00:00', '2027-05-15 08:00:00', 'Advanced Certification');
 
 INSERT INTO Assets (firedepartment_id, name, asset_type, description)
-VALUES (1, 'Woz A', 'ciezki', 'MAN Stolarczyk'),
-       (1, 'Waz A', 'w52', 'Waz w52 Kadimex'),
-       (2, 'Zestaw ochronny', 'aodo', 'Ochrona drog oddechowych');
+VALUES (1, 'Mutant', 'WaterPump', 'Mega pump'),
+       (1, 'Firehose green 52', 'FH52', 'Firehose FH52 Kadimex'),
+       (2, 'Respiratory protection', 'RPA', 'Respiratory protection');
 
 INSERT INTO Inspections (asset_id, inspection_type, inspection_date, expiration_date)
-VALUES (1, 'kon_bezp', '2025-06-15 11:00:00', '2026-06-15 11:00:00'),
-       (2, 'kons', '2025-07-05 14:00:00', '2026-07-05 14:00:00');
+VALUES (1, 'SecCheck', '2025-06-15 11:00:00', '2026-06-15 11:00:00'),
+       (2, 'Insu', '2025-07-05 14:00:00', '2026-07-05 14:00:00');
 
 INSERT INTO Operations (firedepartment_id, operation_type, address_id, operation_date, description)
-VALUES (1, 'akc_rat', 3, '2025-07-15 13:00:00', 'Akcja ratunkowa w Katowicach'),
-       (2, 'cwi', 2, '2025-07-18 09:00:00', 'Miesieczne cwiczenia w Bedzinie');
+VALUES (1, 'ResOpe', 3, '2025-07-15 13:00:00', 'Rescue operation in Katowice'),
+       (2, 'Exerc', 2, '2025-07-18 09:00:00', 'Monthly exercises in Bedzin');
 
 INSERT INTO Participations (operation_id, firefighter_id)
 VALUES (1, 1),
@@ -67,8 +67,8 @@ VALUES (1, 1),
        (2, 3);
 
 INSERT INTO Investment_Proposals (firedepartment_id, description, amount, submission_date, status)
-VALUES (1, 'Nowy sprzet do remizy', 50000.00, '2025-07-10 12:00:00', 'oczekujace'),
-       (2, 'Wymiana ubran ochronnych', 10000.00, '2025-07-12 15:30:00', 'zatwierdzone');
+VALUES (1, 'New equipment for the fire station', 50000.00, '2025-07-10 12:00:00', 'PENDING'),
+       (2, 'Wymiana ubran ochronnych', 10000.00, '2025-07-12 15:30:00', 'APPROVED');
 
 INSERT INTO Votes (proposal_id, firefighter_id, vote_value, vote_date)
 VALUES (1, 1, TRUE, '2025-07-11 10:00:00'),

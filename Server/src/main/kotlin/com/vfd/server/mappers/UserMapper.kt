@@ -1,8 +1,6 @@
 package com.vfd.server.mappers
 
-import com.vfd.server.dtos.UserInfoDto
-import com.vfd.server.dtos.UserModeratorDto
-import com.vfd.server.dtos.UserRegistrationDto
+import com.vfd.server.dtos.UserDtos
 import com.vfd.server.entities.User
 import org.mapstruct.*
 
@@ -13,14 +11,17 @@ import org.mapstruct.*
 )
 interface UserMapper {
 
-    @Mapping(source = "address", target = "address")
-    fun fromUserRegistrationDtoToUser(dto: UserRegistrationDto): User
+    fun toUserDto(user: User): UserDtos.UserResponse
 
-    @Mapping(source = "active", target = "isActive")
-    fun fromUserToUserInfoDto(user: User): UserInfoDto
-
-    fun fromUserToUserModeratorDto(user: User): UserModeratorDto
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "address", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "loggedAt", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "passwordHash", ignore = true)
+    fun createNewUser(dto: UserDtos.UserCreate): User
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    fun updateUserFromUserInfoDto(dto: UserInfoDto, @MappingTarget user: User)
+    @Mapping(target = "address", ignore = true)
+    fun patchUser(dto: UserDtos.UserPatch, @MappingTarget user: User)
 }

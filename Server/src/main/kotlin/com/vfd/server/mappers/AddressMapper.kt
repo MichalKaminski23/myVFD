@@ -1,19 +1,17 @@
 package com.vfd.server.mappers
 
-import com.vfd.server.dtos.AddressDto
+import com.vfd.server.dtos.AddressDtos
 import com.vfd.server.entities.Address
-import org.mapstruct.BeanMapping
-import org.mapstruct.Mapper
-import org.mapstruct.MappingTarget
-import org.mapstruct.NullValuePropertyMappingStrategy
+import org.mapstruct.*
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = "spring")
 interface AddressMapper {
 
-    fun fromAddressDtoToAddress(addressDto: AddressDto): Address
+    fun toAddressDto(address: Address): AddressDtos.AddressResponse
 
-    fun fromAddressToAddressDto(address: Address): AddressDto
+    @Mapping(target = "addressId", ignore = true)
+    fun toAddressEntity(dto: AddressDtos.AddressCreate): Address
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    fun updateAddressFromAddressDto(addressDto: AddressDto, @MappingTarget address: Address)
+    fun patchAddress(dto: AddressDtos.AddressPatch, @MappingTarget address: Address)
 }

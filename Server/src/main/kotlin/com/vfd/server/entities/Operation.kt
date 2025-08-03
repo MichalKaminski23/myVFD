@@ -6,28 +6,29 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "Operations")
 class Operation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "operation_id")
     var operationId: Int? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "firedepartment_id", nullable = false)
-    lateinit var firedepartment: Firedepartment
+    @ManyToOne
+    @JoinColumn(name = "firedepartment_id")
+    var firedepartment: Firedepartment? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "operation_type", nullable = false)
-    lateinit var operationType: OperationType
+    @ManyToOne
+    @JoinColumn(name = "operation_type")
+    var operationType: OperationType? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "address_id", nullable = false)
-    lateinit var address: Address
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    var address: Address? = null
 
-    @Column(name = "operation_date", nullable = false)
-    lateinit var operationDate: LocalDateTime
+    @Column(name = "operation_date")
+    var operationDate: LocalDateTime? = null
 
-    @Column(name = "description", length = 512, nullable = false)
-    lateinit var description: String
+    @Column(name = "description", length = 512)
+    var description: String? = null
 
     @ManyToMany
     @JoinTable(

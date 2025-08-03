@@ -1,5 +1,6 @@
 package com.vfd.server.controllers
 
+import com.vfd.server.entities.ErrorResponse
 import com.vfd.server.exceptions.ResourceNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -30,9 +31,3 @@ class GlobalExceptionHandler {
         return ResponseEntity(err, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 }
-
-data class ErrorResponse(
-    val status: Int,
-    val message: String,
-    val path: String
-)

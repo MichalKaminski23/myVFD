@@ -8,10 +8,11 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "InspectionTypes")
 class InspectionType {
+
     @Id
     @Column(name = "inspection_type", length = 16, unique = true)
     var inspectionType: String? = null
 
-    @Column(name = "name", length = 64, nullable = false)
-    lateinit var name: String
+    @Column(name = "name", length = 64)
+    var name: String? = null
 }

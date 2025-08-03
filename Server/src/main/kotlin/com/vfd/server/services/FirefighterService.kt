@@ -1,7 +1,6 @@
 package com.vfd.server.services
 
-import com.vfd.server.dtos.FirefighterDto
-import com.vfd.server.entities.Firefighter
+import com.vfd.server.dtos.FirefighterDtos
 import com.vfd.server.entities.Role
 import com.vfd.server.mappers.FirefighterMapper
 import com.vfd.server.repositories.FiredepartmentRepository
@@ -18,65 +17,65 @@ class FirefighterService(
     private val firefighterMapper: FirefighterMapper
 ) {
 
-
     @Transactional
-    fun createFirefighter(userId: Int, firedepartmentId: Int, roleName: String): FirefighterDto {
-        val user = userRepository.findById(userId)
-            .orElseThrow { IllegalArgumentException("User not found") }
+    fun createFirefighter(dto: FirefighterDtos.FirefighterCreate): FirefighterDtos.FirefighterResponse {
+        val user = userRepository.findById(dto.userId)
+            .orElseThrow { IllegalArgumentException("User with ID ${dto.userId} not found") }
 
-        val firedepartment = firedepartmentRepository.findById(firedepartmentId)
-            .orElseThrow { IllegalArgumentException("Firedepartment not found") }
+        val firedepartment = firedepartmentRepository.findById(dto.firedepartmentId)
+            .orElseThrow { IllegalArgumentException("Firedepartment with ID ${dto.firedepartmentId} not found") }
 
-        // Znajdujemy rolę na podstawie nazwy
-        val role = Role.valueOf(roleName.uppercase()) // Pobieramy rolę z Enum
-
-
-        // Tworzymy nowego strażaka
-        val firefighter = Firefighter().apply {
-            this.user = user // Powiązanie strażaka z użytkownikiem (ID będzie takie same)
+        val firefighter = firefighterMapper.toFirefighterEntity(dto).apply {
+            this.user = user
             this.firedepartment = firedepartment
-            this.role = role
         }
 
-        val savedFirefighter = firefighterRepository.save(firefighter)
-
-        return firefighterMapper.fromFirefighterToFirefighterDto(savedFirefighter)
+        return firefighterMapper.toFirefighterDto(firefighterRepository.save(firefighter))
     }
 
-    fun getFirefighterById(id: Int): FirefighterDto {
+    fun getFirefighterById(id: Int): FirefighterDtos.FirefighterResponse {
         val firefighter = firefighterRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Firefighter not found") }
+            .orElseThrow { IllegalArgumentException("Firefighter with ID $id not found") }
 
-        return firefighterMapper.fromFirefighterToFirefighterDto(firefighter)
+        return firefighterMapper.toFirefighterDto(firefighter)
     }
 
-    // Aktualizacja roli strażaka
     @Transactional
-    fun updateFirefighterRole(id: Int, roleName: String): FirefighterDto {
+    fun updateFirefighter(id: Int, dto: FirefighterDtos.FirefighterPatch): FirefighterDtos.FirefighterResponse {
         val firefighter = firefighterRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Firefighter not found") }
+            .orElseThrow { IllegalArgumentException("Firefighter with ID $id not found") }
 
-        val role = Role.valueOf(roleName.uppercase()) // Pobieramy rolę z Enum
+        firefighterMapper.patchFirefighter(dto, firefighter)
+
+        dto.firedepartmentId?.let {
+            val fd = firedepartmentRepository.findById(it)
+                .orElseThrow { IllegalArgumentException("Firedepartment with ID $it not found") }
+            firefighter.firedepartment = fd
+        }
+
+        return firefighterMapper.toFirefighterDto(firefighterRepository.save(firefighter))
+    }
+
+    @Transactional
+    fun updateFirefighterRole(id: Int, roleName: String): FirefighterDtos.FirefighterResponse {
+        val firefighter = firefighterRepository.findById(id)
+            .orElseThrow { IllegalArgumentException("Firefighter with ID $id not found") }
+
+        val role = runCatching { Role.valueOf(roleName.uppercase()) }
+            .getOrElse { throw IllegalArgumentException("Invalid role name: $roleName") }
 
         firefighter.role = role
 
-        val updatedFirefighter = firefighterRepository.save(firefighter)
-
-        return firefighterMapper.fromFirefighterToFirefighterDto(updatedFirefighter)
+        return firefighterMapper.toFirefighterDto(firefighterRepository.save(firefighter))
     }
 
-    // Usuwanie roli strażaka
     @Transactional
-    fun removeRoleFromFirefighter(id: Int): FirefighterDto {
+    fun removeRoleFromFirefighter(id: Int): FirefighterDtos.FirefighterResponse {
         val firefighter = firefighterRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Firefighter not found") }
+            .orElseThrow { IllegalArgumentException("Firefighter with ID $id not found") }
 
-
-        // Usuwamy rolę
         firefighter.role = Role.USER
 
-        val updatedFirefighter = firefighterRepository.save(firefighter)
-
-        return firefighterMapper.fromFirefighterToFirefighterDto(updatedFirefighter)
+        return firefighterMapper.toFirefighterDto(firefighterRepository.save(firefighter))
     }
 }

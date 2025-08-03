@@ -16,7 +16,7 @@ class CustomUserDetailsService(
         return org.springframework.security.core.userdetails.User(
             user.emailAddress,
             user.passwordHash,
-            user.isActive, true, true, true,
+            user.active, true, true, true,
             emptyList()
         )
     }

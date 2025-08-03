@@ -5,20 +5,21 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "Firefighters")
 class Firefighter {
+
     @Id
     @Column(name = "firefighter_id")
     var firefighterId: Int? = null
 
-    @OneToOne(optional = false)
+    @OneToOne
     @MapsId
-    @JoinColumn(name = "firefighter_id", nullable = false)
-    lateinit var user: User
+    @JoinColumn(name = "firefighter_id")
+    var user: User? = null
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "firedepartment_id", nullable = false)
-    lateinit var firedepartment: Firedepartment
+    @JoinColumn(name = "firedepartment_id")
+    var firedepartment: Firedepartment? = null
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", length = 16, nullable = false)
-    lateinit var role: Role
+    @Column(name = "role", length = 16)
+    var role: Role? = null
 }

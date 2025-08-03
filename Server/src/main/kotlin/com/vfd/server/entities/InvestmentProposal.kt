@@ -7,26 +7,27 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "InvestmentProposals")
 class InvestmentProposal {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "proposal_id")
     var proposalId: Int? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "firedepartment_id", nullable = false)
-    lateinit var firedepartment: Firedepartment
+    @ManyToOne
+    @JoinColumn(name = "firedepartment_id")
+    var firedepartment: Firedepartment? = null
 
-    @Column(name = "description", length = 512, nullable = false)
-    lateinit var description: String
+    @Column(name = "description", length = 512)
+    var description: String? = null
 
-    @Column(name = "amount", precision = 10, scale = 2, nullable = false)
-    lateinit var amount: BigDecimal
+    @Column(name = "amount", precision = 10, scale = 2)
+    var amount: BigDecimal? = null
 
-    @Column(name = "submission_date", nullable = false)
-    lateinit var submissionDate: LocalDateTime
+    @Column(name = "submission_date")
+    var submissionDate: LocalDateTime? = null
 
-    @Column(name = "status", length = 16, nullable = false)
-    lateinit var status: String
+    @Column(name = "status", length = 16)
+    var status: String? = null
 
     @OneToMany(mappedBy = "proposal", cascade = [CascadeType.ALL], orphanRemoval = true)
     var votes: MutableList<Vote> = mutableListOf()

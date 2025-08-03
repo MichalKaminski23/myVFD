@@ -4,5 +4,5 @@ enum class Role {
     ADMIN,
     PRESIDENT,
     MEMBER,
-    USER
+    USER;
 }

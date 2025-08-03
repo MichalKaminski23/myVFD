@@ -5,6 +5,7 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "Addresses")
 class Address {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
