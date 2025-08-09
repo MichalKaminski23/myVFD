@@ -105,7 +105,7 @@ object UserDtos {
             message = "Password must contain at least one uppercase letter, one digit, and one special character."
         )
         @field:Schema(description = "User's password", example = "P@ssw0rd123!")
-        val password: String
+        val password: String? = null
     )
 
     @Schema(description = "DTO used for returning user information for user")

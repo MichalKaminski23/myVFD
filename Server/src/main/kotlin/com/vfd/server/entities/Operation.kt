@@ -36,5 +36,5 @@ class Operation {
         joinColumns = [JoinColumn(name = "operation_id")],
         inverseJoinColumns = [JoinColumn(name = "firefighter_id")]
     )
-    var participants: MutableList<Firefighter> = mutableListOf()
+    var participants: MutableSet<Firefighter> = linkedSetOf()
 }

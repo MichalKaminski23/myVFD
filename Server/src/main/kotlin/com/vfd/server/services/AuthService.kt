@@ -31,7 +31,7 @@ class AuthService(
         val address = addressRepository.save(addressMapper.toAddressEntity(dto.address))
 
         val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
-        val userEntity = userMapper.createNewUser(dto).apply {
+        val userEntity = userMapper.toUserEntity(dto).apply {
             this.address = address
             this.passwordHash = passwordEncoder.encode(dto.password)
             this.createdAt = now

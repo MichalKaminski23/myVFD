@@ -13,15 +13,17 @@ interface UserMapper {
 
     fun toUserDto(user: User): UserDtos.UserResponse
 
+    fun toUserModeratorDto(user: User): UserDtos.UserModeratorResponse
+
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "address", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "loggedAt", ignore = true)
     @Mapping(target = "active", ignore = true)
     @Mapping(target = "passwordHash", ignore = true)
-    fun createNewUser(dto: UserDtos.UserCreate): User
+    fun toUserEntity(userDto: UserDtos.UserCreate): User
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "address", ignore = true)
-    fun patchUser(dto: UserDtos.UserPatch, @MappingTarget user: User)
+    fun patchUser(userDto: UserDtos.UserPatch, @MappingTarget user: User)
 }

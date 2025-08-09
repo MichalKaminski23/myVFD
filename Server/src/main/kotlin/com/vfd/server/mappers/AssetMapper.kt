@@ -4,7 +4,10 @@ import com.vfd.server.dtos.AssetDtos
 import com.vfd.server.entities.Asset
 import org.mapstruct.*
 
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    uses = [FiredepartmentMapper::class, AssetTypeMapper::class]
+)
 interface AssetMapper {
 
     fun toAssetDto(asset: Asset): AssetDtos.AssetResponse
@@ -12,10 +15,10 @@ interface AssetMapper {
     @Mapping(target = "assetId", ignore = true)
     @Mapping(target = "firedepartment", ignore = true)
     @Mapping(target = "assetType", ignore = true)
-    fun toAssetEntity(dto: AssetDtos.AssetCreate): Asset
+    fun toAssetEntity(assetDto: AssetDtos.AssetCreate): Asset
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "firedepartment", ignore = true)
     @Mapping(target = "assetType", ignore = true)
-    fun patchAsset(dto: AssetDtos.AssetPatch, @MappingTarget asset: Asset)
+    fun patchAsset(assetDto: AssetDtos.AssetPatch, @MappingTarget asset: Asset)
 }

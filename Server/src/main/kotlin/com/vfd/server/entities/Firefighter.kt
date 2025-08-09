@@ -22,4 +22,7 @@ class Firefighter {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 16)
     var role: Role? = null
+
+    @ManyToMany(mappedBy = "participants")
+    var operations: MutableSet<Operation> = linkedSetOf()
 }

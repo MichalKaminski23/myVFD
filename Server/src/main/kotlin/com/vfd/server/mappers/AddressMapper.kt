@@ -10,8 +10,8 @@ interface AddressMapper {
     fun toAddressDto(address: Address): AddressDtos.AddressResponse
 
     @Mapping(target = "addressId", ignore = true)
-    fun toAddressEntity(dto: AddressDtos.AddressCreate): Address
+    fun toAddressEntity(addressDto: AddressDtos.AddressCreate): Address
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    fun patchAddress(dto: AddressDtos.AddressPatch, @MappingTarget address: Address)
+    fun patchAddress(addressDto: AddressDtos.AddressPatch, @MappingTarget address: Address)
 }

@@ -11,4 +11,4 @@ fun main(args: Array<String>) {
     println("Server is running...")
 }
 
-// TODO: dodać mapery do każdego, serwisy oraz kontrolery - w podstawowych przypadkach
+// TODO: dodać serwisy oraz kontrolery - w podstawowych przypadkach

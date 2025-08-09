@@ -1,0 +1,27 @@
+package com.vfd.server.mappers
+
+import com.vfd.server.dtos.InvestmentProposalDtos
+import com.vfd.server.entities.InvestmentProposal
+import org.mapstruct.*
+
+@Mapper(componentModel = "spring", uses = [FiredepartmentMapper::class])
+interface InvestmentProposalMapper {
+
+    fun toInvestmentProposalDto(investmentProposal: InvestmentProposal): InvestmentProposalDtos.InvestmentProposalResponse
+
+    @Mapping(target = "proposalId", ignore = true)
+    @Mapping(target = "firedepartment", ignore = true)
+    @Mapping(target = "submissionDate", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "votes", ignore = true)
+    fun toInvestmentProposalEntity(investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreate): InvestmentProposal
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "firedepartment", ignore = true)
+    @Mapping(target = "submissionDate", ignore = true)
+    @Mapping(target = "votes", ignore = true)
+    fun patchInvestmentProposal(
+        investmentProposalDto: InvestmentProposalDtos.InvestmentProposalPatch,
+        @MappingTarget investmentProposal: InvestmentProposal
+    )
+}
