@@ -37,18 +37,18 @@ class SecurityConfig(
             .headers { h -> h.frameOptions { it.sameOrigin() } }
             .authorizeHttpRequests { auth ->
                 auth
-                    //.requestMatchers("/api/firefighters/**").hasRole(Role.ADMIN.name)
-                    .requestMatchers("/h2-console/**").permitAll()
-                    .requestMatchers("/webjars/**").permitAll()
-                    .requestMatchers(
-                        "/api/auth/**",
-                        "/api/users/register",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger-ui.html"
-                    ).permitAll()
-                    .anyRequest().authenticated()
-
+//                    //.requestMatchers("/api/firefighters/**").hasRole(Role.ADMIN.name)
+//                    .requestMatchers("/h2-console/**").permitAll()
+//                    .requestMatchers("/webjars/**").permitAll()
+//                    .requestMatchers(
+//                        "/api/auth/**",
+//                        "/api/users/register",
+//                        "/v3/api-docs/**",
+//                        "/swagger-ui/**",
+//                        "/swagger-ui.html"
+//                    ).permitAll()
+//                    .anyRequest().authenticated()
+                    .anyRequest().permitAll() // For testing purposes, allow all requests
             }
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling {

@@ -12,7 +12,7 @@ class CustomUserDetailsService(
 ) : UserDetailsService {
     override fun loadUserByUsername(email: String): UserDetails {
         val user = userRepository.findByEmailAddress(email)
-            ?: throw ResourceNotFoundException("User with email $email not found.")
+            ?: throw ResourceNotFoundException("User", "email", email)
         return org.springframework.security.core.userdetails.User(
             user.emailAddress,
             user.passwordHash,
