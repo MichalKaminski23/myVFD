@@ -7,8 +7,9 @@ import com.vfd.server.mappers.InvestmentProposalMapper
 import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.repositories.InvestmentProposalRepository
 import com.vfd.server.services.InvestmentProposalService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -48,7 +49,7 @@ class InvestmentProposalServiceImplementation(
         page: Int,
         size: Int,
         sort: String
-    ): Page<InvestmentProposalDtos.InvestmentProposalResponse> {
+    ): PageResponse<InvestmentProposalDtos.InvestmentProposalResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -60,7 +61,7 @@ class InvestmentProposalServiceImplementation(
         )
 
         return investmentProposalRepository.findAll(pageable)
-            .map(investmentProposalMapper::toInvestmentProposalDto)
+            .map(investmentProposalMapper::toInvestmentProposalDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +70,7 @@ class InvestmentProposalServiceImplementation(
     ): InvestmentProposalDtos.InvestmentProposalResponse {
 
         val investmentProposal = investmentProposalRepository.findById(investmentProposalId)
-            .orElseThrow { ResourceNotFoundException("InvestmentProposal", "id", investmentProposalId) }
+            .orElseThrow { ResourceNotFoundException("Investment's proposal", "id", investmentProposalId) }
 
         return investmentProposalMapper.toInvestmentProposalDto(investmentProposal)
     }
@@ -81,7 +82,7 @@ class InvestmentProposalServiceImplementation(
     ): InvestmentProposalDtos.InvestmentProposalResponse {
 
         val investmentProposal = investmentProposalRepository.findById(investmentProposalId)
-            .orElseThrow { ResourceNotFoundException("InvestmentProposal", "id", investmentProposalId) }
+            .orElseThrow { ResourceNotFoundException("Investment's proposal", "id", investmentProposalId) }
 
         investmentProposalMapper.patchInvestmentProposal(investmentProposalDto, investmentProposal)
 

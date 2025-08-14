@@ -2,15 +2,15 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.VoteDtos
 import com.vfd.server.entities.Vote
-import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.VoteMapper
 import com.vfd.server.repositories.FirefighterRepository
 import com.vfd.server.repositories.InvestmentProposalRepository
 import com.vfd.server.repositories.VoteRepository
 import com.vfd.server.services.VoteService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -33,22 +33,10 @@ class VoteServiceImplementation(
     @Transactional
     override fun createVote(voteDto: VoteDtos.VoteCreate): VoteDtos.VoteResponse {
 
-        if (voteRepository.existsByProposal_InvestmentProposalIdAndFirefighter_FirefighterId(
-                voteDto.proposalId,
-                voteDto.firefighterId
-            )
-        ) {
-            throw ResourceConflictException(
-                "Vote",
-                "proposalId, firefighterId",
-                "${voteDto.proposalId},${voteDto.firefighterId}"
-            )
-        }
-
         val vote: Vote = voteMapper.toVoteEntity(voteDto)
 
-        val proposal = investmentProposalRepository.findById(voteDto.proposalId)
-            .orElseThrow { ResourceNotFoundException("InvestmentProposal", "id", voteDto.proposalId) }
+        val proposal = investmentProposalRepository.findById(voteDto.investmentProposalId)
+            .orElseThrow { ResourceNotFoundException("InvestmentProposal", "id", voteDto.investmentProposalId) }
         vote.proposal = proposal
 
         val firefighter = firefighterRepository.findById(voteDto.firefighterId)
@@ -59,7 +47,7 @@ class VoteServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllVotes(page: Int, size: Int, sort: String): Page<VoteDtos.VoteResponse> {
+    override fun getAllVotes(page: Int, size: Int, sort: String): PageResponse<VoteDtos.VoteResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -71,7 +59,7 @@ class VoteServiceImplementation(
         )
 
         return voteRepository.findAll(pageable)
-            .map(voteMapper::toVoteDto)
+            .map(voteMapper::toVoteDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)

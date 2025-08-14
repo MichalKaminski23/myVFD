@@ -6,8 +6,9 @@ import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.OperationTypeMapper
 import com.vfd.server.repositories.OperationTypeRepository
 import com.vfd.server.services.OperationTypeService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -37,7 +38,7 @@ class OperationTypeServiceImplementation(
         page: Int,
         size: Int,
         sort: String
-    ): Page<OperationTypeDtos.OperationTypeResponse> {
+    ): PageResponse<OperationTypeDtos.OperationTypeResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -49,7 +50,7 @@ class OperationTypeServiceImplementation(
         )
 
         return operationTypeRepository.findAll(pageable)
-            .map(operationTypeMapper::toOperationTypeDto)
+            .map(operationTypeMapper::toOperationTypeDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)
@@ -58,7 +59,7 @@ class OperationTypeServiceImplementation(
     ): OperationTypeDtos.OperationTypeResponse {
 
         val operationType = operationTypeRepository.findById(operationTypeCode)
-            .orElseThrow { ResourceNotFoundException("OperationType", "code", operationTypeCode) }
+            .orElseThrow { ResourceNotFoundException("Operation's type", "code", operationTypeCode) }
 
         return operationTypeMapper.toOperationTypeDto(operationType)
     }
@@ -70,7 +71,7 @@ class OperationTypeServiceImplementation(
     ): OperationTypeDtos.OperationTypeResponse {
 
         val operationType = operationTypeRepository.findById(operationTypeCode)
-            .orElseThrow { ResourceNotFoundException("OperationType", "code", operationTypeCode) }
+            .orElseThrow { ResourceNotFoundException("Operation's type", "code", operationTypeCode) }
 
         operationTypeMapper.patchOperationType(operationTypeDto, operationType)
 

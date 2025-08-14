@@ -9,8 +9,9 @@ import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.repositories.FirefighterRepository
 import com.vfd.server.repositories.UserRepository
 import com.vfd.server.services.FirefighterService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -59,7 +60,7 @@ class FirefighterServiceImplementation(
         page: Int,
         size: Int,
         sort: String
-    ): Page<FirefighterDtos.FirefighterResponse> {
+    ): PageResponse<FirefighterDtos.FirefighterResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -71,7 +72,7 @@ class FirefighterServiceImplementation(
         )
 
         return firefighterRepository.findAll(pageable)
-            .map(firefighterMapper::toFirefighterDto)
+            .map(firefighterMapper::toFirefighterDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)

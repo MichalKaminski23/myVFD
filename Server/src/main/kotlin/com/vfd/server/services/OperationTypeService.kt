@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.OperationTypeDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface OperationTypeService {
 
@@ -11,7 +11,7 @@ interface OperationTypeService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "operationType,asc"
-    ): Page<OperationTypeDtos.OperationTypeResponse>
+    ): PageResponse<OperationTypeDtos.OperationTypeResponse>
 
     fun getOperationTypeByCode(operationTypeCode: String): OperationTypeDtos.OperationTypeResponse
 

@@ -5,10 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface VoteRepository : JpaRepository<Vote, Int> {
-
-    fun existsByProposal_InvestmentProposalIdAndFirefighter_FirefighterId(
-        investmentProposalId: Int,
-        firefighterId: Int
-    ): Boolean
-}
+interface VoteRepository : JpaRepository<Vote, Int>

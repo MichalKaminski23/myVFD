@@ -9,7 +9,7 @@ interface InvestmentProposalMapper {
 
     fun toInvestmentProposalDto(investmentProposal: InvestmentProposal): InvestmentProposalDtos.InvestmentProposalResponse
 
-    @Mapping(target = "proposalId", ignore = true)
+    @Mapping(target = "investmentProposalId", ignore = true)
     @Mapping(target = "firedepartment", ignore = true)
     @Mapping(target = "submissionDate", ignore = true)
     @Mapping(target = "status", ignore = true)

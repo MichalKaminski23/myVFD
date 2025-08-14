@@ -49,7 +49,7 @@ object InvestmentProposalDtos {
     @Schema(description = "DTO used for returning investment proposal information")
     data class InvestmentProposalResponse(
         @field:Schema(description = "Unique identifier of the investment proposal", example = "7")
-        val proposalId: Int,
+        val investmentProposalId: Int,
 
         @field:Schema(description = "Fire department that submitted the proposal")
         val firedepartment: FiredepartmentDtos.FiredepartmentResponse,

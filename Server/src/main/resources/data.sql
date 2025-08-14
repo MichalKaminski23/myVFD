@@ -1,7 +1,7 @@
 INSERT INTO Addresses (country, voivodeship, city, postal_code, street, apart_number, house_number)
-VALUES ('Polska', 'Slaskie', 'Strzyzowice', '00-001', 'Ulica Glowna', '1A', '10'),
-       ('Polska', 'Slaskie', 'Dabie', '30-001', 'Rynek Glowny', NULL, '5'),
-       ('Polska', 'Slaskie', 'Katowice', '40-001', 'Aleja Wolnosci', '2', '20');
+VALUES ('Poland', 'Silesia', 'Strzyzowice', '00-001', 'Belna', '1A', '10'),
+       ('Poland', 'Silesia', 'Dabie', '30-001', 'Pszczela', NULL, '5'),
+       ('Poland', 'Silesia', 'Psary', '40-001', 'Kolejowa', '2', '20');
 
 INSERT INTO Asset_Types (asset_type, name)
 VALUES ('WaterPump', 'Heavy water pump'),
@@ -68,7 +68,7 @@ VALUES (1, 1),
 
 INSERT INTO Investment_Proposals (firedepartment_id, description, amount, submission_date, status)
 VALUES (1, 'New equipment for the fire station', 50000.00, '2025-07-10 12:00:00', 'PENDING'),
-       (2, 'Wymiana ubran ochronnych', 10000.00, '2025-07-12 15:30:00', 'APPROVED');
+       (2, 'Replacing protective clothing', 10000.00, '2025-07-12 15:30:00', 'APPROVED');
 
 INSERT INTO Votes (proposal_id, firefighter_id, vote_value, vote_date)
 VALUES (1, 1, TRUE, '2025-07-11 10:00:00'),

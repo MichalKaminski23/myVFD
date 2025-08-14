@@ -6,8 +6,9 @@ import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.InspectionTypeMapper
 import com.vfd.server.repositories.InspectionTypeRepository
 import com.vfd.server.services.InspectionTypeService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -37,7 +38,7 @@ class InspectionTypeServiceImplementation(
         page: Int,
         size: Int,
         sort: String
-    ): Page<InspectionTypeDtos.InspectionTypeResponse> {
+    ): PageResponse<InspectionTypeDtos.InspectionTypeResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -49,7 +50,7 @@ class InspectionTypeServiceImplementation(
         )
 
         return inspectionTypeRepository.findAll(pageable)
-            .map(inspectionTypeMapper::toInspectionTypeDto)
+            .map(inspectionTypeMapper::toInspectionTypeDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)
@@ -58,7 +59,7 @@ class InspectionTypeServiceImplementation(
     ): InspectionTypeDtos.InspectionTypeResponse {
 
         val inspectionType = inspectionTypeRepository.findById(inspectionTypeCode)
-            .orElseThrow { ResourceNotFoundException("InspectionType", "code", inspectionTypeCode) }
+            .orElseThrow { ResourceNotFoundException("Inspection's type", "code", inspectionTypeCode) }
 
         return inspectionTypeMapper.toInspectionTypeDto(inspectionType)
     }
@@ -69,7 +70,7 @@ class InspectionTypeServiceImplementation(
         inspectionTypeDto: InspectionTypeDtos.InspectionTypePatch
     ): InspectionTypeDtos.InspectionTypeResponse {
         val entity = inspectionTypeRepository.findById(inspectionTypeCode)
-            .orElseThrow { ResourceNotFoundException("InspectionType", "code", inspectionTypeCode) }
+            .orElseThrow { ResourceNotFoundException("Inspection's type", "code", inspectionTypeCode) }
 
         inspectionTypeMapper.patchInspectionType(inspectionTypeDto, entity)
 

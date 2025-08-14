@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.InvestmentProposalDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface InvestmentProposalService {
 
@@ -11,7 +11,7 @@ interface InvestmentProposalService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "investmentProposalId,asc"
-    ): Page<InvestmentProposalDtos.InvestmentProposalResponse>
+    ): PageResponse<InvestmentProposalDtos.InvestmentProposalResponse>
 
     fun getInvestmentProposalById(investmentProposalId: Int): InvestmentProposalDtos.InvestmentProposalResponse
 

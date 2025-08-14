@@ -9,8 +9,9 @@ import com.vfd.server.mappers.UserMapper
 import com.vfd.server.repositories.AddressRepository
 import com.vfd.server.repositories.UserRepository
 import com.vfd.server.services.UserService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -34,7 +35,7 @@ class UserServiceImplementation(
     )
 
     @Transactional(readOnly = true)
-    override fun getAllUsers(page: Int, size: Int, sort: String): Page<UserDtos.UserResponse> {
+    override fun getAllUsers(page: Int, size: Int, sort: String): PageResponse<UserDtos.UserResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -46,7 +47,7 @@ class UserServiceImplementation(
         )
 
         return userRepository.findAll(pageable)
-            .map(userMapper::toUserDto)
+            .map(userMapper::toUserDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)
@@ -82,9 +83,9 @@ class UserServiceImplementation(
 
         userMapper.patchUser(userDto, user)
 
-        userDto.address?.let { addrPatch ->
+        userDto.address?.let { addressDto ->
             val address: Address = user.address ?: Address()
-            addressMapper.patchAddress(addrPatch, address)
+            addressMapper.patchAddress(addressDto, address)
             user.address = addressRepository.save(address)
         }
 

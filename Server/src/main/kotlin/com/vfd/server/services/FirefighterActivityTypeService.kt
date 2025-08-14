@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.FirefighterActivityTypeDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface FirefighterActivityTypeService {
 
@@ -13,7 +13,7 @@ interface FirefighterActivityTypeService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "firefighterActivityType,asc"
-    ): Page<FirefighterActivityTypeDtos.FirefighterActivityTypeResponse>
+    ): PageResponse<FirefighterActivityTypeDtos.FirefighterActivityTypeResponse>
 
     fun getFirefighterActivityTypeByCode(
         firefighterActivityTypeCode: String

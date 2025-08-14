@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.AssetDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface AssetService {
 
@@ -11,7 +11,7 @@ interface AssetService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "assetId,asc"
-    ): Page<AssetDtos.AssetResponse>
+    ): PageResponse<AssetDtos.AssetResponse>
 
     fun getAssetById(assetId: Int): AssetDtos.AssetResponse
 

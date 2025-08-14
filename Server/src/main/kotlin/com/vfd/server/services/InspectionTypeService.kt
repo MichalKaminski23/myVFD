@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.InspectionTypeDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface InspectionTypeService {
 
@@ -11,7 +11,7 @@ interface InspectionTypeService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "inspectionType,asc"
-    ): Page<InspectionTypeDtos.InspectionTypeResponse>
+    ): PageResponse<InspectionTypeDtos.InspectionTypeResponse>
 
     fun getInspectionTypeByCode(inspectionTypeCode: String): InspectionTypeDtos.InspectionTypeResponse
 

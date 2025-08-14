@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.FirefighterDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface FirefighterService {
 
@@ -11,7 +11,7 @@ interface FirefighterService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "firefighterId,asc"
-    ): Page<FirefighterDtos.FirefighterResponse>
+    ): PageResponse<FirefighterDtos.FirefighterResponse>
 
     fun getFirefighterById(firefighterId: Int): FirefighterDtos.FirefighterResponse
 

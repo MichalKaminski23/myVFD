@@ -5,8 +5,9 @@ import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AssetTypeMapper
 import com.vfd.server.repositories.AssetTypeRepository
 import com.vfd.server.services.AssetTypeService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -27,7 +28,7 @@ class AssetTypeServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllAssetTypes(page: Int, size: Int, sort: String): Page<AssetTypeDtos.AssetTypeResponse> {
+    override fun getAllAssetTypes(page: Int, size: Int, sort: String): PageResponse<AssetTypeDtos.AssetTypeResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page,
@@ -38,7 +39,7 @@ class AssetTypeServiceImplementation(
             200
         )
 
-        return assetTypeRepository.findAll(pageable).map(assetTypeMapper::toAssetTypeDto)
+        return assetTypeRepository.findAll(pageable).map(assetTypeMapper::toAssetTypeDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)

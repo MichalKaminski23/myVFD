@@ -10,8 +10,8 @@ class InvestmentProposal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "proposal_id")
-    var proposalId: Int? = null
+    @Column(name = "investment_proposal_id")
+    var investmentProposalId: Int? = null
 
     @ManyToOne
     @JoinColumn(name = "firedepartment_id")

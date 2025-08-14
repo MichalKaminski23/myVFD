@@ -11,8 +11,9 @@ import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.repositories.OperationRepository
 import com.vfd.server.repositories.OperationTypeRepository
 import com.vfd.server.services.OperationService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -60,7 +61,7 @@ class OperationServiceImplementation(
         page: Int,
         size: Int,
         sort: String
-    ): Page<OperationDtos.OperationResponse> {
+    ): PageResponse<OperationDtos.OperationResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -72,7 +73,7 @@ class OperationServiceImplementation(
         )
 
         return operationRepository.findAll(pageable)
-            .map(operationMapper::toOperationDto)
+            .map(operationMapper::toOperationDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)
@@ -101,7 +102,7 @@ class OperationServiceImplementation(
             ?.takeIf { it != operation.operationType?.operationType }
             ?.let { code ->
                 val type = operationTypeRepository.findById(code)
-                    .orElseThrow { ResourceNotFoundException("OperationType", "code", code) }
+                    .orElseThrow { ResourceNotFoundException("Operation's type", "code", code) }
                 operation.operationType = type
             }
 

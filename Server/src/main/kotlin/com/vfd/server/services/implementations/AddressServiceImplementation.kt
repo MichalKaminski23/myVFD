@@ -6,8 +6,9 @@ import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AddressMapper
 import com.vfd.server.repositories.AddressRepository
 import com.vfd.server.services.AddressService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -31,7 +32,7 @@ class AddressServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllAddresses(page: Int, size: Int, sort: String): Page<AddressDtos.AddressResponse> {
+    override fun getAllAddresses(page: Int, size: Int, sort: String): PageResponse<AddressDtos.AddressResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -42,7 +43,7 @@ class AddressServiceImplementation(
             maxSize = 200
         )
 
-        return addressRepository.findAll(pageable).map(addressMapper::toAddressDto)
+        return addressRepository.findAll(pageable).map(addressMapper::toAddressDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)

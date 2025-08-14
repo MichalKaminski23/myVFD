@@ -11,7 +11,8 @@ fun main(args: Array<String>) {
     println("Server is running...")
 }
 
-// TODO: dodać kontrolery - w podstawowych przypadkach - potem będziemy dodawać kolejne
-// TODO: zastanowić się nad tym jak zrobić usuwanie (miękkie lub nie) członków, pojazdów, sprzętu itp.
-// TODO: w przyszłości dodać walidację danych i sprawdzanie czy email istnieje, typy i tak dalej
-// TODO: Może dodać tabelę "Wydarzenia", gdzie będzie się wpisywać co się dzieje i tak dalej np. Dzień Ziemniaka - forma bloga
+// TODO: Miękkie usuwanie lub twarde usuwanie - czyli czy usuwamy na stałe czy tylko oznaczamy jako usunięte np. sprzęt aby go nie móc edytować czy coś
+// TODO: Szczegółowe walidacje danych np. email, liczby i tak dalej
+// TODO: Tabela "Events" - gdzie będą się wpisywać wydarzenia, które się dzieją w okolicy, np. Dzień Ziemniaka, Dzień Dziecka i tak dalej - jak blog
+// TODO: W przyszłości ogarnąć wszelkie zabezpieczenia z logowania i tak dalej
+// TODO: Reszta bardziej szczegółowych serwisów i endpointów

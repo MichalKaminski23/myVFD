@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.InspectionDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface InspectionService {
 
@@ -11,7 +11,7 @@ interface InspectionService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "inspectionId,asc"
-    ): Page<InspectionDtos.InspectionResponse>
+    ): PageResponse<InspectionDtos.InspectionResponse>
 
     fun getInspectionById(inspectionId: Int): InspectionDtos.InspectionResponse
 

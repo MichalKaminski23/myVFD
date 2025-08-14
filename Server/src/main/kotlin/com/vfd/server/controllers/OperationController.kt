@@ -1,7 +1,7 @@
 package com.vfd.server.controllers
 
-import com.vfd.server.dtos.FirefighterDtos
-import com.vfd.server.services.FirefighterService
+import com.vfd.server.dtos.OperationDtos
+import com.vfd.server.services.OperationService
 import com.vfd.server.shared.PageResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -14,24 +14,24 @@ import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "Firefighters", description = "CRUD for firefighters.")
+@Tag(name = "Operations", description = "CRUD for operations/interventions.")
 @Validated
 @RestController
-@RequestMapping("/api/firefighters")
-class FirefighterController(
-    private val firefighterService: FirefighterService
+@RequestMapping("/api/operations")
+class OperationController(
+    private val operationService: OperationService
 ) {
 
     @Operation(
-        summary = "Create firefighter",
-        description = "Creates a new firefighter and returns its details."
+        summary = "Create operation",
+        description = "Creates a new operation (intervention) and returns its details."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "201",
-                description = "Firefighter created",
-                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+                description = "Operation created",
+                content = [Content(schema = Schema(implementation = OperationDtos.OperationResponse::class))]
             ),
             ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
             ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
@@ -39,20 +39,20 @@ class FirefighterController(
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createFirefighter(
-        @Valid @RequestBody firefighterCreateDto: FirefighterDtos.FirefighterCreate
-    ): FirefighterDtos.FirefighterResponse =
-        firefighterService.createFirefighter(firefighterCreateDto)
+    fun createOperation(
+        @Valid @RequestBody operationDto: OperationDtos.OperationCreate
+    ): OperationDtos.OperationResponse =
+        operationService.createOperation(operationDto)
 
     @Operation(
-        summary = "List firefighters (paged)",
+        summary = "List operations (paged)",
         description = """
-            Returns a paginated list of firefighters.
+            Returns a paginated list of operations.
             
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firefighterId,asc) e.g. `role,desc`
+            - `sort` (default: operationId,desc) e.g. `operationDate,desc`
         """
     )
     @ApiResponses(
@@ -62,54 +62,54 @@ class FirefighterController(
         ]
     )
     @GetMapping
-    fun getAllFirefighters(
+    fun getAllOperations(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "firefighterId,asc") sort: String
-    ): PageResponse<FirefighterDtos.FirefighterResponse> =
-        firefighterService.getAllFirefighters(page, size, sort)
+        @RequestParam(defaultValue = "operationId,desc") sort: String
+    ): PageResponse<OperationDtos.OperationResponse> =
+        operationService.getAllOperations(page, size, sort)
 
     @Operation(
-        summary = "Get firefighter by ID",
-        description = "Returns a single firefighter by `firefighterId`."
+        summary = "Get operation by ID",
+        description = "Returns a single operation by `operationId`."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Firefighter found",
-                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+                description = "Operation found",
+                content = [Content(schema = Schema(implementation = OperationDtos.OperationResponse::class))]
             ),
             ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
             ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
         ]
     )
-    @GetMapping("/{firefighterId}")
-    fun getFirefighterById(
-        @PathVariable firefighterId: Int
-    ): FirefighterDtos.FirefighterResponse =
-        firefighterService.getFirefighterById(firefighterId)
+    @GetMapping("/{operationId}")
+    fun getOperationById(
+        @PathVariable operationId: Int
+    ): OperationDtos.OperationResponse =
+        operationService.getOperationById(operationId)
 
     @Operation(
-        summary = "Update firefighter (PATCH)",
-        description = "Partially updates an existing firefighter. Only non-null fields are applied."
+        summary = "Update operation",
+        description = "Partially updates an existing operation. Only non-null fields are applied."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Firefighter updated",
-                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+                description = "Operation updated",
+                content = [Content(schema = Schema(implementation = OperationDtos.OperationResponse::class))]
             ),
             ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
             ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
             ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
         ]
     )
-    @PatchMapping("/{firefighterId}")
-    fun updateFirefighter(
-        @PathVariable firefighterId: Int,
-        @Valid @RequestBody firefighterPatchDto: FirefighterDtos.FirefighterPatch
-    ): FirefighterDtos.FirefighterResponse =
-        firefighterService.updateFirefighter(firefighterId, firefighterPatchDto)
+    @PatchMapping("/{operationId}")
+    fun updateOperation(
+        @PathVariable operationId: Int,
+        @Valid @RequestBody operationDto: OperationDtos.OperationPatch
+    ): OperationDtos.OperationResponse =
+        operationService.updateOperation(operationId, operationDto)
 }

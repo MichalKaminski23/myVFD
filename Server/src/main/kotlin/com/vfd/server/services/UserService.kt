@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.UserDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface UserService {
 
@@ -9,7 +9,7 @@ interface UserService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "userId,asc"
-    ): Page<UserDtos.UserResponse>
+    ): PageResponse<UserDtos.UserResponse>
 
     fun getUserById(userId: Int): UserDtos.UserResponse
 

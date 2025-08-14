@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.AddressDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface AddressService {
 
@@ -11,7 +11,7 @@ interface AddressService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "addressId,asc"
-    ): Page<AddressDtos.AddressResponse>
+    ): PageResponse<AddressDtos.AddressResponse>
 
     fun getAddressById(addressId: Int): AddressDtos.AddressResponse
 

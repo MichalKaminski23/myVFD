@@ -1,7 +1,7 @@
 package com.vfd.server.controllers
 
-import com.vfd.server.dtos.FirefighterDtos
-import com.vfd.server.services.FirefighterService
+import com.vfd.server.dtos.AssetTypeDtos
+import com.vfd.server.services.AssetTypeService
 import com.vfd.server.shared.PageResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -14,24 +14,24 @@ import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "Firefighters", description = "CRUD for firefighters.")
+@Tag(name = "Asset Types", description = "CRUD for asset types.")
 @Validated
 @RestController
-@RequestMapping("/api/firefighters")
-class FirefighterController(
-    private val firefighterService: FirefighterService
+@RequestMapping("/api/asset-types")
+class AssetTypeController(
+    private val assetTypeService: AssetTypeService
 ) {
 
     @Operation(
-        summary = "Create firefighter",
-        description = "Creates a new firefighter and returns its details."
+        summary = "Create asset type",
+        description = "Creates a new asset type and returns its details."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "201",
-                description = "Firefighter created",
-                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+                description = "Asset type created",
+                content = [Content(schema = Schema(implementation = AssetTypeDtos.AssetTypeResponse::class))]
             ),
             ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
             ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
@@ -39,20 +39,20 @@ class FirefighterController(
     )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createFirefighter(
-        @Valid @RequestBody firefighterCreateDto: FirefighterDtos.FirefighterCreate
-    ): FirefighterDtos.FirefighterResponse =
-        firefighterService.createFirefighter(firefighterCreateDto)
+    fun createAssetType(
+        @Valid @RequestBody assetTypeDto: AssetTypeDtos.AssetTypeCreate
+    ): AssetTypeDtos.AssetTypeResponse =
+        assetTypeService.createAssetType(assetTypeDto)
 
     @Operation(
-        summary = "List firefighters (paged)",
+        summary = "List asset types (paged)",
         description = """
-            Returns a paginated list of firefighters.
+            Returns a paginated list of asset types.
             
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firefighterId,asc) e.g. `role,desc`
+            - `sort` (default: assetType,asc) e.g. `name,desc`
         """
     )
     @ApiResponses(
@@ -62,54 +62,54 @@ class FirefighterController(
         ]
     )
     @GetMapping
-    fun getAllFirefighters(
+    fun getAllAssetTypes(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "firefighterId,asc") sort: String
-    ): PageResponse<FirefighterDtos.FirefighterResponse> =
-        firefighterService.getAllFirefighters(page, size, sort)
+        @RequestParam(defaultValue = "assetType,asc") sort: String
+    ): PageResponse<AssetTypeDtos.AssetTypeResponse> =
+        assetTypeService.getAllAssetTypes(page, size, sort)
 
     @Operation(
-        summary = "Get firefighter by ID",
-        description = "Returns a single firefighter by `firefighterId`."
+        summary = "Get asset type by code",
+        description = "Returns a single asset type by `assetTypeCode`."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Firefighter found",
-                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+                description = "Asset type found",
+                content = [Content(schema = Schema(implementation = AssetTypeDtos.AssetTypeResponse::class))]
             ),
             ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
             ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
         ]
     )
-    @GetMapping("/{firefighterId}")
-    fun getFirefighterById(
-        @PathVariable firefighterId: Int
-    ): FirefighterDtos.FirefighterResponse =
-        firefighterService.getFirefighterById(firefighterId)
+    @GetMapping("/{assetTypeCode}")
+    fun getAssetTypeByCode(
+        @PathVariable assetTypeCode: String
+    ): AssetTypeDtos.AssetTypeResponse =
+        assetTypeService.getAssetTypeByCode(assetTypeCode)
 
     @Operation(
-        summary = "Update firefighter (PATCH)",
-        description = "Partially updates an existing firefighter. Only non-null fields are applied."
+        summary = "Update asset type",
+        description = "Partially updates an existing asset type. Only non-null fields are applied."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Firefighter updated",
-                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+                description = "Asset type updated",
+                content = [Content(schema = Schema(implementation = AssetTypeDtos.AssetTypeResponse::class))]
             ),
             ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
             ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
             ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
         ]
     )
-    @PatchMapping("/{firefighterId}")
-    fun updateFirefighter(
-        @PathVariable firefighterId: Int,
-        @Valid @RequestBody firefighterPatchDto: FirefighterDtos.FirefighterPatch
-    ): FirefighterDtos.FirefighterResponse =
-        firefighterService.updateFirefighter(firefighterId, firefighterPatchDto)
+    @PatchMapping("/{assetTypeCode}")
+    fun updateAssetType(
+        @PathVariable assetTypeCode: String,
+        @Valid @RequestBody assetTypeDto: AssetTypeDtos.AssetTypePatch
+    ): AssetTypeDtos.AssetTypeResponse =
+        assetTypeService.updateAssetType(assetTypeCode, assetTypeDto)
 }

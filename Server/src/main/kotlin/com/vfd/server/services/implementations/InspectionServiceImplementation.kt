@@ -8,8 +8,9 @@ import com.vfd.server.repositories.AssetRepository
 import com.vfd.server.repositories.InspectionRepository
 import com.vfd.server.repositories.InspectionTypeRepository
 import com.vfd.server.services.InspectionService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -39,14 +40,18 @@ class InspectionServiceImplementation(
         inspection.asset = asset
 
         val inspectionType = inspectionTypeRepository.findById(insectionDto.inspectionType)
-            .orElseThrow { ResourceNotFoundException("InspectionType", "code", insectionDto.inspectionType) }
+            .orElseThrow { ResourceNotFoundException("Inspection's type", "code", insectionDto.inspectionType) }
         inspection.inspectionType = inspectionType
 
         return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
     }
 
     @Transactional(readOnly = true)
-    override fun getAllInspections(page: Int, size: Int, sort: String): Page<InspectionDtos.InspectionResponse> {
+    override fun getAllInspections(
+        page: Int,
+        size: Int,
+        sort: String
+    ): PageResponse<InspectionDtos.InspectionResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -58,7 +63,7 @@ class InspectionServiceImplementation(
         )
 
         return inspectionRepository.findAll(pageable)
-            .map(inspectionMapper::toInspectionDto)
+            .map(inspectionMapper::toInspectionDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)
@@ -85,7 +90,7 @@ class InspectionServiceImplementation(
             ?.takeIf { it != inspection.inspectionType?.inspectionType }
             ?.let { code ->
                 val inspectionType = inspectionTypeRepository.findById(code)
-                    .orElseThrow { ResourceNotFoundException("InspectionType", "code", code) }
+                    .orElseThrow { ResourceNotFoundException("Inspection's type", "code", code) }
                 inspection.inspectionType = inspectionType
             }
 

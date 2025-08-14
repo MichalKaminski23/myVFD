@@ -1,7 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.VoteDtos
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.PageResponse
 
 interface VoteService {
 
@@ -11,7 +11,7 @@ interface VoteService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "voteId,asc"
-    ): Page<VoteDtos.VoteResponse>
+    ): PageResponse<VoteDtos.VoteResponse>
 
     fun getVoteById(voteId: Int): VoteDtos.VoteResponse
 

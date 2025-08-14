@@ -10,7 +10,7 @@ object VoteDtos {
     data class VoteCreate(
         @field:NotNull(message = "Proposal ID must not be null.")
         @field:Schema(description = "ID of the investment proposal being voted on", example = "7")
-        val proposalId: Int,
+        val investmentProposalId: Int,
 
         @field:NotNull(message = "Firefighter ID must not be null.")
         @field:Schema(description = "ID of the firefighter casting the vote", example = "7")

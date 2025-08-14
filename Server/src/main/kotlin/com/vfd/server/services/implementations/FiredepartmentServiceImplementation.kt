@@ -9,8 +9,9 @@ import com.vfd.server.mappers.FiredepartmentMapper
 import com.vfd.server.repositories.AddressRepository
 import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.services.FiredepartmentService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -47,7 +48,7 @@ class FiredepartmentServiceImplementation(
         page: Int,
         size: Int,
         sort: String
-    ): Page<FiredepartmentDtos.FiredepartmentResponse> {
+    ): PageResponse<FiredepartmentDtos.FiredepartmentResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -59,6 +60,7 @@ class FiredepartmentServiceImplementation(
         )
 
         return firedepartmentRepository.findAll(pageable).map(firedepartmentMapper::toFiredepartmentDto)
+            .toPageResponse()
     }
 
     @Transactional(readOnly = true)
@@ -84,9 +86,9 @@ class FiredepartmentServiceImplementation(
         firedepartmentMapper.patchFiredepartment(firedepartmentDto, firedepartment)
 
         firedepartmentDto.address
-            ?.let { addressPatch ->
+            ?.let { addressDto ->
                 val address: Address = firedepartment.address ?: Address()
-                addressMapper.patchAddress(addressPatch, address)
+                addressMapper.patchAddress(addressDto, address)
                 firedepartment.address = addressRepository.save(address)
             }
 

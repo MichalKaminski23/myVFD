@@ -8,8 +8,9 @@ import com.vfd.server.repositories.AssetRepository
 import com.vfd.server.repositories.AssetTypeRepository
 import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.services.AssetService
+import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
-import org.springframework.data.domain.Page
+import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -40,7 +41,7 @@ class AssetServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllAssets(page: Int, size: Int, sort: String): Page<AssetDtos.AssetResponse> {
+    override fun getAllAssets(page: Int, size: Int, sort: String): PageResponse<AssetDtos.AssetResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page,
@@ -51,7 +52,7 @@ class AssetServiceImplementation(
             200
         )
 
-        return assetRepository.findAll(pageable).map(assetMapper::toAssetDto)
+        return assetRepository.findAll(pageable).map(assetMapper::toAssetDto).toPageResponse()
     }
 
     @Transactional(readOnly = true)
