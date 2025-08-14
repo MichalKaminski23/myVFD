@@ -28,9 +28,11 @@ class AuthServiceImplementation(
 
     @Transactional
     override fun register(userDto: UserDtos.UserCreate): AuthResponseDto {
+
         val address = addressRepository.save(addressMapper.toAddressEntity(userDto.address))
 
         val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+
         val user = userMapper.toUserEntity(userDto).apply {
             this.address = address
             this.passwordHash = passwordEncoder.encode(userDto.password)
@@ -38,19 +40,27 @@ class AuthServiceImplementation(
             this.loggedAt = now
             this.active = true
         }
+
         userRepository.save(user)
 
         val authToken = UsernamePasswordAuthenticationToken(userDto.emailAddress, userDto.password)
+
         val auth = authenticationManager.authenticate(authToken)
+
         val jwt = jwtTokenProvider.generateToken(auth)
+
         return AuthResponseDto(jwt)
     }
 
     @Transactional
     override fun login(userDto: UserDtos.UserLogin): AuthResponseDto {
+
         val authToken = UsernamePasswordAuthenticationToken(userDto.emailAddress, userDto.password)
+
         val auth = authenticationManager.authenticate(authToken)
+
         val jwt = jwtTokenProvider.generateToken(auth)
+
         return AuthResponseDto(jwt)
     }
 }

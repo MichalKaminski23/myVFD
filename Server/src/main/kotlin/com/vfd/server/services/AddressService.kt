@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 interface AddressService {
 
     fun createAddress(addressDto: AddressDtos.AddressCreate): AddressDtos.AddressResponse
+
     fun getAllAddresses(
         page: Int = 0,
         size: Int = 20,
@@ -13,5 +14,6 @@ interface AddressService {
     ): Page<AddressDtos.AddressResponse>
 
     fun getAddressById(addressId: Int): AddressDtos.AddressResponse
+
     fun updateAddress(addressId: Int, addressDto: AddressDtos.AddressPatch): AddressDtos.AddressResponse
 }

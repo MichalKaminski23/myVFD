@@ -24,12 +24,15 @@ class AddressServiceImplementation(
 
     @Transactional
     override fun createAddress(addressDto: AddressDtos.AddressCreate): AddressDtos.AddressResponse {
+
         val address: Address = addressMapper.toAddressEntity(addressDto)
+
         return addressMapper.toAddressDto(addressRepository.save(address))
     }
 
     @Transactional(readOnly = true)
     override fun getAllAddresses(page: Int, size: Int, sort: String): Page<AddressDtos.AddressResponse> {
+
         val pageable = PaginationUtils.toPageRequest(
             page = page,
             size = size,
@@ -38,21 +41,27 @@ class AddressServiceImplementation(
             defaultSort = "addressId,asc",
             maxSize = 200
         )
+
         return addressRepository.findAll(pageable).map(addressMapper::toAddressDto)
     }
 
     @Transactional(readOnly = true)
     override fun getAddressById(addressId: Int): AddressDtos.AddressResponse {
+
         val address = addressRepository.findById(addressId)
             .orElseThrow { ResourceNotFoundException("Address", "id", addressId) }
+
         return addressMapper.toAddressDto(address)
     }
 
     @Transactional
     override fun updateAddress(addressId: Int, addressDto: AddressDtos.AddressPatch): AddressDtos.AddressResponse {
+
         val address = addressRepository.findById(addressId)
             .orElseThrow { ResourceNotFoundException("Address", "id", addressId) }
+
         addressMapper.patchAddress(addressDto, address)
+
         return addressMapper.toAddressDto(addressRepository.save(address))
     }
 }

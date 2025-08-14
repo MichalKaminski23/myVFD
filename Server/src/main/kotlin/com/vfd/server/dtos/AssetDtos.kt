@@ -11,7 +11,7 @@ object AssetDtos {
     data class AssetCreate(
         @field:NotNull(message = "Firedepartment ID must not be null.")
         @field:Schema(description = "ID of the fire department owning the asset", example = "7")
-        val firedepartmentId: Int?,
+        val firedepartmentId: Int,
 
         @field:NotBlank(message = "Name must not be blank.")
         @field:Size(max = 128, message = "Name must be at most 128 characters.")
@@ -30,16 +30,13 @@ object AssetDtos {
 
     @Schema(description = "DTO used for partially updating an existing asset")
     data class AssetPatch(
-        @field:Schema(description = "ID of the fire department owning the asset", example = "7")
-        val firedepartmentId: Int? = null,
-
         @field:Size(max = 128, message = "Name must be at most 128 characters.")
         @field:Schema(description = "Name of the asset", example = "Pump 3000 l/min")
         val name: String? = null,
 
         @field:Size(max = 16, message = "Asset type must be at most 16 characters.")
         @field:Schema(description = "Key of the asset type", example = "WaterPump")
-        val assetType: String,
+        val assetType: String? = null,
 
         @field:Size(max = 512, message = "Description must be at most 512 characters.")
         @field:Schema(description = "Optional description of the asset", example = "Backup pump used during floods")

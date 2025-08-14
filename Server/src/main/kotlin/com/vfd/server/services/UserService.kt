@@ -5,13 +5,13 @@ import org.springframework.data.domain.Page
 
 interface UserService {
 
-    fun createUser(userDto: UserDtos.UserCreate): UserDtos.UserResponse
     fun getAllUsers(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "createdAt,desc"
+        sort: String = "userId,asc"
     ): Page<UserDtos.UserResponse>
 
     fun getUserById(userId: Int): UserDtos.UserResponse
+
     fun updateUser(userId: Int, userDto: UserDtos.UserPatch): UserDtos.UserResponse
 }

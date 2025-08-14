@@ -36,9 +36,6 @@ object FirefighterActivityDtos {
 
     @Schema(description = "DTO used for partially updating a firefighter activity")
     data class FirefighterActivityPatch(
-        @field:Schema(description = "ID of the firefighter performing the activity", example = "7")
-        val firefighterId: Int? = null,
-
         @field:Size(max = 16, message = "Activity type must be at most 16 characters.")
         @field:Schema(description = "Code of the activity type", example = "Medical")
         val firefighterActivityType: String? = null,

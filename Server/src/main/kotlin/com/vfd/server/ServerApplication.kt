@@ -11,6 +11,7 @@ fun main(args: Array<String>) {
     println("Server is running...")
 }
 
-// TODO: dodać serwisy oraz kontrolery - w podstawowych przypadkach - potem będziemy dodawać kolejne
+// TODO: dodać kontrolery - w podstawowych przypadkach - potem będziemy dodawać kolejne
 // TODO: zastanowić się nad tym jak zrobić usuwanie (miękkie lub nie) członków, pojazdów, sprzętu itp.
 // TODO: w przyszłości dodać walidację danych i sprawdzanie czy email istnieje, typy i tak dalej
+// TODO: Może dodać tabelę "Wydarzenia", gdzie będzie się wpisywać co się dzieje i tak dalej np. Dzień Ziemniaka - forma bloga

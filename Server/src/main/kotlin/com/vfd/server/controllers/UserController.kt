@@ -4,7 +4,6 @@ import com.vfd.server.dtos.UserDtos
 import com.vfd.server.services.UserService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
-import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -12,11 +11,6 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val userService: UserService
 ) {
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun createUser(@Valid @RequestBody dto: UserDtos.UserCreate): UserDtos.UserResponse =
-        userService.createUser(dto)
 
     @GetMapping
     fun getAllUsers(

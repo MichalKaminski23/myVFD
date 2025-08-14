@@ -1,6 +1,7 @@
 package com.vfd.server.dtos
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -19,9 +20,9 @@ object OperationDtos {
         @field:Schema(description = "Type code of the operation", example = "Fire")
         val operationType: String,
 
-        @field:NotNull(message = "Address ID must not be null.")
-        @field:Schema(description = "ID of the operation address", example = "7")
-        val addressId: Int,
+        @field:Valid
+        @field:Schema(description = "Address of the fire department")
+        val address: AddressDtos.AddressCreate,
 
         @field:NotNull(message = "Operation date must not be null.")
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-03T13:30:00")
@@ -40,14 +41,12 @@ object OperationDtos {
 
     @Schema(description = "DTO used for partially updating an operation")
     data class OperationPatch(
-        @field:Schema(description = "ID of the fire department executing the operation", example = "7")
-        val firedepartmentId: Int? = null,
-
         @field:Schema(description = "Type code of the operation", example = "Fire")
         val operationType: String? = null,
 
-        @field:Schema(description = "ID of the operation address", example = "7")
-        val addressId: Int? = null,
+        @field:Valid
+        @field:Schema(description = "Address of the fire department")
+        val address: AddressDtos.AddressPatch? = null,
 
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-04T14:00:00")
         val operationDate: LocalDateTime? = null,

@@ -23,9 +23,6 @@ object FirefighterDtos {
 
     @Schema(description = "DTO used for partially updating a firefighter record")
     data class FirefighterPatch(
-        @field:Schema(description = "ID of the fire department to assign the firefighter to", example = "7")
-        val firedepartmentId: Int? = null,
-
         @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
         val role: Role? = null
     )

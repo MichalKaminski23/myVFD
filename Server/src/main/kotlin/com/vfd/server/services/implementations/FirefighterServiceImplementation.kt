@@ -22,15 +22,23 @@ class FirefighterServiceImplementation(
     private val firedepartmentRepository: FiredepartmentRepository
 ) : FirefighterService {
 
-    private val FIREFIGHTER_ALLOWED_SORTS = setOf("firefighterId", "role")
+    private val FIREFIGHTER_ALLOWED_SORTS = setOf(
+        "firefighterId",
+        "role",
+        "user.userId",
+        "firedepartment.firedepartmentId"
+    )
 
     @Transactional
-    override fun createFirefighter(firefighterDto: FirefighterDtos.FirefighterCreate): FirefighterDtos.FirefighterResponse {
+    override fun createFirefighter(
+        firefighterDto: FirefighterDtos.FirefighterCreate
+    ): FirefighterDtos.FirefighterResponse {
+
         val user = userRepository.findById(firefighterDto.userId)
             .orElseThrow { ResourceNotFoundException("User", "id", firefighterDto.userId) }
 
         if (firefighterRepository.existsById(firefighterDto.userId)) {
-            throw ResourceConflictException("Firefighter", "userId", firefighterDto.userId)
+            throw ResourceConflictException("Firefighter", "id", firefighterDto.userId)
         }
 
         val firedepartment = firedepartmentRepository.findById(firefighterDto.firedepartmentId)
@@ -38,24 +46,42 @@ class FirefighterServiceImplementation(
 
         val firefighter: Firefighter = firefighterMapper.toFirefighterEntity(firefighterDto)
 
-        firefighter.firefighterId = firefighterDto.userId
         firefighter.user = user
         firefighter.firedepartment = firedepartment
 
-        return firefighterMapper.toFirefighterDto(firefighterRepository.save(firefighter))
+        return firefighterMapper.toFirefighterDto(
+            firefighterRepository.save(firefighter)
+        )
     }
 
     @Transactional(readOnly = true)
-    override fun getAllFirefighters(page: Int, size: Int, sort: String): Page<FirefighterDtos.FirefighterResponse> {
-        val pageable =
-            PaginationUtils.toPageRequest(page, size, sort, FIREFIGHTER_ALLOWED_SORTS, "firefighterId,asc", 200)
-        return firefighterRepository.findAll(pageable).map(firefighterMapper::toFirefighterDto)
+    override fun getAllFirefighters(
+        page: Int,
+        size: Int,
+        sort: String
+    ): Page<FirefighterDtos.FirefighterResponse> {
+
+        val pageable = PaginationUtils.toPageRequest(
+            page = page,
+            size = size,
+            sort = sort,
+            allowedFields = FIREFIGHTER_ALLOWED_SORTS,
+            defaultSort = "firefighterId,asc",
+            maxSize = 200
+        )
+
+        return firefighterRepository.findAll(pageable)
+            .map(firefighterMapper::toFirefighterDto)
     }
 
     @Transactional(readOnly = true)
-    override fun getFirefighterById(firefighterId: Int): FirefighterDtos.FirefighterResponse {
+    override fun getFirefighterById(
+        firefighterId: Int
+    ): FirefighterDtos.FirefighterResponse {
+
         val firefighter = firefighterRepository.findById(firefighterId)
             .orElseThrow { ResourceNotFoundException("Firefighter", "id", firefighterId) }
+
         return firefighterMapper.toFirefighterDto(firefighter)
     }
 
@@ -64,17 +90,14 @@ class FirefighterServiceImplementation(
         firefighterId: Int,
         firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse {
-        val entity = firefighterRepository.findById(firefighterId)
+
+        val firefighter = firefighterRepository.findById(firefighterId)
             .orElseThrow { ResourceNotFoundException("Firefighter", "id", firefighterId) }
 
-        firefighterMapper.patchFirefighter(firefighterDto, entity)
+        firefighterMapper.patchFirefighter(firefighterDto, firefighter)
 
-        firefighterDto.firedepartmentId?.let { firedepartmentId ->
-            val dept = firedepartmentRepository.findById(firedepartmentId)
-                .orElseThrow { ResourceNotFoundException("Firedepartment", "id", firedepartmentId) }
-            entity.firedepartment = dept
-        }
-
-        return firefighterMapper.toFirefighterDto(firefighterRepository.save(entity))
+        return firefighterMapper.toFirefighterDto(
+            firefighterRepository.save(firefighter)
+        )
     }
 }
