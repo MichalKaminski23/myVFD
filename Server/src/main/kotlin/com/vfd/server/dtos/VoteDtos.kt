@@ -33,7 +33,7 @@ object VoteDtos {
         val voteId: Int,
 
         @field:Schema(description = "Proposal on which the vote was cast")
-        val proposal: InvestmentProposalDtos.InvestmentProposalResponse,
+        val investmentProposal: InvestmentProposalDtos.InvestmentProposalResponse,
 
         @field:Schema(description = "Firefighter who cast the vote")
         val firefighter: FirefighterDtos.FirefighterResponse,

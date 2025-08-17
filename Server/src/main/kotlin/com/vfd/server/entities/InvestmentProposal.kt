@@ -29,6 +29,6 @@ class InvestmentProposal {
     @Column(name = "status", length = 16)
     var status: String? = null
 
-    @OneToMany(mappedBy = "proposal", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(mappedBy = "investmentProposal", cascade = [CascadeType.ALL], orphanRemoval = true)
     var votes: MutableList<Vote> = mutableListOf()
 }

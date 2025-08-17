@@ -14,7 +14,7 @@ class Vote {
 
     @ManyToOne
     @JoinColumn(name = "proposal_id")
-    var proposal: InvestmentProposal? = null
+    var investmentProposal: InvestmentProposal? = null
 
     @ManyToOne
     @JoinColumn(name = "firefighter_id")

@@ -75,3 +75,7 @@ VALUES (1, 1, TRUE, '2025-07-11 10:00:00'),
        (1, 2, FALSE, '2025-07-11 10:05:00'),
        (2, 2, TRUE, '2025-07-13 09:00:00'),
        (2, 3, TRUE, '2025-07-13 09:15:00');
+
+INSERT INTO Events(firedepartment_id, header, description, event_date)
+VALUES (1, 'Potato_s Day', 'The best dat in the world.', '2025-08-01 10:00:00'),
+       (2, 'Community Fire Safety Day', 'Fire safety awareness event in Dabie', '2025-08-05 14:00:00');

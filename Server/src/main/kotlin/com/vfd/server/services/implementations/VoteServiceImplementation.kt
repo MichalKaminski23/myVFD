@@ -26,7 +26,7 @@ class VoteServiceImplementation(
         "voteId",
         "voteDate",
         "value",
-        "proposal.proposalId",
+        "investmentProposal.investmentProposalId",
         "firefighter.firefighterId"
     )
 
@@ -35,9 +35,9 @@ class VoteServiceImplementation(
 
         val vote: Vote = voteMapper.toVoteEntity(voteDto)
 
-        val proposal = investmentProposalRepository.findById(voteDto.investmentProposalId)
-            .orElseThrow { ResourceNotFoundException("InvestmentProposal", "id", voteDto.investmentProposalId) }
-        vote.proposal = proposal
+        val investmentProposal = investmentProposalRepository.findById(voteDto.investmentProposalId)
+            .orElseThrow { ResourceNotFoundException("Investment's proposal", "id", voteDto.investmentProposalId) }
+        vote.investmentProposal = investmentProposal
 
         val firefighter = firefighterRepository.findById(voteDto.firefighterId)
             .orElseThrow { ResourceNotFoundException("Firefighter", "id", voteDto.firefighterId) }
