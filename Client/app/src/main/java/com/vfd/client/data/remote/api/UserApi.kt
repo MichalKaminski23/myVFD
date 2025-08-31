@@ -1,0 +1,23 @@
+package com.vfd.client.data.remote.api
+
+import com.vfd.client.data.remote.dtos.UserDtos
+import com.vfd.client.utils.PageResponse
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.PATCH
+import retrofit2.http.Path
+
+interface UserApi {
+
+    @GET("/api/users")
+    suspend fun getAllUsers(): PageResponse<UserDtos.UserResponse>
+
+    @GET("/api/users/{userId}")
+    suspend fun getUserById(@Path("userId") userId: Int): UserDtos.UserResponse
+
+    @PATCH("/api/users/{userId}")
+    suspend fun updateUser(
+        @Path("userId") userId: Int,
+        @Body userPatchDto: UserDtos.UserPatch
+    ): UserDtos.UserResponse
+}

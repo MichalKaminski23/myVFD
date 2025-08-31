@@ -1,8 +1,8 @@
-package com.vfd.client
+package com.vfd.client.utils
 
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class PageResponse<T>(
     val items: List<T>,
     val page: Int,
