@@ -97,15 +97,14 @@ object UserDtos {
         @field:Schema(description = "User's phone number", example = "+48123123123")
         val phoneNumber: String? = null,
 
-//        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//        @field:NotBlank(message = "Password must not be blank.")
-//        @field:Size(min = 8, max = 128, message = "Password must be between 8 and 128 characters.")
-//        @field:Pattern(
-//            regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
-//            message = "Password must contain at least one uppercase letter, one digit, and one special character."
-//        )
-//        @field:Schema(description = "User's password", example = "P@ssw0rd123!")
-//        val password: String? = null
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @field:Size(min = 8, max = 128, message = "Password must be between 8 and 128 characters.")
+        @field:Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
+            message = "Password must contain at least one uppercase letter, one digit, and one special character."
+        )
+        @field:Schema(description = "User's password", example = "P@ssw0rd123!")
+        val password: String? = null
     )
 
     @Schema(description = "DTO used for returning user information for user")

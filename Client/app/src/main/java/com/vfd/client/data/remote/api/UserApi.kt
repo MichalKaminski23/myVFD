@@ -6,11 +6,16 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface UserApi {
 
     @GET("/api/users")
-    suspend fun getAllUsers(): PageResponse<UserDtos.UserResponse>
+    suspend fun getAllUsers(
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 20,
+        @Query("sort") sort: String = "createdAt,asc"
+    ): PageResponse<UserDtos.UserResponse>
 
     @GET("/api/users/{userId}")
     suspend fun getUserById(@Path("userId") userId: Int): UserDtos.UserResponse

@@ -62,7 +62,6 @@ dependencies {
 
     implementation(libs.navigation.compose)
 
-    // Networking
     implementation(libs.retrofit.core)
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
@@ -72,15 +71,13 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.retrofit.serialization)
 
-    // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
-    // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.runtime)
     ksp(libs.hilt.compiler)
     implementation(libs.hiltNavigationCompose)
 
-    // Testy
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

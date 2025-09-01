@@ -8,4 +8,6 @@ interface AuthService {
     fun register(userDto: UserDtos.UserCreate): AuthResponseDto
 
     fun login(userDto: UserDtos.UserLogin): AuthResponseDto
+
+    fun logout()
 }

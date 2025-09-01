@@ -11,10 +11,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "Authentication", description = "Endpoints for user authentication and registration")
+@Tag(name = "Authentication", description = "Endpoints for user authentication, registration and logout.")
 @Validated
 @RestController
 @RequestMapping("/api/auth")
@@ -62,4 +63,19 @@ class AuthController(
     fun login(
         @Valid @RequestBody userDto: UserDtos.UserLogin
     ): AuthResponseDto = authService.login(userDto)
+
+    @Operation(
+        summary = "Logout user",
+        description = "Logs out the user. For JWT, this is typically handled client-side."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Logged out", content = [Content()])
+        ]
+    )
+    @PostMapping("/logout")
+    fun logout(): ResponseEntity<Void> {
+        authService.logout()
+        return ResponseEntity.ok().build()
+    }
 }

@@ -8,10 +8,22 @@ object UserDtos {
     @Serializable
     data class UserCreate(
         val firstName: String,
+
         val lastName: String,
+
         val address: AddressDtos.AddressCreate,
+
         val emailAddress: String,
+
         val phoneNumber: String,
+
+        val password: String
+    )
+
+    @Serializable
+    data class UserLogin(
+        val emailAddress: String,
+
         val password: String
     )
 
@@ -47,6 +59,21 @@ object UserDtos {
         val createdAt: LocalDateTime,
 
         val loggedAt: LocalDateTime,
+
+        val active: Boolean
+    )
+
+    @Serializable
+    data class UserModeratorResponse(
+        val userId: Int,
+
+        val firstName: String,
+
+        val lastName: String,
+        
+        val emailAddress: String,
+
+        val phoneNumber: String,
 
         val active: Boolean
     )
