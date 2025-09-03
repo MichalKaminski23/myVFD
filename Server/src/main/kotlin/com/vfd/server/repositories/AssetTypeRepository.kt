@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface AssetTypeRepository : JpaRepository<AssetType, String> {
-    fun findByAssetType(assetType: String): AssetType?
+
+    fun existsByAssetType(assetType: String): Boolean
 }

@@ -1,6 +1,7 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.AddressDtos
+import com.vfd.server.entities.Address
 import com.vfd.server.shared.PageResponse
 
 interface AddressService {
@@ -15,5 +16,7 @@ interface AddressService {
 
     fun getAddressById(addressId: Int): AddressDtos.AddressResponse
 
-    fun updateAddress(addressId: Int, addressDto: AddressDtos.AddressPatch): AddressDtos.AddressResponse
+    //fun updateAddress(addressId: Int, addressDto: AddressDtos.AddressPatch): AddressDtos.AddressResponse
+
+    fun findOrCreateAddress(addressDto: AddressDtos.AddressCreate): Address
 }

@@ -7,6 +7,7 @@ import com.vfd.server.mappers.UserMapper
 import com.vfd.server.repositories.AddressRepository
 import com.vfd.server.repositories.UserRepository
 import com.vfd.server.securities.JwtTokenProvider
+import com.vfd.server.services.implementations.AddressServiceImplementation
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -23,13 +24,14 @@ class AuthServiceImplementation(
     private val userMapper: UserMapper,
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val addressService: AddressServiceImplementation
 ) : AuthService {
 
     @Transactional
     override fun register(userDto: UserDtos.UserCreate): AuthResponseDto {
 
-        val address = addressRepository.save(addressMapper.toAddressEntity(userDto.address))
+        val address = addressService.findOrCreateAddress(userDto.address)
 
         val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 

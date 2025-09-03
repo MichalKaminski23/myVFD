@@ -2,6 +2,7 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.InspectionTypeDtos
 import com.vfd.server.entities.InspectionType
+import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.InspectionTypeMapper
 import com.vfd.server.repositories.InspectionTypeRepository
@@ -27,6 +28,10 @@ class InspectionTypeServiceImplementation(
 
         val inspectionType: InspectionType =
             inspectionTypeMapper.toInspectionTypeEntity(inspectionTypeDto)
+
+        if (inspectionTypeRepository.existsByInspectionType(inspectionTypeDto.inspectionType)) {
+            throw ResourceConflictException("Inspection's type", "code", inspectionTypeDto.inspectionType)
+        }
 
         return inspectionTypeMapper.toInspectionTypeDto(
             inspectionTypeRepository.save(inspectionType)

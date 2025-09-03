@@ -3,7 +3,23 @@ package com.vfd.server.entities
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "Addresses")
+@Table(
+    name = "Addresses",
+    uniqueConstraints = [
+        UniqueConstraint(
+            name = "uk_address_full",
+            columnNames = [
+                "country",
+                "voivodeship",
+                "city",
+                "postal_code",
+                "street",
+                "house_number",
+                "apart_number"
+            ]
+        )
+    ]
+)
 class Address {
 
     @Id

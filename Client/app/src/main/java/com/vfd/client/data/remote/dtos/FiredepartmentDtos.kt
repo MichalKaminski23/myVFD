@@ -17,7 +17,7 @@ object FiredepartmentDtos {
     data class FiredepartmentPatch(
         val name: String? = null,
 
-        val address: AddressDtos.AddressPatch? = null,
+//        val address: AddressDtos.AddressPatch? = null,
 
         val NRFS: Boolean? = null
     )

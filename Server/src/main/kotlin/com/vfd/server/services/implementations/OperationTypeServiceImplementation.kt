@@ -2,6 +2,7 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.OperationTypeDtos
 import com.vfd.server.entities.OperationType
+import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.OperationTypeMapper
 import com.vfd.server.repositories.OperationTypeRepository
@@ -27,6 +28,10 @@ class OperationTypeServiceImplementation(
 
         val operationType: OperationType =
             operationTypeMapper.toOperationTypeEntity(operationTypeDto)
+
+        if (operationTypeRepository.existsByOperationType(operationTypeDto.operationType)) {
+            throw ResourceConflictException("Operation's type", "code", operationTypeDto.operationType)
+        }
 
         return operationTypeMapper.toOperationTypeDto(
             operationTypeRepository.save(operationType)

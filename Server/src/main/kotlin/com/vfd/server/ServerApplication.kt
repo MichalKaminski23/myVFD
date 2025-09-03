@@ -15,3 +15,4 @@ fun main(args: Array<String>) {
 // TODO: Szczegółowe walidacje danych np. email, liczby i tak dalej
 // TODO: W przyszłości ogarnąć wszelkie zabezpieczenia z logowania i tak dalej
 // TODO: Reszta bardziej szczegółowych serwisów i endpointów
+// TODO: zastanowić się nad aktualizacją adresów

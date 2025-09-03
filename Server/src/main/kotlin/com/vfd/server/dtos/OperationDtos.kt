@@ -44,9 +44,9 @@ object OperationDtos {
         @field:Schema(description = "Type code of the operation", example = "Fire")
         val operationType: String? = null,
 
-        @field:Valid
-        @field:Schema(description = "Address of the fire department")
-        val address: AddressDtos.AddressPatch? = null,
+//        @field:Valid
+//        @field:Schema(description = "Address of the fire department")
+//        val address: AddressDtos.AddressPatch? = null,
 
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-04T14:00:00")
         val operationDate: LocalDateTime? = null,

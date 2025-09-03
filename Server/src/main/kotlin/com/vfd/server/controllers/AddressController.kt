@@ -90,29 +90,29 @@ class AddressController(
     fun getAddressById(@PathVariable addressId: Int): AddressDtos.AddressResponse =
         addressService.getAddressById(addressId)
 
-    @Operation(
-        summary = "Update address",
-        description = """
-            Partially updates an address identified by `addressId`.
-            Only non-null fields in the request body will be applied.
-        """
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Address updated successfully",
-                content = [Content(schema = Schema(implementation = AddressDtos.AddressResponse::class))]
-            ),
-            ApiResponse(responseCode = "400", description = "Invalid request body", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Address not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @PatchMapping("/{addressId}")
-    fun updateAddress(
-        @PathVariable addressId: Int,
-        @RequestBody addressDto: AddressDtos.AddressPatch
-    ): AddressDtos.AddressResponse =
-        addressService.updateAddress(addressId, addressDto)
+//    @Operation(
+//        summary = "Update address",
+//        description = """
+//            Partially updates an address identified by `addressId`.
+//            Only non-null fields in the request body will be applied.
+//        """
+//    )
+//    @ApiResponses(
+//        value = [
+//            ApiResponse(
+//                responseCode = "200",
+//                description = "Address updated successfully",
+//                content = [Content(schema = Schema(implementation = AddressDtos.AddressResponse::class))]
+//            ),
+//            ApiResponse(responseCode = "400", description = "Invalid request body", content = [Content()]),
+//            ApiResponse(responseCode = "404", description = "Address not found", content = [Content()]),
+//            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+//        ]
+//    )
+//    @PatchMapping("/{addressId}")
+//    fun updateAddress(
+//        @PathVariable addressId: Int,
+//        @RequestBody addressDto: AddressDtos.AddressPatch
+//    ): AddressDtos.AddressResponse =
+//        addressService.updateAddress(addressId, addressDto)
 }

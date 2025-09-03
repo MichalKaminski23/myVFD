@@ -2,7 +2,8 @@ package com.vfd.server.mappers
 
 import com.vfd.server.dtos.AddressDtos
 import com.vfd.server.entities.Address
-import org.mapstruct.*
+import org.mapstruct.Mapper
+import org.mapstruct.Mapping
 
 @Mapper(componentModel = "spring")
 interface AddressMapper {
@@ -12,6 +13,6 @@ interface AddressMapper {
     @Mapping(target = "addressId", ignore = true)
     fun toAddressEntity(addressDto: AddressDtos.AddressCreate): Address
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    fun patchAddress(addressDto: AddressDtos.AddressPatch, @MappingTarget address: Address)
+//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+//    fun patchAddress(addressDto: AddressDtos.AddressPatch, @MappingTarget address: Address)
 }

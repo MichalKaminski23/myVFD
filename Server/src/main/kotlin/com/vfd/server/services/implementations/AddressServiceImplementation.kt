@@ -55,14 +55,31 @@ class AddressServiceImplementation(
         return addressMapper.toAddressDto(address)
     }
 
+//    @Transactional
+//    override fun updateAddress(addressId: Int, addressDto: AddressDtos.AddressPatch): AddressDtos.AddressResponse {
+//
+//        val address = addressRepository.findById(addressId)
+//            .orElseThrow { ResourceNotFoundException("Address", "id", addressId) }
+//
+//        addressMapper.patchAddress(addressDto, address)
+//
+//        return addressMapper.toAddressDto(addressRepository.save(address))
+//    }
+
     @Transactional
-    override fun updateAddress(addressId: Int, addressDto: AddressDtos.AddressPatch): AddressDtos.AddressResponse {
+    override fun findOrCreateAddress(addressDto: AddressDtos.AddressCreate): Address {
 
-        val address = addressRepository.findById(addressId)
-            .orElseThrow { ResourceNotFoundException("Address", "id", addressId) }
+        val existingAddress = addressRepository
+            .findByCountryAndVoivodeshipAndCityAndPostalCodeAndStreetAndHouseNumberAndApartNumber(
+                country = addressDto.country,
+                voivodeship = addressDto.voivodeship,
+                city = addressDto.city,
+                postalCode = addressDto.postalCode,
+                street = addressDto.street,
+                houseNumber = addressDto.houseNumber,
+                apartNumber = addressDto.apartNumber
+            )
 
-        addressMapper.patchAddress(addressDto, address)
-
-        return addressMapper.toAddressDto(addressRepository.save(address))
+        return existingAddress ?: addressRepository.save(addressMapper.toAddressEntity(addressDto))
     }
 }

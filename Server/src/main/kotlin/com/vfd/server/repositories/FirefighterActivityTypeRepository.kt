@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface FirefighterActivityTypeRepository : JpaRepository<FirefighterActivityType, String>
+interface FirefighterActivityTypeRepository : JpaRepository<FirefighterActivityType, String> {
+
+    fun existsByFirefighterActivityType(firefighterActivityType: String): Boolean
+}

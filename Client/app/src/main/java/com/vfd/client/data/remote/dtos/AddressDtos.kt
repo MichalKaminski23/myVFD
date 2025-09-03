@@ -21,22 +21,22 @@ object AddressDtos {
         val apartNumber: String? = null
     )
 
-    @Serializable
-    data class AddressPatch(
-        val country: String? = null,
-
-        val voivodeship: String? = null,
-
-        val city: String? = null,
-
-        val postalCode: String? = null,
-
-        val street: String? = null,
-
-        val houseNumber: String? = null,
-
-        val apartNumber: String? = null
-    )
+//    @Serializable
+//    data class AddressPatch(
+//        val country: String? = null,
+//
+//        val voivodeship: String? = null,
+//
+//        val city: String? = null,
+//
+//        val postalCode: String? = null,
+//
+//        val street: String? = null,
+//
+//        val houseNumber: String? = null,
+//
+//        val apartNumber: String? = null
+//    )
 
     @Serializable
     data class AddressResponse(

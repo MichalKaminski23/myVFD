@@ -24,7 +24,7 @@ object OperationDtos {
     data class OperationPatch(
         val operationType: String? = null,
 
-        val address: AddressDtos.AddressPatch? = null,
+        //val address: AddressDtos.AddressPatch? = null,
 
         val operationDate: LocalDateTime? = null,
 

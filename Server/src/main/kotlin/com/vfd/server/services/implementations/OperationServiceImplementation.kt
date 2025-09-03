@@ -1,7 +1,6 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.OperationDtos
-import com.vfd.server.entities.Address
 import com.vfd.server.entities.Operation
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AddressMapper
@@ -106,12 +105,12 @@ class OperationServiceImplementation(
                 operation.operationType = type
             }
 
-        operationDto.address
-            ?.let { addressPatch ->
-                val address: Address = operation.address ?: Address()
-                addressMapper.patchAddress(addressPatch, address)
-                operation.address = addressRepository.save(address)
-            }
+//        operationDto.address
+//            ?.let { addressPatch ->
+//                val address: Address = operation.address ?: Address()
+//                addressMapper.patchAddress(addressPatch, address)
+//                operation.address = addressRepository.save(address)
+//            }
 
         return operationMapper.toOperationDto(
             operationRepository.save(operation)

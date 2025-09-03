@@ -2,6 +2,7 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FirefighterActivityTypeDtos
 import com.vfd.server.entities.FirefighterActivityType
+import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.FirefighterActivityTypeMapper
 import com.vfd.server.repositories.FirefighterActivityTypeRepository
@@ -27,6 +28,14 @@ class FirefighterActivityTypeServiceImplementation(
 
         val firefighterActivityType: FirefighterActivityType =
             firefighterActivityTypeMapper.toFirefighterActivityTypeEntity(firefighterActivityTypeDto)
+
+        if (firefighterActivityTypeRepository.existsByFirefighterActivityType(firefighterActivityTypeDto.firefighterActivityType)) {
+            throw ResourceConflictException(
+                "Firefighter activitie's type",
+                "code",
+                firefighterActivityTypeDto.firefighterActivityType
+            )
+        }
 
         return firefighterActivityTypeMapper.toFirefighterActivityTypeDto(
             firefighterActivityTypeRepository.save(firefighterActivityType)

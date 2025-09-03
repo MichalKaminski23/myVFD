@@ -33,7 +33,7 @@ object UserDtos {
 
         val lastName: String? = null,
 
-        val address: AddressDtos.AddressPatch? = null,
+        // val address: AddressDtos.AddressPatch? = null,
 
         val emailAddress: String? = null,
 
@@ -70,7 +70,7 @@ object UserDtos {
         val firstName: String,
 
         val lastName: String,
-        
+
         val emailAddress: String,
 
         val phoneNumber: String,

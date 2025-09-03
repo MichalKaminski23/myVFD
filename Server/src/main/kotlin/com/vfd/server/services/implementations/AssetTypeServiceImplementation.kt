@@ -1,6 +1,7 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.AssetTypeDtos
+import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AssetTypeMapper
 import com.vfd.server.repositories.AssetTypeRepository
@@ -23,6 +24,10 @@ class AssetTypeServiceImplementation(
     override fun createAssetType(assetTypeDto: AssetTypeDtos.AssetTypeCreate): AssetTypeDtos.AssetTypeResponse {
 
         val assetType = assetTypeMapper.toAssetTypeEntity(assetTypeDto)
+
+        if (assetTypeRepository.existsByAssetType(assetTypeDto.assetType)) {
+            throw ResourceConflictException("Asset's type", "code", assetTypeDto.assetType)
+        }
 
         return assetTypeMapper.toAssetTypeDto(assetTypeRepository.save(assetType))
     }
@@ -59,6 +64,8 @@ class AssetTypeServiceImplementation(
 
         val assetType = assetTypeRepository.findById(assetTypeCode)
             .orElseThrow { ResourceNotFoundException("Asset's type", "code", assetTypeCode) }
+
+
 
         assetTypeMapper.patchAssetType(assetTypeDto, assetType)
 

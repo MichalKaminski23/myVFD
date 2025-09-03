@@ -31,9 +31,9 @@ object FiredepartmentDtos {
         @field:Schema(description = "Name of the fire department", example = "OSP Strzyzowice")
         val name: String? = null,
 
-        @field:Valid
-        @field:Schema(description = "Address of the fire department")
-        val address: AddressDtos.AddressPatch? = null,
+//        @field:Valid
+//        @field:Schema(description = "Address of the fire department")
+//        val address: AddressDtos.AddressPatch? = null,
 
         @field:Schema(
             description = "Whether the department is part of NRFS (National Rescue and Firefighting System)",

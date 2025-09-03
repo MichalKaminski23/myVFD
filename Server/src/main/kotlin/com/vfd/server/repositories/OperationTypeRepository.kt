@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface OperationTypeRepository : JpaRepository<OperationType, String>
+interface OperationTypeRepository : JpaRepository<OperationType, String> {
+
+    fun existsByOperationType(operationType: String): Boolean
+}

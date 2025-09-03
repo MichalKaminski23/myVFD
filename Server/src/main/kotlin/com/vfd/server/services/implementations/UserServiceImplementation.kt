@@ -1,7 +1,6 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.UserDtos
-import com.vfd.server.entities.Address
 import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AddressMapper
@@ -83,11 +82,11 @@ class UserServiceImplementation(
 
         userMapper.patchUser(userDto, user)
 
-        userDto.address?.let { addressDto ->
-            val address: Address = user.address ?: Address()
-            addressMapper.patchAddress(addressDto, address)
-            user.address = addressRepository.save(address)
-        }
+//        userDto.address?.let { addressDto ->
+//            val address: Address = user.address ?: Address()
+//            addressMapper.patchAddress(addressDto, address)
+//            user.address = addressRepository.save(address)
+//        }
 
         return userMapper.toUserDto(
             userRepository.save(user)

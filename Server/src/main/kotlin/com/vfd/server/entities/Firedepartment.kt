@@ -11,7 +11,7 @@ class Firedepartment {
     @Column(name = "firedepartment_id")
     var firedepartmentId: Int? = null
 
-    @Column(name = "name", length = 128)
+    @Column(name = "name", length = 128, unique = true)
     var name: String? = null
 
     @ManyToOne(optional = false)

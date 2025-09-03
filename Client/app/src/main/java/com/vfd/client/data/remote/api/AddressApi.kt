@@ -4,7 +4,6 @@ import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.utils.PageResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -24,9 +23,9 @@ interface AddressApi {
     @GET("/api/addresses/{addressId}")
     suspend fun getAddressById(@Path("addressId") addressId: Int): AddressDtos.AddressResponse
 
-    @PATCH("/api/addresses/{addressId}")
-    suspend fun updateAddress(
-        @Path("addressId") addressId: Int,
-        @Body addressPatchDto: AddressDtos.AddressPatch
-    ): AddressDtos.AddressResponse
+//    @PATCH("/api/addresses/{addressId}")
+//    suspend fun updateAddress(
+//        @Path("addressId") addressId: Int,
+//        @Body addressPatchDto: AddressDtos.AddressPatch
+//    ): AddressDtos.AddressResponse
 }

@@ -83,9 +83,9 @@ object UserDtos {
         @field:Schema(description = "User's last name", example = "Niemusialski")
         val lastName: String? = null,
 
-        @field:Valid
-        @field:Schema(description = "User's address")
-        val address: AddressDtos.AddressPatch? = null,
+//        @field:Valid
+//        @field:Schema(description = "User's address")
+//        val address: AddressDtos.AddressPatch? = null,
 
         @field:Email(message = "Email must be a valid email address.")
         @field:Size(max = 128, message = "Email address must be at most 128 characters.")

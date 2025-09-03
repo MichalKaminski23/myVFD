@@ -1,7 +1,6 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FiredepartmentDtos
-import com.vfd.server.entities.Address
 import com.vfd.server.entities.Firedepartment
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AddressMapper
@@ -20,7 +19,8 @@ class FiredepartmentServiceImplementation(
     private val firedepartmentRepository: FiredepartmentRepository,
     private val firedepartmentMapper: FiredepartmentMapper,
     private val addressRepository: AddressRepository,
-    private val addressMapper: AddressMapper
+    private val addressMapper: AddressMapper,
+    private val addressService: AddressServiceImplementation
 ) : FiredepartmentService {
 
     private val FIREDEPARTMENT_ALLOWED_SORTS = setOf(
@@ -37,7 +37,7 @@ class FiredepartmentServiceImplementation(
 
         val firedepartment: Firedepartment = firedepartmentMapper.toFiredepartmentEntity(firedepartmentDto)
 
-        val address = addressMapper.toAddressEntity(firedepartmentDto.address)
+        val address = addressService.findOrCreateAddress(firedepartmentDto.address)
         firedepartment.address = addressRepository.save(address)
 
         return firedepartmentMapper.toFiredepartmentDto(firedepartmentRepository.save(firedepartment))
@@ -84,13 +84,6 @@ class FiredepartmentServiceImplementation(
             .orElseThrow { ResourceNotFoundException("Firedepartment", "id", firedepartmentId) }
 
         firedepartmentMapper.patchFiredepartment(firedepartmentDto, firedepartment)
-
-        firedepartmentDto.address
-            ?.let { addressDto ->
-                val address: Address = firedepartment.address ?: Address()
-                addressMapper.patchAddress(addressDto, address)
-                firedepartment.address = addressRepository.save(address)
-            }
 
         return firedepartmentMapper.toFiredepartmentDto(firedepartmentRepository.save(firedepartment))
     }

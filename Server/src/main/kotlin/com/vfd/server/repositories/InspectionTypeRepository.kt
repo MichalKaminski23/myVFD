@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface InspectionTypeRepository : JpaRepository<InspectionType, String>
+interface InspectionTypeRepository : JpaRepository<InspectionType, String> {
+
+    fun existsByInspectionType(inspectionType: String): Boolean
+}
