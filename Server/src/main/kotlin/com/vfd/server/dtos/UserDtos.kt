@@ -15,13 +15,13 @@ object UserDtos {
     data class UserCreate(
         @field:NotBlank(message = "First name must not be blank.")
         @field:Size(max = 128, message = "First name must bet at most 128 characters.")
-        @field:Pattern(regexp = "^[A-Za-z]+$", message = "First name must contain only letters.")
+        @field:Pattern(regexp = "^[A-Za-z]+$", message = "First name must contain only letters and can not be blank.")
         @field:Schema(description = "User's first name", example = "Arkadiusz")
         val firstName: String,
 
         @field:NotBlank(message = "Last name must not be blank.")
         @field:Size(max = 128, message = "Last name must be at most 128 characters.")
-        @field:Pattern(regexp = "^[A-Za-z]+$", message = "Last name must contain only letters.")
+        @field:Pattern(regexp = "^[A-Za-z]+$", message = "Last name must contain only letters and can not be blank.")
         @field:Schema(description = "User's last name", example = "Niemusialski")
         val lastName: String,
 
@@ -37,7 +37,7 @@ object UserDtos {
 
         @field:NotBlank(message = "Phone number must not be blank.")
         @field:Size(max = 16, message = "Phone number must be at most 16 characters.")
-        @field:Pattern(regexp = "^\\+?\\d+$")
+        @field:Pattern(regexp = "^\\+?\\d+$", message = "Last name must contain only letters.")
         @field:Schema(description = "User's phone number", example = "+48123123123")
         val phoneNumber: String,
 
@@ -46,7 +46,7 @@ object UserDtos {
         @field:Size(min = 8, max = 128, message = "Password must be between 8 and 128 characters.")
         @field:Pattern(
             regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
-            message = "Password must contain at least one uppercase letter, one digit, and one special character."
+            message = "Password must contains at least one uppercase letter, one digit, and one special character."
         )
         @field:Schema(description = "User's password", example = "P@ssw0rd123!")
         val password: String
@@ -74,12 +74,12 @@ object UserDtos {
     @Schema(description = "DTO used for partially updating a user")
     data class UserPatch(
         @field:Size(max = 128, message = "First name must be at most 128 characters.")
-        @field:Pattern(regexp = "^[A-Za-z]+$")
+        @field:Pattern(regexp = "^[A-Za-z]+$", message = "First name must contain only letters and can not be blank.")
         @field:Schema(description = "User's first name", example = "Arkadiusz")
         val firstName: String? = null,
 
         @field:Size(max = 128, message = "Last name must be at most 128 characters.")
-        @field:Pattern(regexp = "^[A-Za-z]+$")
+        @field:Pattern(regexp = "^[A-Za-z]+$", message = "Last name must contain only letters and can not be blank.")
         @field:Schema(description = "User's last name", example = "Niemusialski")
         val lastName: String? = null,
 

@@ -40,7 +40,7 @@ import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.ui.components.AppDrawer
 import com.vfd.client.ui.components.BaseCard
 import com.vfd.client.ui.viewmodels.UserViewModel
-import com.vfd.client.utils.Resource
+import com.vfd.client.utils.ApiResult
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,11 +103,11 @@ fun UserScreen(
                 contentAlignment = Alignment.Center
             ) {
                 when (val result = state) {
-                    is Resource.Loading -> {
+                    is ApiResult.Loading -> {
                         CircularProgressIndicator()
                     }
 
-                    is Resource.Success -> {
+                    is ApiResult.Success -> {
                         val pageResponse = result.data
                         val users = pageResponse?.items ?: emptyList()
                         if (users.isEmpty()) {
@@ -125,7 +125,7 @@ fun UserScreen(
                         }
                     }
 
-                    is Resource.Error -> {
+                    is ApiResult.Error -> {
                         Text("Error: ${result.message}", color = MaterialTheme.colorScheme.error)
                     }
                 }
@@ -151,13 +151,24 @@ fun UserCard(user: UserDtos.UserResponse, viewModel: UserViewModel = hiltViewMod
 @Composable
 fun EditUserNameScreen(viewModel: UserViewModel, userId: Int) {
     val name by viewModel.name.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     Column(modifier = Modifier.padding(16.dp)) {
         TextField(
             value = name,
             onValueChange = { viewModel.onNameChange(it) },
-            label = { Text("Imię") }
+            label = { Text("Imię") },
+            isError = errorMessage != null // podświetli TextField na czerwono jeśli jest błąd
         )
+
+        if (errorMessage != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = errorMessage ?: "",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 

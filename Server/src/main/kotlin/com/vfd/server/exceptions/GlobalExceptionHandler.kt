@@ -2,6 +2,7 @@ package com.vfd.server.exceptions
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
@@ -31,6 +32,23 @@ class GlobalExceptionHandler {
             path = request.getDescription(false).replace("uri=", "")
         )
         return ResponseEntity(error, HttpStatus.CONFLICT)
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(
+        exception: MethodArgumentNotValidException,
+        request: WebRequest
+    ): ResponseEntity<ErrorResponse> {
+        val errorMessage = exception.bindingResult.fieldErrors.joinToString { fieldError ->
+            "${fieldError.defaultMessage}"
+        }
+        val error = ErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = "Bad Request",
+            message = errorMessage,
+            path = request.getDescription(false).replace("uri=", "")
+        )
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(Exception::class)
