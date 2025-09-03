@@ -31,6 +31,6 @@ interface OperationTypeApi {
     @PATCH("api/operation-types/{operationTypeCode}")
     suspend fun updateOperationType(
         @Path("operationTypeCode") operationTypeCode: String,
-        @Body operationTypePatchDto: OperationTypeDtos.OperationTypePatch
+        @Body operationTypeDto: OperationTypeDtos.OperationTypePatch
     ): OperationTypeDtos.OperationTypeResponse
 }

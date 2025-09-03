@@ -26,6 +26,6 @@ interface AddressApi {
 //    @PATCH("/api/addresses/{addressId}")
 //    suspend fun updateAddress(
 //        @Path("addressId") addressId: Int,
-//        @Body addressPatchDto: AddressDtos.AddressPatch
+//        @Body addressDto: AddressDtos.AddressPatch
 //    ): AddressDtos.AddressResponse
 }

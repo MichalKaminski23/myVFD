@@ -31,6 +31,6 @@ interface EventApi {
     @PATCH("api/events/{eventId}")
     suspend fun updateEvent(
         @Path("eventId") eventId: Int,
-        @Body eventPatchDto: EventDtos.EventPatch
+        @Body eventDto: EventDtos.EventPatch
     ): EventDtos.EventResponse
 }

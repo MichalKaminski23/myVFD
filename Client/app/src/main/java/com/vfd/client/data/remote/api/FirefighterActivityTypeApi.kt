@@ -31,6 +31,6 @@ interface FirefighterActivityTypeApi {
     @PATCH("api/firefighter-activity-types/{firefighterActivityTypeCode}")
     suspend fun updateFirefighterActivityType(
         @Path("firefighterActivityTypeCode") firefighterActivityTypeCode: String,
-        @Body firefighterActivityTypePatchDto: FirefighterActivityTypeDtos.FirefighterActivityTypePatch
+        @Body firefighterActivityTypeDto: FirefighterActivityTypeDtos.FirefighterActivityTypePatch
     ): FirefighterActivityTypeDtos.FirefighterActivityTypeResponse
 }

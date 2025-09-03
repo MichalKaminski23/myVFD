@@ -31,6 +31,6 @@ interface OperationApi {
     @PATCH("api/operations/{operationId}")
     suspend fun updateOperation(
         @Path("operationId") operationId: Int,
-        @Body operationPatchDto: OperationDtos.OperationPatch
+        @Body operationDto: OperationDtos.OperationPatch
     ): OperationDtos.OperationResponse
 }

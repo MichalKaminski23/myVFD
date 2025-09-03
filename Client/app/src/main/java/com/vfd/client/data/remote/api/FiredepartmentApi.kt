@@ -31,6 +31,6 @@ interface FiredepartmentApi {
     @PATCH("api/firedepartments/{firedepartmentId}")
     suspend fun updateFiredepartment(
         @Path("firedepartmentId") firedepartmentId: Int,
-        @Body firedepartmentPatchDto: FiredepartmentDtos.FiredepartmentPatch
+        @Body firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch
     ): FiredepartmentDtos.FiredepartmentResponse
 }

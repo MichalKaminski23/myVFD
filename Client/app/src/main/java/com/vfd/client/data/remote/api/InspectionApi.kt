@@ -31,6 +31,6 @@ interface InspectionApi {
     @PATCH("api/inspections/{inspectionId}")
     suspend fun updateInspection(
         @Path("inspectionId") inspectionId: Int,
-        @Body inspectionPatchDto: InspectionDtos.InspectionPatch
+        @Body inspectionDto: InspectionDtos.InspectionPatch
     ): InspectionDtos.InspectionResponse
 }

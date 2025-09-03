@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = "user"
+                    startDestination = "auth"
                 ) {
                     composable("auth") {
                         AuthScreen(

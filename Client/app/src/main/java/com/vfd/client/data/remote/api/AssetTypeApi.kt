@@ -31,6 +31,6 @@ interface AssetTypeApi {
     @PATCH("api/asset-types/{assetTypeCode}")
     suspend fun updateAssetType(
         @Path("assetTypeCode") assetTypeCode: String,
-        @Body assetTypePatchDto: AssetTypeDtos.AssetTypePatch
+        @Body assetTypeDto: AssetTypeDtos.AssetTypePatch
     ): AssetTypeDtos.AssetTypeResponse
 }

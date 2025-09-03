@@ -1,0 +1,37 @@
+package com.vfd.client.data.repositories
+
+import com.vfd.client.data.remote.api.VoteApi
+import com.vfd.client.data.remote.dtos.VoteDtos
+import com.vfd.client.utils.ApiResult
+import com.vfd.client.utils.PageResponse
+import kotlinx.serialization.json.Json
+import javax.inject.Inject
+
+class VoteRepository @Inject constructor(
+    private val voteApi: VoteApi,
+    json: Json
+) : BaseRepository(json) {
+
+    suspend fun createVote(
+        voteDto: VoteDtos.VoteCreate
+    ): ApiResult<VoteDtos.VoteResponse> =
+        safeApiCall { voteApi.createVote(voteDto) }
+
+    suspend fun getAllVotes(
+        page: Int = 0,
+        size: Int = 20,
+        sort: String = "voteId,asc"
+    ): ApiResult<PageResponse<VoteDtos.VoteResponse>> =
+        safeApiCall { voteApi.getAllVotes(page, size, sort) }
+
+    suspend fun getVoteById(
+        voteId: Int
+    ): ApiResult<VoteDtos.VoteResponse> =
+        safeApiCall { voteApi.getVoteById(voteId) }
+
+    suspend fun updateVote(
+        voteId: Int,
+        voteDto: VoteDtos.VotePatch
+    ): ApiResult<VoteDtos.VoteResponse> =
+        safeApiCall { voteApi.updateVote(voteId, voteDto) }
+}

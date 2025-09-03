@@ -31,6 +31,6 @@ interface FirefighterApi {
     @PATCH("api/firefighters/{firefighterId}")
     suspend fun updateFirefighter(
         @Path("firefighterId") firefighterId: Int,
-        @Body firefighterPatchDto: FirefighterDtos.FirefighterPatch
+        @Body firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse
 }

@@ -31,6 +31,6 @@ interface InspectionTypeApi {
     @PATCH("api/inspection-types/{inspectionTypeCode}")
     suspend fun updateInspectionType(
         @Path("inspectionTypeCode") inspectionTypeCode: String,
-        @Body inspectionTypePatchDto: InspectionTypeDtos.InspectionTypePatch
+        @Body inspectionTypeDto: InspectionTypeDtos.InspectionTypePatch
     ): InspectionTypeDtos.InspectionTypeResponse
 }

@@ -31,6 +31,6 @@ interface VoteApi {
     @PATCH("api/votes/{voteId}")
     suspend fun updateVote(
         @Path("voteId") voteId: Int,
-        @Body votePatchDto: VoteDtos.VotePatch
+        @Body voteDto: VoteDtos.VotePatch
     ): VoteDtos.VoteResponse
 }

@@ -23,6 +23,6 @@ interface UserApi {
     @PATCH("/api/users/{userId}")
     suspend fun updateUser(
         @Path("userId") userId: Int,
-        @Body userPatchDto: UserDtos.UserPatch
+        @Body userDto: UserDtos.UserPatch
     ): UserDtos.UserResponse
 }

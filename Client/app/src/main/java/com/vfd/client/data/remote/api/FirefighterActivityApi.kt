@@ -31,6 +31,6 @@ interface FirefighterActivityApi {
     @PATCH("api/firefighter-activities/{firefighterActivityId}")
     suspend fun updateFirefighterActivity(
         @Path("firefighterActivityId") firefighterActivityId: Int,
-        @Body firefighterActivityPatchDto: FirefighterActivityDtos.FirefighterActivityPatch
+        @Body firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityPatch
     ): FirefighterActivityDtos.FirefighterActivityResponse
 }

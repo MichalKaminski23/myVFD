@@ -13,7 +13,7 @@ interface InvestmentProposalApi {
 
     @POST("api/investment-proposals")
     suspend fun createInvestmentProposal(
-        @Body proposalDto: InvestmentProposalDtos.InvestmentProposalCreate
+        @Body investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreate
     ): InvestmentProposalDtos.InvestmentProposalResponse
 
     @GET("api/investment-proposals")
@@ -31,6 +31,6 @@ interface InvestmentProposalApi {
     @PATCH("api/investment-proposals/{proposalId}")
     suspend fun updateInvestmentProposal(
         @Path("proposalId") proposalId: Int,
-        @Body proposalPatchDto: InvestmentProposalDtos.InvestmentProposalPatch
+        @Body investmentProposalDto: InvestmentProposalDtos.InvestmentProposalPatch
     ): InvestmentProposalDtos.InvestmentProposalResponse
 }

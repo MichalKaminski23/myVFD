@@ -27,6 +27,6 @@ interface AssetApi {
     @PATCH("api/assets/{assetId}")
     suspend fun updateAsset(
         @Path("assetId") assetId: Int,
-        @Body assetPatchDto: AssetDtos.AssetPatch
+        @Body assetDto: AssetDtos.AssetPatch
     ): AssetDtos.AssetResponse
 }
