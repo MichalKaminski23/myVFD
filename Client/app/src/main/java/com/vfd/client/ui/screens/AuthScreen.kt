@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,24 +27,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.vfd.client.ui.viewmodels.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    onRegisterSuccess: () -> Unit
+    navController: NavController
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    if (state.success) {
-        onRegisterSuccess()
+    // jeśli sukces → przenieś na ekran user
+    LaunchedEffect(uiState.success) {
+        if (uiState.success) {
+            navController.navigate("user") {
+                popUpTo("auth") { inclusive = true }
+            }
+        }
     }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Register", style = MaterialTheme.typography.titleLarge) }
+                title = { Text("Authentication", style = MaterialTheme.typography.titleLarge) }
             )
         }
     ) { paddingValues ->
@@ -57,7 +64,7 @@ fun AuthScreen(
         ) {
             item {
                 Text(
-                    "Create a new account",
+                    "Create a new account or log in",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -68,7 +75,7 @@ fun AuthScreen(
             item { SectionHeader("Personal data") }
             item {
                 OutlinedTextField(
-                    value = state.firstName,
+                    value = uiState.firstName,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(firstName = new) } },
                     label = { Text("First name") },
                     modifier = Modifier.fillMaxWidth()
@@ -76,7 +83,7 @@ fun AuthScreen(
             }
             item {
                 OutlinedTextField(
-                    value = state.lastName,
+                    value = uiState.lastName,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(lastName = new) } },
                     label = { Text("Last name") },
                     modifier = Modifier.fillMaxWidth()
@@ -87,7 +94,7 @@ fun AuthScreen(
             item { SectionHeader("Address") }
             item {
                 OutlinedTextField(
-                    value = state.country,
+                    value = uiState.country,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(country = new) } },
                     label = { Text("Country") },
                     modifier = Modifier.fillMaxWidth()
@@ -95,7 +102,7 @@ fun AuthScreen(
             }
             item {
                 OutlinedTextField(
-                    value = state.voivodeship,
+                    value = uiState.voivodeship,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(voivodeship = new) } },
                     label = { Text("Voivodeship") },
                     modifier = Modifier.fillMaxWidth()
@@ -103,7 +110,7 @@ fun AuthScreen(
             }
             item {
                 OutlinedTextField(
-                    value = state.city,
+                    value = uiState.city,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(city = new) } },
                     label = { Text("City") },
                     modifier = Modifier.fillMaxWidth()
@@ -111,7 +118,7 @@ fun AuthScreen(
             }
             item {
                 OutlinedTextField(
-                    value = state.postalCode,
+                    value = uiState.postalCode,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(postalCode = new) } },
                     label = { Text("Postal code") },
                     modifier = Modifier.fillMaxWidth()
@@ -119,7 +126,7 @@ fun AuthScreen(
             }
             item {
                 OutlinedTextField(
-                    value = state.street,
+                    value = uiState.street,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(street = new) } },
                     label = { Text("Street") },
                     modifier = Modifier.fillMaxWidth()
@@ -128,13 +135,13 @@ fun AuthScreen(
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedTextField(
-                        value = state.houseNumber,
+                        value = uiState.houseNumber,
                         onValueChange = { new -> viewModel.onValueChange { it.copy(houseNumber = new) } },
                         label = { Text("House no.") },
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedTextField(
-                        value = state.apartNumber,
+                        value = uiState.apartNumber,
                         onValueChange = { new -> viewModel.onValueChange { it.copy(apartNumber = new) } },
                         label = { Text("Apartment no.") },
                         modifier = Modifier.weight(1f)
@@ -146,7 +153,7 @@ fun AuthScreen(
             item { SectionHeader("Contact") }
             item {
                 OutlinedTextField(
-                    value = state.email,
+                    value = uiState.email,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(email = new) } },
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth()
@@ -154,7 +161,7 @@ fun AuthScreen(
             }
             item {
                 OutlinedTextField(
-                    value = state.phone,
+                    value = uiState.phone,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(phone = new) } },
                     label = { Text("Phone number") },
                     modifier = Modifier.fillMaxWidth()
@@ -165,7 +172,7 @@ fun AuthScreen(
             item { SectionHeader("Security") }
             item {
                 OutlinedTextField(
-                    value = state.password,
+                    value = uiState.password,
                     onValueChange = { new -> viewModel.onValueChange { it.copy(password = new) } },
                     label = { Text("Password") },
                     modifier = Modifier.fillMaxWidth(),
@@ -173,10 +180,10 @@ fun AuthScreen(
                 )
             }
 
-            if (state.error != null) {
+            if (uiState.error != null) {
                 item {
                     Text(
-                        text = state.error!!,
+                        text = uiState.error!!,
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -186,16 +193,33 @@ fun AuthScreen(
             item {
                 Button(
                     onClick = { viewModel.register() },
-                    enabled = !state.loading,
+                    enabled = !uiState.loading,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    if (state.loading) {
+                    if (uiState.loading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(20.dp),
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     } else {
                         Text("Register")
+                    }
+                }
+            }
+
+            item {
+                Button(
+                    onClick = { viewModel.login() },
+                    enabled = !uiState.loading,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    if (uiState.loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        Text("Login")
                     }
                 }
             }

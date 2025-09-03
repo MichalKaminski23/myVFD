@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,6 +40,7 @@ import androidx.navigation.NavHostController
 import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.ui.components.AppDrawer
 import com.vfd.client.ui.components.BaseCard
+import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
 import com.vfd.client.utils.ApiResult
 import kotlinx.coroutines.launch
@@ -47,13 +49,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserScreen(
     viewModel: UserViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    authViewModel: AuthViewModel = hiltViewModel() // <-- dodajemy AuthViewModel
 ) {
     val state by viewModel.users.collectAsState()
+    val token by authViewModel.tokenFlow.collectAsState()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
 
     LaunchedEffect(Unit) {
         viewModel.loadAllUsers()
@@ -96,43 +99,80 @@ fun UserScreen(
                 )
             }
         ) { paddingValues ->
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center
+                    .padding(paddingValues)
             ) {
-                when (val result = state) {
-                    is ApiResult.Loading -> {
-                        CircularProgressIndicator()
-                    }
+                // 🔑 Token
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("Aktualny token:", style = MaterialTheme.typography.titleMedium)
+                    Spacer(Modifier.height(8.dp))
+                    Text(token ?: "Brak tokena", style = MaterialTheme.typography.bodySmall)
 
-                    is ApiResult.Success -> {
-                        val pageResponse = result.data
-                        val users = pageResponse?.items ?: emptyList()
-                        if (users.isEmpty()) {
-                            Text("No users found")
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                contentPadding = PaddingValues(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                items(users) { user ->
-                                    UserCard(user)
+                    Spacer(Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            authViewModel.logout()
+                            navController.navigate("auth") {
+                                popUpTo("user") { inclusive = true }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Wyloguj")
+                    }
+                }
+
+                // 🔑 Lista użytkowników
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    when (val result = state) {
+                        is ApiResult.Loading -> {
+                            CircularProgressIndicator()
+                        }
+
+                        is ApiResult.Success -> {
+                            val pageResponse = result.data
+                            val users = pageResponse?.items ?: emptyList()
+                            if (users.isEmpty()) {
+                                Text("No users found")
+                            } else {
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentPadding = PaddingValues(16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    items(users) { user ->
+                                        UserCard(user)
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    is ApiResult.Error -> {
-                        Text("Error: ${result.message}", color = MaterialTheme.colorScheme.error)
+                        is ApiResult.Error -> {
+                            Text(
+                                "Error: ${result.message}",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun UserCard(user: UserDtos.UserResponse, viewModel: UserViewModel = hiltViewModel()) {

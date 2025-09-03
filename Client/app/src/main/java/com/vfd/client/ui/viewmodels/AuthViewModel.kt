@@ -9,7 +9,9 @@ import com.vfd.client.data.repositories.AuthRepository
 import com.vfd.client.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,6 +45,9 @@ class AuthViewModel @Inject constructor(
         _uiState.value = field(_uiState.value)
     }
 
+    val tokenFlow = authRepository.getToken()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
     fun register() {
         val state = _uiState.value
         val user = UserDtos.UserCreate(
@@ -64,8 +69,13 @@ class AuthViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = state.copy(loading = true, error = null, success = false)
+
             when (val result = authRepository.register(user)) {
                 is ApiResult.Success<AuthResponseDto> -> {
+                    val authResponse = result.data
+                    val fullToken = "${authResponse?.tokenType} ${authResponse?.token}"
+                    authRepository.saveToken(fullToken)
+
                     _uiState.value = state.copy(loading = false, success = true)
                 }
 
@@ -76,8 +86,50 @@ class AuthViewModel @Inject constructor(
                     )
                 }
 
-                is ApiResult.Loading<*> -> TODO()
+                is ApiResult.Loading -> {
+                    _uiState.value = state.copy(loading = true)
+                }
             }
+        }
+    }
+
+    fun login() {
+        val state = _uiState.value
+
+        val user = UserDtos.UserLogin(
+            emailAddress = state.email,
+            password = state.password
+        )
+        viewModelScope.launch {
+            _uiState.value = state.copy(loading = true, error = null, success = false)
+
+            when (val result = authRepository.login(user)) {
+                is ApiResult.Success<AuthResponseDto> -> {
+                    val authResponse = result.data
+                    val fullToken = "${authResponse?.tokenType} ${authResponse?.token}"
+                    authRepository.saveToken(fullToken)
+
+                    _uiState.value = state.copy(loading = false, success = true)
+                }
+
+                is ApiResult.Error -> {
+                    _uiState.value = state.copy(
+                        loading = false,
+                        error = result.message ?: "Unknown error"
+                    )
+                }
+
+                is ApiResult.Loading -> {
+                    _uiState.value = state.copy(loading = true)
+                }
+            }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            authRepository.clearToken()
+            _uiState.value = _uiState.value.copy(success = false)
         }
     }
 }

@@ -72,6 +72,8 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation(libs.datastore.preferences)
+
     implementation(libs.hilt.android)
     implementation(libs.androidx.runtime)
     ksp(libs.hilt.compiler)

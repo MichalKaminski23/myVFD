@@ -23,13 +23,7 @@ class MainActivity : ComponentActivity() {
                     startDestination = "auth"
                 ) {
                     composable("auth") {
-                        AuthScreen(
-                            onRegisterSuccess = {
-                                navController.navigate("user") {
-                                    popUpTo("auth") { inclusive = true }
-                                }
-                            }
-                        )
+                        AuthScreen(navController = navController)
                     }
                     composable("user") {
                         UserScreen(navController = navController)
