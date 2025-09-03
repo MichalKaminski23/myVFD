@@ -4,11 +4,13 @@ import com.vfd.client.data.remote.api.UserApi
 import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.PageResponse
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
-    private val userApi: UserApi
-) : BaseRepository() {
+    private val userApi: UserApi,
+    json: Json
+) : BaseRepository(json) {
 
     suspend fun getAllUsers(
         page: Int = 0,
@@ -22,7 +24,7 @@ class UserRepository @Inject constructor(
 
     suspend fun updateUser(
         userId: Int,
-        dto: UserDtos.UserPatch
+        userDto: UserDtos.UserPatch
     ): ApiResult<UserDtos.UserResponse> =
-        safeApiCall { userApi.updateUser(userId, dto) }
+        safeApiCall { userApi.updateUser(userId, userDto) }
 }

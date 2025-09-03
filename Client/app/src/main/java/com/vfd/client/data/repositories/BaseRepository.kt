@@ -5,22 +5,31 @@ import com.vfd.client.utils.ErrorResponse
 import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 
-abstract class BaseRepository {
+abstract class BaseRepository(
+    private val json: Json
+) {
 
     protected suspend fun <T> safeApiCall(apiCall: suspend () -> T): ApiResult<T> {
         return try {
             ApiResult.Success(apiCall())
-        } catch (e: HttpException) {
-            val errorBody = e.response()?.errorBody()?.string()
-            println("ERROR BODY: $errorBody") // 👈 sprawdź co backend zwraca
+
+        } catch (exception: HttpException) {
+            val errorBody = exception.response()?.errorBody()?.string()
+
             val errorResponse = try {
-                errorBody?.let { Json.decodeFromString(ErrorResponse.serializer(), it) }
+                errorBody?.let { json.decodeFromString(ErrorResponse.serializer(), it) }
+
             } catch (_: Exception) {
                 null
             }
-            ApiResult.Error(errorResponse?.message ?: "Server error", e)
-        } catch (e: Exception) {
-            ApiResult.Error("Unexpected error: ${e.message}", e)
+
+            ApiResult.Error(errorResponse?.message ?: "Server error", exception)
+
+//        } catch (exception: IOException) {
+//            ApiResult.Error("Network error: check your connection", exception)
+//
+        } catch (exception: Exception) {
+            ApiResult.Error("Unexpected error: ${exception.message}", exception)
         }
     }
 }
