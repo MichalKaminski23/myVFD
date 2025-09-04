@@ -41,4 +41,7 @@ class User {
     @Column(name = "password_hash", length = 255)
     @JsonIgnore
     var passwordHash: String? = null
+
+    @OneToOne(mappedBy = "user")
+    var firefighter: Firefighter? = null
 }

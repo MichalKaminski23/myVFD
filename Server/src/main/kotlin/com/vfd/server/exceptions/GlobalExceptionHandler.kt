@@ -1,13 +1,12 @@
 package com.vfd.server.exceptions
 
+import com.vfd.server.shared.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 @ControllerAdvice
 class GlobalExceptionHandler {
@@ -42,6 +41,7 @@ class GlobalExceptionHandler {
         val errorMessage = exception.bindingResult.fieldErrors.joinToString { fieldError ->
             "${fieldError.defaultMessage}"
         }
+
         val error = ErrorResponse(
             status = HttpStatus.BAD_REQUEST.value(),
             error = "Bad Request",
@@ -62,11 +62,3 @@ class GlobalExceptionHandler {
         return ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 }
-
-data class ErrorResponse(
-    val status: Int,
-    val error: String,
-    val message: String,
-    val path: String,
-    val timestamp: String = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString()
-)

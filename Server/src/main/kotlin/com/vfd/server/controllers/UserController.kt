@@ -39,6 +39,7 @@ class UserController(
         ]
     )
     @GetMapping
+//    @PreAuthorize("hasRole('ADMIN')")
     fun getAllUsers(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
@@ -85,6 +86,7 @@ class UserController(
         ]
     )
     @PatchMapping("/{userId}")
+    //@PreAuthorize("hasRole('ADMIN') or #userId == principal.user.userId")
     fun updateUser(
         @PathVariable userId: Int,
         @Valid @RequestBody userPatchDto: UserDtos.UserPatch

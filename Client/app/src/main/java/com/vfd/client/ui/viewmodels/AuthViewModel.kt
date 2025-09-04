@@ -45,6 +45,23 @@ class AuthViewModel @Inject constructor(
         _uiState.value = field(_uiState.value)
     }
 
+    init {
+        _uiState.value = AuthUiState(
+            firstName = "Arek",
+            lastName = "Niemusialski",
+            country = "Poland",
+            voivodeship = "Silesian",
+            city = "Strzyzowice",
+            postalCode = "69-420",
+            street = "Belna",
+            houseNumber = "1",
+            apartNumber = "7",
+            email = "arek@test.com",
+            phone = "123123123",
+            password = "Dupa12345!"
+        )
+    }
+
     val tokenFlow = authRepository.getToken()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 

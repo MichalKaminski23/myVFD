@@ -1,6 +1,5 @@
 package com.vfd.server.securities
 
-import io.jsonwebtoken.Jwts
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -22,25 +21,28 @@ class JwtAuthenticationFilter(
         chain: FilterChain
     ) {
         val header = request.getHeader("Authorization")
+
         if (header?.startsWith("Bearer ") == true) {
             val token = header.removePrefix("Bearer ")
-            val claims = Jwts
-                .parserBuilder()
-                .setSigningKey(jwtTokenProvider.key)
-                .build()
-                .parseClaimsJws(token)
-                .body
-            val username = claims.subject
-            if (username != null && SecurityContextHolder.getContext().authentication == null) {
-                val userDetails = customUserDetailsService.loadUserByUsername(username)
-                val auth = UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.authorities
-                ).apply {
-                    details = WebAuthenticationDetailsSource().buildDetails(request)
+
+            if (jwtTokenProvider.validateToken(token)) {
+                val username = jwtTokenProvider.getUsernameFromToken(token)
+
+                if (SecurityContextHolder.getContext().authentication == null) {
+                    val userDetails = customUserDetailsService.loadUserByUsername(username)
+                    val auth = UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.authorities
+                    ).apply {
+                        details = WebAuthenticationDetailsSource().buildDetails(request)
+                    }
+                    SecurityContextHolder.getContext().authentication = auth
                 }
-                SecurityContextHolder.getContext().authentication = auth
+            } else {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired JWT token.")
+                return
             }
         }
+
         chain.doFilter(request, response)
     }
 }

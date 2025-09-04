@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     private val jwtAuthFilter: JwtAuthenticationFilter,
     private val authenticationEntryPoint: CustomAuthenticationEntryPoint,
@@ -38,18 +38,19 @@ class SecurityConfig(
             .authorizeHttpRequests { auth ->
                 auth
 //                    //.requestMatchers("/api/firefighters/**").hasRole(Role.ADMIN.name)
-                    .requestMatchers("/h2-console/**").permitAll()
-                    .requestMatchers("/webjars/**").permitAll()
-                    .requestMatchers(
-                        "/api/auth/**",
-                        "/api/auth/register",
-                        "/api/auth/login",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger-ui.html"
-                    ).permitAll()
-                    .anyRequest().authenticated()
-                //.anyRequest().permitAll() // For testing purposes, allow all requests
+//                    .requestMatchers("/h2-console/**").permitAll()
+//                    .requestMatchers("/webjars/**").permitAll()
+//                    .requestMatchers(
+//                        "/api/auth/**"
+//                    ).permitAll()
+//                    .requestMatchers(
+//                        "/v3/api-docs/**",
+//                        "/swagger-ui/**",
+//                    ).permitAll()
+////                    .anyRequest().authenticated()
+//                    .requestMatchers("/api/users/**").hasRole("ADMIN")
+//                    .anyRequest().authenticated()
+                    .anyRequest().permitAll() // For testing purposes, allow all requests
             }
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling {
