@@ -2,6 +2,7 @@ package com.vfd.client.data.repositories
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -17,6 +18,14 @@ class TokenProvider @Inject constructor(
     }
 
     fun getTokenBlocking(): String? = runBlocking {
-        dataStore.data.firstOrNull()?.get(TOKEN_KEY)
+        val token = dataStore.data.firstOrNull()?.get(TOKEN_KEY)
+        token
     }
+
+    suspend fun saveToken(token: String) {
+        dataStore.edit { prefs ->
+            prefs[TOKEN_KEY] = token
+        }
+    }
+
 }

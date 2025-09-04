@@ -27,4 +27,7 @@ class UserRepository @Inject constructor(
         userDto: UserDtos.UserPatch
     ): ApiResult<UserDtos.UserResponse> =
         safeApiCall { userApi.updateUser(userId, userDto) }
+
+    suspend fun getCurrentUser(): ApiResult<UserDtos.UserResponse> =
+        safeApiCall { userApi.getCurrentUser() }
 }

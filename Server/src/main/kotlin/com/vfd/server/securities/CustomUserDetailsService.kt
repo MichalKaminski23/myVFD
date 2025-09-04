@@ -12,7 +12,7 @@ class CustomUserDetailsService(
 ) : UserDetailsService {
 
     override fun loadUserByUsername(emailAddress: String): UserDetails {
-        val user = userRepository.findByEmailAddress(emailAddress)
+        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
             ?: throw UsernameNotFoundException("User with email $emailAddress not found.")
 
         return UserPrincipal(user)

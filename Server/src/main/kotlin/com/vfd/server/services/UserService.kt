@@ -13,5 +13,7 @@ interface UserService {
 
     fun getUserById(userId: Int): UserDtos.UserResponse
 
+    fun getUserByEmailAddress(emailAddress: String): UserDtos.UserResponse
+
     fun updateUser(userId: Int, userDto: UserDtos.UserPatch): UserDtos.UserResponse
 }

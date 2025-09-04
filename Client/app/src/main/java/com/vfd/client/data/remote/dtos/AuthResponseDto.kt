@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class AuthResponseDto(
 
     val token: String,
-    
+
     val tokenType: String = "Bearer"
 )

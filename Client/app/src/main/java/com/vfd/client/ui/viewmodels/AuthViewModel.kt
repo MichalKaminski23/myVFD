@@ -63,7 +63,7 @@ class AuthViewModel @Inject constructor(
     }
 
     val tokenFlow = authRepository.getToken()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(100000000000000), null)
 
     fun register() {
         val state = _uiState.value
@@ -90,8 +90,10 @@ class AuthViewModel @Inject constructor(
             when (val result = authRepository.register(user)) {
                 is ApiResult.Success<AuthResponseDto> -> {
                     val authResponse = result.data
-                    val fullToken = "${authResponse?.tokenType} ${authResponse?.token}"
-                    authRepository.saveToken(fullToken)
+                    val jwt = authResponse?.token
+                    if (jwt != null) {
+                        authRepository.saveToken(jwt)
+                    }
 
                     _uiState.value = state.copy(loading = false, success = true)
                 }
@@ -112,19 +114,21 @@ class AuthViewModel @Inject constructor(
 
     fun login() {
         val state = _uiState.value
-
         val user = UserDtos.UserLogin(
             emailAddress = state.email,
             password = state.password
         )
+
         viewModelScope.launch {
             _uiState.value = state.copy(loading = true, error = null, success = false)
 
             when (val result = authRepository.login(user)) {
                 is ApiResult.Success<AuthResponseDto> -> {
                     val authResponse = result.data
-                    val fullToken = "${authResponse?.tokenType} ${authResponse?.token}"
-                    authRepository.saveToken(fullToken)
+                    val jwt = authResponse?.token
+                    if (jwt != null) {
+                        authRepository.saveToken(jwt)
+                    }
 
                     _uiState.value = state.copy(loading = false, success = true)
                 }

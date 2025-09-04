@@ -23,6 +23,9 @@ class UserViewModel @Inject constructor(
         MutableStateFlow<ApiResult<PageResponse<UserDtos.UserResponse>>>(ApiResult.Loading())
     val users: StateFlow<ApiResult<PageResponse<UserDtos.UserResponse>>> = _users
 
+    private val _user = MutableStateFlow<UserDtos.UserResponse?>(null)
+    val user: StateFlow<UserDtos.UserResponse?> = _user
+
     private val _name = MutableStateFlow("")
     val name: StateFlow<String> = _name
 
@@ -35,8 +38,24 @@ class UserViewModel @Inject constructor(
 
     fun loadAllUsers(page: Int = 0, size: Int = 20, sort: String = "createdAt,asc") {
         viewModelScope.launch {
-            _users.value = ApiResult.Loading() // 👈 pokaże spinner
-            _users.value = repository.getAllUsers(page, size, sort) // 👈 tu może być Error
+            _users.value = ApiResult.Loading()
+            _users.value = repository.getAllUsers(page, size, sort)
+        }
+    }
+
+    fun getUser() {
+        viewModelScope.launch {
+            when (val result = repository.getCurrentUser()) {
+                is ApiResult.Success -> {
+                    _user.value = result.data
+                }
+
+                is ApiResult.Error -> {
+                }
+
+                else -> {
+                }
+            }
         }
     }
 
@@ -45,7 +64,7 @@ class UserViewModel @Inject constructor(
             when (val result =
                 repository.updateUser(userId, UserDtos.UserPatch(firstName = name.value))) {
                 is ApiResult.Success -> {
-                    _errorMessage.value = null // wyczyść błąd po sukcesie
+                    _errorMessage.value = null
                 }
 
                 is ApiResult.Error -> {

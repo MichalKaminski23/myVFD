@@ -12,5 +12,5 @@ data class AuthResponseDto(
     val token: String,
 
     @field:Schema(description = "Token type used in Authorization header", example = "Bearer")
-    val tokenType: String = "Bearer"
+    val tokenType: String = "Bearer",
 )

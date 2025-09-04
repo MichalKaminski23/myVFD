@@ -10,4 +10,6 @@ interface AuthService {
     fun login(userDto: UserDtos.UserLogin): AuthResponseDto
 
     fun logout()
+
+    fun generateJwt(emailAddress: String, password: String): String
 }

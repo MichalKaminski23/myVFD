@@ -33,7 +33,7 @@ class JwtTokenProvider(
             .compact()
     }
 
-    fun getUsernameFromToken(token: String): String =
+    fun getEmailAddressFromToken(token: String): String =
         Jwts.parserBuilder()
             .setSigningKey(key)
             .build()

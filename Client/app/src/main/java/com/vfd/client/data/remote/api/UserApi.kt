@@ -25,4 +25,7 @@ interface UserApi {
         @Path("userId") userId: Int,
         @Body userDto: UserDtos.UserPatch
     ): UserDtos.UserResponse
+
+    @GET("/api/users/me")
+    suspend fun getCurrentUser(): UserDtos.UserResponse
 }

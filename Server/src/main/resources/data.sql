@@ -25,12 +25,14 @@ VALUES ('Train', 'Training'),
 
 INSERT INTO Users (first_name, last_name, address_id, phone_number, email_address, created_at, logged_at, is_active,
                    password_hash)
-VALUES ('Jan', 'Kowalski', 1, '+48 123 456 789', 'jan.kowalski@example.com', '2025-01-01 08:00:00',
-        '2025-07-20 12:00:00', TRUE, 'hash1'),
-       ('Anna', 'Nowak', 2, '+48 987 654 321', 'anna.nowak@example.com', '2025-02-15 09:30:00', '2025-07-22 16:45:00',
-        TRUE, 'hash2'),
-       ('Piotr', 'Wisniewski', 3, '+48 111 222 333', 'piotr.wisniewski@example.com', '2025-03-10 10:15:00',
-        '2025-07-23 09:20:00', FALSE, 'hash3');
+VALUES ('Jan', 'Kowalski', 1, '+48123456789', 'jan.kowalski@test.com', '2025-01-01 08:00:00',
+        '2025-07-20 12:00:00', TRUE, 'JanKowalski!'),
+       ('Anna', 'Nowak', 2, '+48987654321', 'anna.nowak@test.com', '2025-02-15 09:30:00', '2025-07-22 16:45:00',
+        TRUE, 'AnnaNowak!'),
+       ('Piotr', 'Wisniewski', 3, '+48111222333', 'piotr.wisniewski@test.com', '2025-03-10 10:15:00',
+        '2025-07-23 09:20:00', FALSE, 'PiotrWisniewski!'),
+       ('Katarzyna', 'Wojcik', 1, '+48444555666', 'katarzyna.wojscik@test.com;', '2025-04-05 11:45:00',
+        '2025-07-24 14:30:00', TRUE, 'KatarzynaWojcik!');
 
 INSERT INTO Firedepartments (name, address_id, is_NRFS)
 VALUES ('OSP Strzyzowice', 1, TRUE),

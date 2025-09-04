@@ -22,6 +22,4 @@ class UserPrincipal(
     override fun isAccountNonLocked() = true
     override fun isCredentialsNonExpired() = true
     override fun isEnabled() = user.active
-
-    fun getUser() = user
 }

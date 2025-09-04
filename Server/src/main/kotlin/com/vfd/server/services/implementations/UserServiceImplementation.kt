@@ -58,6 +58,15 @@ class UserServiceImplementation(
         return userMapper.toUserDto(user)
     }
 
+    @Transactional(readOnly = true)
+    override fun getUserByEmailAddress(emailAddress: String): UserDtos.UserResponse {
+
+        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
+            ?: throw ResourceNotFoundException("User", "email address", emailAddress)
+
+        return userMapper.toUserDto(user)
+    }
+
     @Transactional
     override fun updateUser(userId: Int, userDto: UserDtos.UserPatch): UserDtos.UserResponse {
 

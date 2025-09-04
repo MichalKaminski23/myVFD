@@ -48,18 +48,30 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen(
-    viewModel: UserViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel(),
     navController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel() // <-- dodajemy AuthViewModel
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    val state by viewModel.users.collectAsState()
+    val state by userViewModel.users.collectAsState()
     val token by authViewModel.tokenFlow.collectAsState()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadAllUsers()
+    val user = userViewModel.user.collectAsState().value
+
+    LaunchedEffect(token) {
+        if (!token.isNullOrBlank()) {
+            kotlinx.coroutines.delay(300)
+            userViewModel.getUser()
+        }
+    }
+
+    LaunchedEffect(token) {
+        if (!token.isNullOrBlank()) {
+            kotlinx.coroutines.delay(300)
+            userViewModel.loadAllUsers()
+        }
     }
 
     ModalNavigationDrawer(
@@ -89,7 +101,7 @@ fun UserScreen(
                         }
                     },
                     actions = {
-                        IconButton(onClick = { viewModel.loadAllUsers() }) {
+                        IconButton(onClick = { userViewModel.loadAllUsers(); userViewModel.getUser() }) {
                             Icon(
                                 imageVector = Icons.Default.Refresh,
                                 contentDescription = "Odśwież"
@@ -104,7 +116,6 @@ fun UserScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // 🔑 Token
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -130,7 +141,38 @@ fun UserScreen(
                     }
                 }
 
-                // 🔑 Lista użytkowników
+                if (user != null) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            "Welcome ${user.firstName} ${user.lastName}",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        Text(
+                            "Email: ${user.emailAddress}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                } else if (state is ApiResult.Loading) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Brak danych użytkownika", color = MaterialTheme.colorScheme.error)
+                    }
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -198,7 +240,7 @@ fun EditUserNameScreen(viewModel: UserViewModel, userId: Int) {
             value = name,
             onValueChange = { viewModel.onNameChange(it) },
             label = { Text("Imię") },
-            isError = errorMessage != null // podświetli TextField na czerwono jeśli jest błąd
+            isError = errorMessage != null
         )
 
         if (errorMessage != null) {
@@ -217,4 +259,3 @@ fun EditUserNameScreen(viewModel: UserViewModel, userId: Int) {
         }
     }
 }
-

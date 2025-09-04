@@ -21,28 +21,21 @@ class JwtAuthenticationFilter(
         chain: FilterChain
     ) {
         val header = request.getHeader("Authorization")
-
         if (header?.startsWith("Bearer ") == true) {
-            val token = header.removePrefix("Bearer ")
+            val token = header.removePrefix("Bearer ").trim()
 
             if (jwtTokenProvider.validateToken(token)) {
-                val username = jwtTokenProvider.getUsernameFromToken(token)
+                val emailAddress = jwtTokenProvider.getEmailAddressFromToken(token)
+                val userDetails = customUserDetailsService.loadUserByUsername(emailAddress)
 
-                if (SecurityContextHolder.getContext().authentication == null) {
-                    val userDetails = customUserDetailsService.loadUserByUsername(username)
-                    val auth = UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.authorities
-                    ).apply {
-                        details = WebAuthenticationDetailsSource().buildDetails(request)
-                    }
-                    SecurityContextHolder.getContext().authentication = auth
-                }
+                val auth = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+                auth.details = WebAuthenticationDetailsSource().buildDetails(request)
+                SecurityContextHolder.getContext().authentication = auth
             } else {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired JWT token.")
                 return
             }
         }
-
         chain.doFilter(request, response)
     }
 }

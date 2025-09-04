@@ -1,6 +1,7 @@
 package com.vfd.server.controllers
 
 import com.vfd.server.dtos.UserDtos
+import com.vfd.server.mappers.UserMapper
 import com.vfd.server.services.UserService
 import com.vfd.server.shared.PageResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -10,6 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.slf4j.LoggerFactory
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -18,8 +23,10 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/users")
 class UserController(
-    private val userService: UserService
+    private val userService: UserService,
+    private val userMapper: UserMapper
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @Operation(
         summary = "List users (paged)",
@@ -39,7 +46,7 @@ class UserController(
         ]
     )
     @GetMapping
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     fun getAllUsers(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
@@ -92,4 +99,26 @@ class UserController(
         @Valid @RequestBody userPatchDto: UserDtos.UserPatch
     ): UserDtos.UserResponse =
         userService.updateUser(userId, userPatchDto)
+
+    @Operation(
+        summary = "Get current user",
+        description = "Returns the currently authenticated user based on the provided JWT token."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Current user retrieved",
+                content = [Content(schema = Schema(implementation = UserDtos.UserResponse::class))]
+            ),
+            ApiResponse(responseCode = "401", description = "Unauthorized", content = [Content()]),
+            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+        ]
+    )
+    @GetMapping("/me")
+    fun getMe(@AuthenticationPrincipal principal: UserDetails): UserDtos.UserResponse {
+        val emailAddress = principal.username
+
+        return userService.getUserByEmailAddress(emailAddress)
+    }
 }

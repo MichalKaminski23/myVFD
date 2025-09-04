@@ -31,32 +31,25 @@ class SecurityConfig(
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { it.disable() }
-            .sessionManagement { session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            }
-            .headers { h -> h.frameOptions { it.sameOrigin() } }
-            .authorizeHttpRequests { auth ->
-                auth
-//                    //.requestMatchers("/api/firefighters/**").hasRole(Role.ADMIN.name)
-//                    .requestMatchers("/h2-console/**").permitAll()
-//                    .requestMatchers("/webjars/**").permitAll()
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .authorizeHttpRequests {
+                it
 //                    .requestMatchers(
-//                        "/api/auth/**"
+//                        "/api/auth/**",
+//                        "/swagger-ui/**", "/v3/api-docs/**",
+//                        "/h2-console/**",
+//                        "/error"
 //                    ).permitAll()
-//                    .requestMatchers(
-//                        "/v3/api-docs/**",
-//                        "/swagger-ui/**",
-//                    ).permitAll()
-////                    .anyRequest().authenticated()
-//                    .requestMatchers("/api/users/**").hasRole("ADMIN")
 //                    .anyRequest().authenticated()
-                    .anyRequest().permitAll() // For testing purposes, allow all requests
+                    .anyRequest().permitAll()
             }
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
             .exceptionHandling {
                 it.authenticationEntryPoint(authenticationEntryPoint)
                 it.accessDeniedHandler(accessDeniedHandler)
             }
+            .headers { it.frameOptions { opt -> opt.disable() } }
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
+
         return http.build()
     }
 }
