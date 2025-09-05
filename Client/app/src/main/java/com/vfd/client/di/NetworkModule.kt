@@ -42,13 +42,6 @@ object NetworkModule {
         encodeDefaults = true
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
-//        HttpLoggingInterceptor().apply {
-//            level = HttpLoggingInterceptor.Level.BODY
-//        }
-
     @Provides
     @Singleton
     fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {

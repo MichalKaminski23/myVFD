@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -23,37 +22,31 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.ui.components.SectionHeader
 import com.vfd.client.ui.viewmodels.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuthScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
+fun RegisterScreen(
+    authViewModel: AuthViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val uiState by viewModel.uiState.collectAsState()
 
-    // jeśli sukces → przenieś na ekran user
-    LaunchedEffect(uiState.success) {
-        if (uiState.success) {
-            navController.navigate("user") {
-                popUpTo("auth") { inclusive = true }
+    val registerUiState by authViewModel.registerUiState.collectAsState()
+
+    LaunchedEffect(registerUiState.success) {
+        if (registerUiState.success) {
+            navController.navigate("meScreen") {
+                popUpTo("registerScreen") { inclusive = true }
             }
         }
     }
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Authentication", style = MaterialTheme.typography.titleLarge) }
-            )
-        }
-    ) { paddingValues ->
+    Scaffold { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -64,70 +57,88 @@ fun AuthScreen(
         ) {
             item {
                 Text(
-                    "Create a new account or log in",
+                    "Create a new account",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.height(16.dp))
             }
 
-            // Dane osobowe
             item { SectionHeader("Personal data") }
             item {
                 OutlinedTextField(
-                    value = uiState.firstName,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(firstName = new) } },
+                    value = registerUiState.firstName,
+                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(firstName = new) } },
                     label = { Text("First name") },
+                    isError = registerUiState.fieldErrors.containsKey("firstName"),
                     modifier = Modifier.fillMaxWidth()
                 )
+                if (registerUiState.fieldErrors["firstName"] != null) {
+                    Text(
+                        text = registerUiState.fieldErrors["firstName"]!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
             item {
                 OutlinedTextField(
-                    value = uiState.lastName,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(lastName = new) } },
+                    value = registerUiState.lastName,
+                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(lastName = new) } },
                     label = { Text("Last name") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // Adres
             item { SectionHeader("Address") }
             item {
                 OutlinedTextField(
-                    value = uiState.country,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(country = new) } },
+                    value = registerUiState.country,
+                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(country = new) } },
                     label = { Text("Country") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
             item {
                 OutlinedTextField(
-                    value = uiState.voivodeship,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(voivodeship = new) } },
+                    value = registerUiState.voivodeship,
+                    onValueChange = { new ->
+                        authViewModel.onRegisterValueChange {
+                            it.copy(
+                                voivodeship = new
+                            )
+                        }
+                    },
                     label = { Text("Voivodeship") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
             item {
                 OutlinedTextField(
-                    value = uiState.city,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(city = new) } },
+                    value = registerUiState.city,
+                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(city = new) } },
                     label = { Text("City") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
             item {
                 OutlinedTextField(
-                    value = uiState.postalCode,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(postalCode = new) } },
+                    value = registerUiState.postalCode,
+                    onValueChange = { new ->
+                        authViewModel.onRegisterValueChange {
+                            it.copy(
+                                postalCode = new
+                            )
+                        }
+                    },
                     label = { Text("Postal code") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
             item {
                 OutlinedTextField(
-                    value = uiState.street,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(street = new) } },
+                    value = registerUiState.street,
+                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(street = new) } },
                     label = { Text("Street") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -135,55 +146,85 @@ fun AuthScreen(
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedTextField(
-                        value = uiState.houseNumber,
-                        onValueChange = { new -> viewModel.onValueChange { it.copy(houseNumber = new) } },
+                        value = registerUiState.houseNumber,
+                        onValueChange = { new ->
+                            authViewModel.onRegisterValueChange {
+                                it.copy(
+                                    houseNumber = new
+                                )
+                            }
+                        },
                         label = { Text("House no.") },
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedTextField(
-                        value = uiState.apartNumber,
-                        onValueChange = { new -> viewModel.onValueChange { it.copy(apartNumber = new) } },
+                        value = registerUiState.apartNumber,
+                        onValueChange = { new ->
+                            authViewModel.onRegisterValueChange {
+                                it.copy(
+                                    apartNumber = new
+                                )
+                            }
+                        },
                         label = { Text("Apartment no.") },
                         modifier = Modifier.weight(1f)
                     )
                 }
             }
 
-            // Kontakt
             item { SectionHeader("Contact") }
             item {
                 OutlinedTextField(
-                    value = uiState.email,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(email = new) } },
+                    value = registerUiState.emailAddress,
+                    onValueChange = { new ->
+                        authViewModel.onRegisterValueChange {
+                            it.copy(
+                                emailAddress = new
+                            )
+                        }
+                    },
                     label = { Text("Email") },
+                    isError = registerUiState.fieldErrors.containsKey("emailAddress"),
                     modifier = Modifier.fillMaxWidth()
                 )
+                if (registerUiState.fieldErrors["emailAddress"] != null) {
+                    Text(
+                        text = registerUiState.fieldErrors["emailAddress"]!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
             item {
                 OutlinedTextField(
-                    value = uiState.phone,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(phone = new) } },
+                    value = registerUiState.phoneNumber,
+                    onValueChange = { new ->
+                        authViewModel.onRegisterValueChange {
+                            it.copy(
+                                phoneNumber = new
+                            )
+                        }
+                    },
                     label = { Text("Phone number") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // Hasło
             item { SectionHeader("Security") }
             item {
                 OutlinedTextField(
-                    value = uiState.password,
-                    onValueChange = { new -> viewModel.onValueChange { it.copy(password = new) } },
+                    value = registerUiState.password,
+                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(password = new) } },
                     label = { Text("Password") },
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = PasswordVisualTransformation()
                 )
             }
 
-            if (uiState.error != null) {
+            if (registerUiState.error != null) {
                 item {
                     Text(
-                        text = uiState.error!!,
+                        text = registerUiState.error!!,
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -192,11 +233,11 @@ fun AuthScreen(
 
             item {
                 Button(
-                    onClick = { viewModel.register() },
-                    enabled = !uiState.loading,
+                    onClick = { authViewModel.register() },
+                    enabled = !registerUiState.loading,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    if (uiState.loading) {
+                    if (registerUiState.loading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(20.dp),
                             color = MaterialTheme.colorScheme.onPrimary
@@ -206,34 +247,6 @@ fun AuthScreen(
                     }
                 }
             }
-
-            item {
-                Button(
-                    onClick = { viewModel.login() },
-                    enabled = !uiState.loading,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (uiState.loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Text("Login")
-                    }
-                }
-            }
         }
     }
-}
-
-@Composable
-private fun SectionHeader(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp, bottom = 4.dp)
-    )
 }

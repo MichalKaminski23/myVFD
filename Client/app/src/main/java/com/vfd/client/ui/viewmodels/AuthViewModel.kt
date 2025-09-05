@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class AuthUiState(
+data class RegisterUiState(
     val firstName: String = "",
     val lastName: String = "",
     val country: String = "",
@@ -25,8 +25,17 @@ data class AuthUiState(
     val street: String = "",
     val houseNumber: String = "",
     val apartNumber: String = "",
-    val email: String = "",
-    val phone: String = "",
+    val emailAddress: String = "",
+    val phoneNumber: String = "",
+    val password: String = "",
+    val loading: Boolean = false,
+    val error: String? = null,
+    val fieldErrors: Map<String, String> = emptyMap(),
+    val success: Boolean = false
+)
+
+data class LoginUiState(
+    val emailAddress: String = "",
     val password: String = "",
     val loading: Boolean = false,
     val error: String? = null,
@@ -38,15 +47,22 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AuthUiState())
-    val uiState = _uiState.asStateFlow()
+    private val _registerUiState = MutableStateFlow(RegisterUiState())
+    val registerUiState = _registerUiState.asStateFlow()
 
-    fun onValueChange(field: (AuthUiState) -> AuthUiState) {
-        _uiState.value = field(_uiState.value)
+    private val _loginUiState = MutableStateFlow(LoginUiState())
+    val loginUiState = _loginUiState.asStateFlow()
+
+    fun onRegisterValueChange(field: (RegisterUiState) -> RegisterUiState) {
+        _registerUiState.value = field(_registerUiState.value)
+    }
+
+    fun onLoginValueChange(field: (LoginUiState) -> LoginUiState) {
+        _loginUiState.value = field(_loginUiState.value)
     }
 
     init {
-        _uiState.value = AuthUiState(
+        _registerUiState.value = RegisterUiState(
             firstName = "Arek",
             lastName = "Niemusialski",
             country = "Poland",
@@ -56,38 +72,44 @@ class AuthViewModel @Inject constructor(
             street = "Belna",
             houseNumber = "1",
             apartNumber = "7",
-            email = "arek@test.com",
-            phone = "123123123",
+            emailAddress = "arek@test.com",
+            phoneNumber = "123123123",
+            password = "Dupa12345!"
+        )
+
+        _loginUiState.value = LoginUiState(
+            emailAddress = "arek@test.com",
             password = "Dupa12345!"
         )
     }
 
-    val tokenFlow = authRepository.getToken()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(100000000000000), null)
+    val token = authRepository.getToken()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(100000000), null)
 
     fun register() {
-        val state = _uiState.value
-        val user = UserDtos.UserCreate(
-            firstName = state.firstName,
-            lastName = state.lastName,
+        val registerState = _registerUiState.value
+        val newUser = UserDtos.UserCreate(
+            firstName = registerState.firstName,
+            lastName = registerState.lastName,
             address = AddressDtos.AddressCreate(
-                country = state.country,
-                voivodeship = state.voivodeship,
-                city = state.city,
-                postalCode = state.postalCode,
-                street = state.street,
-                houseNumber = state.houseNumber,
-                apartNumber = state.apartNumber.ifBlank { null }
+                country = registerState.country,
+                voivodeship = registerState.voivodeship,
+                city = registerState.city,
+                postalCode = registerState.postalCode,
+                street = registerState.street,
+                houseNumber = registerState.houseNumber,
+                apartNumber = registerState.apartNumber.ifBlank { null }
             ),
-            emailAddress = state.email,
-            phoneNumber = state.phone,
-            password = state.password
+            emailAddress = registerState.emailAddress,
+            phoneNumber = registerState.phoneNumber,
+            password = registerState.password
         )
 
         viewModelScope.launch {
-            _uiState.value = state.copy(loading = true, error = null, success = false)
+            _registerUiState.value =
+                registerState.copy(loading = true, error = null, success = false)
 
-            when (val result = authRepository.register(user)) {
+            when (val result = authRepository.register(newUser)) {
                 is ApiResult.Success<AuthResponseDto> -> {
                     val authResponse = result.data
                     val jwt = authResponse?.token
@@ -95,32 +117,33 @@ class AuthViewModel @Inject constructor(
                         authRepository.saveToken(jwt)
                     }
 
-                    _uiState.value = state.copy(loading = false, success = true)
+                    _registerUiState.value = registerState.copy(loading = false, success = true)
                 }
 
                 is ApiResult.Error -> {
-                    _uiState.value = state.copy(
+                    _registerUiState.value = registerState.copy(
                         loading = false,
-                        error = result.message ?: "Unknown error"
+                        error = if (result.fieldErrors.isEmpty()) result.message else null,
+                        fieldErrors = result.fieldErrors
                     )
                 }
 
                 is ApiResult.Loading -> {
-                    _uiState.value = state.copy(loading = true)
+                    _registerUiState.value = registerState.copy(loading = true)
                 }
             }
         }
     }
 
     fun login() {
-        val state = _uiState.value
+        val state = _loginUiState.value
         val user = UserDtos.UserLogin(
-            emailAddress = state.email,
+            emailAddress = state.emailAddress,
             password = state.password
         )
 
         viewModelScope.launch {
-            _uiState.value = state.copy(loading = true, error = null, success = false)
+            _loginUiState.value = state.copy(loading = true, error = null, success = false)
 
             when (val result = authRepository.login(user)) {
                 is ApiResult.Success<AuthResponseDto> -> {
@@ -130,18 +153,18 @@ class AuthViewModel @Inject constructor(
                         authRepository.saveToken(jwt)
                     }
 
-                    _uiState.value = state.copy(loading = false, success = true)
+                    _loginUiState.value = state.copy(loading = false, success = true)
                 }
 
                 is ApiResult.Error -> {
-                    _uiState.value = state.copy(
+                    _loginUiState.value = state.copy(
                         loading = false,
                         error = result.message ?: "Unknown error"
                     )
                 }
 
                 is ApiResult.Loading -> {
-                    _uiState.value = state.copy(loading = true)
+                    _loginUiState.value = state.copy(loading = true)
                 }
             }
         }
@@ -150,7 +173,8 @@ class AuthViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             authRepository.clearToken()
-            _uiState.value = _uiState.value.copy(success = false)
+            _loginUiState.value = _loginUiState.value.copy(success = false)
+            _registerUiState.value = _registerUiState.value.copy(success = false)
         }
     }
 }

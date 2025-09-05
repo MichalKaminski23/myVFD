@@ -29,7 +29,7 @@ object UserDtos {
         @field:Schema(description = "User's address")
         val address: AddressDtos.AddressCreate,
 
-        @field:NotBlank(message = "Name must not be blank.")
+        @field:NotBlank(message = "Email address must not be blank.")
         @field:Size(max = 128, message = "Email address must be at most 128 characters.")
         @field:Email(message = "Email must be a valid email address.")
         @field:Schema(description = "User's email address", example = "arek.kozak@test.com")

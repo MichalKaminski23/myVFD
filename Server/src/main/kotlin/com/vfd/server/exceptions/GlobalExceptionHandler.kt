@@ -1,8 +1,10 @@
 package com.vfd.server.exceptions
 
 import com.vfd.server.shared.ErrorResponse
+import com.vfd.server.shared.ValidationErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -37,18 +39,30 @@ class GlobalExceptionHandler {
     fun handleValidationException(
         exception: MethodArgumentNotValidException,
         request: WebRequest
-    ): ResponseEntity<ErrorResponse> {
-        val errorMessage = exception.bindingResult.fieldErrors.joinToString { fieldError ->
-            "${fieldError.defaultMessage}"
+    ): ResponseEntity<ValidationErrorResponse> {
+        val errors = exception.bindingResult.fieldErrors.associate { fieldError ->
+            fieldError.field to (fieldError.defaultMessage ?: "Invalid value")
         }
 
-        val error = ErrorResponse(
+        val errorResponse = ValidationErrorResponse(
             status = HttpStatus.BAD_REQUEST.value(),
             error = "Bad Request",
-            message = errorMessage,
+            messages = errors,
+            path = request.getDescription(false).replace("uri=", ""),
+        )
+
+        return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(BadCredentialsException::class)
+    fun handleBadCredentials(exception: BadCredentialsException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            status = HttpStatus.UNAUTHORIZED.value(),
+            error = "Unauthorized",
+            message = "Invalid password",
             path = request.getDescription(false).replace("uri=", "")
         )
-        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(error, HttpStatus.UNAUTHORIZED)
     }
 
     @ExceptionHandler(Exception::class)

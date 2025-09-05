@@ -1,5 +1,6 @@
 package com.vfd.client.data.repositories
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -9,7 +10,9 @@ import com.vfd.client.data.remote.dtos.AuthResponseDto
 import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.utils.ApiResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
@@ -38,8 +41,16 @@ class AuthRepository @Inject constructor(
         dataStore.edit { it[TOKEN_KEY] = fullToken }
     }
 
-    suspend fun clearToken() {
-        dataStore.edit { it.remove(TOKEN_KEY) }
+    fun printToken() {
+        runBlocking {
+            val token = dataStore.data.firstOrNull()?.get(TOKEN_KEY)
+            Log.d("TokenProvider", "Current token: $token")
+        }
     }
 
+    suspend fun clearToken() {
+        printToken()
+        dataStore.edit { it.remove(TOKEN_KEY) }
+        printToken()
+    }
 }

@@ -5,73 +5,88 @@ import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.data.repositories.UserRepository
 import com.vfd.client.utils.ApiResult
-import com.vfd.client.utils.PageResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import javax.inject.Inject
+
+data class UserUiState(
+    val users: List<UserDtos.UserResponse> = emptyList(),
+    val page: Int = 0,
+    val totalPages: Int = 0,
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
+)
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val repository: UserRepository,
-    private val json: Json
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _users =
-        MutableStateFlow<ApiResult<PageResponse<UserDtos.UserResponse>>>(ApiResult.Loading())
-    val users: StateFlow<ApiResult<PageResponse<UserDtos.UserResponse>>> = _users
+    private val _userUiState = MutableStateFlow(UserUiState())
+    val userUiState = _userUiState.asStateFlow()
 
     private val _user = MutableStateFlow<UserDtos.UserResponse?>(null)
     val user: StateFlow<UserDtos.UserResponse?> = _user
 
-    private val _name = MutableStateFlow("")
-    val name: StateFlow<String> = _name
-
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
-
-    fun onNameChange(newName: String) {
-        _name.value = newName
-    }
-
-    fun loadAllUsers(page: Int = 0, size: Int = 20, sort: String = "createdAt,asc") {
+    fun loadAllUsers(page: Int = 0, size: Int = 20) {
         viewModelScope.launch {
-            _users.value = ApiResult.Loading()
-            _users.value = repository.getAllUsers(page, size, sort)
-        }
-    }
+            _userUiState.value = _userUiState.value.copy(isLoading = true, errorMessage = null)
 
-    fun getUser() {
-        viewModelScope.launch {
-            when (val result = repository.getCurrentUser()) {
+            when (val result = userRepository.getAllUsers(page, size)) {
+
                 is ApiResult.Success -> {
-                    _user.value = result.data
+                    val response = result.data!!
+                    _userUiState.value = _userUiState.value.copy(
+                        users = response.items,
+                        page = response.page,
+                        totalPages = response.totalPages,
+                        isLoading = false,
+                        errorMessage = null
+                    )
                 }
 
                 is ApiResult.Error -> {
+                    _userUiState.value = _userUiState.value.copy(
+                        isLoading = false,
+                        errorMessage = result.message ?: "Failed to load users"
+                    )
                 }
 
-                else -> {
+                is ApiResult.Loading -> {
+                    _userUiState.value = _userUiState.value.copy(isLoading = true)
                 }
             }
         }
     }
 
-    fun updateUserName(userId: Int) {
+    fun getMyself() {
         viewModelScope.launch {
-            when (val result =
-                repository.updateUser(userId, UserDtos.UserPatch(firstName = name.value))) {
+            _userUiState.value = _userUiState.value.copy(isLoading = true, errorMessage = null)
+
+            when (val result = userRepository.getCurrentUser()) {
+
                 is ApiResult.Success -> {
-                    _errorMessage.value = null
+                    _user.value = result.data
+                    _userUiState.value = _userUiState.value.copy(
+                        isLoading = false,
+                        errorMessage = null
+                    )
                 }
 
                 is ApiResult.Error -> {
-                    _errorMessage.value = result.message
+                    _user.value = null
+                    _userUiState.value = _userUiState.value.copy(
+                        isLoading = false,
+                        errorMessage = result.message ?: "Failed to load current user"
+                    )
                 }
 
-                else -> {}
+                is ApiResult.Loading -> {
+                    _userUiState.value = _userUiState.value.copy(isLoading = true)
+                }
             }
         }
     }
