@@ -1,6 +1,7 @@
 package com.vfd.client.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,13 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.ui.components.FormTextField
 import com.vfd.client.ui.components.SectionHeader
 import com.vfd.client.ui.viewmodels.AuthViewModel
 
@@ -33,9 +34,9 @@ import com.vfd.client.ui.viewmodels.AuthViewModel
 @Composable
 fun RegisterScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    modifier: Modifier = Modifier
 ) {
-
     val registerUiState by authViewModel.registerUiState.collectAsState()
 
     LaunchedEffect(registerUiState.success) {
@@ -46,206 +47,137 @@ fun RegisterScreen(
         }
     }
 
-    Scaffold { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Create a new account",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(16.dp))
+
+        SectionHeader("Personal data")
+        FormTextField(
+            value = registerUiState.firstName,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(firstName = new) } },
+            label = "First name",
+            errorMessage = registerUiState.fieldErrors["firstName"]
+        )
+        FormTextField(
+            value = registerUiState.lastName,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(lastName = new) } },
+            label = "Last name",
+            errorMessage = registerUiState.fieldErrors["lastName"]
+        )
+
+        SectionHeader("Address")
+        FormTextField(
+            value = registerUiState.country,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(country = new) } },
+            label = "Country",
+            errorMessage = registerUiState.fieldErrors["address.country"]
+        )
+
+
+        FormTextField(
+            value = registerUiState.voivodeship,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(voivodeship = new) } },
+            label = "Voivodeship",
+            errorMessage = registerUiState.fieldErrors["address.voivodeship"]
+        )
+
+        FormTextField(
+            value = registerUiState.city,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(city = new) } },
+            label = "City",
+            errorMessage = registerUiState.fieldErrors["address.city"]
+        )
+
+        FormTextField(
+            value = registerUiState.postalCode,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(postalCode = new) } },
+            label = "Postal code",
+            errorMessage = registerUiState.fieldErrors["address.postalCode"]
+        )
+
+        FormTextField(
+            value = registerUiState.street,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(street = new) } },
+            label = "Street",
+            errorMessage = registerUiState.fieldErrors["address.street"]
+        )
+
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            FormTextField(
+                value = registerUiState.houseNumber,
+                onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(houseNumber = new) } },
+                label = "House number",
+                errorMessage = registerUiState.fieldErrors["address.houseNumber"],
+                modifier = Modifier.weight(1f)
+            )
+            FormTextField(
+                value = registerUiState.apartNumber,
+                onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(apartNumber = new) } },
+                label = "Apartment number",
+                errorMessage = registerUiState.fieldErrors["address.apartNumber"],
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        SectionHeader("Contact")
+        FormTextField(
+            value = registerUiState.emailAddress,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(emailAddress = new) } },
+            label = "Email address",
+            errorMessage = registerUiState.fieldErrors["emailAddress"]
+        )
+
+        FormTextField(
+            value = registerUiState.phoneNumber,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(phoneNumber = new) } },
+            label = "Phone number",
+            errorMessage = registerUiState.fieldErrors["phoneNumber"]
+        )
+
+        SectionHeader("Security")
+        FormTextField(
+            value = registerUiState.password,
+            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(password = new) } },
+            label = "Password",
+            errorMessage = registerUiState.fieldErrors["password"],
+            visualTransformation = PasswordVisualTransformation()
+        )
+
+
+        if (registerUiState.error != null) {
+            Text(
+                text = registerUiState.error!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, top = 2.dp)
+            )
+        }
+
+        Button(
+            onClick = { authViewModel.register() },
+            enabled = !registerUiState.loading,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            item {
-                Text(
-                    "Create a new account",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+            if (registerUiState.loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
-                Spacer(Modifier.height(16.dp))
-            }
-
-            item { SectionHeader("Personal data") }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.firstName,
-                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(firstName = new) } },
-                    label = { Text("First name") },
-                    isError = registerUiState.fieldErrors.containsKey("firstName"),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                if (registerUiState.fieldErrors["firstName"] != null) {
-                    Text(
-                        text = registerUiState.fieldErrors["firstName"]!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.lastName,
-                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(lastName = new) } },
-                    label = { Text("Last name") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            item { SectionHeader("Address") }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.country,
-                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(country = new) } },
-                    label = { Text("Country") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.voivodeship,
-                    onValueChange = { new ->
-                        authViewModel.onRegisterValueChange {
-                            it.copy(
-                                voivodeship = new
-                            )
-                        }
-                    },
-                    label = { Text("Voivodeship") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.city,
-                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(city = new) } },
-                    label = { Text("City") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.postalCode,
-                    onValueChange = { new ->
-                        authViewModel.onRegisterValueChange {
-                            it.copy(
-                                postalCode = new
-                            )
-                        }
-                    },
-                    label = { Text("Postal code") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.street,
-                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(street = new) } },
-                    label = { Text("Street") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            item {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    OutlinedTextField(
-                        value = registerUiState.houseNumber,
-                        onValueChange = { new ->
-                            authViewModel.onRegisterValueChange {
-                                it.copy(
-                                    houseNumber = new
-                                )
-                            }
-                        },
-                        label = { Text("House no.") },
-                        modifier = Modifier.weight(1f)
-                    )
-                    OutlinedTextField(
-                        value = registerUiState.apartNumber,
-                        onValueChange = { new ->
-                            authViewModel.onRegisterValueChange {
-                                it.copy(
-                                    apartNumber = new
-                                )
-                            }
-                        },
-                        label = { Text("Apartment no.") },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-
-            item { SectionHeader("Contact") }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.emailAddress,
-                    onValueChange = { new ->
-                        authViewModel.onRegisterValueChange {
-                            it.copy(
-                                emailAddress = new
-                            )
-                        }
-                    },
-                    label = { Text("Email") },
-                    isError = registerUiState.fieldErrors.containsKey("emailAddress"),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                if (registerUiState.fieldErrors["emailAddress"] != null) {
-                    Text(
-                        text = registerUiState.fieldErrors["emailAddress"]!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.phoneNumber,
-                    onValueChange = { new ->
-                        authViewModel.onRegisterValueChange {
-                            it.copy(
-                                phoneNumber = new
-                            )
-                        }
-                    },
-                    label = { Text("Phone number") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            item { SectionHeader("Security") }
-            item {
-                OutlinedTextField(
-                    value = registerUiState.password,
-                    onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(password = new) } },
-                    label = { Text("Password") },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = PasswordVisualTransformation()
-                )
-            }
-
-            if (registerUiState.error != null) {
-                item {
-                    Text(
-                        text = registerUiState.error!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-
-            item {
-                Button(
-                    onClick = { authViewModel.register() },
-                    enabled = !registerUiState.loading,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (registerUiState.loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Text("Register")
-                    }
-                }
+            } else {
+                Text("Register")
             }
         }
     }

@@ -1,18 +1,19 @@
 package com.vfd.client.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,67 +42,55 @@ fun LoginScreen(
         }
     }
 
-    Scaffold { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Login to your account",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(16.dp))
+        OutlinedTextField(
+            value = loginUiState.emailAddress,
+            onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(emailAddress = new) } },
+            label = { Text("Email address") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = loginUiState.password,
+            onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(password = new) } },
+            label = { Text("Password") },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation()
+        )
+        if (loginUiState.error != null) {
+            Text(
+                text = loginUiState.error!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, top = 2.dp)
+            )
+        }
+        Button(
+            onClick = { authViewModel.login() },
+            enabled = !loginUiState.loading,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            item {
-                Text(
-                    "Login to your account",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+            if (loginUiState.loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
-                Spacer(Modifier.height(16.dp))
-            }
-            item {
-                OutlinedTextField(
-                    value = loginUiState.emailAddress,
-                    onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(emailAddress = new) } },
-                    label = { Text("Email address") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            item {
-                OutlinedTextField(
-                    value = loginUiState.password,
-                    onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(password = new) } },
-                    label = { Text("Password") },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = PasswordVisualTransformation()
-                )
-            }
-            if (loginUiState.error != null) {
-                item {
-                    Text(
-                        text = loginUiState.error!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 4.dp, top = 2.dp)
-                    )
-                }
-            }
-            item {
-                Button(
-                    onClick = { authViewModel.login() },
-                    enabled = !loginUiState.loading,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (loginUiState.loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Text("Login")
-                    }
-                }
+            } else {
+                Text("Login")
             }
         }
     }

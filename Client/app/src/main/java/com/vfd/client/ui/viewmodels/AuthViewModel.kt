@@ -39,7 +39,8 @@ data class LoginUiState(
     val password: String = "",
     val loading: Boolean = false,
     val error: String? = null,
-    val success: Boolean = false
+    val success: Boolean = false,
+    val fieldErrors: Map<String, String> = emptyMap(),
 )
 
 @HiltViewModel
@@ -121,10 +122,21 @@ class AuthViewModel @Inject constructor(
                 }
 
                 is ApiResult.Error -> {
+                    val msg = result.message ?: "Unknown error"
+                    val fieldErrors = when {
+                        msg.contains("phone number", ignoreCase = true) ->
+                            mapOf("phoneNumber" to msg)
+
+                        msg.contains("email", ignoreCase = true) ->
+                            mapOf("emailAddress" to msg)
+
+                        else -> emptyMap()
+                    }
+
                     _registerUiState.value = registerState.copy(
                         loading = false,
-                        error = if (result.fieldErrors.isEmpty()) result.message else null,
-                        fieldErrors = result.fieldErrors
+                        error = if (fieldErrors.isEmpty()) msg else null,
+                        fieldErrors = fieldErrors
                     )
                 }
 

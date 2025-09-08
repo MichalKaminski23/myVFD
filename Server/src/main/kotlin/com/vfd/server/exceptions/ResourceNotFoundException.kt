@@ -8,4 +8,4 @@ class ResourceNotFoundException(
     entity: String,
     fieldName: String,
     fieldValue: Any
-) : RuntimeException("$entity with $fieldName = $fieldValue not found.")
+) : RuntimeException("$entity with $fieldName '$fieldValue' not found.")

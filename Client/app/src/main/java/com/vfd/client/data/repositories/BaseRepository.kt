@@ -34,7 +34,6 @@ abstract class BaseRepository(
                         }
                         message = "Validation error"
                     } else {
-                        // klasyczny ErrorResponse
                         val errorResponse =
                             json.decodeFromString(ErrorResponse.serializer(), errorBody)
                         message = errorResponse.message ?: "Server error"
