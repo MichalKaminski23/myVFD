@@ -13,7 +13,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,9 +21,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.ui.components.FormTextField
 import com.vfd.client.ui.viewmodels.AuthViewModel
 
 @Composable
@@ -56,24 +57,27 @@ fun LoginScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(16.dp))
-        OutlinedTextField(
+        FormTextField(
             value = loginUiState.emailAddress,
             onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(emailAddress = new) } },
-            label = { Text("Email address") },
+            label = "Email address",
+            errorMessage = loginUiState.fieldErrors["emailAddress"],
             modifier = Modifier.fillMaxWidth()
         )
-        OutlinedTextField(
+        FormTextField(
             value = loginUiState.password,
             onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(password = new) } },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
+            label = "Password",
+            errorMessage = loginUiState.fieldErrors["password"],
             visualTransformation = PasswordVisualTransformation()
         )
+
         if (loginUiState.error != null) {
             Text(
                 text = loginUiState.error!!,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 4.dp, top = 2.dp)

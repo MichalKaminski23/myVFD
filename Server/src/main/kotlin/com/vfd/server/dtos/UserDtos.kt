@@ -36,8 +36,11 @@ object UserDtos {
         val emailAddress: String,
 
         @field:NotBlank(message = "Phone number must not be blank.")
-        @field:Size(max = 16, message = "Phone number must be at most 16 characters.")
-        @field:Pattern(regexp = "^\\+?\\d+$", message = "Last name must contain only letters.")
+        @field:Size(min = 9, max = 16, message = "Phone number must be between 9 and 16 characters.")
+        @field:Pattern(
+            regexp = "^\\+?\\d+$",
+            message = "Phone number must contain only digits and may start with '+'."
+        )
         @field:Schema(description = "User's phone number", example = "+48123123123")
         val phoneNumber: String,
 

@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -34,8 +35,8 @@ import com.vfd.client.ui.viewmodels.AuthViewModel
 @Composable
 fun RegisterScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
-    navController: NavController,
-    modifier: Modifier = Modifier
+    navController: NavController
+    //modifier: Modifier = Modifier
 ) {
     val registerUiState by authViewModel.registerUiState.collectAsState()
 
@@ -48,7 +49,7 @@ fun RegisterScreen(
     }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState()),
@@ -160,6 +161,7 @@ fun RegisterScreen(
                 text = registerUiState.error!!,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 4.dp, top = 2.dp)

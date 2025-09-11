@@ -123,6 +123,7 @@ class AuthViewModel @Inject constructor(
 
                 is ApiResult.Error -> {
                     val msg = result.message ?: "Unknown error"
+
                     val fieldErrors = when {
                         msg.contains("phone number", ignoreCase = true) ->
                             mapOf("phoneNumber" to msg)
@@ -130,7 +131,7 @@ class AuthViewModel @Inject constructor(
                         msg.contains("email", ignoreCase = true) ->
                             mapOf("emailAddress" to msg)
 
-                        else -> emptyMap()
+                        else -> result.fieldErrors
                     }
 
                     _registerUiState.value = registerState.copy(
@@ -148,14 +149,14 @@ class AuthViewModel @Inject constructor(
     }
 
     fun login() {
-        val state = _loginUiState.value
+        val loginState = _loginUiState.value
         val user = UserDtos.UserLogin(
-            emailAddress = state.emailAddress,
-            password = state.password
+            emailAddress = loginState.emailAddress,
+            password = loginState.password
         )
 
         viewModelScope.launch {
-            _loginUiState.value = state.copy(loading = true, error = null, success = false)
+            _loginUiState.value = loginState.copy(loading = true, error = null, success = false)
 
             when (val result = authRepository.login(user)) {
                 is ApiResult.Success<AuthResponseDto> -> {
@@ -165,18 +166,31 @@ class AuthViewModel @Inject constructor(
                         authRepository.saveToken(jwt)
                     }
 
-                    _loginUiState.value = state.copy(loading = false, success = true)
+                    _loginUiState.value = loginState.copy(loading = false, success = true)
                 }
 
                 is ApiResult.Error -> {
-                    _loginUiState.value = state.copy(
+                    val msg = result.message ?: "Unknown error"
+
+                    val fieldErrors = when {
+                        msg.contains("phone number", ignoreCase = true) ->
+                            mapOf("phoneNumber" to msg)
+
+                        msg.contains("email", ignoreCase = true) ->
+                            mapOf("emailAddress" to msg)
+
+                        else -> result.fieldErrors
+                    }
+
+                    _loginUiState.value = loginState.copy(
                         loading = false,
-                        error = result.message ?: "Unknown error"
+                        error = if (fieldErrors.isEmpty()) msg else null,
+                        fieldErrors = fieldErrors
                     )
                 }
 
                 is ApiResult.Loading -> {
-                    _loginUiState.value = state.copy(loading = true)
+                    _loginUiState.value = loginState.copy(loading = true)
                 }
             }
         }
