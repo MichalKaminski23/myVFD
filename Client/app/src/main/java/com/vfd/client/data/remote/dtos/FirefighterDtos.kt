@@ -24,9 +24,17 @@ object FirefighterDtos {
     data class FirefighterResponse(
         val firefighterId: Int,
 
-        val user: UserDtos.UserResponse,
+        val firstName: String,
 
-        val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
+        val lastName: String,
+
+        //val user: UserDtos.UserResponse,
+        val userId: Int,
+
+        // val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
+        val firedepartmentId: Int,
+
+        val firedepartmentName: String,
 
         val role: Role,
 

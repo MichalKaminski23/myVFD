@@ -8,6 +8,7 @@ class ServerApplication
 
 fun main(args: Array<String>) {
     runApplication<ServerApplication>(*args)
+    
     println("Server is running...")
 }
 

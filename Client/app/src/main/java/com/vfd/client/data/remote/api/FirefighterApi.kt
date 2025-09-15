@@ -1,8 +1,10 @@
 package com.vfd.client.data.remote.api
 
 import com.vfd.client.data.remote.dtos.FirefighterDtos
+import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.PageResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -33,4 +35,13 @@ interface FirefighterApi {
         @Path("firefighterId") firefighterId: Int,
         @Body firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse
+
+    @GET("api/firefighters/me")
+    suspend fun getCurrentFirefighter(): FirefighterDtos.FirefighterResponse
+
+    @GET("api/firefighters/moderator/pending")
+    suspend fun getPendingFirefighters(): List<FirefighterDtos.FirefighterResponse>
+
+    @DELETE("firefighters/{firefighterId}")
+    suspend fun deleteFirefighter(@Path("firefighterId") id: Int): ApiResult<Unit>
 }

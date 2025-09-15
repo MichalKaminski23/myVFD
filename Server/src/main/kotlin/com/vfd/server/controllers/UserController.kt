@@ -116,7 +116,7 @@ class UserController(
         ]
     )
     @GetMapping("/me")
-    fun getMe(@AuthenticationPrincipal principal: UserDetails): UserDtos.UserResponse {
+    fun getCurrentUser(@AuthenticationPrincipal principal: UserDetails): UserDtos.UserResponse {
         val emailAddress = principal.username
 
         return userService.getUserByEmailAddress(emailAddress)

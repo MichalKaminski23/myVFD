@@ -34,4 +34,13 @@ class FirefighterRepository @Inject constructor(
         firefighterDto: FirefighterDtos.FirefighterPatch
     ): ApiResult<FirefighterDtos.FirefighterResponse> =
         safeApiCall { firefighterApi.updateFirefighter(firefighterId, firefighterDto) }
+
+    suspend fun getCurrentFirefighter(): ApiResult<FirefighterDtos.FirefighterResponse> =
+        safeApiCall { firefighterApi.getCurrentFirefighter() }
+
+    suspend fun getPendingFirefighters(): ApiResult<List<FirefighterDtos.FirefighterResponse>> =
+        safeApiCall { firefighterApi.getPendingFirefighters() }
+
+    suspend fun deleteFirefighter(firefighterId: Int): ApiResult<Unit> =
+        firefighterApi.deleteFirefighter(firefighterId)
 }

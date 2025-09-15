@@ -25,6 +25,12 @@ class FirefighterViewModel @Inject constructor(
     private val _firefighterUiState = MutableStateFlow(FirefighterUiState())
     val firefighterUiState = _firefighterUiState.asStateFlow()
 
+    private val _firefighter = MutableStateFlow<FirefighterDtos.FirefighterResponse?>(null)
+    val firefighter = _firefighter.asStateFlow()
+
+    private val _pending = MutableStateFlow<List<FirefighterDtos.FirefighterResponse>>(emptyList())
+    val pending = _pending.asStateFlow()
+
     fun crateFirefighter(userId: Int, firedepartmentId: Int) {
         val createState = _firefighterUiState.value
         viewModelScope.launch {
@@ -48,6 +54,96 @@ class FirefighterViewModel @Inject constructor(
 
                 is ApiResult.Loading -> {
                     _firefighterUiState.value = createState.copy(loading = true)
+                }
+            }
+        }
+    }
+
+    fun getCurrentFirefighter() {
+        viewModelScope.launch {
+            _firefighterUiState.value = _firefighterUiState.value.copy(loading = true, error = null)
+
+            when (val result = firefighterRepository.getCurrentFirefighter()) {
+
+                is ApiResult.Success -> {
+                    _firefighter.value = result.data
+                    _firefighterUiState.value = _firefighterUiState.value.copy(loading = false)
+                }
+
+                is ApiResult.Error -> {
+                    if (result.code == 404) {
+                        _firefighter.value = null
+                        _firefighterUiState.value = _firefighterUiState.value.copy(
+                            loading = false,
+                            error = null,
+                            success = false
+                        )
+                    } else {
+                        _firefighter.value = null
+                        _firefighterUiState.value = _firefighterUiState.value.copy(
+                            loading = false,
+                            error = result.message ?: "Failed to load current firefighter"
+                        )
+                    }
+                }
+
+                is ApiResult.Loading -> {
+                    _firefighterUiState.value = _firefighterUiState.value.copy(loading = true)
+                }
+            }
+        }
+    }
+
+    fun loadPendingApplications() {
+        viewModelScope.launch {
+            when (val result = firefighterRepository.getPendingFirefighters()) {
+                is ApiResult.Success -> _pending.value = result.data ?: emptyList()
+                is ApiResult.Error -> _pending.value = emptyList()
+                is ApiResult.Loading -> {
+                }
+            }
+        }
+    }
+
+    fun changeFirefighterRoleOrStatus(firefighterId: Int, patch: FirefighterDtos.FirefighterPatch) {
+        val updateState = _firefighterUiState.value
+        viewModelScope.launch {
+            _firefighterUiState.value =
+                updateState.copy(loading = true, error = null, success = false)
+
+            when (val result = firefighterRepository.updateFirefighter(firefighterId, patch)) {
+                is ApiResult.Success -> {
+                    //_firefighterUiState.value = updateState.copy(loading = false, success = true)
+                    loadPendingApplications()
+                }
+
+                is ApiResult.Error -> {
+                    _firefighterUiState.value =
+                        updateState.copy(loading = false, error = result.message ?: "Unknown error")
+                }
+
+                is ApiResult.Loading -> {
+                    _firefighterUiState.value = updateState.copy(loading = true)
+                }
+            }
+        }
+    }
+
+    fun deleteFirefighter(firefighterId: Int) {
+        viewModelScope.launch {
+            when (val result = firefighterRepository.deleteFirefighter(firefighterId)) {
+                is ApiResult.Success -> {
+                    loadPendingApplications()
+                }
+
+                is ApiResult.Error -> {
+                    _firefighterUiState.value = _firefighterUiState.value.copy(
+                        error = result.message ?: "Delete failed"
+                    )
+                }
+
+                is ApiResult.Loading -> {
+                    _firefighterUiState.value = _firefighterUiState.value.copy(loading = true)
                 }
             }
         }

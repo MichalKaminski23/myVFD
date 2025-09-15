@@ -10,6 +10,11 @@ import org.mapstruct.*
 )
 interface FirefighterMapper {
 
+    @Mapping(target = "userId", source = "user.userId")
+    @Mapping(target = "firstName", source = "user.firstName")
+    @Mapping(target = "lastName", source = "user.lastName")
+    @Mapping(target = "firedepartmentId", source = "firedepartment.firedepartmentId")
+    @Mapping(target = "firedepartmentName", source = "firedepartment.name")
     fun toFirefighterDto(firefighter: Firefighter): FirefighterDtos.FirefighterResponse
 
     @Mapping(target = "firefighterId", ignore = true)

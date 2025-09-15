@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -112,4 +114,61 @@ class FirefighterController(
         @Valid @RequestBody firefighterPatchDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse =
         firefighterService.updateFirefighter(firefighterId, firefighterPatchDto)
+
+    @Operation(
+        summary = "Get current firefighter",
+        description = "Returns the currently authenticated firefighter based on the provided JWT token."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Current firefighter retrieved",
+                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+            ),
+            ApiResponse(responseCode = "401", description = "Unauthorized", content = [Content()]),
+            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+        ]
+    )
+    @GetMapping("/me")
+    fun getCurrentFirefighter(@AuthenticationPrincipal principal: UserDetails): FirefighterDtos.FirefighterResponse {
+        return firefighterService.getFirefighterByEmailAddress(principal.username)
+    }
+
+    @Operation(
+        summary = "Get pending firefighter applications for moderator",
+        description = "Returns a list of pending firefighter applications for the moderator's fire department."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Pending applications retrieved",
+                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+            ),
+            ApiResponse(responseCode = "401", description = "Unauthorized", content = [Content()]),
+            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+        ]
+    )
+    @GetMapping("/moderator/pending")
+    fun getPendingFirefighters(@AuthenticationPrincipal principal: UserDetails): List<FirefighterDtos.FirefighterResponse> {
+        return firefighterService.getPendingFirefighters(principal.username)
+    }
+
+    @Operation(
+        summary = "Delete firefighter",
+        description = "Deletes a firefighter by `firefighterId`."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "204", description = "Firefighter deleted", content = [Content()]),
+            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
+            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+        ]
+    )
+    @DeleteMapping("/{firefighterId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteFirefighter(@PathVariable firefighterId: Int) {
+        firefighterService.deleteFirefighter(firefighterId)
+    }
 }

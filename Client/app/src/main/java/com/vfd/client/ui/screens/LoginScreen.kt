@@ -35,7 +35,7 @@ fun LoginScreen(
 
     LaunchedEffect(loginUiState.success) {
         if (loginUiState.success) {
-            navController.navigate("meScreen") {
+            navController.navigate("mainScreen") {
                 popUpTo("loginScreen") { inclusive = true }
             }
         }

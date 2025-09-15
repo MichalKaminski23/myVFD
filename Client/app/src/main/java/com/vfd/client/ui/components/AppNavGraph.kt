@@ -7,7 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.vfd.client.ui.screens.InfoScreen
 import com.vfd.client.ui.screens.LoginScreen
+import com.vfd.client.ui.screens.MainScreen
 import com.vfd.client.ui.screens.MeScreen
+import com.vfd.client.ui.screens.ModeratorScreen
 import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
 
@@ -18,9 +20,12 @@ fun AppNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "welcomeScreen",
+        startDestination = "mainScreen",
         modifier = modifier
     ) {
+        composable("mainScreen") {
+            MainScreen(navController = navController)
+        }
         composable("welcomeScreen") {
             WelcomeScreen(navController = navController)
         }
@@ -35,6 +40,9 @@ fun AppNavGraph(
         }
         composable("infoScreen") {
             InfoScreen(navController = navController)
+        }
+        composable("moderatorScreen") {
+            ModeratorScreen(navController = navController)
         }
     }
 }

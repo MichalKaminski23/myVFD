@@ -3,6 +3,7 @@ package com.vfd.client.utils
 sealed class ApiResult<out T>(
     val data: T? = null,
     val message: String? = null,
+    val code: Int? = null,
     val fieldErrors: Map<String, String> = emptyMap()
 ) {
     class Loading<T> : ApiResult<T>(null)
@@ -11,7 +12,8 @@ sealed class ApiResult<out T>(
 
     class Error(
         message: String,
+        code: Int? = null,
         val cause: Throwable? = null,
         fieldErrors: Map<String, String> = emptyMap()
-    ) : ApiResult<Nothing>(null, message, fieldErrors)
+    ) : ApiResult<Nothing>(null, message, code, fieldErrors)
 }

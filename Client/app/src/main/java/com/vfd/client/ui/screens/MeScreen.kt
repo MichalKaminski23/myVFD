@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -28,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.data.remote.dtos.FirefighterStatus
 import com.vfd.client.ui.components.BaseCard
 import com.vfd.client.ui.components.GeneralDropdown
 import com.vfd.client.ui.viewmodels.AuthViewModel
@@ -49,12 +49,15 @@ fun MeScreen(
     val firedepartmentUiState by firedepartmentViewModel.firedepartmentUiState.collectAsState()
     var selectedFiredepartmentId by rememberSaveable { mutableStateOf<Int?>(null) }
     val firefighterUiState by firefighterViewModel.firefighterUiState.collectAsState()
+    val currentFirefighter by firefighterViewModel.firefighter.collectAsState()
 
     LaunchedEffect(token) {
         if (!token.isNullOrBlank()) {
-            kotlinx.coroutines.delay(200)
-            userViewModel.getMyself()
-            firedepartmentViewModel.getAllFiredepartments()
+            userViewModel.getCurrentUser()
+            firefighterViewModel.getCurrentFirefighter()
+            if (firefighterViewModel.firefighter.value == null) {
+                firedepartmentViewModel.getAllFiredepartments()
+            }
         }
     }
 
@@ -83,8 +86,29 @@ fun MeScreen(
         }
 
         when {
-            firefighterUiState.success -> {
-                Text("Application sent successfully.")
+            currentFirefighter != null -> {
+                when (currentFirefighter!!.status) {
+
+                    FirefighterStatus.PENDING -> {
+                        Text(
+                            "Your request has been sent. Wait for moderator approval.",
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    FirefighterStatus.ACTIVE -> {
+                        BaseCard(
+                            "\uD83D\uDE92 ${currentFirefighter!!.firedepartmentName}",
+                            "\uD83D\uDC65 Status: ${currentFirefighter!!.status}",
+                            "\uD83E\uDDD1\u200D\uD83D\uDE92 Role: ${currentFirefighter!!.role}",
+                            null
+                        )
+                    }
+                }
+            }
+
+            firefighterUiState.loading -> {
+                CircularProgressIndicator()
             }
 
             firefighterUiState.error != null -> {
@@ -96,6 +120,13 @@ fun MeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 4.dp, top = 2.dp)
+                )
+            }
+
+            firefighterUiState.success -> {
+                Text(
+                    "Application sent successfully. Wait for moderator approval.",
+                    textAlign = TextAlign.Center
                 )
             }
 
@@ -119,19 +150,13 @@ fun MeScreen(
                             firefighterViewModel.crateFirefighter(userId, firedepartmentId)
                         }
                     },
-                    enabled = !firefighterUiState.loading && selectedFiredepartmentId != null,
+                    enabled = selectedFiredepartmentId != null,
                     modifier = Modifier.fillMaxWidth()
                 )
                 {
-                    if (firefighterUiState.loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Text("Send application to VFD's moderator.")
-                    }
+                    Text("Send application to VFD's moderator.")
                 }
+
             }
         }
 

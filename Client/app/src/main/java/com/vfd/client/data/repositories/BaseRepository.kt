@@ -22,7 +22,8 @@ abstract class BaseRepository(
             val errorBody = exception.response()?.errorBody()?.string()
 
             var fieldErrors: Map<String, String> = emptyMap()
-            var message: String = "Server error"
+            var message = "Server error"
+            val code: Int = exception.code()
 
             if (!errorBody.isNullOrBlank()) {
                 try {
@@ -36,23 +37,26 @@ abstract class BaseRepository(
                     } else {
                         val errorResponse =
                             json.decodeFromString(ErrorResponse.serializer(), errorBody)
-                        message = errorResponse.message ?: "Server error"
+                        message = errorResponse.message
                     }
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     message = "Server error"
                 }
             }
 
-            ApiResult.Error(message, exception, fieldErrors)
+            ApiResult.Error(message, code, exception, fieldErrors)
 
         } catch (exception: SocketTimeoutException) {
-            ApiResult.Error("Connection timed out. Please try again.", exception)
+            val code = (exception.cause as? HttpException)?.code()
+            ApiResult.Error("Connection timed out. Please try again.", code, exception)
 
         } catch (exception: IOException) {
-            ApiResult.Error("Network error: could not connect to server.", exception)
+            val code = (exception.cause as? HttpException)?.code()
+            ApiResult.Error("Network error: could not connect to server.", code, exception)
 
         } catch (exception: Exception) {
-            ApiResult.Error("Unexpected error: ${exception.message}", exception)
+            val code = (exception.cause as? HttpException)?.code()
+            ApiResult.Error("Unexpected error: ${exception.message}", code, exception)
         }
     }
 }

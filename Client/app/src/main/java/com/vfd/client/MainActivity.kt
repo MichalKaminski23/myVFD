@@ -44,6 +44,7 @@ class MainActivity : ComponentActivity() {
                                         "registerScreen" -> "Register"
                                         "loginScreen" -> "Login"
                                         "infoScreen" -> "Information"
+                                        "moderatorScreen" -> "Moderator"
                                         else -> "My VFD"
                                     }
                                 )
@@ -81,6 +82,24 @@ class MainActivity : ComponentActivity() {
                             }
 
                             "infoScreen" -> {
+                                NavigationBar {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    )
+                                    {
+                                        Button(onClick = { navController.popBackStack() }) {
+                                            Text(
+                                                "Go back"
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            "moderatorScreen" -> {
                                 NavigationBar {
                                     Row(
                                         modifier = Modifier

@@ -62,7 +62,7 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun getMyself() {
+    fun getCurrentUser() {
         viewModelScope.launch {
             _userUiState.value = _userUiState.value.copy(isLoading = true, errorMessage = null)
 

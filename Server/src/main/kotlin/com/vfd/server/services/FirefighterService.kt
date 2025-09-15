@@ -15,8 +15,14 @@ interface FirefighterService {
 
     fun getFirefighterById(firefighterId: Int): FirefighterDtos.FirefighterResponse
 
+    fun getFirefighterByEmailAddress(emailAddress: String): FirefighterDtos.FirefighterResponse
+
+    fun getPendingFirefighters(emailAddress: String): List<FirefighterDtos.FirefighterResponse>
+
     fun updateFirefighter(
         firefighterId: Int,
         firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse
+
+    fun deleteFirefighter(firefighterId: Int)
 }

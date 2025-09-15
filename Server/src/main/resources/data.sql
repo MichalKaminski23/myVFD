@@ -26,13 +26,13 @@ VALUES ('Train', 'Training'),
 INSERT INTO Users (first_name, last_name, address_id, phone_number, email_address, created_at, logged_at, is_active,
                    password_hash)
 VALUES ('Jan', 'Kowalski', 1, '+48123456789', 'jan.kowalski@test.com', '2025-01-01 08:00:00',
-        '2025-07-20 12:00:00', TRUE, 'JanKowalski!'),
+        '2025-07-20 12:00:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
        ('Anna', 'Nowak', 2, '+48987654321', 'anna.nowak@test.com', '2025-02-15 09:30:00', '2025-07-22 16:45:00',
-        TRUE, 'AnnaNowak!'),
+        TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
        ('Piotr', 'Wisniewski', 3, '+48111222333', 'piotr.wisniewski@test.com', '2025-03-10 10:15:00',
-        '2025-07-23 09:20:00', FALSE, 'PiotrWisniewski!'),
+        '2025-07-23 09:20:00', FALSE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
        ('Katarzyna', 'Wojcik', 1, '+48444555666', 'katarzyna.wojscik@test.com;', '2025-04-05 11:45:00',
-        '2025-07-24 14:30:00', TRUE, 'KatarzynaWojcik!');
+        '2025-07-24 14:30:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS');
 
 INSERT INTO Firedepartments (name, address_id, is_nrfs)
 VALUES ('OSP Strzyzowice', 1, TRUE),
@@ -41,7 +41,8 @@ VALUES ('OSP Strzyzowice', 1, TRUE),
 INSERT INTO Firefighters (firefighter_id, firedepartment_id, role, status)
 VALUES (1, 1, 'PRESIDENT', 'ACTIVE'),
        (2, 1, 'MEMBER', 'ACTIVE'),
-       (3, 2, 'USER', 'PENDING');
+       (3, 2, 'USER', 'PENDING'),
+       (4, 2, 'MEMBER', 'ACTIVE');
 
 INSERT INTO Firefighter_Activities (firefighter_id, firefighter_activity_type, activity_date, expiration_date,
                                     description)

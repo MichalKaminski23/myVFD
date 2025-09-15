@@ -40,11 +40,27 @@ object FirefighterDtos {
         @field:Schema(description = "Unique identifier of the firefighter", example = "7")
         val firefighterId: Int,
 
-        @field:Schema(description = "User assigned to this firefighter record")
-        val user: UserDtos.UserResponse,
+        @field:Schema(description = "Name of the firefighter", example = "Arek")
+        val firstName: String,
 
+        @field:Schema(description = "Surname of the firefighter", example = "Niemusialski")
+        val lastName: String,
+
+//        @field:Schema(description = "Username of the user assigned to this firefighter record", example = "Arek")
+//        val userName: String,
+
+//        @field:Schema(description = "User assigned to this firefighter record")
+//        val user: UserDtos.UserResponse,
+        @field:Schema(description = "User assigned to this firefighter record")
+        val userId: Int,
+
+//        @field:Schema(description = "Fire department the firefighter is part of")
+//        val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
         @field:Schema(description = "Fire department the firefighter is part of")
-        val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
+        val firedepartmentId: Int,
+
+        @field:Schema(description = "Name of the fire department the firefighter is part of", example = "OSP Dabie")
+        val firedepartmentName: String,
 
         @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
         val role: Role,
