@@ -3,10 +3,8 @@ package com.vfd.client.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -36,7 +34,6 @@ import com.vfd.client.ui.viewmodels.AuthViewModel
 fun RegisterScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     navController: NavController
-    //modifier: Modifier = Modifier
 ) {
     val registerUiState by authViewModel.registerUiState.collectAsState()
 
@@ -56,13 +53,6 @@ fun RegisterScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            "Create a new account",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(Modifier.height(16.dp))
-
         SectionHeader("Personal data")
         FormTextField(
             value = registerUiState.firstName,
@@ -84,7 +74,6 @@ fun RegisterScreen(
             label = "Country",
             errorMessage = registerUiState.fieldErrors["address.country"]
         )
-
 
         FormTextField(
             value = registerUiState.voivodeship,
@@ -154,7 +143,6 @@ fun RegisterScreen(
             errorMessage = registerUiState.fieldErrors["password"],
             visualTransformation = PasswordVisualTransformation()
         )
-
 
         if (registerUiState.error != null) {
             Text(

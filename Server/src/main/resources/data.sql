@@ -34,14 +34,14 @@ VALUES ('Jan', 'Kowalski', 1, '+48123456789', 'jan.kowalski@test.com', '2025-01-
        ('Katarzyna', 'Wojcik', 1, '+48444555666', 'katarzyna.wojscik@test.com;', '2025-04-05 11:45:00',
         '2025-07-24 14:30:00', TRUE, 'KatarzynaWojcik!');
 
-INSERT INTO Firedepartments (name, address_id, is_NRFS)
+INSERT INTO Firedepartments (name, address_id, is_nrfs)
 VALUES ('OSP Strzyzowice', 1, TRUE),
        ('OSP Dabie', 2, FALSE);
 
-INSERT INTO Firefighters (firefighter_id, firedepartment_id, role)
-VALUES (1, 1, 'PRESIDENT'),
-       (2, 1, 'MEMBER'),
-       (3, 2, 'USER');
+INSERT INTO Firefighters (firefighter_id, firedepartment_id, role, status)
+VALUES (1, 1, 'PRESIDENT', 'ACTIVE'),
+       (2, 1, 'MEMBER', 'ACTIVE'),
+       (3, 2, 'USER', 'PENDING');
 
 INSERT INTO Firefighter_Activities (firefighter_id, firefighter_activity_type, activity_date, expiration_date,
                                     description)

@@ -1,5 +1,6 @@
 package com.vfd.server.dtos
 
+import com.vfd.server.entities.FirefighterStatus
 import com.vfd.server.entities.Role
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
@@ -16,15 +17,22 @@ object FirefighterDtos {
         @field:Schema(description = "ID of the fire department to assign the firefighter to", example = "7")
         val firedepartmentId: Int,
 
-        @field:NotNull(message = "Role must not be null.")
-        @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
-        val role: Role
+//        @field:NotNull(message = "Role must not be null.")
+//        @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
+//        val role: Role,
+//
+//        @field:NotNull(message = "Status must not be null.")
+//        @field:Schema(description = "Status assigned to the firefighter", example = "PENDING")
+//        val status: FirefighterStatus
     )
 
     @Schema(description = "DTO used for partially updating a firefighter record")
     data class FirefighterPatch(
         @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
-        val role: Role? = null
+        val role: Role? = null,
+
+        @field:Schema(description = "Status assigned to the firefighter", example = "PENDING")
+        val status: FirefighterStatus? = null
     )
 
     @Schema(description = "DTO used for returning firefighter information")
@@ -39,6 +47,9 @@ object FirefighterDtos {
         val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
 
         @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
-        val role: Role
+        val role: Role,
+
+        @field:Schema(description = "Status assigned to the firefighter", example = "PENDING")
+        val status: FirefighterStatus
     )
 }

@@ -10,12 +10,14 @@ object FirefighterDtos {
 
         val firedepartmentId: Int,
 
-        val role: Role
+        //val role: Role
     )
 
     @Serializable
     data class FirefighterPatch(
-        val role: Role? = null
+        val role: Role? = null,
+
+        val status: FirefighterStatus? = null
     )
 
     @Serializable
@@ -26,6 +28,8 @@ object FirefighterDtos {
 
         val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
 
-        val role: Role
+        val role: Role,
+
+        val status: FirefighterStatus
     )
 }

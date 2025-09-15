@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.vfd.client.ui.screens.InfoScreen
 import com.vfd.client.ui.screens.LoginScreen
 import com.vfd.client.ui.screens.MeScreen
 import com.vfd.client.ui.screens.RegisterScreen
@@ -31,6 +32,9 @@ fun AppNavGraph(
         }
         composable("meScreen") {
             MeScreen(navController = navController)
+        }
+        composable("infoScreen") {
+            InfoScreen(navController = navController)
         }
     }
 }

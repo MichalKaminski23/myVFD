@@ -2,6 +2,8 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FirefighterDtos
 import com.vfd.server.entities.Firefighter
+import com.vfd.server.entities.FirefighterStatus
+import com.vfd.server.entities.Role
 import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.FirefighterMapper
@@ -49,6 +51,8 @@ class FirefighterServiceImplementation(
 
         firefighter.user = user
         firefighter.firedepartment = firedepartment
+        firefighter.role = Role.USER
+        firefighter.status = FirefighterStatus.PENDING
 
         return firefighterMapper.toFirefighterDto(
             firefighterRepository.save(firefighter)

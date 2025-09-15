@@ -22,7 +22,7 @@ object FiredepartmentDtos {
             description = "Whether the department is part of NRFS (National Rescue and Firefighting System)",
             example = "true"
         )
-        val NRFS: Boolean = true
+        val nrfs: Boolean = true
     )
 
     @Schema(description = "DTO used for partially updating a fire department")
@@ -39,7 +39,7 @@ object FiredepartmentDtos {
             description = "Whether the department is part of NRFS (National Rescue and Firefighting System)",
             example = "true"
         )
-        val NRFS: Boolean? = null
+        val nrfs: Boolean? = null
     )
 
     @Schema(description = "DTO used for returning fire department information")
@@ -57,6 +57,6 @@ object FiredepartmentDtos {
             description = "Whether the department is part of NRFS (National Rescue and Firefighting System)",
             example = "true"
         )
-        val NRFS: Boolean
+        val nrfs: Boolean
     )
 }

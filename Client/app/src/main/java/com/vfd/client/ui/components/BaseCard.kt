@@ -11,16 +11,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun BaseCard(
-    title: String,
-    subtitle: String,
-    description: String,
-    status: String? = null,
-    statusColor: Color = MaterialTheme.colorScheme.primary,
+    header: String,
+    smallerHeader: String,
+    otherText: String,
     actions: @Composable (() -> Unit)? = null
 ) {
     Card(
@@ -29,20 +28,30 @@ fun BaseCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(subtitle, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(description, style = MaterialTheme.typography.bodySmall)
+            Text(
+                header,
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-            status?.let {
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = statusColor
-                )
-            }
+            Text(
+                smallerHeader,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = otherText,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    lineHeight = 20.sp
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             actions?.let {
                 Spacer(modifier = Modifier.height(12.dp))

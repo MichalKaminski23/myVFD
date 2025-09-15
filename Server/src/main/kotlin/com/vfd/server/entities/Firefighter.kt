@@ -22,4 +22,8 @@ class Firefighter {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 16)
     var role: Role? = null
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 16)
+    var status: FirefighterStatus = FirefighterStatus.PENDING
 }

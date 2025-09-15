@@ -26,7 +26,7 @@ class FiredepartmentServiceImplementation(
     private val FIREDEPARTMENT_ALLOWED_SORTS = setOf(
         "firedepartmentId",
         "name",
-        "NRFS",
+        "nrfs",
         "address.addressId"
     )
 

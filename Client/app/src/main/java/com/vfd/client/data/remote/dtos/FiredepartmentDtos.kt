@@ -10,7 +10,7 @@ object FiredepartmentDtos {
 
         val address: AddressDtos.AddressCreate,
 
-        val NRFS: Boolean = true
+        val nrfs: Boolean = true
     )
 
     @Serializable
@@ -19,7 +19,7 @@ object FiredepartmentDtos {
 
 //        val address: AddressDtos.AddressPatch? = null,
 
-        val NRFS: Boolean? = null
+        val nrfs: Boolean? = null
     )
 
     @Serializable
@@ -30,6 +30,6 @@ object FiredepartmentDtos {
 
         val address: AddressDtos.AddressResponse,
 
-        val NRFS: Boolean
+        val nrfs: Boolean
     )
 }

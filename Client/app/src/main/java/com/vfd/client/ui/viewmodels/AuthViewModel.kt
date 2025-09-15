@@ -29,17 +29,17 @@ data class RegisterUiState(
     val phoneNumber: String = "",
     val password: String = "",
     val loading: Boolean = false,
+    val success: Boolean = false,
     val error: String? = null,
-    val fieldErrors: Map<String, String> = emptyMap(),
-    val success: Boolean = false
+    val fieldErrors: Map<String, String> = emptyMap()
 )
 
 data class LoginUiState(
     val emailAddress: String = "",
     val password: String = "",
     val loading: Boolean = false,
-    val error: String? = null,
     val success: Boolean = false,
+    val error: String? = null,
     val fieldErrors: Map<String, String> = emptyMap(),
 )
 

@@ -1,5 +1,6 @@
 package com.vfd.client
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -41,6 +43,7 @@ class MainActivity : ComponentActivity() {
                                         "meScreen" -> "My Profile"
                                         "registerScreen" -> "Register"
                                         "loginScreen" -> "Login"
+                                        "infoScreen" -> "Information"
                                         else -> "My VFD"
                                     }
                                 )
@@ -54,7 +57,7 @@ class MainActivity : ComponentActivity() {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(8.dp), // lekki odstęp
+                                            .padding(8.dp),
                                         horizontalArrangement = Arrangement.SpaceEvenly
                                     ) {
                                         Button(onClick = { /* logout */ }) { Text("Logout") }
@@ -63,12 +66,35 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            "registerScreen" -> {
-                                Button(
-                                    onClick = { /* np. Help or Terms */ },
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text("Need help?")
+                            "welcomeScreen" -> {
+                                NavigationBar {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+                                        val activity = (LocalContext.current as? Activity)
+                                        Button(onClick = { activity?.finish() }) { Text("Exit") }
+                                    }
+                                }
+                            }
+
+                            "infoScreen" -> {
+                                NavigationBar {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    )
+                                    {
+                                        Button(onClick = { navController.popBackStack() }) {
+                                            Text(
+                                                "Go back"
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }

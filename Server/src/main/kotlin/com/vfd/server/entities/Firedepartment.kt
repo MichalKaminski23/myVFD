@@ -18,6 +18,6 @@ class Firedepartment {
     @JoinColumn(name = "address_id")
     var address: Address? = null
 
-    @Column(name = "is_NRFS")
-    var NRFS: Boolean = true
+    @Column(name = "is_nrfs")
+    var nrfs: Boolean = true
 }
