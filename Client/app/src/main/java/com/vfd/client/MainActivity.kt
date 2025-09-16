@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
@@ -20,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.vfd.client.ui.components.ActionButton
 import com.vfd.client.ui.components.AppNavGraph
 import com.vfd.client.ui.theme.MyVFDMobileTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,7 +47,7 @@ class MainActivity : ComponentActivity() {
                                         "registerScreen" -> "Register"
                                         "loginScreen" -> "Login"
                                         "infoScreen" -> "Information"
-                                        "moderatorScreen" -> "Moderator"
+                                        "moderatorScreen" -> "Moderate"
                                         else -> "My VFD"
                                     }
                                 )
@@ -61,8 +64,11 @@ class MainActivity : ComponentActivity() {
                                             .padding(8.dp),
                                         horizontalArrangement = Arrangement.SpaceEvenly
                                     ) {
-                                        Button(onClick = { /* logout */ }) { Text("Logout") }
-                                        Button(onClick = { /* refresh */ }) { Text("Refresh") }
+                                        ActionButton(
+                                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                                            label = "Back",
+                                            onClick = { navController.popBackStack() },
+                                        )
                                     }
                                 }
                             }
@@ -76,7 +82,11 @@ class MainActivity : ComponentActivity() {
                                         horizontalArrangement = Arrangement.SpaceEvenly
                                     ) {
                                         val activity = (LocalContext.current as? Activity)
-                                        Button(onClick = { activity?.finish() }) { Text("Exit") }
+                                        ActionButton(
+                                            icon = Icons.Default.Close,
+                                            label = "Exit",
+                                            onClick = { activity?.finish() },
+                                        )
                                     }
                                 }
                             }
@@ -90,11 +100,47 @@ class MainActivity : ComponentActivity() {
                                         horizontalArrangement = Arrangement.SpaceEvenly
                                     )
                                     {
-                                        Button(onClick = { navController.popBackStack() }) {
-                                            Text(
-                                                "Go back"
-                                            )
-                                        }
+                                        ActionButton(
+                                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                                            label = "Back",
+                                            onClick = { navController.popBackStack() },
+                                        )
+                                    }
+                                }
+                            }
+
+                            "loginScreen" -> {
+                                NavigationBar {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    )
+                                    {
+                                        ActionButton(
+                                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                                            label = "Back",
+                                            onClick = { navController.popBackStack() },
+                                        )
+                                    }
+                                }
+                            }
+
+                            "registerScreen" -> {
+                                NavigationBar {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    )
+                                    {
+                                        ActionButton(
+                                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                                            label = "Back",
+                                            onClick = { navController.popBackStack() },
+                                        )
                                     }
                                 }
                             }
@@ -108,11 +154,11 @@ class MainActivity : ComponentActivity() {
                                         horizontalArrangement = Arrangement.SpaceEvenly
                                     )
                                     {
-                                        Button(onClick = { navController.popBackStack() }) {
-                                            Text(
-                                                "Go back"
-                                            )
-                                        }
+                                        ActionButton(
+                                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                                            label = "Back",
+                                            onClick = { navController.popBackStack() },
+                                        )
                                     }
                                 }
                             }
@@ -121,7 +167,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     AppNavGraph(
                         navController = navController,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
                     )
                 }
             }

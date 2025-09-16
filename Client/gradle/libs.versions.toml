@@ -26,6 +26,8 @@ runtime = "1.9.0"
 datastore = "1.1.1"
 runtimeVersion = "1.9.1"
 
+#accompanist = "0.36.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
@@ -69,6 +71,8 @@ androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", versi
 
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtimeVersion" }
+
+#accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

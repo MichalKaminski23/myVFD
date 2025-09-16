@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +29,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterStatus
+import com.vfd.client.data.remote.dtos.Role
+import com.vfd.client.ui.components.ActionButton
 import com.vfd.client.ui.components.BaseCard
 import com.vfd.client.ui.components.GeneralDropdown
 import com.vfd.client.ui.viewmodels.AuthViewModel
@@ -92,7 +97,7 @@ fun MeScreen(
                     FirefighterStatus.PENDING -> {
                         Text(
                             "Your request has been sent. Wait for moderator approval.",
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
 
@@ -102,6 +107,45 @@ fun MeScreen(
                             "\uD83D\uDC65 Status: ${currentFirefighter!!.status}",
                             "\uD83E\uDDD1\u200D\uD83D\uDE92 Role: ${currentFirefighter!!.role}",
                             null
+                        )
+                    }
+
+                    FirefighterStatus.REJECTED -> {
+                        Text(
+                            "Your previous application was rejected. You can try to apply again.",
+                            textAlign = TextAlign.Center
+                        )
+
+                        GeneralDropdown(
+                            items = firedepartmentUiState.firedepartments,
+                            selectedId = selectedFiredepartmentId,
+                            idSelector = { it.firedepartmentId },
+                            labelSelector = { it.name },
+                            label = "Choose firedepartment",
+                            onSelected = { firedepartment ->
+                                selectedFiredepartmentId = firedepartment.firedepartmentId
+                            }
+                        )
+
+                        ActionButton(
+                            icon = Icons.Filled.Send,
+                            label = "Send application to VFD's moderator.",
+                            onClick = {
+                                val userId = currentUser?.userId
+                                val firedepartmentId = selectedFiredepartmentId
+                                if (userId != null && firedepartmentId != null) {
+                                    val updatedFirefighter = FirefighterDtos.FirefighterPatch(
+                                        role = Role.USER,
+                                        status = FirefighterStatus.PENDING,
+                                    )
+                                    firefighterViewModel.changeFirefighterRoleOrStatus(
+                                        userId,
+                                        updatedFirefighter
+                                    )
+                                }
+                            },
+                            fullWidth = true,
+                            enabled = selectedFiredepartmentId != null,
                         )
                     }
                 }
@@ -142,35 +186,40 @@ fun MeScreen(
                     }
                 )
 
-                Button(
+                ActionButton(
+                    icon = Icons.Filled.Send,
+                    label = "Send application to VFD's moderator.",
                     onClick = {
                         val userId = currentUser?.userId
                         val firedepartmentId = selectedFiredepartmentId
                         if (userId != null && firedepartmentId != null) {
-                            firefighterViewModel.crateFirefighter(userId, firedepartmentId)
+                            FirefighterDtos.FirefighterPatch(
+                                role = Role.USER,
+                                status = FirefighterStatus.PENDING,
+                            )
+                            firefighterViewModel.crateFirefighter(
+                                userId,
+                                firedepartmentId
+                            )
                         }
                     },
+                    fullWidth = true,
                     enabled = selectedFiredepartmentId != null,
-                    modifier = Modifier.fillMaxWidth()
                 )
-                {
-                    Text("Send application to VFD's moderator.")
-                }
-
             }
         }
 
         Spacer(Modifier.height(24.dp))
-        Button(
+        ActionButton(
+            icon = Icons.Filled.ArrowBack,
+            label = "Logout",
             onClick = {
                 authViewModel.logout()
                 navController.navigate("welcomeScreen") {
                     popUpTo("meScreen") { inclusive = true }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Logout")
-        }
+            fullWidth = true,
+        )
     }
 }

@@ -3,9 +3,12 @@ package com.vfd.client.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +22,7 @@ import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterStatus
 import com.vfd.client.data.remote.dtos.Role
+import com.vfd.client.ui.components.ActionButton
 import com.vfd.client.ui.components.BaseCard
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
@@ -27,8 +31,7 @@ fun ModeratorScreen(
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val pending by firefighterViewModel.pending.collectAsState()
-    val firefighterViewModel: FirefighterViewModel = hiltViewModel()
+    val pendingFirefighters by firefighterViewModel.pending.collectAsState()
 
     LaunchedEffect(Unit) {
         firefighterViewModel.loadPendingApplications()
@@ -40,50 +43,52 @@ fun ModeratorScreen(
     ) {
         Text("Pending Applications", style = MaterialTheme.typography.titleLarge)
 
-        if (pending.isEmpty()) {
+        if (pendingFirefighters.isEmpty()) {
             Text("No pending applications.")
         } else {
-            pending.forEach { ff ->
+            pendingFirefighters.forEach { firefighter ->
                 BaseCard(
-                    "👤 ${ff.firstName}",
-                    "📧 ID: ${ff.userId}",
-                    "🚒 Firedepartment: ${ff.firedepartmentName}",
+                    "👤 ${firefighter.firstName} ${firefighter.lastName}",
+                    "📧 ID: ${firefighter.userId}",
+                    "🚒 Firedepartment: ${firefighter.firedepartmentName}",
                     null
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Button(
+                    ActionButton(
+                        icon = Icons.Default.Add,
+                        label = "Approve",
                         onClick = {
                             firefighterViewModel.changeFirefighterRoleOrStatus(
-                                firefighterId = ff.firefighterId,
-                                patch = FirefighterDtos.FirefighterPatch(
+                                firefighterId = firefighter.firefighterId,
+                                firefighterDto = FirefighterDtos.FirefighterPatch(
                                     role = Role.MEMBER,
                                     status = FirefighterStatus.ACTIVE,
                                 )
                             )
-                            firefighterViewModel.loadPendingApplications()
                         },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Approve")
-                    }
-                    Button(
+                        modifier = Modifier
+                            .weight(1f)
+                            .defaultMinSize(minWidth = 120.dp)
+                    )
+                    ActionButton(
+                        icon = Icons.Default.Delete,
+                        label = "Reject",
                         onClick = {
                             firefighterViewModel.changeFirefighterRoleOrStatus(
-                                firefighterId = ff.firefighterId,
-                                patch = FirefighterDtos.FirefighterPatch(
+                                firefighterId = firefighter.firefighterId,
+                                firefighterDto = FirefighterDtos.FirefighterPatch(
                                     role = Role.USER,
-                                    status = FirefighterStatus.PENDING,
+                                    status = FirefighterStatus.REJECTED,
                                 )
                             )
-                            firefighterViewModel.loadPendingApplications()
                         },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Reject")
-                    }
+                        modifier = Modifier
+                            .weight(1f)
+                            .defaultMinSize(minWidth = 120.dp)
+                    )
                 }
             }
         }

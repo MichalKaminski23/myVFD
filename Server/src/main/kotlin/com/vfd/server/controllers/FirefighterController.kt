@@ -154,21 +154,4 @@ class FirefighterController(
     fun getPendingFirefighters(@AuthenticationPrincipal principal: UserDetails): List<FirefighterDtos.FirefighterResponse> {
         return firefighterService.getPendingFirefighters(principal.username)
     }
-
-    @Operation(
-        summary = "Delete firefighter",
-        description = "Deletes a firefighter by `firefighterId`."
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "204", description = "Firefighter deleted", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @DeleteMapping("/{firefighterId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteFirefighter(@PathVariable firefighterId: Int) {
-        firefighterService.deleteFirefighter(firefighterId)
-    }
 }

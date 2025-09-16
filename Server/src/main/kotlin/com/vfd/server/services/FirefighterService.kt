@@ -23,6 +23,4 @@ interface FirefighterService {
         firefighterId: Int,
         firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse
-
-    fun deleteFirefighter(firefighterId: Int)
 }

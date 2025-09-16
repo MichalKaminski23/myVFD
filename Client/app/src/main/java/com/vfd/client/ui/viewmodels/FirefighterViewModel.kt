@@ -15,6 +15,7 @@ data class FirefighterUiState(
     val loading: Boolean = false,
     val success: Boolean = false,
     val error: String? = null,
+    val notFound: Boolean = false
 )
 
 @HiltViewModel
@@ -67,7 +68,11 @@ class FirefighterViewModel @Inject constructor(
 
                 is ApiResult.Success -> {
                     _firefighter.value = result.data
-                    _firefighterUiState.value = _firefighterUiState.value.copy(loading = false)
+                    _firefighterUiState.value = FirefighterUiState(
+                        loading = false,
+                        success = true,
+                        notFound = false
+                    )
                 }
 
                 is ApiResult.Error -> {
@@ -76,7 +81,8 @@ class FirefighterViewModel @Inject constructor(
                         _firefighterUiState.value = _firefighterUiState.value.copy(
                             loading = false,
                             error = null,
-                            success = false
+                            success = false,
+                            notFound = true
                         )
                     } else {
                         _firefighter.value = null
@@ -105,15 +111,20 @@ class FirefighterViewModel @Inject constructor(
         }
     }
 
-    fun changeFirefighterRoleOrStatus(firefighterId: Int, patch: FirefighterDtos.FirefighterPatch) {
+    fun changeFirefighterRoleOrStatus(
+        firefighterId: Int,
+        firefighterDto: FirefighterDtos.FirefighterPatch
+    ) {
         val updateState = _firefighterUiState.value
         viewModelScope.launch {
             _firefighterUiState.value =
                 updateState.copy(loading = true, error = null, success = false)
 
-            when (val result = firefighterRepository.updateFirefighter(firefighterId, patch)) {
+            when (val result =
+                firefighterRepository.updateFirefighter(firefighterId, firefighterDto)) {
                 is ApiResult.Success -> {
-                    //_firefighterUiState.value = updateState.copy(loading = false, success = true)
+                    _firefighterUiState.value = updateState.copy(loading = false, success = true)
+                    getCurrentFirefighter()
                     loadPendingApplications()
                 }
 
@@ -124,26 +135,6 @@ class FirefighterViewModel @Inject constructor(
 
                 is ApiResult.Loading -> {
                     _firefighterUiState.value = updateState.copy(loading = true)
-                }
-            }
-        }
-    }
-
-    fun deleteFirefighter(firefighterId: Int) {
-        viewModelScope.launch {
-            when (val result = firefighterRepository.deleteFirefighter(firefighterId)) {
-                is ApiResult.Success -> {
-                    loadPendingApplications()
-                }
-
-                is ApiResult.Error -> {
-                    _firefighterUiState.value = _firefighterUiState.value.copy(
-                        error = result.message ?: "Delete failed"
-                    )
-                }
-
-                is ApiResult.Loading -> {
-                    _firefighterUiState.value = _firefighterUiState.value.copy(loading = true)
                 }
             }
         }

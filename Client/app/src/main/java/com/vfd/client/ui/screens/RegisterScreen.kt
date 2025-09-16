@@ -6,11 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.ui.components.ActionButton
 import com.vfd.client.ui.components.FormTextField
 import com.vfd.client.ui.components.SectionHeader
 import com.vfd.client.ui.viewmodels.AuthViewModel
@@ -156,19 +156,13 @@ fun RegisterScreen(
             )
         }
 
-        Button(
+        ActionButton(
+            icon = Icons.Filled.Lock,
+            label = "Register",
             onClick = { authViewModel.register() },
+            fullWidth = true,
             enabled = !registerUiState.loading,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            if (registerUiState.loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-            } else {
-                Text("Register")
-            }
-        }
+            loading = registerUiState.loading
+        )
     }
 }

@@ -6,10 +6,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,44 +19,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-
+import com.vfd.client.ui.components.ActionButton
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
             .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 text = "My Volunteer Fire Department",
                 style = MaterialTheme.typography.headlineLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(40.dp))
-            Button(
+            ActionButton(
+                icon = Icons.Filled.Lock,
+                label = "Login",
                 onClick = { navController.navigate("loginScreen") },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Login")
-            }
+                fullWidth = true
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
+            ActionButton(
+                icon = Icons.Filled.Lock,
+                label = "Register",
                 onClick = { navController.navigate("registerScreen") },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text("Register")
-            }
+                fullWidth = true
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
+            ActionButton(
+                icon = Icons.Filled.Info,
+                label = "Information",
                 onClick = { navController.navigate("infoScreen") },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text("Information")
-            }
+                fullWidth = true
+            )
         }
     }
 }

@@ -110,10 +110,6 @@ class FirefighterServiceImplementation(
         val firefighter = firefighterRepository.findById(user.userId!!)
             .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
 
-//        if (firefighter.role != Role.PRESIDENT && firefighter.role != Role.ADMIN) {
-//            throw ForbiddenException("You are not authorized to view pending applications.")
-//        }
-
         return firefighterRepository
             .findAllByFiredepartmentFiredepartmentIdAndStatus(
                 firefighter.firedepartment!!.firedepartmentId!!,
@@ -137,15 +133,5 @@ class FirefighterServiceImplementation(
         return firefighterMapper.toFirefighterDto(
             firefighterRepository.save(firefighter)
         )
-    }
-
-    @Transactional
-    override fun deleteFirefighter(firefighterId: Int) {
-        val firefighter = firefighterRepository.findById(firefighterId)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "id", firefighterId) }
-
-        firefighter.user?.firefighter = null
-
-        firefighterRepository.delete(firefighter)
     }
 }
