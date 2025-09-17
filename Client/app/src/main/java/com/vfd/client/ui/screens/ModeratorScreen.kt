@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.vfd.client.ui.components.ActionButton
+import com.vfd.client.ui.components.AppButton
+import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.BaseCard
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
@@ -40,9 +40,10 @@ fun ModeratorScreen(
     AppColumn(
         modifier = Modifier
             .verticalScroll(rememberScrollState()),
-    ) {
+    )
+    {
         if (currentUser != null) {
-            BaseCard(
+            AppCard(
                 "👤 ${currentUser!!.firstName} ${currentUser!!.lastName}",
                 "\uD83D\uDCE7 ${currentUser!!.emailAddress}" + "\n📱 ${currentUser!!.phoneNumber}",
                 "🏠 ${currentUser!!.address.country}, ${currentUser!!.address.voivodeship}, " +
@@ -56,7 +57,7 @@ fun ModeratorScreen(
         }
 
         if (currentFirefighter != null) {
-            BaseCard(
+            AppCard(
                 "\uD83D\uDE92 ${currentFirefighter!!.firedepartmentName}",
                 "\uD83E\uDDD1\u200D\uD83D\uDE92 Role: ${currentFirefighter!!.role}",
                 "✨ To God for glory, to people for salvation.",
@@ -67,7 +68,7 @@ fun ModeratorScreen(
         }
 
         Spacer(Modifier.height(24.dp))
-        ActionButton(
+        AppButton(
             icon = Icons.Filled.ArrowBack,
             label = "Logout",
             onClick = {

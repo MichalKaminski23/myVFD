@@ -14,8 +14,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.BaseCard
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
 @Composable
@@ -37,14 +37,14 @@ fun FirefighterScreen(
     {
         if (firefightersFromMyDepartment.isEmpty()) {
             Text(
-                "There are't any firefighters in your VFD",
+                "There aren't any firefighters in your VFD",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.padding(16.dp)
             )
         } else {
             firefightersFromMyDepartment.forEach { firefighter ->
-                BaseCard(
+                AppCard(
                     "👤 ${firefighter.firstName} ${firefighter.lastName}",
                     "🚒 Firedepartment: ${firefighter.firedepartmentName}",
                     "📧 Email address: ${firefighter.emailAddress} \n \uD83E\uDDD1\u200D\uD83D\uDE92 Role: ${firefighter.role}",

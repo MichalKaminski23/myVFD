@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.Role
-import com.vfd.client.ui.components.ActionButton
+import com.vfd.client.ui.components.AppButton
 import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.FormTextField
+import com.vfd.client.ui.components.AppTextField
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
@@ -91,15 +91,16 @@ fun LoginScreen(
     AppColumn(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
-    ) {
-        FormTextField(
+    )
+    {
+        AppTextField(
             value = loginUiState.emailAddress,
             onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(emailAddress = new) } },
             label = "Email address",
             errorMessage = loginUiState.fieldErrors["emailAddress"],
             modifier = Modifier.fillMaxWidth(),
         )
-        FormTextField(
+        AppTextField(
             value = loginUiState.password,
             onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(password = new) } },
             label = "Password",
@@ -119,7 +120,7 @@ fun LoginScreen(
             )
         }
 
-        ActionButton(
+        AppButton(
             icon = Icons.Filled.Lock,
             label = "Login",
             onClick = { authViewModel.login() },

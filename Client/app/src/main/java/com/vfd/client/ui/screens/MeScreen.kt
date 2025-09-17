@@ -1,8 +1,6 @@
 package com.vfd.client.ui.screens
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,10 +26,10 @@ import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterStatus
 import com.vfd.client.data.remote.dtos.Role
-import com.vfd.client.ui.components.ActionButton
+import com.vfd.client.ui.components.AppButton
+import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.BaseCard
-import com.vfd.client.ui.components.GeneralDropdown
+import com.vfd.client.ui.components.AppDropdown
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
@@ -63,9 +61,10 @@ fun MeScreen(
     AppColumn(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
-    ) {
+    )
+    {
         if (currentUser != null) {
-            BaseCard(
+            AppCard(
                 "👤 ${currentUser!!.firstName} ${currentUser!!.lastName}",
                 "\uD83D\uDCE7 ${currentUser!!.emailAddress}" + "\n📱 ${currentUser!!.phoneNumber}",
                 "🏠 ${currentUser!!.address.country}, ${currentUser!!.address.voivodeship}, " +
@@ -91,7 +90,7 @@ fun MeScreen(
                     }
 
                     FirefighterStatus.ACTIVE -> {
-                        BaseCard(
+                        AppCard(
                             "\uD83D\uDE92 ${currentFirefighter!!.firedepartmentName}",
                             "\uD83E\uDDD1\u200D\uD83D\uDE92 Role: ${currentFirefighter!!.role}",
                             "✨ To God for glory, to people for salvation.",
@@ -106,7 +105,7 @@ fun MeScreen(
                             modifier = Modifier.padding(8.dp)
                         )
 
-                        GeneralDropdown(
+                        AppDropdown(
                             items = firedepartmentUiState.firedepartments,
                             selectedId = selectedFiredepartmentId,
                             idSelector = { it.firedepartmentId },
@@ -129,7 +128,7 @@ fun MeScreen(
                             }
                         )
 
-                        ActionButton(
+                        AppButton(
                             icon = Icons.Filled.Send,
                             label = "Send application to VFD's moderator.",
                             onClick = {
@@ -178,7 +177,7 @@ fun MeScreen(
             }
 
             else -> {
-                GeneralDropdown(
+                AppDropdown(
                     items = firedepartmentUiState.firedepartments,
                     selectedId = selectedFiredepartmentId,
                     idSelector = { it.firedepartmentId },
@@ -201,7 +200,7 @@ fun MeScreen(
                     }
                 )
 
-                ActionButton(
+                AppButton(
                     icon = Icons.Filled.Send,
                     label = "Send application to VFD's moderator.",
                     onClick = {
@@ -224,8 +223,7 @@ fun MeScreen(
             }
         }
 
-        Spacer(Modifier.height(24.dp))
-        ActionButton(
+        AppButton(
             icon = Icons.Filled.ArrowBack,
             label = "Logout",
             onClick = {

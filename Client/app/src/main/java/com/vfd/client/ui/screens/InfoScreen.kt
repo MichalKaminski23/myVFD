@@ -1,14 +1,11 @@
 package com.vfd.client.ui.screens
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.vfd.client.ui.components.AppColumn
@@ -20,13 +17,13 @@ fun InfoScreen(navController: NavController) {
     AppColumn(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
-    ) {
+    )
+    {
         Text(
             text = "About application",
             style = MaterialTheme.typography.headlineLarge
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "This app was created to support the operations of Volunteer Fire Departments. " +
                     "You can view your Volunteer Fire Department resources, members (and their research/training), create events, and monitor your rescue and firefighting operations. " +
@@ -40,7 +37,6 @@ fun InfoScreen(navController: NavController) {
             text = "About author",
             style = MaterialTheme.typography.headlineLarge
         )
-        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Michal Kaminski – student of the Silesian University of Technology at the Faculty of Automatic Control, Electronics and Computer Science " +
                     "- majoring in Computer Science. This app is the engineering project.",
@@ -55,7 +51,6 @@ fun InfoScreen(navController: NavController) {
             fontSize = 27.sp
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "admin@vfd_name@example.pl",
             style = MaterialTheme.typography.bodyMedium,

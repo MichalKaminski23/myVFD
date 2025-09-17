@@ -22,9 +22,9 @@ import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterStatus
 import com.vfd.client.data.remote.dtos.Role
-import com.vfd.client.ui.components.ActionButton
+import com.vfd.client.ui.components.AppButton
+import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.BaseCard
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
 @Composable
@@ -52,13 +52,13 @@ fun NewFirefighterScreen(
             )
         } else {
             pendingFirefighters.forEach { firefighter ->
-                BaseCard(
+                AppCard(
                     "👤 ${firefighter.firstName} ${firefighter.lastName}",
                     "🚒 Firedepartment: ${firefighter.firedepartmentName}",
                     "📧 Email address: ${firefighter.emailAddress}",
                     {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            ActionButton(
+                            AppButton(
                                 icon = Icons.Default.Add,
                                 label = "Approve",
                                 onClick = {
@@ -72,7 +72,7 @@ fun NewFirefighterScreen(
                                 },
                                 modifier = Modifier.weight(1f)
                             )
-                            ActionButton(
+                            AppButton(
                                 icon = Icons.Default.Delete,
                                 label = "Reject",
                                 onClick = {

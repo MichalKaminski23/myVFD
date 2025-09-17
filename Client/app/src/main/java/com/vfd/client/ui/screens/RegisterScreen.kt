@@ -21,10 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.vfd.client.ui.components.ActionButton
+import com.vfd.client.ui.components.AppButton
 import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.FormTextField
-import com.vfd.client.ui.components.SectionHeader
+import com.vfd.client.ui.components.AppSectionHeader
+import com.vfd.client.ui.components.AppTextField
 import com.vfd.client.ui.viewmodels.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,53 +45,53 @@ fun RegisterScreen(
 
     AppColumn(
         modifier = Modifier
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        SectionHeader("Personal data")
-        FormTextField(
+            .verticalScroll(rememberScrollState())
+    )
+    {
+        AppSectionHeader("Personal data")
+        AppTextField(
             value = registerUiState.firstName,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(firstName = new) } },
             label = "First name",
             errorMessage = registerUiState.fieldErrors["firstName"]
         )
-        FormTextField(
+        AppTextField(
             value = registerUiState.lastName,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(lastName = new) } },
             label = "Last name",
             errorMessage = registerUiState.fieldErrors["lastName"]
         )
 
-        SectionHeader("Address")
-        FormTextField(
+        AppSectionHeader("Address")
+        AppTextField(
             value = registerUiState.country,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(country = new) } },
             label = "Country",
             errorMessage = registerUiState.fieldErrors["address.country"]
         )
 
-        FormTextField(
+        AppTextField(
             value = registerUiState.voivodeship,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(voivodeship = new) } },
             label = "Voivodeship",
             errorMessage = registerUiState.fieldErrors["address.voivodeship"]
         )
 
-        FormTextField(
+        AppTextField(
             value = registerUiState.city,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(city = new) } },
             label = "City",
             errorMessage = registerUiState.fieldErrors["address.city"]
         )
 
-        FormTextField(
+        AppTextField(
             value = registerUiState.postalCode,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(postalCode = new) } },
             label = "Postal code",
             errorMessage = registerUiState.fieldErrors["address.postalCode"]
         )
 
-        FormTextField(
+        AppTextField(
             value = registerUiState.street,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(street = new) } },
             label = "Street",
@@ -99,14 +99,14 @@ fun RegisterScreen(
         )
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FormTextField(
+            AppTextField(
                 value = registerUiState.houseNumber,
                 onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(houseNumber = new) } },
                 label = "House number",
                 errorMessage = registerUiState.fieldErrors["address.houseNumber"],
                 modifier = Modifier.weight(1.0f)
             )
-            FormTextField(
+            AppTextField(
                 value = registerUiState.apartNumber,
                 onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(apartNumber = new) } },
                 label = "Apartment number",
@@ -115,23 +115,23 @@ fun RegisterScreen(
             )
         }
 
-        SectionHeader("Contact")
-        FormTextField(
+        AppSectionHeader("Contact")
+        AppTextField(
             value = registerUiState.emailAddress,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(emailAddress = new) } },
             label = "Email address",
             errorMessage = registerUiState.fieldErrors["emailAddress"]
         )
 
-        FormTextField(
+        AppTextField(
             value = registerUiState.phoneNumber,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(phoneNumber = new) } },
             label = "Phone number",
             errorMessage = registerUiState.fieldErrors["phoneNumber"]
         )
 
-        SectionHeader("Security")
-        FormTextField(
+        AppSectionHeader("Security")
+        AppTextField(
             value = registerUiState.password,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(password = new) } },
             label = "Password",
@@ -151,7 +151,7 @@ fun RegisterScreen(
             )
         }
 
-        ActionButton(
+        AppButton(
             icon = Icons.Filled.Lock,
             label = "Register",
             onClick = { authViewModel.register() },

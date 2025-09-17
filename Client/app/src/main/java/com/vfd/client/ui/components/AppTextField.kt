@@ -10,7 +10,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 
 @Composable
-fun FormTextField(
+fun AppTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,

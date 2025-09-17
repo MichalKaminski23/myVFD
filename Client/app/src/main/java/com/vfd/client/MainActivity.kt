@@ -17,15 +17,20 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.vfd.client.ui.components.ActionsNavigationBar
 import com.vfd.client.ui.components.AppNavGraph
-import com.vfd.client.ui.components.NavActionSpec
+import com.vfd.client.ui.components.NavBarAction
+import com.vfd.client.ui.components.NavBarButton
 import com.vfd.client.ui.theme.MyVFDMobileTheme
+import com.vfd.client.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,6 +43,11 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
+                val mainViewModel: MainViewModel = hiltViewModel()
+                val pending by mainViewModel.pendingFirefighters.collectAsState()
+                LaunchedEffect(currentRoute) {
+                    mainViewModel.refreshBadges()
+                }
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -62,125 +72,129 @@ class MainActivity : ComponentActivity() {
                         when (currentRoute) {
                             "meScreen" -> {
                                 val actions = listOf(
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "TO DO",
                                         Icons.Default.Person,
                                         { /* navController.navigate("TO DO") */ }),
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "TO DO",
                                         Icons.Default.Person,
                                         { /* navController.navigate("TO DO") */ }),
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "TO DO",
                                         Icons.Default.Person,
                                         { /* navController.navigate("TO DO") */ }),
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "TO DO",
                                         Icons.Default.Person,
                                         { /* navController.navigate("TO DO") */ })
                                 )
-                                ActionsNavigationBar(actions)
+                                NavBarAction(actions)
                             }
 
                             "welcomeScreen" -> {
                                 val activity = (LocalContext.current as? Activity)
                                 val actions = listOf(
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Exit",
                                         Icons.Default.Close,
                                         { activity?.finish() })
                                 )
-                                ActionsNavigationBar(actions)
+                                NavBarAction(actions)
                             }
 
                             "infoScreen" -> {
                                 val actions = listOf(
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Back",
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() })
                                 )
-                                ActionsNavigationBar(actions)
+                                NavBarAction(actions)
                             }
 
                             "loginScreen" -> {
                                 val actions = listOf(
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Back",
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() })
                                 )
-                                ActionsNavigationBar(actions)
+                                NavBarAction(actions)
                             }
 
                             "registerScreen" -> {
                                 val actions = listOf(
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Back",
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() })
                                 )
-                                ActionsNavigationBar(actions)
+                                NavBarAction(actions)
                             }
 
                             "moderatorScreen" -> {
                                 val actions = listOf(
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Firefighters",
                                         Icons.Default.Person,
-                                        { navController.navigate("firefighterScreen") }),
-                                    NavActionSpec(
+                                        { navController.navigate("firefighterScreen") }
+                                    ),
+                                    NavBarButton(
                                         "Assets",
                                         Icons.Default.Build,
                                         { /* navController.navigate("assetScreen") */ }),
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Events",
                                         Icons.Default.Favorite,
                                         {  /* navController.navigate("eventScreen")*/ }),
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Operations",
                                         Icons.Default.Settings,
                                         { /* navController.navigate("operationScreen") */ }
                                     ),
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Investments",
                                         Icons.Default.ShoppingCart,
                                         { /* navController.navigate("investmentScreen") */ }
                                     )
                                 )
-                                ActionsNavigationBar(actions)
+                                NavBarAction(actions)
                             }
 
                             "firefighterScreen" -> {
                                 val actions = listOf(
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Back",
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() }),
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Pending Firefighters",
                                         Icons.Default.Person,
                                         { navController.navigate("newFirefighterScreen") },
+                                        badgeCount = pending
                                     )
                                 )
-                                ActionsNavigationBar(actions)
+                                NavBarAction(actions)
                             }
 
                             "newFirefighterScreen" -> {
                                 val actions = listOf(
-                                    NavActionSpec(
+                                    NavBarButton(
                                         "Back",
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() })
                                 )
-                                ActionsNavigationBar(actions)
+                                NavBarAction(actions)
                             }
                         }
                     }
                 ) { innerPadding ->
                     AppNavGraph(
                         navController = navController,
-                        modifier = Modifier.padding(innerPadding),
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
                     )
                 }
             }

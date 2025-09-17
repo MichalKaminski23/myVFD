@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
-data class NavActionSpec(
+data class NavBarButton(
     val label: String,
     val icon: ImageVector,
     val onClick: () -> Unit,
@@ -30,8 +31,8 @@ data class NavActionSpec(
 )
 
 @Composable
-fun ActionsNavigationBar(
-    actions: List<NavActionSpec>
+fun NavBarAction(
+    actions: List<NavBarButton>
 ) {
     if (actions.size == 1) {
         NavigationBar {
@@ -49,10 +50,20 @@ fun ActionsNavigationBar(
                             .border(1.dp, MaterialTheme.colorScheme.onPrimary, CircleShape)
                             .background(MaterialTheme.colorScheme.primary, CircleShape)
                     ) {
-                        Icon(
-                            imageVector = actions[0].icon,
-                            contentDescription = actions[0].label,
-                        )
+                        BadgedBox(
+                            badge = {
+                                if (actions[0].badgeCount != null && actions[0].badgeCount!! > 0) {
+                                    androidx.compose.material3.Badge {
+                                        Text(actions[0].badgeCount.toString())
+                                    }
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = actions[0].icon,
+                                contentDescription = actions[0].label,
+                            )
+                        }
                     }
                     Spacer(Modifier.height(7.dp))
                     Text(
@@ -69,14 +80,25 @@ fun ActionsNavigationBar(
                     selected = action.selected,
                     onClick = action.onClick,
                     icon = {
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .border(1.dp, MaterialTheme.colorScheme.onPrimary, CircleShape)
-                                .background(MaterialTheme.colorScheme.primary, CircleShape),
-                            contentAlignment = Alignment.Center
+                        BadgedBox(
+                            badge = {
+                                if (action.badgeCount != null && action.badgeCount > 0) {
+                                    androidx.compose.material3.Badge {
+                                        Text(action.badgeCount.toString())
+                                    }
+                                }
+                            }
+
                         ) {
-                            Icon(action.icon, contentDescription = action.label)
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .border(1.dp, MaterialTheme.colorScheme.onPrimary, CircleShape)
+                                    .background(MaterialTheme.colorScheme.primary, CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(action.icon, contentDescription = action.label)
+                            }
                         }
                     },
                     label = {

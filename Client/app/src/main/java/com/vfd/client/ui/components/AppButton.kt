@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ActionButton(
+fun AppButton(
     icon: ImageVector,
     label: String,
     onClick: () -> Unit,

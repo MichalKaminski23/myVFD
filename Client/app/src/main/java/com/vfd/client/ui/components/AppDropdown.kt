@@ -33,7 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun <T> GeneralDropdown(
+fun <T> AppDropdown(
     items: List<T>,
     selectedId: Int?,
     idSelector: (T) -> Int,

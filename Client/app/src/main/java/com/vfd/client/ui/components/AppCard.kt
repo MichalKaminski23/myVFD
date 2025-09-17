@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BaseCard(
+fun AppCard(
     header: String,
     smallerHeader: String,
     otherText: String,
@@ -23,28 +23,27 @@ fun BaseCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier
-            .padding(top = 8.dp, bottom = 8.dp),
+        modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
     ) {
-        AppColumn(modifier = Modifier) {
+        AppColumn(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
             Text(
                 header,
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(8.dp))
-
             Text(
                 smallerHeader,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = otherText,
