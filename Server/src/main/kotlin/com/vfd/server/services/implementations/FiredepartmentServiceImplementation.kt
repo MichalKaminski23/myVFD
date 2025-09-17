@@ -1,7 +1,7 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FiredepartmentDtos
-import com.vfd.server.entities.Firedepartment
+import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AddressMapper
 import com.vfd.server.mappers.FiredepartmentMapper
@@ -35,7 +35,11 @@ class FiredepartmentServiceImplementation(
         firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
     ): FiredepartmentDtos.FiredepartmentResponse {
 
-        val firedepartment: Firedepartment = firedepartmentMapper.toFiredepartmentEntity(firedepartmentDto)
+        if (firedepartmentRepository.findByNameIgnoreCase(firedepartmentDto.name) != null) {
+            throw ResourceConflictException("Firedepartment", "name", firedepartmentDto.name)
+        }
+
+        val firedepartment = firedepartmentMapper.toFiredepartmentEntity(firedepartmentDto)
 
         val address = addressService.findOrCreateAddress(firedepartmentDto.address)
         firedepartment.address = addressRepository.save(address)
