@@ -31,7 +31,7 @@ VALUES ('Jan', 'Kowalski', 1, '+48123456789', 'jan.kowalski@test.com', '2025-01-
         TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
        ('Piotr', 'Wisniewski', 3, '+48111222333', 'piotr.wisniewski@test.com', '2025-03-10 10:15:00',
         '2025-07-23 09:20:00', FALSE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
-       ('Katarzyna', 'Wojcik', 1, '+48444555666', 'katarzyna.wojscik@test.com;', '2025-04-05 11:45:00',
+       ('Katarzyna', 'Wojcik', 1, '+48444555666', 'katarzyna.wojcik@test.com;', '2025-04-05 11:45:00',
         '2025-07-24 14:30:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS');
 
 INSERT INTO Firedepartments (name, address_id, is_nrfs)

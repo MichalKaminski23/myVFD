@@ -28,7 +28,7 @@ import com.vfd.client.ui.components.BaseCard
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
 @Composable
-fun NewFirefightersScreen(
+fun NewFirefighterScreen(
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
     navController: NavController
 ) {

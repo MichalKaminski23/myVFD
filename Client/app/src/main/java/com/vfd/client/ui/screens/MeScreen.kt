@@ -212,7 +212,7 @@ fun MeScreen(
                                 role = Role.USER,
                                 status = FirefighterStatus.PENDING,
                             )
-                            firefighterViewModel.crateFirefighter(
+                            firefighterViewModel.createFirefighter(
                                 userId,
                                 firedepartmentId
                             )

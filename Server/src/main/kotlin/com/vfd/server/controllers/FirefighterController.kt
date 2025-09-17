@@ -64,10 +64,11 @@ class FirefighterController(
         ]
     )
     @GetMapping
+    //@PreAuthorize("hasRole('ADMIN')")
     fun getAllFirefighters(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "firefighterId,asc") sort: String
+        @RequestParam(defaultValue = "firefighterId,asc") sort: String,
     ): PageResponse<FirefighterDtos.FirefighterResponse> =
         firefighterService.getAllFirefighters(page, size, sort)
 
@@ -91,6 +92,24 @@ class FirefighterController(
         @PathVariable firefighterId: Int
     ): FirefighterDtos.FirefighterResponse =
         firefighterService.getFirefighterById(firefighterId)
+
+    @Operation(
+        summary = "Get firefighters from my department",
+        description = "Returns all firefighters that belong to the same fire department as the logged-in user."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
+            ApiResponse(responseCode = "401", description = "Unauthorized", content = [Content()]),
+            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+        ]
+    )
+    @GetMapping("/friends")
+    fun getFirefightersFromMyDepartment(
+        @AuthenticationPrincipal principal: UserDetails
+    ): List<FirefighterDtos.FirefighterResponse> {
+        return firefighterService.getFirefightersFromLoggedUser(principal.username)
+    }
 
     @Operation(
         summary = "Update firefighter (PATCH)",
@@ -150,7 +169,7 @@ class FirefighterController(
             ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
         ]
     )
-    @GetMapping("/moderator/pending")
+    @GetMapping("/pending")
     fun getPendingFirefighters(@AuthenticationPrincipal principal: UserDetails): List<FirefighterDtos.FirefighterResponse> {
         return firefighterService.getPendingFirefighters(principal.username)
     }

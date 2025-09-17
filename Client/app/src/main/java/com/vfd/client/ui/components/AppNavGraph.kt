@@ -10,11 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.vfd.client.ui.screens.FirefighterScreen
 import com.vfd.client.ui.screens.InfoScreen
 import com.vfd.client.ui.screens.LoginScreen
 import com.vfd.client.ui.screens.MeScreen
 import com.vfd.client.ui.screens.ModeratorScreen
-import com.vfd.client.ui.screens.NewFirefightersScreen
+import com.vfd.client.ui.screens.NewFirefighterScreen
 import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
 
@@ -51,8 +52,11 @@ fun AppNavGraph(
         composable("moderatorScreen") {
             ModeratorScreen(navController = navController)
         }
-        composable("newFirefightersScreen") {
-            NewFirefightersScreen(navController = navController)
+        composable("newFirefighterScreen") {
+            NewFirefighterScreen(navController = navController)
+        }
+        composable("firefighterScreen") {
+            FirefighterScreen(navController = navController)
         }
     }
 }

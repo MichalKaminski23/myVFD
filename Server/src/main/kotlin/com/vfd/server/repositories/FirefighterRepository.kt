@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface FirefighterRepository : JpaRepository<Firefighter, Int> {
+
     fun findAllByFiredepartmentFiredepartmentIdAndStatus(
         firedepartmentId: Int,
         status: FirefighterStatus

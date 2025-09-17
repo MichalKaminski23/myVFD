@@ -10,7 +10,7 @@ interface FirefighterService {
     fun getAllFirefighters(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "firefighterId,asc"
+        sort: String = "firefighterId,asc",
     ): PageResponse<FirefighterDtos.FirefighterResponse>
 
     fun getFirefighterById(firefighterId: Int): FirefighterDtos.FirefighterResponse
@@ -18,6 +18,8 @@ interface FirefighterService {
     fun getFirefighterByEmailAddress(emailAddress: String): FirefighterDtos.FirefighterResponse
 
     fun getPendingFirefighters(emailAddress: String): List<FirefighterDtos.FirefighterResponse>
+
+    fun getFirefightersFromLoggedUser(emailAddress: String): List<FirefighterDtos.FirefighterResponse>
 
     fun updateFirefighter(
         firefighterId: Int,

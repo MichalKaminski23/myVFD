@@ -8,12 +8,16 @@ class ServerApplication
 
 fun main(args: Array<String>) {
     runApplication<ServerApplication>(*args)
-    
+
     println("Server is running...")
 }
 
-// TODO: Miękkie usuwanie lub twarde usuwanie - czyli czy usuwamy na stałe czy tylko oznaczamy jako usunięte np. sprzęt aby go nie móc edytować czy coś
-// TODO: Szczegółowe walidacje danych np. email, liczby i tak dalej
-// TODO: W przyszłości ogarnąć wszelkie zabezpieczenia z logowania i tak dalej
-// TODO: Reszta bardziej szczegółowych serwisów i endpointów
-// TODO: zastanowić się nad aktualizacją adresów
+
+// TODO: Miękkie usuwanie tylko
+// TODO: Pod koniec projektu dodać wszelkie zabezpieczenia dla endpointów oraz zmienić bazę na postgresa
+// TODO: Zmiana adresu = dodanie nowego adresu
+
+// TODO: Moderator -> akceptuje wszelkie prośby od strażaków (i ich prośby utworzenia przez użytkowników (User - gotowe) (FirefighterActivity) a strażacy sami sobie je wpisują
+// TODO: Moderator -> dodaje sprzęt (Asset) i badania (Inspection), wydarzenia (Event), Działania (Operation) oraz propozycje zakupów (InvestmentProposal)
+// TODO: Strażak -> dodaje swoje aktywności (FirefighterActivity) oraz zgłasza propozycje zakupów (InvestmentProposal), może przeglądać wszystko w swojej jednostce
+// TODO: Admin -> tworzy jednostki (Firedepartment) i dodaje do niej moderatorów (mejlowa symulacja), dodaje wszelkie typy (asset, activity, inspection, operation) i chyba tyle

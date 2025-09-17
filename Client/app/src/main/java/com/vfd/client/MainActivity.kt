@@ -7,11 +7,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,7 +49,9 @@ class MainActivity : ComponentActivity() {
                                         "loginScreen" -> "Login"
                                         "infoScreen" -> "Information"
                                         "moderatorScreen" -> "Moderate"
-                                        "newFirefightersScreen" -> "New Firefighters"
+                                        "newFirefighterScreen" -> "New Firefighters"
+                                        "welcomeScreen" -> "My VFD"
+                                        "firefighterScreen" -> "Firefighters"
                                         else -> "My VFD"
                                     }
                                 )
@@ -60,18 +63,21 @@ class MainActivity : ComponentActivity() {
                             "meScreen" -> {
                                 val actions = listOf(
                                     NavActionSpec(
-                                        "Users",
+                                        "TO DO",
                                         Icons.Default.Person,
-                                        { navController.navigate("registerScreen") }),
+                                        { /* navController.navigate("TO DO") */ }),
                                     NavActionSpec(
-                                        "Departments",
-                                        Icons.Default.Home,
-                                        { navController.navigate("meScreen") }),
+                                        "TO DO",
+                                        Icons.Default.Person,
+                                        { /* navController.navigate("TO DO") */ }),
                                     NavActionSpec(
-                                        "Reports",
-                                        Icons.Default.List,
-                                        { navController.navigate("infoScreen") }),
-                                    NavActionSpec("Settings", Icons.Default.Settings, { /* ... */ })
+                                        "TO DO",
+                                        Icons.Default.Person,
+                                        { /* navController.navigate("TO DO") */ }),
+                                    NavActionSpec(
+                                        "TO DO",
+                                        Icons.Default.Person,
+                                        { /* navController.navigate("TO DO") */ })
                                 )
                                 ActionsNavigationBar(actions)
                             }
@@ -120,23 +126,47 @@ class MainActivity : ComponentActivity() {
                             "moderatorScreen" -> {
                                 val actions = listOf(
                                     NavActionSpec(
-                                        "New firefighters",
+                                        "Firefighters",
                                         Icons.Default.Person,
-                                        { navController.navigate("newFirefightersScreen") }),
+                                        { navController.navigate("firefighterScreen") }),
                                     NavActionSpec(
-                                        "Departments",
-                                        Icons.Default.Home,
-                                        { navController.navigate("meScreen") }),
+                                        "Assets",
+                                        Icons.Default.Build,
+                                        { /* navController.navigate("assetScreen") */ }),
                                     NavActionSpec(
-                                        "Reports",
-                                        Icons.Default.List,
-                                        { navController.navigate("infoScreen") }),
-                                    NavActionSpec("Settings", Icons.Default.Settings, { /* ... */ })
+                                        "Events",
+                                        Icons.Default.Favorite,
+                                        {  /* navController.navigate("eventScreen")*/ }),
+                                    NavActionSpec(
+                                        "Operations",
+                                        Icons.Default.Settings,
+                                        { /* navController.navigate("operationScreen") */ }
+                                    ),
+                                    NavActionSpec(
+                                        "Investments",
+                                        Icons.Default.ShoppingCart,
+                                        { /* navController.navigate("investmentScreen") */ }
+                                    )
                                 )
                                 ActionsNavigationBar(actions)
                             }
 
-                            "newFirefightersScreen" -> {
+                            "firefighterScreen" -> {
+                                val actions = listOf(
+                                    NavActionSpec(
+                                        "Back",
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        { navController.popBackStack() }),
+                                    NavActionSpec(
+                                        "Pending Firefighters",
+                                        Icons.Default.Person,
+                                        { navController.navigate("newFirefighterScreen") },
+                                    )
+                                )
+                                ActionsNavigationBar(actions)
+                            }
+
+                            "newFirefighterScreen" -> {
                                 val actions = listOf(
                                     NavActionSpec(
                                         "Back",

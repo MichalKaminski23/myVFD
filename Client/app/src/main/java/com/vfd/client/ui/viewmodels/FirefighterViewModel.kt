@@ -33,11 +33,14 @@ class FirefighterViewModel @Inject constructor(
         MutableStateFlow<List<FirefighterDtos.FirefighterResponse>>(emptyList())
     val pendingFirefighters = _pendingFirefighters.asStateFlow()
 
-    fun crateFirefighter(userId: Int, firedepartmentId: Int) {
-        val createState = _firefighterUiState.value
+    private val _firefightersFromMyDepartment =
+        MutableStateFlow<List<FirefighterDtos.FirefighterResponse>>(emptyList())
+    val firefightersFromMyDepartment = _firefightersFromMyDepartment.asStateFlow()
+
+    fun createFirefighter(userId: Int, firedepartmentId: Int) {
         viewModelScope.launch {
             _firefighterUiState.value =
-                createState.copy(loading = true, error = null, success = false)
+                _firefighterUiState.value.copy(loading = true, error = null, success = false)
 
             val firefighterDto = FirefighterDtos.FirefighterCreate(
                 userId = userId,
@@ -45,17 +48,27 @@ class FirefighterViewModel @Inject constructor(
             )
 
             when (val result = firefighterRepository.createFirefighter(firefighterDto)) {
+
                 is ApiResult.Success -> {
-                    _firefighterUiState.value = createState.copy(loading = false, success = true)
+                    _firefighterUiState.value =
+                        _firefighterUiState.value.copy(
+                            loading = false,
+                            success = true,
+                            error = null
+                        )
                 }
 
                 is ApiResult.Error -> {
                     _firefighterUiState.value =
-                        createState.copy(loading = false, error = result.message ?: "Unknown error")
+                        _firefighterUiState.value.copy(
+                            loading = false,
+                            success = false,
+                            error = result.message ?: "Failed to create firefighter"
+                        )
                 }
 
                 is ApiResult.Loading -> {
-                    _firefighterUiState.value = createState.copy(loading = true)
+                    Unit
                 }
             }
         }
@@ -63,7 +76,8 @@ class FirefighterViewModel @Inject constructor(
 
     fun getCurrentFirefighter() {
         viewModelScope.launch {
-            _firefighterUiState.value = _firefighterUiState.value.copy(loading = true, error = null)
+            _firefighterUiState.value =
+                _firefighterUiState.value.copy(loading = true, error = null, success = false)
 
             when (val result = firefighterRepository.getCurrentFirefighter()) {
 
@@ -72,6 +86,7 @@ class FirefighterViewModel @Inject constructor(
                     _firefighterUiState.value = FirefighterUiState(
                         loading = false,
                         success = true,
+                        error = null,
                         notFound = false
                     )
                 }
@@ -81,21 +96,22 @@ class FirefighterViewModel @Inject constructor(
                         _firefighter.value = null
                         _firefighterUiState.value = _firefighterUiState.value.copy(
                             loading = false,
-                            error = null,
                             success = false,
+                            error = null,
                             notFound = true
                         )
                     } else {
                         _firefighter.value = null
                         _firefighterUiState.value = _firefighterUiState.value.copy(
                             loading = false,
+                            success = false,
                             error = result.message ?: "Failed to load current firefighter"
                         )
                     }
                 }
 
                 is ApiResult.Loading -> {
-                    _firefighterUiState.value = _firefighterUiState.value.copy(loading = true)
+                    Unit
                 }
             }
         }
@@ -103,10 +119,33 @@ class FirefighterViewModel @Inject constructor(
 
     fun getPendingFirefighters() {
         viewModelScope.launch {
+            _firefighterUiState.value =
+                _firefighterUiState.value.copy(loading = true, error = null, success = false)
+
             when (val result = firefighterRepository.getPendingFirefighters()) {
-                is ApiResult.Success -> _pendingFirefighters.value = result.data ?: emptyList()
-                is ApiResult.Error -> _pendingFirefighters.value = emptyList()
+
+                is ApiResult.Success -> {
+                    _firefighterUiState.value =
+                        _firefighterUiState.value.copy(
+                            loading = false,
+                            success = true,
+                            error = null
+                        )
+                    _pendingFirefighters.value = result.data ?: emptyList()
+                }
+
+                is ApiResult.Error -> {
+                    _firefighterUiState.value =
+                        _firefighterUiState.value.copy(
+                            loading = false,
+                            success = false,
+                            error = result.message ?: "Failed to get pending firefighters"
+                        )
+                    _pendingFirefighters.value = emptyList()
+                }
+
                 is ApiResult.Loading -> {
+                    Unit
                 }
             }
         }
@@ -116,26 +155,69 @@ class FirefighterViewModel @Inject constructor(
         firefighterId: Int,
         firefighterDto: FirefighterDtos.FirefighterPatch
     ) {
-        val updateState = _firefighterUiState.value
         viewModelScope.launch {
             _firefighterUiState.value =
-                updateState.copy(loading = true, error = null, success = false)
+                _firefighterUiState.value.copy(loading = true, error = null, success = false)
 
             when (val result =
                 firefighterRepository.updateFirefighter(firefighterId, firefighterDto)) {
+
                 is ApiResult.Success -> {
-                    _firefighterUiState.value = updateState.copy(loading = false, success = true)
+                    _firefighterUiState.value = _firefighterUiState.value.copy(
+                        loading = false,
+                        success = true,
+                        error = null,
+                        notFound = false
+                    )
                     getCurrentFirefighter()
                     getPendingFirefighters()
                 }
 
                 is ApiResult.Error -> {
                     _firefighterUiState.value =
-                        updateState.copy(loading = false, error = result.message ?: "Unknown error")
+                        _firefighterUiState.value.copy(
+                            loading = false,
+                            success = false,
+                            error = result.message ?: "Failed to change role or status"
+                        )
                 }
 
                 is ApiResult.Loading -> {
-                    _firefighterUiState.value = updateState.copy(loading = true)
+                    Unit
+                }
+            }
+        }
+    }
+
+    fun getFirefightersFromMyDepartment() {
+        viewModelScope.launch {
+            _firefighterUiState.value =
+                _firefighterUiState.value.copy(loading = true, error = null, success = false)
+
+            when (val result = firefighterRepository.getFirefightersFromMyDepartment()) {
+
+                is ApiResult.Success -> {
+                    _firefighterUiState.value =
+                        _firefighterUiState.value.copy(
+                            loading = false,
+                            success = true,
+                            error = null
+                        )
+                    _firefightersFromMyDepartment.value = result.data ?: emptyList()
+                }
+
+                is ApiResult.Error -> {
+                    _firefighterUiState.value =
+                        _firefighterUiState.value.copy(
+                            loading = false,
+                            success = false,
+                            error = result.message ?: "Failed to load firefighters"
+                        )
+                    _firefightersFromMyDepartment.value = emptyList()
+                }
+
+                is ApiResult.Loading -> {
+                    Unit
                 }
             }
         }

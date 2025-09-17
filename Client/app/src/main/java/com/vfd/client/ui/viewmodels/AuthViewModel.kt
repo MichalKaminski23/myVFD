@@ -79,7 +79,7 @@ class AuthViewModel @Inject constructor(
         )
 
         _loginUiState.value = LoginUiState(
-            emailAddress = "arek@test.com",
+            emailAddress = "jan.kowalski@test.com",
             password = "Dupa12345!"
         )
     }

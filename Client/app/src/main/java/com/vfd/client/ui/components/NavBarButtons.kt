@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,7 +25,8 @@ data class NavActionSpec(
     val label: String,
     val icon: ImageVector,
     val onClick: () -> Unit,
-    val selected: Boolean = false
+    val selected: Boolean = false,
+    val badgeCount: Int? = null
 )
 
 @Composable
@@ -39,8 +39,7 @@ fun ActionsNavigationBar(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                AppColumn(
                     verticalArrangement = Arrangement.Center
                 ) {
                     IconButton(
