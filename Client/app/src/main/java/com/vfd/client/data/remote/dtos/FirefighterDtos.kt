@@ -28,6 +28,8 @@ object FirefighterDtos {
 
         val lastName: String,
 
+        val emailAddress: String,
+
         //val user: UserDtos.UserResponse,
         val userId: Int,
 

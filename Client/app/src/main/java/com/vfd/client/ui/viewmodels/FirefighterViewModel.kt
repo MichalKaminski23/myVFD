@@ -29,8 +29,9 @@ class FirefighterViewModel @Inject constructor(
     private val _firefighter = MutableStateFlow<FirefighterDtos.FirefighterResponse?>(null)
     val firefighter = _firefighter.asStateFlow()
 
-    private val _pending = MutableStateFlow<List<FirefighterDtos.FirefighterResponse>>(emptyList())
-    val pending = _pending.asStateFlow()
+    private val _pendingFirefighters =
+        MutableStateFlow<List<FirefighterDtos.FirefighterResponse>>(emptyList())
+    val pendingFirefighters = _pendingFirefighters.asStateFlow()
 
     fun crateFirefighter(userId: Int, firedepartmentId: Int) {
         val createState = _firefighterUiState.value
@@ -100,11 +101,11 @@ class FirefighterViewModel @Inject constructor(
         }
     }
 
-    fun loadPendingApplications() {
+    fun getPendingFirefighters() {
         viewModelScope.launch {
             when (val result = firefighterRepository.getPendingFirefighters()) {
-                is ApiResult.Success -> _pending.value = result.data ?: emptyList()
-                is ApiResult.Error -> _pending.value = emptyList()
+                is ApiResult.Success -> _pendingFirefighters.value = result.data ?: emptyList()
+                is ApiResult.Error -> _pendingFirefighters.value = emptyList()
                 is ApiResult.Loading -> {
                 }
             }
@@ -125,7 +126,7 @@ class FirefighterViewModel @Inject constructor(
                 is ApiResult.Success -> {
                     _firefighterUiState.value = updateState.copy(loading = false, success = true)
                     getCurrentFirefighter()
-                    loadPendingApplications()
+                    getPendingFirefighters()
                 }
 
                 is ApiResult.Error -> {

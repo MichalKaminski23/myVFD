@@ -44,7 +44,7 @@ fun WelcomeScreen(navController: NavController) {
                 icon = Icons.Filled.Lock,
                 label = "Login",
                 onClick = { navController.navigate("loginScreen") },
-                fullWidth = true
+                fullWidth = true,
             )
             Spacer(modifier = Modifier.height(16.dp))
             ActionButton(

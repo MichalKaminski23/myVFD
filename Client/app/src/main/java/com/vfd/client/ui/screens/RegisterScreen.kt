@@ -1,9 +1,7 @@
 package com.vfd.client.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -17,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.ui.components.ActionButton
+import com.vfd.client.ui.components.AppColumn
 import com.vfd.client.ui.components.FormTextField
 import com.vfd.client.ui.components.SectionHeader
 import com.vfd.client.ui.viewmodels.AuthViewModel
@@ -45,13 +43,10 @@ fun RegisterScreen(
         }
     }
 
-    Column(
+    AppColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SectionHeader("Personal data")
         FormTextField(
@@ -103,20 +98,20 @@ fun RegisterScreen(
             errorMessage = registerUiState.fieldErrors["address.street"]
         )
 
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FormTextField(
                 value = registerUiState.houseNumber,
                 onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(houseNumber = new) } },
                 label = "House number",
                 errorMessage = registerUiState.fieldErrors["address.houseNumber"],
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1.0f)
             )
             FormTextField(
                 value = registerUiState.apartNumber,
                 onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(apartNumber = new) } },
                 label = "Apartment number",
                 errorMessage = registerUiState.fieldErrors["address.apartNumber"],
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1.0f)
             )
         }
 

@@ -21,6 +21,12 @@ val Typography = Typography(
         lineHeight = 22.sp,
         textAlign = TextAlign.Center
     ),
+    labelMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 10.sp,
+        textAlign = TextAlign.Center
+    ),
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,

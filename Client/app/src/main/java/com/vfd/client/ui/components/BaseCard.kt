@@ -1,6 +1,6 @@
 package com.vfd.client.ui.components
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,14 +19,17 @@ fun BaseCard(
     header: String,
     smallerHeader: String,
     otherText: String,
-    actions: @Composable (() -> Unit)? = null
+    actions: @Composable (() -> Unit)? = null,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier
+            .padding(top = 8.dp, bottom = 8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        AppColumn(modifier = Modifier) {
             Text(
                 header,
                 style = MaterialTheme.typography.titleLarge,

@@ -14,6 +14,7 @@ import com.vfd.client.ui.screens.InfoScreen
 import com.vfd.client.ui.screens.LoginScreen
 import com.vfd.client.ui.screens.MeScreen
 import com.vfd.client.ui.screens.ModeratorScreen
+import com.vfd.client.ui.screens.NewFirefightersScreen
 import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
 
@@ -49,6 +50,9 @@ fun AppNavGraph(
         }
         composable("moderatorScreen") {
             ModeratorScreen(navController = navController)
+        }
+        composable("newFirefightersScreen") {
+            NewFirefightersScreen(navController = navController)
         }
     }
 }

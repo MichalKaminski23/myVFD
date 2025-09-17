@@ -37,7 +37,7 @@ class FiredepartmentViewModel @Inject constructor(
                 is ApiResult.Success -> {
                     val response = result.data!!
                     _firedepartmentUiState.value = _firedepartmentUiState.value.copy(
-                        firedepartments = response.items,
+                        firedepartments = _firedepartmentUiState.value.firedepartments + response.items,
                         page = response.page,
                         totalPages = response.totalPages,
                         isLoading = false,

@@ -46,6 +46,9 @@ object FirefighterDtos {
         @field:Schema(description = "Surname of the firefighter", example = "Niemusialski")
         val lastName: String,
 
+        @field:Schema(description = "Email address of the firefighter", example = "Arek@test.com")
+        val emailAddress: String,
+
 //        @field:Schema(description = "Username of the user assigned to this firefighter record", example = "Arek")
 //        val userName: String,
 

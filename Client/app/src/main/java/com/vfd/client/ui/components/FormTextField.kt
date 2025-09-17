@@ -1,6 +1,5 @@
 package com.vfd.client.ui.components
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -17,16 +16,18 @@ fun FormTextField(
     label: String,
     errorMessage: String?,
     modifier: Modifier = Modifier,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    singleLine: Boolean = true
 ) {
-    Column(modifier = modifier) {
+    AppColumn(modifier = modifier) {
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             label = { Text(label) },
             isError = errorMessage != null,
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = visualTransformation
+            visualTransformation = visualTransformation,
+            singleLine = singleLine
         )
         if (errorMessage != null) {
             Text(
