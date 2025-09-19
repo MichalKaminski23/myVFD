@@ -24,6 +24,9 @@ class AssetRepository @Inject constructor(
 
     suspend fun getAssetById(assetId: Int): ApiResult<AssetDtos.AssetResponse> =
         safeApiCall { assetApi.getAssetById(assetId) }
+    
+    suspend fun getAssetsFromMyFiredepartment(): ApiResult<List<AssetDtos.AssetResponse>> =
+        safeApiCall { assetApi.getAssetsFromMyFiredepartment() }
 
     suspend fun updateAsset(
         assetId: Int,

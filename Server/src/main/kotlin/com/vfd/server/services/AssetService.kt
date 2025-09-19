@@ -15,5 +15,7 @@ interface AssetService {
 
     fun getAssetById(assetId: Int): AssetDtos.AssetResponse
 
+    fun getAssetsFromLoggedUser(emailAddress: String): List<AssetDtos.AssetResponse>
+
     fun updateAsset(assetId: Int, assetDto: AssetDtos.AssetPatch): AssetDtos.AssetResponse
 }

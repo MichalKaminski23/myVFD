@@ -105,7 +105,7 @@ class FirefighterController(
         ]
     )
     @GetMapping("/friends")
-    fun getFirefightersFromMyDepartment(
+    fun getFirefightersFromMyFiredepartment(
         @AuthenticationPrincipal principal: UserDetails
     ): List<FirefighterDtos.FirefighterResponse> {
         return firefighterService.getFirefightersFromLoggedUser(principal.username)

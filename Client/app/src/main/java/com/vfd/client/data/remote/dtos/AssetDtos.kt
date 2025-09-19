@@ -12,7 +12,7 @@ object AssetDtos {
 
         val assetType: String,
 
-        val description: String? = null
+        val description: String
     )
 
     @Serializable
@@ -28,12 +28,12 @@ object AssetDtos {
     data class AssetResponse(
         val assetId: Int,
 
-        val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
+        val firedepartmentId: Int,
 
         val name: String,
 
-        val assetType: AssetTypeDtos.AssetTypeResponse,
+        val assetTypeName: String,
 
-        val description: String?
+        val description: String
     )
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -125,7 +126,8 @@ fun MeScreen(
                             onExpand = {
                                 if (firedepartmentUiState.firedepartments.isEmpty())
                                     firedepartmentViewModel.getAllFiredepartments(page = 0)
-                            }
+                            },
+                            icon = Icons.Default.Home
                         )
 
                         AppButton(
@@ -197,7 +199,8 @@ fun MeScreen(
                     onExpand = {
                         if (firedepartmentUiState.firedepartments.isEmpty())
                             firedepartmentViewModel.getAllFiredepartments(page = 0)
-                    }
+                    },
+                    icon = Icons.Default.Home
                 )
 
                 AppButton(

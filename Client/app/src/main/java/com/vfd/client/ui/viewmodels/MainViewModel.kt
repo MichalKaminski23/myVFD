@@ -25,6 +25,7 @@ class MainViewModel @Inject constructor(
     fun refreshBadges() {
         viewModelScope.launch {
             when (val result = firefighterRepository.getPendingFirefighters()) {
+
                 is ApiResult.Success -> {
                     _pendingFirefighters.value = result.data?.size ?: 0
                 }

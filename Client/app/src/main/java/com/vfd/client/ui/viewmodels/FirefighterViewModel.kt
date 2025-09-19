@@ -33,9 +33,9 @@ class FirefighterViewModel @Inject constructor(
         MutableStateFlow<List<FirefighterDtos.FirefighterResponse>>(emptyList())
     val pendingFirefighters = _pendingFirefighters.asStateFlow()
 
-    private val _firefightersFromMyDepartment =
+    private val _firefightersFromMyFiredepartment =
         MutableStateFlow<List<FirefighterDtos.FirefighterResponse>>(emptyList())
-    val firefightersFromMyDepartment = _firefightersFromMyDepartment.asStateFlow()
+    val firefightersFromMyFiredepartment = _firefightersFromMyFiredepartment.asStateFlow()
 
     fun createFirefighter(userId: Int, firedepartmentId: Int) {
         viewModelScope.launch {
@@ -189,12 +189,12 @@ class FirefighterViewModel @Inject constructor(
         }
     }
 
-    fun getFirefightersFromMyDepartment() {
+    fun getFirefightersFromMyFiredepartment() {
         viewModelScope.launch {
             _firefighterUiState.value =
                 _firefighterUiState.value.copy(loading = true, error = null, success = false)
 
-            when (val result = firefighterRepository.getFirefightersFromMyDepartment()) {
+            when (val result = firefighterRepository.getFirefightersFromMyFiredepartment()) {
 
                 is ApiResult.Success -> {
                     _firefighterUiState.value =
@@ -203,7 +203,7 @@ class FirefighterViewModel @Inject constructor(
                             success = true,
                             error = null
                         )
-                    _firefightersFromMyDepartment.value = result.data ?: emptyList()
+                    _firefightersFromMyFiredepartment.value = result.data ?: emptyList()
                 }
 
                 is ApiResult.Error -> {
@@ -213,7 +213,7 @@ class FirefighterViewModel @Inject constructor(
                             success = false,
                             error = result.message ?: "Failed to load firefighters"
                         )
-                    _firefightersFromMyDepartment.value = emptyList()
+                    _firefightersFromMyFiredepartment.value = emptyList()
                 }
 
                 is ApiResult.Loading -> {

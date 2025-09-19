@@ -10,6 +10,8 @@ import org.mapstruct.*
 )
 interface AssetMapper {
 
+    @Mapping(target = "firedepartmentId", source = "firedepartment.firedepartmentId")
+    @Mapping(target = "assetTypeName", source = "assetType.name")
     fun toAssetDto(asset: Asset): AssetDtos.AssetResponse
 
     @Mapping(target = "assetId", ignore = true)

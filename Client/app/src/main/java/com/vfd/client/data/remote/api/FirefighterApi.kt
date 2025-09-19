@@ -38,7 +38,7 @@ interface FirefighterApi {
     suspend fun getCurrentFirefighter(): FirefighterDtos.FirefighterResponse
 
     @GET("api/firefighters/friends")
-    suspend fun getFirefightersFromMyDepartment(): List<FirefighterDtos.FirefighterResponse>
+    suspend fun getFirefightersFromMyFiredepartment(): List<FirefighterDtos.FirefighterResponse>
 
     @GET("api/firefighters/pending")
     suspend fun getPendingFirefighters(): List<FirefighterDtos.FirefighterResponse>

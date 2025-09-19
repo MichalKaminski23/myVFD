@@ -97,8 +97,7 @@ fun LoginScreen(
             value = loginUiState.emailAddress,
             onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(emailAddress = new) } },
             label = "Email address",
-            errorMessage = loginUiState.fieldErrors["emailAddress"],
-            modifier = Modifier.fillMaxWidth(),
+            errorMessage = loginUiState.fieldErrors["emailAddress"]
         )
         AppTextField(
             value = loginUiState.password,

@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -86,6 +88,24 @@ class AssetController(
     @GetMapping("/{assetId}")
     fun getAssetById(@PathVariable assetId: Int): AssetDtos.AssetResponse =
         assetService.getAssetById(assetId)
+
+    @Operation(
+        summary = "Get assets from my firedepartment",
+        description = "Retrieves all assets associated with the firedepartment of the currently authenticated user."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Assets retrieved successfully",
+                content = [Content(schema = Schema(implementation = AssetDtos.AssetResponse::class))]
+            ),
+            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+        ]
+    )
+    @GetMapping("/my")
+    fun getAssetsFromMyFiredepartment(@AuthenticationPrincipal principal: UserDetails): List<AssetDtos.AssetResponse> {
+        return assetService.getAssetsFromLoggedUser(principal.username)
+    }
 
     @Operation(
         summary = "Update asset",

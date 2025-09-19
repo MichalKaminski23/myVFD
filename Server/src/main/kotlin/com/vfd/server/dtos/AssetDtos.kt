@@ -39,8 +39,8 @@ object AssetDtos {
         val assetType: String? = null,
 
         @field:Size(max = 512, message = "Description must be at most 512 characters.")
-        @field:Schema(description = "Optional description of the asset", example = "Backup pump used during floods")
-        val description: String? = null
+        @field:Schema(description = "Description of the asset", example = "Backup pump used during floods")
+        val description: String
     )
 
     @Schema(description = "DTO used for returning asset information")
@@ -48,14 +48,14 @@ object AssetDtos {
         @field:Schema(description = "Unique identifier of the asset", example = "7")
         val assetId: Int,
 
-        @field:Schema(description = "Fire department that owns this asset")
-        val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
+        @field:Schema(description = "Firedepartment that owns this asset")
+        val firedepartmentId: Int,
 
         @field:Schema(description = "Name of the asset", example = "Pump 3000 l/min")
         val name: String,
 
-        @field:Schema(description = "Type of the asset")
-        val assetType: AssetTypeDtos.AssetTypeResponse,
+        @field:Schema(description = "Type name of the asset")
+        val assetTypeName: String,
 
         @field:Schema(
             description = "Optional description of the asset",

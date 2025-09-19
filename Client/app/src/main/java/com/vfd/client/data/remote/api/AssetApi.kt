@@ -24,6 +24,9 @@ interface AssetApi {
     @GET("api/assets/{assetId}")
     suspend fun getAssetById(@Path("assetId") assetId: Int): AssetDtos.AssetResponse
 
+    @GET("api/assets/my")
+    suspend fun getAssetsFromMyFiredepartment(): List<AssetDtos.AssetResponse>
+
     @PATCH("api/assets/{assetId}")
     suspend fun updateAsset(
         @Path("assetId") assetId: Int,

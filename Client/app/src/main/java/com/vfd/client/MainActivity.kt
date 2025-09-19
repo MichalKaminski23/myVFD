@@ -46,7 +46,9 @@ class MainActivity : ComponentActivity() {
                 val mainViewModel: MainViewModel = hiltViewModel()
                 val pending by mainViewModel.pendingFirefighters.collectAsState()
                 LaunchedEffect(currentRoute) {
-                    mainViewModel.refreshBadges()
+                    if (currentRoute == "firefighterScreen") {
+                        mainViewModel.refreshBadges()
+                    }
                 }
                 Scaffold(
                     topBar = {
@@ -62,6 +64,7 @@ class MainActivity : ComponentActivity() {
                                         "newFirefighterScreen" -> "New Firefighters"
                                         "welcomeScreen" -> "My VFD"
                                         "firefighterScreen" -> "Firefighters"
+                                        "assetScreen" -> "Assets"
                                         else -> "My VFD"
                                     }
                                 )
@@ -143,7 +146,7 @@ class MainActivity : ComponentActivity() {
                                     NavBarButton(
                                         "Assets",
                                         Icons.Default.Build,
-                                        { /* navController.navigate("assetScreen") */ }),
+                                        { navController.navigate("assetScreen") }),
                                     NavBarButton(
                                         "Events",
                                         Icons.Default.Favorite,
@@ -179,6 +182,16 @@ class MainActivity : ComponentActivity() {
                             }
 
                             "newFirefighterScreen" -> {
+                                val actions = listOf(
+                                    NavBarButton(
+                                        "Back",
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        { navController.popBackStack() })
+                                )
+                                NavBarAction(actions)
+                            }
+
+                            "assetScreen" -> {
                                 val actions = listOf(
                                     NavBarButton(
                                         "Back",

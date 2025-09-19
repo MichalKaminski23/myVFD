@@ -88,27 +88,26 @@ class AuthViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(100000000), null)
 
     fun register() {
-        val registerState = _registerUiState.value
         val newUser = UserDtos.UserCreate(
-            firstName = registerState.firstName,
-            lastName = registerState.lastName,
+            firstName = _registerUiState.value.firstName,
+            lastName = _registerUiState.value.lastName,
             address = AddressDtos.AddressCreate(
-                country = registerState.country,
-                voivodeship = registerState.voivodeship,
-                city = registerState.city,
-                postalCode = registerState.postalCode,
-                street = registerState.street,
-                houseNumber = registerState.houseNumber,
-                apartNumber = registerState.apartNumber.ifBlank { null }
+                country = _registerUiState.value.country,
+                voivodeship = _registerUiState.value.voivodeship,
+                city = _registerUiState.value.city,
+                postalCode = _registerUiState.value.postalCode,
+                street = _registerUiState.value.street,
+                houseNumber = _registerUiState.value.houseNumber,
+                apartNumber = _registerUiState.value.apartNumber.ifBlank { null }
             ),
-            emailAddress = registerState.emailAddress,
-            phoneNumber = registerState.phoneNumber,
-            password = registerState.password
+            emailAddress = _registerUiState.value.emailAddress,
+            phoneNumber = _registerUiState.value.phoneNumber,
+            password = _registerUiState.value.password
         )
 
         viewModelScope.launch {
             _registerUiState.value =
-                registerState.copy(loading = true, error = null, success = false)
+                _registerUiState.value.copy(loading = true, error = null, success = false)
 
             when (val result = authRepository.register(newUser)) {
                 is ApiResult.Success<AuthResponseDto> -> {
@@ -118,45 +117,46 @@ class AuthViewModel @Inject constructor(
                         authRepository.saveToken(jwt)
                     }
 
-                    _registerUiState.value = registerState.copy(loading = false, success = true)
+                    _registerUiState.value =
+                        _registerUiState.value.copy(loading = false, success = true)
                 }
 
                 is ApiResult.Error -> {
-                    val msg = result.message ?: "Unknown error"
+                    val message = result.message ?: "Unknown error"
 
                     val fieldErrors = when {
-                        msg.contains("phone number", ignoreCase = true) ->
-                            mapOf("phoneNumber" to msg)
+                        message.contains("phone number", ignoreCase = true) ->
+                            mapOf("phoneNumber" to message)
 
-                        msg.contains("email", ignoreCase = true) ->
-                            mapOf("emailAddress" to msg)
+                        message.contains("email", ignoreCase = true) ->
+                            mapOf("emailAddress" to message)
 
                         else -> result.fieldErrors
                     }
 
-                    _registerUiState.value = registerState.copy(
+                    _registerUiState.value = _registerUiState.value.copy(
                         loading = false,
-                        error = if (fieldErrors.isEmpty()) msg else null,
+                        error = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
                 }
 
                 is ApiResult.Loading -> {
-                    _registerUiState.value = registerState.copy(loading = true)
+                    _registerUiState.value = _registerUiState.value.copy(loading = true)
                 }
             }
         }
     }
 
     fun login() {
-        val loginState = _loginUiState.value
         val user = UserDtos.UserLogin(
-            emailAddress = loginState.emailAddress,
-            password = loginState.password
+            emailAddress = _loginUiState.value.emailAddress,
+            password = _loginUiState.value.password
         )
 
         viewModelScope.launch {
-            _loginUiState.value = loginState.copy(loading = true, error = null, success = false)
+            _loginUiState.value =
+                _loginUiState.value.copy(loading = true, error = null, success = false)
 
             when (val result = authRepository.login(user)) {
                 is ApiResult.Success<AuthResponseDto> -> {
@@ -166,31 +166,31 @@ class AuthViewModel @Inject constructor(
                         authRepository.saveToken(jwt)
                     }
 
-                    _loginUiState.value = loginState.copy(loading = false, success = true)
+                    _loginUiState.value = _loginUiState.value.copy(loading = false, success = true)
                 }
 
                 is ApiResult.Error -> {
-                    val msg = result.message ?: "Unknown error"
+                    val message = result.message ?: "Unknown error"
 
                     val fieldErrors = when {
-                        msg.contains("phone number", ignoreCase = true) ->
-                            mapOf("phoneNumber" to msg)
+                        message.contains("phone number", ignoreCase = true) ->
+                            mapOf("phoneNumber" to message)
 
-                        msg.contains("email", ignoreCase = true) ->
-                            mapOf("emailAddress" to msg)
+                        message.contains("email", ignoreCase = true) ->
+                            mapOf("emailAddress" to message)
 
                         else -> result.fieldErrors
                     }
 
-                    _loginUiState.value = loginState.copy(
+                    _loginUiState.value = _loginUiState.value.copy(
                         loading = false,
-                        error = if (fieldErrors.isEmpty()) msg else null,
+                        error = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
                 }
 
                 is ApiResult.Loading -> {
-                    _loginUiState.value = loginState.copy(loading = true)
+                    _loginUiState.value = _loginUiState.value.copy(loading = true)
                 }
             }
         }

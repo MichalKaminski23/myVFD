@@ -4,9 +4,7 @@ import com.vfd.server.dtos.AssetDtos
 import com.vfd.server.entities.Asset
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AssetMapper
-import com.vfd.server.repositories.AssetRepository
-import com.vfd.server.repositories.AssetTypeRepository
-import com.vfd.server.repositories.FiredepartmentRepository
+import com.vfd.server.repositories.*
 import com.vfd.server.services.AssetService
 import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
@@ -20,6 +18,8 @@ class AssetServiceImplementation(
     private val assetMapper: AssetMapper,
     private val firedepartmentRepository: FiredepartmentRepository,
     private val assetTypeRepository: AssetTypeRepository,
+    private val userRepository: UserRepository,
+    private val firefighterRepository: FirefighterRepository
 ) : AssetService {
 
     private val ASSET_ALLOWED_SORTS = setOf("assetId", "name", "assetType.assetType")
@@ -62,6 +62,19 @@ class AssetServiceImplementation(
             .orElseThrow { ResourceNotFoundException("Asset", "id", assetId) }
 
         return assetMapper.toAssetDto(asset)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getAssetsFromLoggedUser(emailAddress: String): List<AssetDtos.AssetResponse> {
+
+        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
+            ?: throw ResourceNotFoundException("User", "email", emailAddress)
+
+        val firefighter = firefighterRepository.findById(user.userId!!)
+            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
+
+        return assetRepository.findAllByFiredepartmentFiredepartmentId(firefighter.firedepartment!!.firedepartmentId!!)
+            .map(assetMapper::toAssetDto)
     }
 
     @Transactional

@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.vfd.client.ui.screens.AssetScreen
 import com.vfd.client.ui.screens.FirefighterScreen
 import com.vfd.client.ui.screens.InfoScreen
 import com.vfd.client.ui.screens.LoginScreen
@@ -57,6 +58,9 @@ fun AppNavGraph(
         }
         composable("firefighterScreen") {
             FirefighterScreen(navController = navController)
+        }
+        composable("assetScreen") {
+            AssetScreen(navController = navController)
         }
     }
 }

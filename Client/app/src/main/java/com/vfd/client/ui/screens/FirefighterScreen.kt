@@ -24,10 +24,10 @@ fun FirefighterScreen(
     navController: NavController
 ) {
 
-    val firefightersFromMyDepartment by firefighterViewModel.firefightersFromMyDepartment.collectAsState()
+    val firefightersFromMyFiredepartment by firefighterViewModel.firefightersFromMyFiredepartment.collectAsState()
 
     LaunchedEffect(Unit) {
-        firefighterViewModel.getFirefightersFromMyDepartment()
+        firefighterViewModel.getFirefightersFromMyFiredepartment()
     }
 
     AppColumn(
@@ -35,7 +35,7 @@ fun FirefighterScreen(
             .verticalScroll(rememberScrollState()),
     )
     {
-        if (firefightersFromMyDepartment.isEmpty()) {
+        if (firefightersFromMyFiredepartment.isEmpty()) {
             Text(
                 "There aren't any firefighters in your VFD",
                 textAlign = TextAlign.Center,
@@ -43,7 +43,7 @@ fun FirefighterScreen(
                 modifier = Modifier.padding(16.dp)
             )
         } else {
-            firefightersFromMyDepartment.forEach { firefighter ->
+            firefightersFromMyFiredepartment.forEach { firefighter ->
                 AppCard(
                     "👤 ${firefighter.firstName} ${firefighter.lastName}",
                     "🚒 Firedepartment: ${firefighter.firedepartmentName}",
