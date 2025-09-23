@@ -6,17 +6,15 @@ import com.vfd.server.shared.PageResponse
 
 interface AddressService {
 
-    fun createAddress(addressDto: AddressDtos.AddressCreate): AddressDtos.AddressResponse
+    fun createAddressDev(addressDto: AddressDtos.AddressCreate): AddressDtos.AddressResponse
 
-    fun getAllAddresses(
+    fun getAllAddressesDev(
         page: Int = 0,
         size: Int = 20,
         sort: String = "addressId,asc"
     ): PageResponse<AddressDtos.AddressResponse>
 
-    fun getAddressById(addressId: Int): AddressDtos.AddressResponse
-
-    //fun updateAddress(addressId: Int, addressDto: AddressDtos.AddressPatch): AddressDtos.AddressResponse
+    fun getAddressByIdDev(addressId: Int): AddressDtos.AddressResponse
 
     fun findOrCreateAddress(addressDto: AddressDtos.AddressCreate): Address
 }

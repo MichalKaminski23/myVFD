@@ -21,6 +21,30 @@ class EventServiceImplementation(
     private val firedepartmentRepository: FiredepartmentRepository
 ) : EventService {
 
+    override fun createEvent(emailAddress: String, eventDto: EventDtos.EventCreate): EventDtos.EventResponse {
+        // Implementation for production environment (not shown here)
+        TODO()
+    }
+
+    override fun getEvents(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<EventDtos.EventResponse> {
+        // Implementation for production environment (not shown here)
+        TODO()
+    }
+
+    override fun updateEvent(
+        emailAddress: String,
+        eventId: Int,
+        eventDto: EventDtos.EventPatch
+    ): EventDtos.EventResponse {
+        // Implementation for production environment (not shown here)
+        TODO()
+    }
+
     private val EVENT_ALLOWED_SORTS = setOf(
         "eventId",
         "header",
@@ -29,12 +53,12 @@ class EventServiceImplementation(
     )
 
     @Transactional
-    override fun createEvent(eventDto: EventDtos.EventCreate): EventDtos.EventResponse {
+    override fun createEventDev(eventDto: EventDtos.EventCreateDev): EventDtos.EventResponse {
 
         val firedepartment: Firedepartment = firedepartmentRepository.findById(eventDto.firedepartmentId)
             .orElseThrow { ResourceNotFoundException("Firedepartment", "id", eventDto.firedepartmentId) }
 
-        val event: Event = eventMapper.toEventEntity(eventDto)
+        val event: Event = eventMapper.toEventEntityDev(eventDto)
 
         event.firedepartment = firedepartment
 
@@ -42,7 +66,7 @@ class EventServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllEvents(
+    override fun getAllEventsDev(
         page: Int,
         size: Int,
         sort: String
@@ -62,7 +86,7 @@ class EventServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getEventById(eventId: Int): EventDtos.EventResponse {
+    override fun getEventByIdDev(eventId: Int): EventDtos.EventResponse {
 
         val event = eventRepository.findById(eventId)
             .orElseThrow { ResourceNotFoundException("Event", "id", eventId) }
@@ -71,7 +95,7 @@ class EventServiceImplementation(
     }
 
     @Transactional
-    override fun updateEvent(eventId: Int, eventDto: EventDtos.EventPatch): EventDtos.EventResponse {
+    override fun updateEventDev(eventId: Int, eventDto: EventDtos.EventPatch): EventDtos.EventResponse {
 
         val event = eventRepository.findById(eventId)
             .orElseThrow { ResourceNotFoundException("Event", "id", eventId) }

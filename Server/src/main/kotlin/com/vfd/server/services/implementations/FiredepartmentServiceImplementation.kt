@@ -3,7 +3,6 @@ package com.vfd.server.services.implementations
 import com.vfd.server.dtos.FiredepartmentDtos
 import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
-import com.vfd.server.mappers.AddressMapper
 import com.vfd.server.mappers.FiredepartmentMapper
 import com.vfd.server.repositories.AddressRepository
 import com.vfd.server.repositories.FiredepartmentRepository
@@ -19,9 +18,39 @@ class FiredepartmentServiceImplementation(
     private val firedepartmentRepository: FiredepartmentRepository,
     private val firedepartmentMapper: FiredepartmentMapper,
     private val addressRepository: AddressRepository,
-    private val addressMapper: AddressMapper,
     private val addressService: AddressServiceImplementation
 ) : FiredepartmentService {
+
+    override fun createFiredepartment(
+        emailAddress: String,
+        firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
+    ): FiredepartmentDtos.FiredepartmentResponse {
+        // Implementation for production environment (not shown here)
+        TODO()
+    }
+
+    override fun getFiredepartmentsShort(
+        page: Int,
+        size: Int,
+        sort: String
+    ): PageResponse<FiredepartmentDtos.FiredepartmentResponseShort> {
+        // Implementation for production environment (not shown here)
+        TODO()
+    }
+
+    override fun getFiredepartment(emailAddress: String): FiredepartmentDtos.FiredepartmentResponse {
+        // Implementation for production environment (not shown here)
+        TODO()
+    }
+
+    override fun updateFiredepartment(
+        emailAddress: String,
+        firedepartmentId: Int,
+        firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch
+    ): FiredepartmentDtos.FiredepartmentResponse {
+        // Implementation for production environment (not shown here)
+        TODO()
+    }
 
     private val FIREDEPARTMENT_ALLOWED_SORTS = setOf(
         "firedepartmentId",
@@ -31,7 +60,7 @@ class FiredepartmentServiceImplementation(
     )
 
     @Transactional
-    override fun createFiredepartment(
+    override fun createFiredepartmentDev(
         firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
     ): FiredepartmentDtos.FiredepartmentResponse {
 
@@ -48,7 +77,7 @@ class FiredepartmentServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllFiredepartments(
+    override fun getAllFiredepartmentsDev(
         page: Int,
         size: Int,
         sort: String
@@ -68,7 +97,7 @@ class FiredepartmentServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getFiredepartmentById(
+    override fun getFiredepartmentByIdDev(
         firedepartmentId: Int
     ): FiredepartmentDtos.FiredepartmentResponse {
 
@@ -79,7 +108,7 @@ class FiredepartmentServiceImplementation(
     }
 
     @Transactional
-    override fun updateFiredepartment(
+    override fun updateFiredepartmentDev(
         firedepartmentId: Int,
         firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch
     ): FiredepartmentDtos.FiredepartmentResponse {

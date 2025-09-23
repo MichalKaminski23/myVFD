@@ -12,13 +12,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "Users", description = "Read & update users.")
+@Tag(name = "Users", description = "Endpoints for managing users")
+
 @Validated
 @RestController
 @RequestMapping("/api/users")
@@ -46,7 +46,6 @@ class UserController(
         ]
     )
     @GetMapping
-    @PreAuthorize("hasRole('USER')")
     fun getAllUsers(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,

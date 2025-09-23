@@ -10,10 +10,6 @@ object EventDtos {
 
     @Schema(description = "DTO used to create a new event")
     data class EventCreate(
-        @field:NotNull(message = "Firedepartment ID must not be null.")
-        @field:Schema(description = "ID of the firedepartment the event belongs to", example = "7")
-        val firedepartmentId: Int,
-
         @field:NotBlank(message = "Header must not be blank.")
         @field:Size(max = 128, message = "Header must be at most 128 characters.")
         @field:Schema(description = "Short header/title of the event", example = "Potato's Day")
@@ -30,7 +26,6 @@ object EventDtos {
         @field:Schema(description = "Date and time of the event", example = "2025-09-01T18:00:00")
         val eventDate: LocalDateTime
     )
-
 
     @Schema(description = "DTO used to partially update an event")
     data class EventPatch(
@@ -63,6 +58,29 @@ object EventDtos {
         )
         val description: String,
 
+        @field:Schema(description = "Date and time of the event", example = "2025-09-01T18:00:00")
+        val eventDate: LocalDateTime
+    )
+
+    @Schema(description = "DTO used to create a new event for development purposes")
+    data class EventCreateDev(
+        @field:NotNull(message = "Firedepartment ID must not be null.")
+        @field:Schema(description = "ID of the firedepartment the event belongs to", example = "7")
+        val firedepartmentId: Int,
+
+        @field:NotBlank(message = "Header must not be blank.")
+        @field:Size(max = 128, message = "Header must be at most 128 characters.")
+        @field:Schema(description = "Short header/title of the event", example = "Potato's Day")
+        val header: String,
+
+        @field:Size(max = 1023, message = "Description must be at most 1023 characters.")
+        @field:Schema(
+            description = "Detailed description of the event",
+            example = "The best day in the world."
+        )
+        val description: String,
+
+        @field:NotNull(message = "Event date must not be null.")
         @field:Schema(description = "Date and time of the event", example = "2025-09-01T18:00:00")
         val eventDate: LocalDateTime
     )

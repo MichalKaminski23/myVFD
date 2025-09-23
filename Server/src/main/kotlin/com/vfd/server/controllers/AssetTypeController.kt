@@ -33,8 +33,8 @@ class AssetTypeController(
                 description = "Asset type created",
                 content = [Content(schema = Schema(implementation = AssetTypeDtos.AssetTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @PostMapping
@@ -57,8 +57,8 @@ class AssetTypeController(
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "200", description = "Assets retrieved successfully"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping
@@ -80,8 +80,8 @@ class AssetTypeController(
                 description = "Asset type found",
                 content = [Content(schema = Schema(implementation = AssetTypeDtos.AssetTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping("/{assetTypeCode}")
@@ -98,12 +98,12 @@ class AssetTypeController(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Asset type updated",
+                description = "Asset type updated successfully",
                 content = [Content(schema = Schema(implementation = AssetTypeDtos.AssetTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @PatchMapping("/{assetTypeCode}")

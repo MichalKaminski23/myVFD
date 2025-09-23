@@ -19,6 +19,11 @@ interface AssetMapper {
     @Mapping(target = "assetType", ignore = true)
     fun toAssetEntity(assetDto: AssetDtos.AssetCreate): Asset
 
+    @Mapping(target = "assetId", ignore = true)
+    @Mapping(target = "firedepartment", ignore = true)
+    @Mapping(target = "assetType", ignore = true)
+    fun toAssetEntityDev(assetDto: AssetDtos.AssetCreateDev): Asset
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "firedepartment", ignore = true)
     @Mapping(target = "assetType", ignore = true)

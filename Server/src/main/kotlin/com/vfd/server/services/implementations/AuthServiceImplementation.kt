@@ -79,8 +79,4 @@ class AuthServiceImplementation(
 
         return AuthResponseDto(jwt)
     }
-
-    override fun logout() {
-        // No server-side action needed for JWT logout
-    }
 }

@@ -44,7 +44,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-    runtimeOnly("com.h2database:h2")
+    implementation("com.h2database:h2")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")

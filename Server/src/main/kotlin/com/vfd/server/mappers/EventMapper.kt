@@ -16,6 +16,10 @@ interface EventMapper {
     @Mapping(target = "firedepartment", ignore = true)
     fun toEventEntity(eventDto: EventDtos.EventCreate): Event
 
+    @Mapping(target = "eventId", ignore = true)
+    @Mapping(target = "firedepartment", ignore = true)
+    fun toEventEntityDev(eventDto: EventDtos.EventCreateDev): Event
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     fun patchEvent(eventDto: EventDtos.EventPatch, @MappingTarget event: Event)
 }

@@ -18,54 +18,6 @@ class AddressServiceImplementation(
     private val addressMapper: AddressMapper
 ) : AddressService {
 
-    private val ADDRESS_ALLOWED_SORTS = setOf(
-        "addressId", "country", "voivodeship",
-        "city", "postalCode", "street", "apartNumber", "houseNumber"
-    )
-
-    @Transactional
-    override fun createAddress(addressDto: AddressDtos.AddressCreate): AddressDtos.AddressResponse {
-
-        val address: Address = addressMapper.toAddressEntity(addressDto)
-
-        return addressMapper.toAddressDto(addressRepository.save(address))
-    }
-
-    @Transactional(readOnly = true)
-    override fun getAllAddresses(page: Int, size: Int, sort: String): PageResponse<AddressDtos.AddressResponse> {
-
-        val pageable = PaginationUtils.toPageRequest(
-            page = page,
-            size = size,
-            sort = sort,
-            allowedFields = ADDRESS_ALLOWED_SORTS,
-            defaultSort = "addressId,asc",
-            maxSize = 200
-        )
-
-        return addressRepository.findAll(pageable).map(addressMapper::toAddressDto).toPageResponse()
-    }
-
-    @Transactional(readOnly = true)
-    override fun getAddressById(addressId: Int): AddressDtos.AddressResponse {
-
-        val address = addressRepository.findById(addressId)
-            .orElseThrow { ResourceNotFoundException("Address", "id", addressId) }
-
-        return addressMapper.toAddressDto(address)
-    }
-
-//    @Transactional
-//    override fun updateAddress(addressId: Int, addressDto: AddressDtos.AddressPatch): AddressDtos.AddressResponse {
-//
-//        val address = addressRepository.findById(addressId)
-//            .orElseThrow { ResourceNotFoundException("Address", "id", addressId) }
-//
-//        addressMapper.patchAddress(addressDto, address)
-//
-//        return addressMapper.toAddressDto(addressRepository.save(address))
-//    }
-
     @Transactional
     override fun findOrCreateAddress(addressDto: AddressDtos.AddressCreate): Address {
 
@@ -81,5 +33,42 @@ class AddressServiceImplementation(
             )
 
         return existingAddress ?: addressRepository.save(addressMapper.toAddressEntity(addressDto))
+    }
+
+    private val ADDRESS_ALLOWED_SORTS = setOf(
+        "addressId", "country", "voivodeship",
+        "city", "postalCode", "street", "apartNumber", "houseNumber"
+    )
+
+    @Transactional
+    override fun createAddressDev(addressDto: AddressDtos.AddressCreate): AddressDtos.AddressResponse {
+
+        val address: Address = addressMapper.toAddressEntity(addressDto)
+
+        return addressMapper.toAddressDto(addressRepository.save(address))
+    }
+
+    @Transactional(readOnly = true)
+    override fun getAllAddressesDev(page: Int, size: Int, sort: String): PageResponse<AddressDtos.AddressResponse> {
+
+        val pageable = PaginationUtils.toPageRequest(
+            page = page,
+            size = size,
+            sort = sort,
+            allowedFields = ADDRESS_ALLOWED_SORTS,
+            defaultSort = "addressId,asc",
+            maxSize = 200
+        )
+
+        return addressRepository.findAll(pageable).map(addressMapper::toAddressDto).toPageResponse()
+    }
+
+    @Transactional(readOnly = true)
+    override fun getAddressByIdDev(addressId: Int): AddressDtos.AddressResponse {
+
+        val address = addressRepository.findById(addressId)
+            .orElseThrow { ResourceNotFoundException("Address", "id", addressId) }
+
+        return addressMapper.toAddressDto(address)
     }
 }

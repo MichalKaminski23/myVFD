@@ -65,6 +65,17 @@ class GlobalExceptionHandler {
         return ResponseEntity(error, HttpStatus.UNAUTHORIZED)
     }
 
+    @ExceptionHandler(ForbiddenException::class)
+    fun handleForbidden(exception: ForbiddenException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            status = HttpStatus.FORBIDDEN.value(),
+            error = "Forbidden",
+            message = exception.message ?: "Access is forbidden",
+            path = request.getDescription(false).replace("uri=", "")
+        )
+        return ResponseEntity(error, HttpStatus.FORBIDDEN)
+    }
+
     @ExceptionHandler(Exception::class)
     fun handleAll(exception: Exception, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(

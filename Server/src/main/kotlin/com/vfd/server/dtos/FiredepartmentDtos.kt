@@ -31,10 +31,6 @@ object FiredepartmentDtos {
         @field:Schema(description = "Name of the fire department", example = "OSP Strzyzowice")
         val name: String? = null,
 
-//        @field:Valid
-//        @field:Schema(description = "Address of the fire department")
-//        val address: AddressDtos.AddressPatch? = null,
-
         @field:Schema(
             description = "Whether the department is part of NRFS (National Rescue and Firefighting System)",
             example = "true"
@@ -58,5 +54,14 @@ object FiredepartmentDtos {
             example = "true"
         )
         val nrfs: Boolean
+    )
+
+    @Schema(description = "DTO used for returning fire department information in short version")
+    data class FiredepartmentResponseShort(
+        @field:Schema(description = "Unique identifier of the fire department", example = "7")
+        val firedepartmentId: Int,
+
+        @field:Schema(description = "Name of the fire department", example = "OSP Strzyzowice")
+        val name: String
     )
 }

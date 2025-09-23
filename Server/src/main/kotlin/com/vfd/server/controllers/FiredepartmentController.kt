@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -23,72 +26,74 @@ class FiredepartmentController(
 ) {
 
     @Operation(
-        summary = "Create firedepartment",
-        description = "Creates a new firedepartment and returns its details."
+        summary = "Create a new firedepartment",
+        description = "Creates a new firedepartment and returns the created firedepartment details."
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "201",
-                description = "Firedepartment created",
+                responseCode = "201", description = "Firedepartment successfully created",
                 content = [Content(schema = Schema(implementation = FiredepartmentDtos.FiredepartmentResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PostMapping
+    @PostMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createFiredepartment(
+        @AuthenticationPrincipal principal: UserDetails,
         @Valid @RequestBody firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
     ): FiredepartmentDtos.FiredepartmentResponse =
-        firedepartmentService.createFiredepartment(firedepartmentDto)
+        firedepartmentService.createFiredepartment(principal.username, firedepartmentDto)
 
     @Operation(
-        summary = "List firedepartments (paged)",
+        summary = "Get firedepartments short version",
         description = """
-            Returns a paginated list of firedepartments.
-            
+            Retrieves all firedepartments.
+
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firedepartmentId,asc) e.g. `name,desc`
+            - `sort` (default: firedepartmentId,asc) e.g. `firedepartmentId,asc`
         """
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(
+                responseCode = "200", description = "Firedepartments retrieved successfully",
+                content = [Content(schema = Schema(implementation = FiredepartmentDtos.FiredepartmentResponse::class))]
+            )
         ]
     )
     @GetMapping
-    fun getAllFiredepartments(
+    fun getFiredepartmentsShort(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "firedepartmentId,asc") sort: String
-    ): PageResponse<FiredepartmentDtos.FiredepartmentResponse> =
-        firedepartmentService.getAllFiredepartments(page, size, sort)
+        @RequestParam(defaultValue = "name,asc") sort: String
+    ): PageResponse<FiredepartmentDtos.FiredepartmentResponseShort> =
+        firedepartmentService.getFiredepartmentsShort(page, size, sort)
 
     @Operation(
-        summary = "Get firedepartment by ID",
-        description = "Returns a single firedepartment by `firedepartmentId`."
+        summary = "Get my firedepartment",
+        description =
+            "Retrieves firedepartment of the currently authenticated user."
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
-                description = "Firedepartment found",
+                responseCode = "200", description = "Firedepartment retrieved successfully",
                 content = [Content(schema = Schema(implementation = FiredepartmentDtos.FiredepartmentResponse::class))]
             ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping("/{firedepartmentId}")
-    fun getFiredepartmentById(
-        @PathVariable firedepartmentId: Int
+    @GetMapping("/my")
+    fun getFiredepartment(
+        @AuthenticationPrincipal principal: UserDetails
     ): FiredepartmentDtos.FiredepartmentResponse =
-        firedepartmentService.getFiredepartmentById(firedepartmentId)
+        firedepartmentService.getFiredepartment(principal.username)
 
     @Operation(
         summary = "Update firedepartment",
@@ -101,15 +106,16 @@ class FiredepartmentController(
                 description = "Firedepartment updated",
                 content = [Content(schema = Schema(implementation = FiredepartmentDtos.FiredepartmentResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PatchMapping("/{firedepartmentId}")
+    @PatchMapping("/my/{firedepartmentId}")
     fun updateFiredepartment(
+        @AuthenticationPrincipal principal: UserDetails,
         @PathVariable firedepartmentId: Int,
         @Valid @RequestBody firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch
     ): FiredepartmentDtos.FiredepartmentResponse =
-        firedepartmentService.updateFiredepartment(firedepartmentId, firedepartmentDto)
+        firedepartmentService.updateFiredepartment(principal.username, firedepartmentId, firedepartmentDto)
 }

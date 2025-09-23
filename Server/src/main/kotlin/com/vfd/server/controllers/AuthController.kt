@@ -11,11 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "Authentication", description = "Endpoints for user authentication, registration and logout.")
+@Tag(name = "Auth", description = "Endpoints for user authentication, registration and logout.")
 @Validated
 @RestController
 @RequestMapping("/api/auth")
@@ -34,8 +33,8 @@ class AuthController(
                 description = "User registered",
                 content = [Content(schema = Schema(implementation = AuthResponseDto::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "409", description = "Email already in use", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "409", ref = "Conflict")
         ]
     )
     @PostMapping("/register")
@@ -55,27 +54,12 @@ class AuthController(
                 description = "Authenticated",
                 content = [Content(schema = Schema(implementation = AuthResponseDto::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "401", description = "Invalid credentials", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "401", ref = "Unauthorized")
         ]
     )
     @PostMapping("/login")
     fun login(
         @Valid @RequestBody userDto: UserDtos.UserLogin
     ): AuthResponseDto = authService.login(userDto)
-
-    @Operation(
-        summary = "Logout user",
-        description = "Logs out the user. For JWT, this is typically handled client-side."
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "Logged out", content = [Content()])
-        ]
-    )
-    @PostMapping("/logout")
-    fun logout(): ResponseEntity<Void> {
-        authService.logout()
-        return ResponseEntity.ok().build()
-    }
 }

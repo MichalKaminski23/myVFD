@@ -1,7 +1,7 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.AssetDtos
-import com.vfd.server.entities.Asset
+import com.vfd.server.exceptions.ForbiddenException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AssetMapper
 import com.vfd.server.repositories.*
@@ -22,12 +22,110 @@ class AssetServiceImplementation(
     private val firefighterRepository: FirefighterRepository
 ) : AssetService {
 
+    @Transactional
+    override fun createAsset(
+        emailAddress: String,
+        assetDto: AssetDtos.AssetCreate
+    ): AssetDtos.AssetResponse {
+
+        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
+            ?: throw ResourceNotFoundException("User", "email", emailAddress)
+
+        val firefighter = firefighterRepository.findById(user.userId!!)
+            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
+
+        val firedepartment = firefighter.firedepartment
+            ?: throw ResourceNotFoundException("Firedepartment", "id", firefighter.firedepartment!!.firedepartmentId!!)
+
+        val assetType = assetTypeRepository.findById(assetDto.assetType)
+            .orElseThrow { ResourceNotFoundException("AssetType", "code", assetDto.assetType) }
+
+        val asset = assetMapper.toAssetEntity(assetDto).apply {
+            this.firedepartment = firedepartment
+            this.assetType = assetType
+        }
+
+        return assetMapper.toAssetDto(assetRepository.save(asset))
+    }
+
+    @Transactional(readOnly = true)
+    override fun getAssets(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<AssetDtos.AssetResponse> {
+
+        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
+            ?: throw ResourceNotFoundException("User", "email", emailAddress)
+
+        val firefighter = firefighterRepository.findById(user.userId!!)
+            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
+
+        val firedepartmentId = firefighter.firedepartment?.firedepartmentId
+            ?: throw ResourceNotFoundException(
+                "Firefighter",
+                "firedepartment",
+                firefighter.firedepartment!!.firedepartmentId!!
+            )
+
+        val pageable = PaginationUtils.toPageRequest(
+            page,
+            size,
+            sort,
+            ASSET_ALLOWED_SORTS,
+            "name,asc",
+            200
+        )
+
+        return assetRepository
+            .findAllByFiredepartmentFiredepartmentId(firedepartmentId, pageable)
+            .map(assetMapper::toAssetDto)
+            .toPageResponse()
+    }
+
+    @Transactional
+    override fun updateAsset(
+        emailAddress: String,
+        assetId: Int,
+        assetDto: AssetDtos.AssetPatch
+    ): AssetDtos.AssetResponse {
+
+        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
+            ?: throw ResourceNotFoundException("User", "email", emailAddress)
+
+        val firefighter = firefighterRepository.findById(user.userId!!)
+            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
+
+        val asset = assetRepository.findById(assetId)
+            .orElseThrow { ResourceNotFoundException("Asset", "id", assetId) }
+
+        assetMapper.patchAsset(assetDto, asset)
+
+        val firedepartmentId = firefighter.firedepartment?.firedepartmentId
+            ?: throw ResourceNotFoundException("Firedepartment", "userId", user.userId!!)
+
+        if (asset.firedepartment?.firedepartmentId != firedepartmentId) {
+            throw ForbiddenException("You cannot modify assets of another firedepartment.")
+        }
+
+        assetDto.assetType
+            ?.takeIf { it != asset.assetType?.assetType }
+            ?.let { code ->
+                val assetType = assetTypeRepository.findById(code)
+                    .orElseThrow { ResourceNotFoundException("Asset's type", "code", code) }
+                asset.assetType = assetType
+            }
+
+        return assetMapper.toAssetDto(assetRepository.save(asset))
+    }
+
     private val ASSET_ALLOWED_SORTS = setOf("assetId", "name", "assetType.assetType")
 
     @Transactional
-    override fun createAsset(assetDto: AssetDtos.AssetCreate): AssetDtos.AssetResponse {
+    override fun createAssetDev(assetDto: AssetDtos.AssetCreateDev): AssetDtos.AssetResponse {
 
-        val asset: Asset = assetMapper.toAssetEntity(assetDto)
+        val asset = assetMapper.toAssetEntityDev(assetDto)
 
         val firedepartment = firedepartmentRepository.findById(assetDto.firedepartmentId)
             .orElseThrow { ResourceNotFoundException("Firedepartment", "id", assetDto.firedepartmentId) }
@@ -41,7 +139,7 @@ class AssetServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllAssets(page: Int, size: Int, sort: String): PageResponse<AssetDtos.AssetResponse> {
+    override fun getAllAssetsDev(page: Int, size: Int, sort: String): PageResponse<AssetDtos.AssetResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page,
@@ -56,7 +154,7 @@ class AssetServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAssetById(assetId: Int): AssetDtos.AssetResponse {
+    override fun getAssetByIdDev(assetId: Int): AssetDtos.AssetResponse {
 
         val asset = assetRepository.findById(assetId)
             .orElseThrow { ResourceNotFoundException("Asset", "id", assetId) }
@@ -64,21 +162,8 @@ class AssetServiceImplementation(
         return assetMapper.toAssetDto(asset)
     }
 
-    @Transactional(readOnly = true)
-    override fun getAssetsFromLoggedUser(emailAddress: String): List<AssetDtos.AssetResponse> {
-
-        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
-            ?: throw ResourceNotFoundException("User", "email", emailAddress)
-
-        val firefighter = firefighterRepository.findById(user.userId!!)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
-
-        return assetRepository.findAllByFiredepartmentFiredepartmentId(firefighter.firedepartment!!.firedepartmentId!!)
-            .map(assetMapper::toAssetDto)
-    }
-
     @Transactional
-    override fun updateAsset(assetId: Int, assetDto: AssetDtos.AssetPatch): AssetDtos.AssetResponse {
+    override fun updateAssetDev(assetId: Int, assetDto: AssetDtos.AssetPatch): AssetDtos.AssetResponse {
 
         val asset = assetRepository.findById(assetId)
             .orElseThrow { ResourceNotFoundException("Asset", "id", assetId) }

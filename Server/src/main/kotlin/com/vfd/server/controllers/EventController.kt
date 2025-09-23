@@ -1,5 +1,6 @@
 package com.vfd.server.controllers
 
+import com.vfd.server.dtos.AssetDtos
 import com.vfd.server.dtos.EventDtos
 import com.vfd.server.services.EventService
 import com.vfd.server.shared.PageResponse
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -23,93 +26,79 @@ class EventController(
 ) {
 
     @Operation(
-        summary = "Create event",
-        description = "Creates a new event and returns its details."
+        summary = "Create event for my firedepartment",
+        description = "Creates a new event associated with the firedepartment of the currently authenticated user and returns the created event details."
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "201",
-                description = "Event created",
-                content = [Content(schema = Schema(implementation = EventDtos.EventResponse::class))]
+                responseCode = "201", description = "Event successfully created",
+                content = [Content(schema = Schema(implementation = AssetDtos.AssetResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PostMapping
+    @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createEvent(
-        @Valid @RequestBody eventCreateDto: EventDtos.EventCreate
+        @AuthenticationPrincipal principal: UserDetails,
+        @Valid @RequestBody eventDto: EventDtos.EventCreate
     ): EventDtos.EventResponse =
-        eventService.createEvent(eventCreateDto)
+        eventService.createEvent(principal.username, eventDto)
 
     @Operation(
         summary = "List events (paged)",
         description = """
-            Returns a paginated list of events.
+            Retrieves all events associated with the firedepartment of the currently authenticated user.
 
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: eventDate,desc) e.g. `header,asc`
+            - `sort` (default: eventDate,desc) e.g. `eventDate,desc`
         """
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(
+                responseCode = "200", description = "Events retrieved successfully",
+                content = [Content(schema = Schema(implementation = EventDtos.EventResponse::class))]
+            ),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping
-    fun getAllEvents(
+    @GetMapping("/my")
+    fun getEvents(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "eventDate,desc") sort: String
+        @RequestParam(defaultValue = "eventDate,desc") sort: String,
+        @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<EventDtos.EventResponse> =
-        eventService.getAllEvents(page, size, sort)
+        eventService.getEvents(page, size, sort, principal.username)
 
     @Operation(
-        summary = "Get event by ID",
-        description = "Returns a single event by `eventId`."
+        summary = "Update event from my firedepartment",
+        description = """
+            Partially updates an existing event identified by `eventId`.
+            Only non-null fields in the request body will be updated.
+        """
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
-                description = "Event found",
+                responseCode = "200", description = "Event updated successfully",
                 content = [Content(schema = Schema(implementation = EventDtos.EventResponse::class))]
             ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping("/{eventId}")
-    fun getEventById(
-        @PathVariable eventId: Int
-    ): EventDtos.EventResponse =
-        eventService.getEventById(eventId)
-
-    @Operation(
-        summary = "Update event (PATCH)",
-        description = "Partially updates an existing event. Only non-null fields are applied."
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Event updated",
-                content = [Content(schema = Schema(implementation = EventDtos.EventResponse::class))]
-            ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @PatchMapping("/{eventId}")
+    @PatchMapping("/my/{eventId}")
     fun updateEvent(
+        @AuthenticationPrincipal principal: UserDetails,
         @PathVariable eventId: Int,
         @Valid @RequestBody eventPatchDto: EventDtos.EventPatch
     ): EventDtos.EventResponse =
-        eventService.updateEvent(eventId, eventPatchDto)
+        eventService.updateEvent(principal.username, eventId, eventPatchDto)
 }
