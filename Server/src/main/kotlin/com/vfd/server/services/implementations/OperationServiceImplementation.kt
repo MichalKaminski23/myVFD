@@ -26,6 +26,30 @@ class OperationServiceImplementation(
     private val operationTypeRepository: OperationTypeRepository
 ) : OperationService {
 
+    override fun createOperation(
+        emailAddress: String,
+        operationDto: OperationDtos.OperationCreate
+    ): OperationDtos.OperationResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun getOperations(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<OperationDtos.OperationResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateOperation(
+        emailAddress: String,
+        operationId: Int,
+        operationDto: OperationDtos.OperationPatch
+    ): OperationDtos.OperationResponse {
+        TODO("Not yet implemented")
+    }
+
     private val OPERATION_ALLOWED_SORTS = setOf(
         "operationId",
         "address.addressId",
@@ -33,11 +57,11 @@ class OperationServiceImplementation(
     )
 
     @Transactional
-    override fun createOperation(
-        operationDto: OperationDtos.OperationCreate
+    override fun createOperationDev(
+        operationDto: OperationDtos.OperationCreateDev
     ): OperationDtos.OperationResponse {
 
-        val operation: Operation = operationMapper.toOperationEntity(operationDto)
+        val operation: Operation = operationMapper.toOperationEntityDev(operationDto)
 
         val firedepartment = firedepartmentRepository.findById(operationDto.firedepartmentId)
             .orElseThrow { ResourceNotFoundException("Firedepartment", "id", operationDto.firedepartmentId) }
@@ -56,7 +80,7 @@ class OperationServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllOperations(
+    override fun getAllOperationsDev(
         page: Int,
         size: Int,
         sort: String
@@ -76,7 +100,7 @@ class OperationServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getOperationById(
+    override fun getOperationByIdDev(
         operationId: Int
     ): OperationDtos.OperationResponse {
 
@@ -87,7 +111,7 @@ class OperationServiceImplementation(
     }
 
     @Transactional
-    override fun updateOperation(
+    override fun updateOperationDev(
         operationId: Int,
         operationDto: OperationDtos.OperationPatch
     ): OperationDtos.OperationResponse {
@@ -104,13 +128,6 @@ class OperationServiceImplementation(
                     .orElseThrow { ResourceNotFoundException("Operation's type", "code", code) }
                 operation.operationType = type
             }
-
-//        operationDto.address
-//            ?.let { addressPatch ->
-//                val address: Address = operation.address ?: Address()
-//                addressMapper.patchAddress(addressPatch, address)
-//                operation.address = addressRepository.save(address)
-//            }
 
         return operationMapper.toOperationDto(
             operationRepository.save(operation)

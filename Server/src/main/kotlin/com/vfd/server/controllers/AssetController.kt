@@ -25,7 +25,7 @@ class AssetController(
 ) {
 
     @Operation(
-        summary = "Create asset for my firedepartment",
+        summary = "Create a new asset for my firedepartment",
         description = "Creates a new asset associated with the firedepartment of the currently authenticated user and returns the created asset details."
     )
     @ApiResponses(
@@ -54,7 +54,7 @@ class AssetController(
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: addressId,asc) e.g. `addressId,asc`
+            - `sort` (default: assetId,asc) e.g. `assetId,asc`
         """
     )
     @ApiResponses(
@@ -70,7 +70,7 @@ class AssetController(
     fun getAssets(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "addressId,asc") sort: String,
+        @RequestParam(defaultValue = "assetId,asc") sort: String,
         @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<AssetDtos.AssetResponse> {
         return assetService.getAssets(page, size, sort, principal.username)

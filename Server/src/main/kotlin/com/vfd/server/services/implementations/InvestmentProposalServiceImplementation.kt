@@ -20,6 +20,30 @@ class InvestmentProposalServiceImplementation(
     private val firedepartmentRepository: FiredepartmentRepository
 ) : InvestmentProposalService {
 
+    override fun createInvestmentProposal(
+        emailAddress: String,
+        investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreate
+    ): InvestmentProposalDtos.InvestmentProposalResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun getInvestmentProposals(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<InvestmentProposalDtos.InvestmentProposalResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateInvestmentProposal(
+        emailAddress: String,
+        investmentProposalId: Int,
+        investmentProposalDto: InvestmentProposalDtos.InvestmentProposalPatch
+    ): InvestmentProposalDtos.InvestmentProposalResponse {
+        TODO("Not yet implemented")
+    }
+
     private val INVESTMENT_PROPOSAL_ALLOWED_SORTS = setOf(
         "investmentProposalId",
         "createdAt",
@@ -27,12 +51,12 @@ class InvestmentProposalServiceImplementation(
     )
 
     @Transactional
-    override fun createInvestmentProposal(
-        investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreate
+    override fun createInvestmentProposalDev(
+        investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreateDev
     ): InvestmentProposalDtos.InvestmentProposalResponse {
 
         val investmentProposal: InvestmentProposal =
-            investmentProposalMapper.toInvestmentProposalEntity(investmentProposalDto)
+            investmentProposalMapper.toInvestmentProposalEntityDev(investmentProposalDto)
 
         val firedepartment = firedepartmentRepository.findById(investmentProposalDto.firedepartmentId)
             .orElseThrow { ResourceNotFoundException("Firedepartment", "id", investmentProposalDto.firedepartmentId) }
@@ -45,7 +69,7 @@ class InvestmentProposalServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllInvestmentProposals(
+    override fun getAllInvestmentProposalsDev(
         page: Int,
         size: Int,
         sort: String
@@ -65,7 +89,7 @@ class InvestmentProposalServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getInvestmentProposalById(
+    override fun getInvestmentProposalByIdDev(
         investmentProposalId: Int
     ): InvestmentProposalDtos.InvestmentProposalResponse {
 
@@ -76,7 +100,7 @@ class InvestmentProposalServiceImplementation(
     }
 
     @Transactional
-    override fun updateInvestmentProposal(
+    override fun updateInvestmentProposalDev(
         investmentProposalId: Int,
         investmentProposalDto: InvestmentProposalDtos.InvestmentProposalPatch
     ): InvestmentProposalDtos.InvestmentProposalResponse {

@@ -16,14 +16,6 @@ object FirefighterDtos {
         @field:NotNull(message = "Firedepartment ID must not be null.")
         @field:Schema(description = "ID of the fire department to assign the firefighter to", example = "7")
         val firedepartmentId: Int,
-
-//        @field:NotNull(message = "Role must not be null.")
-//        @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
-//        val role: Role,
-//
-//        @field:NotNull(message = "Status must not be null.")
-//        @field:Schema(description = "Status assigned to the firefighter", example = "PENDING")
-//        val status: FirefighterStatus
     )
 
     @Schema(description = "DTO used for partially updating a firefighter record")
@@ -49,16 +41,9 @@ object FirefighterDtos {
         @field:Schema(description = "Email address of the firefighter", example = "Arek@test.com")
         val emailAddress: String,
 
-//        @field:Schema(description = "Username of the user assigned to this firefighter record", example = "Arek")
-//        val userName: String,
-
-//        @field:Schema(description = "User assigned to this firefighter record")
-//        val user: UserDtos.UserResponse,
         @field:Schema(description = "User assigned to this firefighter record")
         val userId: Int,
 
-//        @field:Schema(description = "Fire department the firefighter is part of")
-//        val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
         @field:Schema(description = "Fire department the firefighter is part of")
         val firedepartmentId: Int,
 

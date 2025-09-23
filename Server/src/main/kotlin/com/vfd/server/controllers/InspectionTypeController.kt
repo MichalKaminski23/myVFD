@@ -33,8 +33,8 @@ class InspectionTypeController(
                 description = "Inspection type created",
                 content = [Content(schema = Schema(implementation = InspectionTypeDtos.InspectionTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @PostMapping
@@ -57,8 +57,12 @@ class InspectionTypeController(
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(
+                responseCode = "200",
+                description = "Inspection type found",
+                content = [Content(schema = Schema(implementation = InspectionTypeDtos.InspectionTypeResponse::class))]
+            ),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping
@@ -80,8 +84,8 @@ class InspectionTypeController(
                 description = "Inspection type found",
                 content = [Content(schema = Schema(implementation = InspectionTypeDtos.InspectionTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping("/{inspectionTypeCode}")
@@ -101,9 +105,9 @@ class InspectionTypeController(
                 description = "Inspection type updated",
                 content = [Content(schema = Schema(implementation = InspectionTypeDtos.InspectionTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @PatchMapping("/{inspectionTypeCode}")

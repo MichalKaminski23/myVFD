@@ -7,6 +7,8 @@ import org.mapstruct.*
 @Mapper(componentModel = "spring", uses = [InvestmentProposalMapper::class, FirefighterMapper::class])
 interface VoteMapper {
 
+    @Mapping(target = "investmentProposalId", source = "investmentProposal.investmentProposalId")
+    @Mapping(target = "firefighterId", source = "firefighter.firefighterId")
     fun toVoteDto(vote: Vote): VoteDtos.VoteResponse
 
     @Mapping(target = "voteId", ignore = true)
@@ -14,6 +16,12 @@ interface VoteMapper {
     @Mapping(target = "firefighter", ignore = true)
     @Mapping(target = "voteDate", ignore = true)
     fun toVoteEntity(voteDto: VoteDtos.VoteCreate): Vote
+
+    @Mapping(target = "voteId", ignore = true)
+    @Mapping(target = "investmentProposal", ignore = true)
+    @Mapping(target = "firefighter", ignore = true)
+    @Mapping(target = "voteDate", ignore = true)
+    fun toVoteEntityDev(voteDto: VoteDtos.VoteCreateDev): Vote
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "investmentProposal", ignore = true)

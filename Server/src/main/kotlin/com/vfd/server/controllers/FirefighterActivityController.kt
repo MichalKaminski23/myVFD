@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -23,93 +25,83 @@ class FirefighterActivityController(
 ) {
 
     @Operation(
-        summary = "Create firefighter activity",
-        description = "Creates a new firefighter activity and returns its details."
+        summary = "Create firefighter's activity for me",
+        description = "Creates a new firefighter's associated with the currently authenticated user and returns the created firefighter's details."
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "201",
-                description = "Firefighter activity created",
+                responseCode = "201", description = "Firefighter's activity successfully created",
                 content = [Content(schema = Schema(implementation = FirefighterActivityDtos.FirefighterActivityResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PostMapping
+    @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createFirefighterActivity(
+        @AuthenticationPrincipal principal: UserDetails,
         @Valid @RequestBody firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityCreate
     ): FirefighterActivityDtos.FirefighterActivityResponse =
-        firefighterActivityService.createFirefighterActivity(firefighterActivityDto)
+        firefighterActivityService.createFirefighterActivity(principal.username, firefighterActivityDto)
 
     @Operation(
-        summary = "List firefighter activities (paged)",
+        summary = "Get my firefighter's activities",
         description = """
-            Returns a paginated list of firefighter activities.
-            
+            Retrieves all firefighter's activities associated with the currently authenticated user.
+
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firefighterActivityId,asc) e.g. `activityDate,desc`
+            - `sort` (default: activityDate,asc) e.g. `activityDate,asc`
         """
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(
+                responseCode = "200", description = "Assets retrieved successfully",
+                content = [Content(schema = Schema(implementation = FirefighterActivityDtos.FirefighterActivityResponse::class))]
+            ),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping
-    fun getAllFirefighterActivities(
+    @GetMapping("/my")
+    fun getFirefighterActivities(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "firefighterActivityId,asc") sort: String
+        @RequestParam(defaultValue = "activityDate,asc") sort: String,
+        @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse> =
-        firefighterActivityService.getAllFirefighterActivities(page, size, sort)
+        firefighterActivityService.getFirefighterActivities(page, size, sort, principal.username)
 
     @Operation(
-        summary = "Get firefighter activity by ID",
-        description = "Returns a single firefighter activity by `firefighterActivityId`."
+        summary = "Update my firefighter's activity",
+        description = """
+            Partially updates an existing firefighter's activity identified by `firefighterActivityId`.
+            Only non-null fields in the request body will be updated.
+        """
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
-                description = "Firefighter activity found",
+                responseCode = "200", description = "Firefighter's activity updated successfully",
                 content = [Content(schema = Schema(implementation = FirefighterActivityDtos.FirefighterActivityResponse::class))]
             ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping("/{firefighterActivityId}")
-    fun getFirefighterActivityById(
-        @PathVariable firefighterActivityId: Int
-    ): FirefighterActivityDtos.FirefighterActivityResponse =
-        firefighterActivityService.getFirefighterActivityById(firefighterActivityId)
-
-    @Operation(
-        summary = "Update firefighter activity",
-        description = "Partially updates an existing firefighter activity. Only non-null fields are applied."
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Firefighter activity updated",
-                content = [Content(schema = Schema(implementation = FirefighterActivityDtos.FirefighterActivityResponse::class))]
-            ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @PatchMapping("/{firefighterActivityId}")
+    @PatchMapping("/my/{firefighterActivityId}")
     fun updateFirefighterActivity(
+        @AuthenticationPrincipal principal: UserDetails,
         @PathVariable firefighterActivityId: Int,
         @Valid @RequestBody firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityPatch
     ): FirefighterActivityDtos.FirefighterActivityResponse =
-        firefighterActivityService.updateFirefighterActivity(firefighterActivityId, firefighterActivityDto)
+        firefighterActivityService.updateFirefighterActivity(
+            principal.username,
+            firefighterActivityId,
+            firefighterActivityDto
+        )
 }

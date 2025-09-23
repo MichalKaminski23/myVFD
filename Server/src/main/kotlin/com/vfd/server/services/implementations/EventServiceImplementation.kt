@@ -22,8 +22,7 @@ class EventServiceImplementation(
 ) : EventService {
 
     override fun createEvent(emailAddress: String, eventDto: EventDtos.EventCreate): EventDtos.EventResponse {
-        // Implementation for production environment (not shown here)
-        TODO()
+        TODO("Not yet implemented")
     }
 
     override fun getEvents(
@@ -32,8 +31,7 @@ class EventServiceImplementation(
         sort: String,
         emailAddress: String
     ): PageResponse<EventDtos.EventResponse> {
-        // Implementation for production environment (not shown here)
-        TODO()
+        TODO("Not yet implemented")
     }
 
     override fun updateEvent(
@@ -41,8 +39,7 @@ class EventServiceImplementation(
         eventId: Int,
         eventDto: EventDtos.EventPatch
     ): EventDtos.EventResponse {
-        // Implementation for production environment (not shown here)
-        TODO()
+        TODO("Not yet implemented")
     }
 
     private val EVENT_ALLOWED_SORTS = setOf(

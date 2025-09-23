@@ -5,23 +5,46 @@ import com.vfd.server.shared.PageResponse
 
 interface FirefighterService {
 
-    fun createFirefighter(firefighterDto: FirefighterDtos.FirefighterCreate): FirefighterDtos.FirefighterResponse
+    fun createFirefighter(
+        emailAddress: String,
+        firefighterDto: FirefighterDtos.FirefighterCreate
+    ): FirefighterDtos.FirefighterResponse
 
-    fun getAllFirefighters(
+    fun getFirefighters(
+        page: Int = 0,
+        size: Int = 20,
+        sort: String = "firstName,asc",
+        emailAddress: String
+    ): PageResponse<FirefighterDtos.FirefighterResponse>
+
+    fun updateFirefighter(
+        emailAddress: String,
+        firefighterId: Int,
+        firefighterDto: FirefighterDtos.FirefighterPatch
+    ): FirefighterDtos.FirefighterResponse
+
+    fun getFirefighterByEmailAddress(emailAddress: String): FirefighterDtos.FirefighterResponse
+
+    fun getPendingFirefighters(
+        page: Int = 0,
+        size: Int = 20,
+        sort: String = "firstName,asc",
+        emailAddress: String
+    ): PageResponse<FirefighterDtos.FirefighterResponse>
+
+    //fun getFirefightersFromLoggedUser(emailAddress: String): List<FirefighterDtos.FirefighterResponse>
+
+    fun createFirefighterDev(firefighterDto: FirefighterDtos.FirefighterCreate): FirefighterDtos.FirefighterResponse
+
+    fun getAllFirefightersDev(
         page: Int = 0,
         size: Int = 20,
         sort: String = "firefighterId,asc",
     ): PageResponse<FirefighterDtos.FirefighterResponse>
 
-    fun getFirefighterById(firefighterId: Int): FirefighterDtos.FirefighterResponse
+    fun getFirefighterByIdDev(firefighterId: Int): FirefighterDtos.FirefighterResponse
 
-    fun getFirefighterByEmailAddress(emailAddress: String): FirefighterDtos.FirefighterResponse
-
-    fun getPendingFirefighters(emailAddress: String): List<FirefighterDtos.FirefighterResponse>
-
-    fun getFirefightersFromLoggedUser(emailAddress: String): List<FirefighterDtos.FirefighterResponse>
-
-    fun updateFirefighter(
+    fun updateFirefighterDev(
         firefighterId: Int,
         firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse

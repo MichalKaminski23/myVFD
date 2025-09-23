@@ -17,6 +17,11 @@ interface FirefighterActivityMapper {
     @Mapping(target = "firefighterActivityType", ignore = true)
     fun toFirefighterActivityEntity(firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityCreate): FirefighterActivity
 
+    @Mapping(target = "firefighterActivityId", ignore = true)
+    @Mapping(target = "firefighter", ignore = true)
+    @Mapping(target = "firefighterActivityType", ignore = true)
+    fun toFirefighterActivityEntityDev(firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityCreateDev): FirefighterActivity
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "firefighter", ignore = true)
     @Mapping(target = "firefighterActivityType", ignore = true)

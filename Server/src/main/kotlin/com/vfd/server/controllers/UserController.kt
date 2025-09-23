@@ -1,9 +1,7 @@
 package com.vfd.server.controllers
 
 import com.vfd.server.dtos.UserDtos
-import com.vfd.server.mappers.UserMapper
 import com.vfd.server.services.UserService
-import com.vfd.server.shared.PageResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -11,72 +9,25 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.slf4j.LoggerFactory
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "Users", description = "Endpoints for managing users")
-
+@Tag(name = "Users", description = "CRUD for users - create in Auth.")
 @Validated
 @RestController
 @RequestMapping("/api/users")
 class UserController(
-    private val userService: UserService,
-    private val userMapper: UserMapper
+    private val userService: UserService
 ) {
-    private val log = LoggerFactory.getLogger(javaClass)
-
-    @Operation(
-        summary = "List users (paged)",
-        description = """
-            Returns a paginated list of users.
-            
-            Query params:
-            - `page` (default: 0)
-            - `size` (default: 20)
-            - `sort` (default: createdAt,desc) e.g. `lastName,asc`
-        """
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @GetMapping
-    fun getAllUsers(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "createdAt,asc") sort: String
-    ): PageResponse<UserDtos.UserResponse> =
-        userService.getAllUsers(page, size, sort)
-
-    @Operation(
-        summary = "Get user by ID",
-        description = "Returns a single user by `userId`."
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "User found",
-                content = [Content(schema = Schema(implementation = UserDtos.UserResponse::class))]
-            ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @GetMapping("/{userId}")
-    fun getUserById(
-        @PathVariable userId: Int
-    ): UserDtos.UserResponse =
-        userService.getUserById(userId)
 
     @Operation(
         summary = "Update user",
-        description = "Partially updates an existing user. Only non-null fields are applied."
+        description = """
+            Partially updates an existing user identified by `userId`.
+            Only non-null fields in the request body will be updated.
+        """
     )
     @ApiResponses(
         value = [
@@ -85,19 +36,18 @@ class UserController(
                 description = "User updated",
                 content = [Content(schema = Schema(implementation = UserDtos.UserResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "409", description = "Conflict", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "409", ref = "Conflict"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PatchMapping("/{userId}")
-    //@PreAuthorize("hasRole('ADMIN') or #userId == principal.user.userId")
+    @PatchMapping("/me")
     fun updateUser(
-        @PathVariable userId: Int,
-        @Valid @RequestBody userPatchDto: UserDtos.UserPatch
+        @AuthenticationPrincipal principal: UserDetails,
+        @Valid @RequestBody userDto: UserDtos.UserPatch
     ): UserDtos.UserResponse =
-        userService.updateUser(userId, userPatchDto)
+        userService.updateUser(principal.username, userDto)
 
     @Operation(
         summary = "Get current user",
@@ -110,12 +60,12 @@ class UserController(
                 description = "Current user retrieved",
                 content = [Content(schema = Schema(implementation = UserDtos.UserResponse::class))]
             ),
-            ApiResponse(responseCode = "401", description = "Unauthorized", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "401", ref = "Unauthorized"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping("/me")
-    fun getCurrentUser(@AuthenticationPrincipal principal: UserDetails): UserDtos.UserResponse {
+    fun getUserByEmailAddress(@AuthenticationPrincipal principal: UserDetails): UserDtos.UserResponse {
         return userService.getUserByEmailAddress(principal.username)
     }
 }

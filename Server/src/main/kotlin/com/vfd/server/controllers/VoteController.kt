@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -23,99 +25,79 @@ class VoteController(
 ) {
 
     @Operation(
-        summary = "Create vote",
-        description = "Creates a vote. If a vote for the (proposal, firefighter) already exists, you may return 409 or update it in service logic (up to you)."
+        summary = "Create a new vote for firedepartment's investment proposal",
+        description = "Creates a new vote associated with the firedepartment of the currently authenticated user and returns the created vote details."
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "201",
-                description = "Vote created",
+                responseCode = "201", description = "Vote successfully created",
                 content = [Content(schema = Schema(implementation = VoteDtos.VoteResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()]),
-            ApiResponse(
-                responseCode = "409",
-                description = "Vote already exists for (proposal, firefighter)",
-                content = [Content()]
-            )
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PostMapping
+    @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createVote(
+        @AuthenticationPrincipal principal: UserDetails,
         @Valid @RequestBody voteDto: VoteDtos.VoteCreate
     ): VoteDtos.VoteResponse =
-        voteService.createVote(voteDto)
+        voteService.createVote(principal.username, voteDto)
 
     @Operation(
-        summary = "List votes (paged)",
+        summary = "Get votes from my firedepartment",
         description = """
-            Returns a paginated list of votes.
-            
+            Retrieves all votes associated with the firedepartment of the currently authenticated user.
+
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: voteId,desc)
-            - optional filters (if supported by service): proposalId, firefighterId
+            - `sort` (default: voteId,asc) e.g. `voteId,asc`
         """
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(
+                responseCode = "200", description = "Votes retrieved successfully",
+                content = [Content(schema = Schema(implementation = VoteDtos.VoteResponse::class))]
+            ),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping
-    fun getAllVotes(
+    fun getVotes(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "voteId,desc") sort: String
+        @RequestParam(defaultValue = "voteId,asc") sort: String,
+        @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<VoteDtos.VoteResponse> =
-        voteService.getAllVotes(page, size, sort)
+        voteService.getVotes(page, size, sort, principal.username)
 
     @Operation(
-        summary = "Get vote by ID",
-        description = "Returns a single vote by `voteId`."
+        summary = "Update vote from my firedepartment",
+        description = """
+            Partially updates an existing vote identified by `voteId`.
+            Only non-null fields in the request body will be updated.
+        """
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
-                description = "Vote found",
+                responseCode = "200", description = "Vote updated successfully",
                 content = [Content(schema = Schema(implementation = VoteDtos.VoteResponse::class))]
             ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping("/{voteId}")
-    fun getVoteById(
-        @PathVariable voteId: Int
-    ): VoteDtos.VoteResponse =
-        voteService.getVoteById(voteId)
-
-    @Operation(
-        summary = "Update vote",
-        description = "Partially updates an existing vote (e.g., change value). Only non-null fields from body are applied."
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Vote updated",
-                content = [Content(schema = Schema(implementation = VoteDtos.VoteResponse::class))]
-            ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @PatchMapping("/{voteId}")
+    @PatchMapping("/my/{voteId}")
     fun updateVote(
+        @AuthenticationPrincipal principal: UserDetails,
         @PathVariable voteId: Int,
         @Valid @RequestBody voteDto: VoteDtos.VotePatch
     ): VoteDtos.VoteResponse =
-        voteService.updateVote(voteId, voteDto)
+        voteService.updateVote(principal.username, voteId, voteDto)
 }

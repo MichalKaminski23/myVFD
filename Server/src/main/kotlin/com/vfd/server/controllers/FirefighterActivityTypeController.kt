@@ -33,8 +33,8 @@ class FirefighterActivityTypeController(
                 description = "Firefighter activity type created",
                 content = [Content(schema = Schema(implementation = FirefighterActivityTypeDtos.FirefighterActivityTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @PostMapping
@@ -58,7 +58,7 @@ class FirefighterActivityTypeController(
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping
@@ -80,8 +80,8 @@ class FirefighterActivityTypeController(
                 description = "Firefighter activity type found",
                 content = [Content(schema = Schema(implementation = FirefighterActivityTypeDtos.FirefighterActivityTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping("/{firefighterActivityTypeCode}")
@@ -101,9 +101,9 @@ class FirefighterActivityTypeController(
                 description = "Firefighter activity type updated",
                 content = [Content(schema = Schema(implementation = FirefighterActivityTypeDtos.FirefighterActivityTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @PatchMapping("/{firefighterActivityTypeCode}")

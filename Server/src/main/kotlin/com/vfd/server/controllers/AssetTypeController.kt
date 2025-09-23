@@ -57,7 +57,7 @@ class AssetTypeController(
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "Assets retrieved successfully"),
+            ApiResponse(responseCode = "200", description = "Asset types retrieved successfully"),
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )

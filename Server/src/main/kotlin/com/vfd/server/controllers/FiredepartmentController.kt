@@ -36,7 +36,8 @@ class FiredepartmentController(
                 content = [Content(schema = Schema(implementation = FiredepartmentDtos.FiredepartmentResponse::class))]
             ),
             ApiResponse(responseCode = "400", ref = "BadRequest"),
-            ApiResponse(responseCode = "403", ref = "Forbidden")
+            ApiResponse(responseCode = "403", ref = "Forbidden"),
+            ApiResponse(responseCode = "409", ref = "Conflict")
         ]
     )
     @PostMapping("/admin")

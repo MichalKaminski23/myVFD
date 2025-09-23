@@ -22,6 +22,30 @@ class VoteServiceImplementation(
     private val firefighterRepository: FirefighterRepository
 ) : VoteService {
 
+    override fun createVote(
+        emailAddress: String,
+        voteDto: VoteDtos.VoteCreate
+    ): VoteDtos.VoteResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun getVotes(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<VoteDtos.VoteResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateVote(
+        emailAddress: String,
+        voteId: Int,
+        voteDto: VoteDtos.VotePatch
+    ): VoteDtos.VoteResponse {
+        TODO("Not yet implemented")
+    }
+
     private val VOTE_ALLOWED_SORTS = setOf(
         "voteId",
         "voteDate",
@@ -31,9 +55,9 @@ class VoteServiceImplementation(
     )
 
     @Transactional
-    override fun createVote(voteDto: VoteDtos.VoteCreate): VoteDtos.VoteResponse {
+    override fun createVoteDev(voteDto: VoteDtos.VoteCreateDev): VoteDtos.VoteResponse {
 
-        val vote: Vote = voteMapper.toVoteEntity(voteDto)
+        val vote: Vote = voteMapper.toVoteEntityDev(voteDto)
 
         val investmentProposal = investmentProposalRepository.findById(voteDto.investmentProposalId)
             .orElseThrow { ResourceNotFoundException("Investment's proposal", "id", voteDto.investmentProposalId) }
@@ -47,7 +71,7 @@ class VoteServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllVotes(page: Int, size: Int, sort: String): PageResponse<VoteDtos.VoteResponse> {
+    override fun getAllVotesDev(page: Int, size: Int, sort: String): PageResponse<VoteDtos.VoteResponse> {
 
         val pageable = PaginationUtils.toPageRequest(
             page = page,
@@ -63,7 +87,7 @@ class VoteServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getVoteById(voteId: Int): VoteDtos.VoteResponse {
+    override fun getVoteByIdDev(voteId: Int): VoteDtos.VoteResponse {
 
         val vote = voteRepository.findById(voteId)
             .orElseThrow { ResourceNotFoundException("Vote", "id", voteId) }
@@ -72,7 +96,7 @@ class VoteServiceImplementation(
     }
 
     @Transactional
-    override fun updateVote(voteId: Int, voteDto: VoteDtos.VotePatch): VoteDtos.VoteResponse {
+    override fun updateVoteDev(voteId: Int, voteDto: VoteDtos.VotePatch): VoteDtos.VoteResponse {
 
         val vote = voteRepository.findById(voteId)
             .orElseThrow { ResourceNotFoundException("Vote", "id", voteId) }

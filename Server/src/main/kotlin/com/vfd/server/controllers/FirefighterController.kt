@@ -25,114 +25,83 @@ class FirefighterController(
 ) {
 
     @Operation(
-        summary = "Create firefighter",
-        description = "Creates a new firefighter and returns its details."
+        summary = "Create a new firefighter from user",
+        description = "Creates a new firefighter associated with the firedepartment and existing user and returns the created firefighter details."
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "201",
-                description = "Firefighter created",
+                responseCode = "201", description = "Firefighter successfully created",
                 content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PostMapping
+    @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createFirefighter(
-        @Valid @RequestBody firefighterCreateDto: FirefighterDtos.FirefighterCreate
+        @AuthenticationPrincipal principal: UserDetails,
+        @Valid @RequestBody firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse =
-        firefighterService.createFirefighter(firefighterCreateDto)
+        firefighterService.createFirefighter(principal.username, firefighterDto)
 
     @Operation(
-        summary = "List firefighters (paged)",
+        summary = "List firefighters from my firedepartment",
         description = """
-            Returns a paginated list of firefighters.
+            Retrieves all firefighters associated with the firedepartment of the currently authenticated user.
             
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firefighterId,asc) e.g. `role,desc`
+            - `sort` (default: firstName,asc) e.g. `role,desc`
         """
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(
+                responseCode = "200",
+                description = "Firefighters retrieved successfully",
+                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+            ),
+            ApiResponse(responseCode = "400", ref = "Unauthorized"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping
-    //@PreAuthorize("hasRole('ADMIN')")
-    fun getAllFirefighters(
+    @GetMapping("/my")
+    fun getFirefighters(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "firefighterId,asc") sort: String,
-    ): PageResponse<FirefighterDtos.FirefighterResponse> =
-        firefighterService.getAllFirefighters(page, size, sort)
-
-    @Operation(
-        summary = "Get firefighter by ID",
-        description = "Returns a single firefighter by `firefighterId`."
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Firefighter found",
-                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
-            ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @GetMapping("/{firefighterId}")
-    fun getFirefighterById(
-        @PathVariable firefighterId: Int
-    ): FirefighterDtos.FirefighterResponse =
-        firefighterService.getFirefighterById(firefighterId)
-
-    @Operation(
-        summary = "Get firefighters from my department",
-        description = "Returns all firefighters that belong to the same fire department as the logged-in user."
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "401", description = "Unauthorized", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @GetMapping("/friends")
-    fun getFirefightersFromMyFiredepartment(
+        @RequestParam(defaultValue = "firstName,asc") sort: String,
         @AuthenticationPrincipal principal: UserDetails
-    ): List<FirefighterDtos.FirefighterResponse> {
-        return firefighterService.getFirefightersFromLoggedUser(principal.username)
-    }
+    ): PageResponse<FirefighterDtos.FirefighterResponse> =
+        firefighterService.getFirefighters(page, size, sort, principal.username)
 
     @Operation(
-        summary = "Update firefighter (PATCH)",
-        description = "Partially updates an existing firefighter. Only non-null fields are applied."
+        summary = "Update firefighter from my firedepartment",
+        description = """
+            Partially updates an existing firefighter identified by `firefighterId`.
+            Only non-null fields in the request body will be updated.
+        """
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
-                description = "Firefighter updated",
+                responseCode = "200", description = "Firefighter updated successfully",
                 content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PatchMapping("/{firefighterId}")
+    @PatchMapping("/my/{firefighterId}")
     fun updateFirefighter(
+        @AuthenticationPrincipal principal: UserDetails,
         @PathVariable firefighterId: Int,
-        @Valid @RequestBody firefighterPatchDto: FirefighterDtos.FirefighterPatch
+        @Valid @RequestBody firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse =
-        firefighterService.updateFirefighter(firefighterId, firefighterPatchDto)
+        firefighterService.updateFirefighter(principal.username, firefighterId, firefighterDto)
 
     @Operation(
         summary = "Get current firefighter",
@@ -145,32 +114,44 @@ class FirefighterController(
                 description = "Current firefighter retrieved",
                 content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
             ),
-            ApiResponse(responseCode = "401", description = "Unauthorized", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "401", ref = "Unauthorized"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping("/me")
-    fun getCurrentFirefighter(@AuthenticationPrincipal principal: UserDetails): FirefighterDtos.FirefighterResponse {
+    fun getFirefighterByEmailAddress(@AuthenticationPrincipal principal: UserDetails): FirefighterDtos.FirefighterResponse {
         return firefighterService.getFirefighterByEmailAddress(principal.username)
     }
 
     @Operation(
-        summary = "Get pending firefighter applications for moderator",
-        description = "Returns a list of pending firefighter applications for the moderator's fire department."
+        summary = "List pending firefighters from my firedepartment",
+        description = """
+            Retrieves all pending firefighters associated with the firedepartment of the currently authenticated user.
+            
+            Query params:
+            - `page` (default: 0)
+            - `size` (default: 20)
+            - `sort` (default: firstName,asc) e.g. `role,desc`
+        """
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Pending applications retrieved",
+                description = "Pending firefighters retrieved successfully",
                 content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
             ),
-            ApiResponse(responseCode = "401", description = "Unauthorized", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "Unauthorized"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping("/pending")
-    fun getPendingFirefighters(@AuthenticationPrincipal principal: UserDetails): List<FirefighterDtos.FirefighterResponse> {
-        return firefighterService.getPendingFirefighters(principal.username)
+    fun getPendingFirefighters(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(defaultValue = "firstName,asc") sort: String,
+        @AuthenticationPrincipal principal: UserDetails
+    ): PageResponse<FirefighterDtos.FirefighterResponse> {
+        return firefighterService.getPendingFirefighters(page, size, sort, principal.username)
     }
 }

@@ -10,10 +10,6 @@ object FirefighterActivityDtos {
 
     @Schema(description = "DTO used for creating a new firefighter activity record")
     data class FirefighterActivityCreate(
-        @field:NotNull(message = "Firefighter ID must not be null.")
-        @field:Schema(description = "ID of the firefighter performing the activity", example = "7")
-        val firefighterId: Int,
-
         @field:NotBlank(message = "Activity type must not be blank.")
         @field:Size(max = 16, message = "Activity type must be at most 16 characters.")
         @field:Schema(description = "Code of the activity type", example = "Medical")
@@ -76,5 +72,31 @@ object FirefighterActivityDtos {
             example = "Completed trauma response training."
         )
         val description: String?
+    )
+
+    @Schema(description = "DTO used for creating a new firefighter activity record for development purposes")
+    data class FirefighterActivityCreateDev(
+        @field:NotNull(message = "Firefighter ID must not be null.")
+        @field:Schema(description = "ID of the firefighter performing the activity", example = "7")
+        val firefighterId: Int,
+
+        @field:NotBlank(message = "Activity type must not be blank.")
+        @field:Size(max = 16, message = "Activity type must be at most 16 characters.")
+        @field:Schema(description = "Code of the activity type", example = "Medical")
+        val firefighterActivityType: String,
+
+        @field:NotNull(message = "Activity date must not be null.")
+        @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
+        val activityDate: LocalDateTime,
+
+        @field:Schema(description = "Expiration date of the activity", example = "2025-08-03T15:00:00")
+        val expirationDate: LocalDateTime? = null,
+
+        @field:Size(max = 512)
+        @field:Schema(
+            description = "Description or notes related to the activity",
+            example = "Completed trauma response training."
+        )
+        val description: String? = null
     )
 }

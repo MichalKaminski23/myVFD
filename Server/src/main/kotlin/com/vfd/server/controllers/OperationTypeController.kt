@@ -24,7 +24,7 @@ class OperationTypeController(
 
     @Operation(
         summary = "Create operation type",
-        description = "Creates a new operation type entry in the dictionary."
+        description = "Creates a new operation type and returns its details."
     )
     @ApiResponses(
         value = [
@@ -33,8 +33,8 @@ class OperationTypeController(
                 description = "Operation type created",
                 content = [Content(schema = Schema(implementation = OperationTypeDtos.OperationTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @PostMapping
@@ -52,13 +52,13 @@ class OperationTypeController(
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: operationTypeCode,asc)
+            - `sort` (default: operationTypeCode,asc) e.g. `name,desc`
         """
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "200", description = "Operation types retrieved successfully"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping
@@ -80,8 +80,8 @@ class OperationTypeController(
                 description = "Operation type found",
                 content = [Content(schema = Schema(implementation = OperationTypeDtos.OperationTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @GetMapping("/{operationTypeCode}")
@@ -92,7 +92,7 @@ class OperationTypeController(
 
     @Operation(
         summary = "Update operation type",
-        description = "Partially updates an existing operation type entry."
+        description = "Partially updates an operation type. Only non-null fields are applied."
     )
     @ApiResponses(
         value = [
@@ -101,9 +101,9 @@ class OperationTypeController(
                 description = "Operation type updated",
                 content = [Content(schema = Schema(implementation = OperationTypeDtos.OperationTypeResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
     @PatchMapping("/{operationTypeCode}")

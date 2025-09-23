@@ -25,8 +25,7 @@ class FiredepartmentServiceImplementation(
         emailAddress: String,
         firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
     ): FiredepartmentDtos.FiredepartmentResponse {
-        // Implementation for production environment (not shown here)
-        TODO()
+        TODO("Not yet implemented")
     }
 
     override fun getFiredepartmentsShort(
@@ -34,13 +33,11 @@ class FiredepartmentServiceImplementation(
         size: Int,
         sort: String
     ): PageResponse<FiredepartmentDtos.FiredepartmentResponseShort> {
-        // Implementation for production environment (not shown here)
-        TODO()
+        TODO("Not yet implemented")
     }
 
     override fun getFiredepartment(emailAddress: String): FiredepartmentDtos.FiredepartmentResponse {
-        // Implementation for production environment (not shown here)
-        TODO()
+        TODO("Not yet implemented")
     }
 
     override fun updateFiredepartment(
@@ -48,8 +45,7 @@ class FiredepartmentServiceImplementation(
         firedepartmentId: Int,
         firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch
     ): FiredepartmentDtos.FiredepartmentResponse {
-        // Implementation for production environment (not shown here)
-        TODO()
+        TODO("Not yet implemented")
     }
 
     private val FIREDEPARTMENT_ALLOWED_SORTS = setOf(

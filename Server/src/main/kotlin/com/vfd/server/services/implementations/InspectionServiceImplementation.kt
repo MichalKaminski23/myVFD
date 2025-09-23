@@ -22,6 +22,30 @@ class InspectionServiceImplementation(
     private val inspectionTypeRepository: InspectionTypeRepository
 ) : InspectionService {
 
+    override fun createInspection(
+        emailAddress: String,
+        inspectionDto: InspectionDtos.InspectionCreate
+    ): InspectionDtos.InspectionResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun getInspections(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<InspectionDtos.InspectionResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateInspection(
+        emailAddress: String,
+        inspectionId: Int,
+        inspectionDto: InspectionDtos.InspectionPatch
+    ): InspectionDtos.InspectionResponse {
+        TODO("Not yet implemented")
+    }
+
     private val INSPECTION_ALLOWED_SORTS = setOf(
         "inspectionId",
         "inspectionDate",
@@ -31,23 +55,23 @@ class InspectionServiceImplementation(
     )
 
     @Transactional
-    override fun createInspection(insectionDto: InspectionDtos.InspectionCreate): InspectionDtos.InspectionResponse {
+    override fun createInspectionDev(inspectionDto: InspectionDtos.InspectionCreate): InspectionDtos.InspectionResponse {
 
-        val inspection: Inspection = inspectionMapper.toInspectionEntity(insectionDto)
+        val inspection: Inspection = inspectionMapper.toInspectionEntity(inspectionDto)
 
-        val asset = assetRepository.findById(insectionDto.assetId)
-            .orElseThrow { ResourceNotFoundException("Asset", "id", insectionDto.assetId) }
+        val asset = assetRepository.findById(inspectionDto.assetId)
+            .orElseThrow { ResourceNotFoundException("Asset", "id", inspectionDto.assetId) }
         inspection.asset = asset
 
-        val inspectionType = inspectionTypeRepository.findById(insectionDto.inspectionType)
-            .orElseThrow { ResourceNotFoundException("Inspection's type", "code", insectionDto.inspectionType) }
+        val inspectionType = inspectionTypeRepository.findById(inspectionDto.inspectionType)
+            .orElseThrow { ResourceNotFoundException("Inspection's type", "code", inspectionDto.inspectionType) }
         inspection.inspectionType = inspectionType
 
         return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
     }
 
     @Transactional(readOnly = true)
-    override fun getAllInspections(
+    override fun getAllInspectionsDev(
         page: Int,
         size: Int,
         sort: String
@@ -67,7 +91,7 @@ class InspectionServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getInspectionById(inspectionId: Int): InspectionDtos.InspectionResponse {
+    override fun getInspectionByIdDev(inspectionId: Int): InspectionDtos.InspectionResponse {
 
         val inspection = inspectionRepository.findById(inspectionId)
             .orElseThrow { ResourceNotFoundException("Inspection", "id", inspectionId) }
@@ -76,7 +100,7 @@ class InspectionServiceImplementation(
     }
 
     @Transactional
-    override fun updateInspection(
+    override fun updateInspectionDev(
         inspectionId: Int,
         inspectionDto: InspectionDtos.InspectionPatch
     ): InspectionDtos.InspectionResponse {

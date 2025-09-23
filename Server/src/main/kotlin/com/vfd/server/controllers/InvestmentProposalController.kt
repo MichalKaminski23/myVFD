@@ -1,5 +1,6 @@
 package com.vfd.server.controllers
 
+import com.vfd.server.dtos.AssetDtos
 import com.vfd.server.dtos.InvestmentProposalDtos
 import com.vfd.server.services.InvestmentProposalService
 import com.vfd.server.shared.PageResponse
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -23,93 +26,83 @@ class InvestmentProposalController(
 ) {
 
     @Operation(
-        summary = "Create investment proposal",
-        description = "Creates a new investment proposal and returns its details."
+        summary = "Create a new investment proposal for my firedepartment",
+        description = "Creates a new investment proposal associated with the firedepartment of the currently authenticated user and returns the created asset details."
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "201",
-                description = "Investment proposal created",
+                responseCode = "201", description = "Investment proposal successfully created",
                 content = [Content(schema = Schema(implementation = InvestmentProposalDtos.InvestmentProposalResponse::class))]
             ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PostMapping
+    @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createInvestmentProposal(
+        @AuthenticationPrincipal principal: UserDetails,
         @Valid @RequestBody investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreate
     ): InvestmentProposalDtos.InvestmentProposalResponse =
-        investmentProposalService.createInvestmentProposal(investmentProposalDto)
+        investmentProposalService.createInvestmentProposal(principal.username, investmentProposalDto)
 
     @Operation(
-        summary = "List investment proposals (paged)",
+        summary = "Get investment proposals from my firedepartment",
         description = """
-            Returns a paginated list of investment proposals.
-            
+            Retrieves all investment proposals associated with the firedepartment of the currently authenticated user.
+
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: proposalId,desc) e.g. `submissionDate,desc`
+            - `sort` (default: investmentProposalId,asc) e.g. `investmentProposalId,asc`
         """
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "OK", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(
+                responseCode = "200", description = "Investment proposals retrieved successfully",
+                content = [Content(schema = Schema(implementation = AssetDtos.AssetResponse::class))]
+            ),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping
-    fun getAllInvestmentProposals(
+    @GetMapping("/my")
+    fun getInvestmentProposals(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "investmentProposalId,desc") sort: String
+        @RequestParam(defaultValue = "investmentProposalId,asc") sort: String,
+        @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<InvestmentProposalDtos.InvestmentProposalResponse> =
-        investmentProposalService.getAllInvestmentProposals(page, size, sort)
+        investmentProposalService.getInvestmentProposals(page, size, sort, principal.username)
 
     @Operation(
-        summary = "Get investment proposal by ID",
-        description = "Returns a single investment proposal by `proposalId`."
+        summary = "Update investment proposal from my firedepartment",
+        description = """
+            Partially updates an existing investment proposal identified by `investmentProposalId`.
+            Only non-null fields in the request body will be updated.
+        """
     )
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200",
-                description = "Investment proposal found",
+                responseCode = "200", description = "Investment proposal updated successfully",
                 content = [Content(schema = Schema(implementation = InvestmentProposalDtos.InvestmentProposalResponse::class))]
             ),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping("/{investmentProposalId}")
-    fun getInvestmentProposalById(
-        @PathVariable investmentProposalId: Int
-    ): InvestmentProposalDtos.InvestmentProposalResponse =
-        investmentProposalService.getInvestmentProposalById(investmentProposalId)
-
-    @Operation(
-        summary = "Update investment proposal",
-        description = "Partially updates an existing investment proposal. Only non-null fields are applied."
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "Investment proposal updated",
-                content = [Content(schema = Schema(implementation = InvestmentProposalDtos.InvestmentProposalResponse::class))]
-            ),
-            ApiResponse(responseCode = "400", description = "Validation error", content = [Content()]),
-            ApiResponse(responseCode = "404", description = "Not found", content = [Content()]),
-            ApiResponse(responseCode = "403", description = "Forbidden", content = [Content()])
-        ]
-    )
-    @PatchMapping("/{investmentProposalId}")
+    @PatchMapping("/my/{investmentProposalId}")
     fun updateInvestmentProposal(
+        @AuthenticationPrincipal principal: UserDetails,
         @PathVariable investmentProposalId: Int,
         @Valid @RequestBody investmentProposalDto: InvestmentProposalDtos.InvestmentProposalPatch
     ): InvestmentProposalDtos.InvestmentProposalResponse =
-        investmentProposalService.updateInvestmentProposal(investmentProposalId, investmentProposalDto)
+        investmentProposalService.updateInvestmentProposal(
+            principal.username,
+            investmentProposalId,
+            investmentProposalDto
+        )
 }

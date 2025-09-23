@@ -51,7 +51,7 @@ object UserDtos {
             regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
             message = "Password must contains at least one uppercase letter, one digit, and one special character."
         )
-        @field:Schema(description = "User's password", example = "P@ssw0rd123!")
+        @field:Schema(description = "User's password", example = "Dupa12345!")
         val password: String
     )
 
@@ -60,7 +60,7 @@ object UserDtos {
         @field:NotBlank(message = "Email address must not be blank.")
         @field:Size(max = 128, message = "Email address must be at most 128 characters.")
         @field:Email(message = "Email must be a valid email address.")
-        @field:Schema(description = "User's email address", example = "arek.kozak@test.com")
+        @field:Schema(description = "User's email address", example = "jan.kowalski@test.com")
         val emailAddress: String,
 
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -70,7 +70,7 @@ object UserDtos {
             regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
             message = "Password must contain at least one uppercase letter, one digit, and one special character."
         )
-        @field:Schema(description = "User's password", example = "P@ssw0rd123!")
+        @field:Schema(description = "User's password", example = "Dupa12345!")
         val password: String
     )
 
@@ -86,13 +86,9 @@ object UserDtos {
         @field:Schema(description = "User's last name", example = "Niemusialski")
         val lastName: String? = null,
 
-//        @field:Valid
-//        @field:Schema(description = "User's address")
-//        val address: AddressDtos.AddressPatch? = null,
-
         @field:Email(message = "Email must be a valid email address.")
         @field:Size(max = 128, message = "Email address must be at most 128 characters.")
-        @field:Schema(description = "User's email address", example = "arek.kozak@test.com")
+        @field:Schema(description = "User's email address", example = "jan.kowalski@test.com")
         val emailAddress: String? = null,
 
         @field:Size(max = 16, message = "Phone number must be at most 16 characters.")
@@ -106,7 +102,7 @@ object UserDtos {
             regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
             message = "Password must contain at least one uppercase letter, one digit, and one special character."
         )
-        @field:Schema(description = "User's password", example = "P@ssw0rd123!")
+        @field:Schema(description = "User's password", example = "Dupa12345!")
         val password: String? = null
     )
 
@@ -123,9 +119,6 @@ object UserDtos {
 
         @field:Schema(description = "User's address")
         val address: AddressDtos.AddressResponse,
-
-        @field:Schema(description = "Email address", example = "arek.kozak@test.com")
-        val emailAddress: String,
 
         @field:Schema(description = "Phone number", example = "+48123123123")
         val phoneNumber: String,

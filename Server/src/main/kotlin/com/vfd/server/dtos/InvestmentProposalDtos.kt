@@ -12,10 +12,6 @@ object InvestmentProposalDtos {
 
     @Schema(description = "DTO used for creating a new investment proposal")
     data class InvestmentProposalCreate(
-        @field:NotNull(message = "Firedepartment ID must not be null.")
-        @field:Schema(description = "ID of the fire department proposing the investment", example = "7")
-        val firedepartmentId: Int,
-
         @field:NotBlank(message = "Description must not be blank.")
         @field:Size(max = 512, message = "Description must bet at most 512 characters.")
         @field:Schema(
@@ -52,7 +48,7 @@ object InvestmentProposalDtos {
         val investmentProposalId: Int,
 
         @field:Schema(description = "Fire department that submitted the proposal")
-        val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
+        val firedepartmentId: Int,
 
         @field:Schema(description = "Description of the proposal", example = "Purchase of a new thermal imaging camera")
         val description: String,
@@ -68,5 +64,24 @@ object InvestmentProposalDtos {
 
         @field:Schema(description = "Total number of votes for this proposal", example = "7")
         val votesCount: Int
+    )
+
+    @Schema(description = "DTO used for creating a new investment proposal for development purposes")
+    data class InvestmentProposalCreateDev(
+        @field:NotNull(message = "Firedepartment ID must not be null.")
+        @field:Schema(description = "ID of the fire department proposing the investment", example = "7")
+        val firedepartmentId: Int,
+
+        @field:NotBlank(message = "Description must not be blank.")
+        @field:Size(max = 512, message = "Description must bet at most 512 characters.")
+        @field:Schema(
+            description = "Description of the investment proposal",
+            example = "Purchase of a new thermal imaging camera"
+        )
+        val description: String,
+
+        @field:NotNull(message = "Amount must not be null.")
+        @field:Schema(description = "Proposed investment amount", example = "24999.99")
+        val amount: BigDecimal
     )
 }

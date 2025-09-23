@@ -22,6 +22,31 @@ class FirefighterActivityServiceImplementation(
     private val firefighterActivityTypeRepository: FirefighterActivityTypeRepository
 ) : FirefighterActivityService {
 
+    override fun createFirefighterActivity(
+        emailAddress: String,
+        firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityCreate
+    ): FirefighterActivityDtos.FirefighterActivityResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFirefighterActivities(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateFirefighterActivity(
+        emailAddress: String,
+        firefighterActivityId: Int,
+        firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityPatch
+    ): FirefighterActivityDtos.FirefighterActivityResponse {
+        TODO("Not yet implemented")
+    }
+
+
     private val FIREFIGHTER_ACTIVITY_ALLOWED_SORTS = setOf(
         "firefighterActivityId",
         "activityDate",
@@ -31,12 +56,12 @@ class FirefighterActivityServiceImplementation(
     )
 
     @Transactional
-    override fun createFirefighterActivity(
-        firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityCreate
+    override fun createFirefighterActivityDev(
+        firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityCreateDev
     ): FirefighterActivityDtos.FirefighterActivityResponse {
 
         val firefighterActivity: FirefighterActivity =
-            firefighterActivityMapper.toFirefighterActivityEntity(firefighterActivityDto)
+            firefighterActivityMapper.toFirefighterActivityEntityDev(firefighterActivityDto)
 
         val firefighter = firefighterRepository.findById(firefighterActivityDto.firefighterId)
             .orElseThrow { ResourceNotFoundException("Firefighter", "id", firefighterActivityDto.firefighterId) }
@@ -59,7 +84,7 @@ class FirefighterActivityServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllFirefighterActivities(
+    override fun getAllFirefighterActivitiesDev(
         page: Int,
         size: Int,
         sort: String
@@ -79,7 +104,7 @@ class FirefighterActivityServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getFirefighterActivityById(
+    override fun getFirefighterActivityByIdDev(
         firefighterActivityId: Int
     ): FirefighterActivityDtos.FirefighterActivityResponse {
 
@@ -90,7 +115,7 @@ class FirefighterActivityServiceImplementation(
     }
 
     @Transactional
-    override fun updateFirefighterActivity(
+    override fun updateFirefighterActivityDev(
         firefighterActivityId: Int,
         firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityPatch
     ): FirefighterActivityDtos.FirefighterActivityResponse {

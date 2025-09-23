@@ -25,15 +25,98 @@ class FirefighterServiceImplementation(
     private val firedepartmentRepository: FiredepartmentRepository
 ) : FirefighterService {
 
+    override fun createFirefighter(
+        emailAddress: String,
+        firefighterDto: FirefighterDtos.FirefighterCreate
+    ): FirefighterDtos.FirefighterResponse {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFirefighters(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<FirefighterDtos.FirefighterResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateFirefighter(
+        emailAddress: String,
+        firefighterId: Int,
+        firefighterDto: FirefighterDtos.FirefighterPatch
+    ): FirefighterDtos.FirefighterResponse {
+        TODO("Not yet implemented")
+    }
+
+    @Transactional(readOnly = true)
+    override fun getFirefighterByEmailAddress(emailAddress: String): FirefighterDtos.FirefighterResponse {
+
+        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
+            ?: throw ResourceNotFoundException("User", "email address", emailAddress)
+
+        val firefighter = firefighterRepository.findById(user.userId!!)
+            .orElseThrow { ResourceNotFoundException("Firefighter", "id", user.userId!!) }
+
+        return firefighterMapper.toFirefighterDto(firefighter)
+    }
+
+    override fun getPendingFirefighters(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<FirefighterDtos.FirefighterResponse> {
+        TODO("Not yet implemented")
+    }
+
+//    @Transactional(readOnly = true)
+//    override fun getPendingFirefighters(emailAddress: String): List<FirefighterDtos.FirefighterResponse> {
+//
+//        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
+//            ?: throw ResourceNotFoundException("User", "email", emailAddress)
+//
+//        val firefighter = firefighterRepository.findById(user.userId!!)
+//            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
+//
+//        return firefighterRepository
+//            .findAllByFiredepartmentFiredepartmentIdAndStatus(
+//                firefighter.firedepartment!!.firedepartmentId!!,
+//                FirefighterStatus.PENDING
+//            )
+//            .map(firefighterMapper::toFirefighterDto)
+//    }
+
+//    @Transactional(readOnly = true)
+//    override fun getFirefightersFromLoggedUser(
+//        emailAddress: String
+//    ): List<FirefighterDtos.FirefighterResponse> {
+//
+//        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
+//            ?: throw ResourceNotFoundException("User", "email", emailAddress)
+//
+//        val firefighter = firefighterRepository.findById(user.userId!!)
+//            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
+//
+//        return firefighterRepository
+//            .findAllByFiredepartmentFiredepartmentIdAndStatus(
+//                firefighter.firedepartment!!.firedepartmentId!!,
+//                FirefighterStatus.ACTIVE
+//            )
+//            .map(firefighterMapper::toFirefighterDto)
+//    }
+
     private val FIREFIGHTER_ALLOWED_SORTS = setOf(
         "firefighterId",
+        "firstName",
+        "lastName",
         "role",
         "user.userId",
         "firedepartment.firedepartmentId"
     )
 
     @Transactional
-    override fun createFirefighter(
+    override fun createFirefighterDev(
         firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse {
 
@@ -60,7 +143,7 @@ class FirefighterServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllFirefighters(
+    override fun getAllFirefightersDev(
         page: Int,
         size: Int,
         sort: String
@@ -80,7 +163,7 @@ class FirefighterServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getFirefighterById(
+    override fun getFirefighterByIdDev(
         firefighterId: Int
     ): FirefighterDtos.FirefighterResponse {
 
@@ -90,57 +173,8 @@ class FirefighterServiceImplementation(
         return firefighterMapper.toFirefighterDto(firefighter)
     }
 
-    @Transactional(readOnly = true)
-    override fun getFirefighterByEmailAddress(emailAddress: String): FirefighterDtos.FirefighterResponse {
-
-        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
-            ?: throw ResourceNotFoundException("User", "email address", emailAddress)
-
-        val firefighter = firefighterRepository.findById(user.userId!!)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "id", user.userId!!) }
-
-        return firefighterMapper.toFirefighterDto(firefighter)
-    }
-
-    @Transactional(readOnly = true)
-    override fun getPendingFirefighters(emailAddress: String): List<FirefighterDtos.FirefighterResponse> {
-
-        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
-            ?: throw ResourceNotFoundException("User", "email", emailAddress)
-
-        val firefighter = firefighterRepository.findById(user.userId!!)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
-
-        return firefighterRepository
-            .findAllByFiredepartmentFiredepartmentIdAndStatus(
-                firefighter.firedepartment!!.firedepartmentId!!,
-                FirefighterStatus.PENDING
-            )
-            .map(firefighterMapper::toFirefighterDto)
-    }
-
-    @Transactional(readOnly = true)
-    override fun getFirefightersFromLoggedUser(
-        emailAddress: String
-    ): List<FirefighterDtos.FirefighterResponse> {
-
-        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
-            ?: throw ResourceNotFoundException("User", "email", emailAddress)
-
-        val firefighter = firefighterRepository.findById(user.userId!!)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
-
-        return firefighterRepository
-            .findAllByFiredepartmentFiredepartmentIdAndStatus(
-                firefighter.firedepartment!!.firedepartmentId!!,
-                FirefighterStatus.ACTIVE
-            )
-            .map(firefighterMapper::toFirefighterDto)
-    }
-
-
     @Transactional
-    override fun updateFirefighter(
+    override fun updateFirefighterDev(
         firefighterId: Int,
         firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse {
