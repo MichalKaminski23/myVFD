@@ -54,7 +54,7 @@ class FirefighterController(
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firstName,asc) e.g. `role,desc`
+            - `sort` (default: firstName,asc) e.g. `firefighterRole,desc`
         """
     )
     @ApiResponses(
@@ -131,7 +131,7 @@ class FirefighterController(
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firstName,asc) e.g. `role,desc`
+            - `sort` (default: firstName,asc) e.g. `firefighterRole,desc`
         """
     )
     @ApiResponses(

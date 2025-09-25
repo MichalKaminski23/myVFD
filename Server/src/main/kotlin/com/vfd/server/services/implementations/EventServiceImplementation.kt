@@ -1,15 +1,13 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.EventDtos
-import com.vfd.server.entities.Event
-import com.vfd.server.entities.Firedepartment
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.EventMapper
 import com.vfd.server.repositories.EventRepository
 import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.services.EventService
 import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
+import com.vfd.server.shared.findByIdOrThrow
 import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -52,10 +50,9 @@ class EventServiceImplementation(
     @Transactional
     override fun createEventDev(eventDto: EventDtos.EventCreateDev): EventDtos.EventResponse {
 
-        val firedepartment: Firedepartment = firedepartmentRepository.findById(eventDto.firedepartmentId)
-            .orElseThrow { ResourceNotFoundException("Firedepartment", "id", eventDto.firedepartmentId) }
+        val firedepartment = firedepartmentRepository.findByIdOrThrow(eventDto.firedepartmentId)
 
-        val event: Event = eventMapper.toEventEntityDev(eventDto)
+        val event = eventMapper.toEventEntityDev(eventDto)
 
         event.firedepartment = firedepartment
 
@@ -85,8 +82,7 @@ class EventServiceImplementation(
     @Transactional(readOnly = true)
     override fun getEventByIdDev(eventId: Int): EventDtos.EventResponse {
 
-        val event = eventRepository.findById(eventId)
-            .orElseThrow { ResourceNotFoundException("Event", "id", eventId) }
+        val event = eventRepository.findByIdOrThrow(eventId)
 
         return eventMapper.toEventDto(event)
     }
@@ -94,8 +90,7 @@ class EventServiceImplementation(
     @Transactional
     override fun updateEventDev(eventId: Int, eventDto: EventDtos.EventPatch): EventDtos.EventResponse {
 
-        val event = eventRepository.findById(eventId)
-            .orElseThrow { ResourceNotFoundException("Event", "id", eventId) }
+        val event = eventRepository.findByIdOrThrow(eventId)
 
         eventMapper.patchEvent(eventDto, event)
 

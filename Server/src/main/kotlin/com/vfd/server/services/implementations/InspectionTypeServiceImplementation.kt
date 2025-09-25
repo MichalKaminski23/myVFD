@@ -1,15 +1,10 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.InspectionTypeDtos
-import com.vfd.server.entities.InspectionType
-import com.vfd.server.exceptions.ResourceConflictException
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.InspectionTypeMapper
 import com.vfd.server.repositories.InspectionTypeRepository
 import com.vfd.server.services.InspectionTypeService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -26,12 +21,9 @@ class InspectionTypeServiceImplementation(
         inspectionTypeDto: InspectionTypeDtos.InspectionTypeCreate
     ): InspectionTypeDtos.InspectionTypeResponse {
 
-        val inspectionType: InspectionType =
-            inspectionTypeMapper.toInspectionTypeEntity(inspectionTypeDto)
+        val inspectionType = inspectionTypeMapper.toInspectionTypeEntity(inspectionTypeDto)
 
-        if (inspectionTypeRepository.existsByInspectionType(inspectionTypeDto.inspectionType)) {
-            throw ResourceConflictException("Inspection's type", "code", inspectionTypeDto.inspectionType)
-        }
+        inspectionTypeRepository.assertNotExistsByInspectionType(inspectionTypeDto.inspectionType)
 
         return inspectionTypeMapper.toInspectionTypeDto(
             inspectionTypeRepository.save(inspectionType)
@@ -63,8 +55,7 @@ class InspectionTypeServiceImplementation(
         inspectionTypeCode: String
     ): InspectionTypeDtos.InspectionTypeResponse {
 
-        val inspectionType = inspectionTypeRepository.findById(inspectionTypeCode)
-            .orElseThrow { ResourceNotFoundException("Inspection's type", "code", inspectionTypeCode) }
+        val inspectionType = inspectionTypeRepository.findByIdOrThrow(inspectionTypeCode)
 
         return inspectionTypeMapper.toInspectionTypeDto(inspectionType)
     }
@@ -74,13 +65,13 @@ class InspectionTypeServiceImplementation(
         inspectionTypeCode: String,
         inspectionTypeDto: InspectionTypeDtos.InspectionTypePatch
     ): InspectionTypeDtos.InspectionTypeResponse {
-        val entity = inspectionTypeRepository.findById(inspectionTypeCode)
-            .orElseThrow { ResourceNotFoundException("Inspection's type", "code", inspectionTypeCode) }
 
-        inspectionTypeMapper.patchInspectionType(inspectionTypeDto, entity)
+        val inspectionType = inspectionTypeRepository.findByIdOrThrow(inspectionTypeCode)
+
+        inspectionTypeMapper.patchInspectionType(inspectionTypeDto, inspectionType)
 
         return inspectionTypeMapper.toInspectionTypeDto(
-            inspectionTypeRepository.save(entity)
+            inspectionTypeRepository.save(inspectionType)
         )
     }
 }

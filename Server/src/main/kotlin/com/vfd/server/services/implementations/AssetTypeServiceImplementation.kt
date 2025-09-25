@@ -1,14 +1,10 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.AssetTypeDtos
-import com.vfd.server.exceptions.ResourceConflictException
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AssetTypeMapper
 import com.vfd.server.repositories.AssetTypeRepository
 import com.vfd.server.services.AssetTypeService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,9 +21,7 @@ class AssetTypeServiceImplementation(
 
         val assetType = assetTypeMapper.toAssetTypeEntity(assetTypeDto)
 
-        if (assetTypeRepository.existsByAssetType(assetTypeDto.assetType)) {
-            throw ResourceConflictException("Asset's type", "code", assetTypeDto.assetType)
-        }
+        assetTypeRepository.assertNotExistsByAssetType(assetTypeDto.assetType)
 
         return assetTypeMapper.toAssetTypeDto(assetTypeRepository.save(assetType))
     }
@@ -50,8 +44,7 @@ class AssetTypeServiceImplementation(
     @Transactional(readOnly = true)
     override fun getAssetTypeByCode(assetTypeCode: String): AssetTypeDtos.AssetTypeResponse {
 
-        val assetType = assetTypeRepository.findById(assetTypeCode)
-            .orElseThrow { ResourceNotFoundException("Asset's type", "code", assetTypeCode) }
+        val assetType = assetTypeRepository.findByIdOrThrow(assetTypeCode)
 
         return assetTypeMapper.toAssetTypeDto(assetType)
     }
@@ -62,10 +55,7 @@ class AssetTypeServiceImplementation(
         assetTypeDto: AssetTypeDtos.AssetTypePatch
     ): AssetTypeDtos.AssetTypeResponse {
 
-        val assetType = assetTypeRepository.findById(assetTypeCode)
-            .orElseThrow { ResourceNotFoundException("Asset's type", "code", assetTypeCode) }
-
-
+        val assetType = assetTypeRepository.findByIdOrThrow(assetTypeCode)
 
         assetTypeMapper.patchAssetType(assetTypeDto, assetType)
 

@@ -2,15 +2,14 @@ package com.vfd.server.services
 
 import com.vfd.server.dtos.AuthResponseDto
 import com.vfd.server.dtos.UserDtos
-import com.vfd.server.exceptions.ResourceConflictException
-import com.vfd.server.exceptions.ResourceNotFoundException
-import com.vfd.server.mappers.AddressMapper
 import com.vfd.server.mappers.UserMapper
-import com.vfd.server.repositories.AddressRepository
 import com.vfd.server.repositories.UserRepository
 import com.vfd.server.securities.JwtTokenProvider
 import com.vfd.server.securities.UserPrincipal
 import com.vfd.server.services.implementations.AddressServiceImplementation
+import com.vfd.server.shared.assertNotExistsByEmail
+import com.vfd.server.shared.assertNotExistsByPhone
+import com.vfd.server.shared.findByEmailOrThrow
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -22,8 +21,6 @@ import java.time.temporal.ChronoUnit
 @Service
 class AuthServiceImplementation(
     private val userRepository: UserRepository,
-    private val addressRepository: AddressRepository,
-    private val addressMapper: AddressMapper,
     private val userMapper: UserMapper,
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager,
@@ -40,13 +37,9 @@ class AuthServiceImplementation(
     @Transactional
     override fun register(userDto: UserDtos.UserCreate): AuthResponseDto {
 
-        if (userRepository.findByEmailAddressIgnoreCase(userDto.emailAddress) != null) {
-            throw ResourceConflictException("User", "email address", userDto.emailAddress)
-        }
+        userRepository.assertNotExistsByEmail(userDto.emailAddress)
 
-        if (userRepository.findByPhoneNumber(userDto.phoneNumber) != null) {
-            throw ResourceConflictException("User", "phone number", userDto.phoneNumber)
-        }
+        userRepository.assertNotExistsByPhone(userDto.phoneNumber)
 
         val address = addressService.findOrCreateAddress(userDto.address)
 
@@ -72,8 +65,7 @@ class AuthServiceImplementation(
     @Transactional
     override fun login(userDto: UserDtos.UserLogin): AuthResponseDto {
 
-        userRepository.findByEmailAddressIgnoreCase(userDto.emailAddress)
-            ?: throw ResourceNotFoundException("User", "email address", userDto.emailAddress)
+        userRepository.findByEmailOrThrow(userDto.emailAddress)
 
         val jwt = generateJwt(userDto.emailAddress, userDto.password)
 

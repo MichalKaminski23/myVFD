@@ -1,15 +1,11 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FiredepartmentDtos
-import com.vfd.server.exceptions.ResourceConflictException
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.FiredepartmentMapper
 import com.vfd.server.repositories.AddressRepository
 import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.services.FiredepartmentService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -60,9 +56,7 @@ class FiredepartmentServiceImplementation(
         firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
     ): FiredepartmentDtos.FiredepartmentResponse {
 
-        if (firedepartmentRepository.findByNameIgnoreCase(firedepartmentDto.name) != null) {
-            throw ResourceConflictException("Firedepartment", "name", firedepartmentDto.name)
-        }
+        firedepartmentRepository.assertNotExistsByName(firedepartmentDto.name)
 
         val firedepartment = firedepartmentMapper.toFiredepartmentEntity(firedepartmentDto)
 
@@ -97,8 +91,7 @@ class FiredepartmentServiceImplementation(
         firedepartmentId: Int
     ): FiredepartmentDtos.FiredepartmentResponse {
 
-        val firedepartment = firedepartmentRepository.findById(firedepartmentId)
-            .orElseThrow { ResourceNotFoundException("Firedepartment", "id", firedepartmentId) }
+        val firedepartment = firedepartmentRepository.findByIdOrThrow(firedepartmentId)
 
         return firedepartmentMapper.toFiredepartmentDto(firedepartment)
     }
@@ -109,8 +102,7 @@ class FiredepartmentServiceImplementation(
         firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch
     ): FiredepartmentDtos.FiredepartmentResponse {
 
-        val firedepartment = firedepartmentRepository.findById(firedepartmentId)
-            .orElseThrow { ResourceNotFoundException("Firedepartment", "id", firedepartmentId) }
+        val firedepartment = firedepartmentRepository.findByIdOrThrow(firedepartmentId)
 
         firedepartmentMapper.patchFiredepartment(firedepartmentDto, firedepartment)
 

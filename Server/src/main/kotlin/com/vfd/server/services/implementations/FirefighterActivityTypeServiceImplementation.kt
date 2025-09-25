@@ -2,14 +2,10 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FirefighterActivityTypeDtos
 import com.vfd.server.entities.FirefighterActivityType
-import com.vfd.server.exceptions.ResourceConflictException
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.FirefighterActivityTypeMapper
 import com.vfd.server.repositories.FirefighterActivityTypeRepository
 import com.vfd.server.services.FirefighterActivityTypeService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -29,13 +25,7 @@ class FirefighterActivityTypeServiceImplementation(
         val firefighterActivityType: FirefighterActivityType =
             firefighterActivityTypeMapper.toFirefighterActivityTypeEntity(firefighterActivityTypeDto)
 
-        if (firefighterActivityTypeRepository.existsByFirefighterActivityType(firefighterActivityTypeDto.firefighterActivityType)) {
-            throw ResourceConflictException(
-                "Firefighter activitie's type",
-                "code",
-                firefighterActivityTypeDto.firefighterActivityType
-            )
-        }
+        firefighterActivityTypeRepository.assertNotExistsByActivityType(firefighterActivityTypeDto.firefighterActivityType)
 
         return firefighterActivityTypeMapper.toFirefighterActivityTypeDto(
             firefighterActivityTypeRepository.save(firefighterActivityType)
@@ -67,14 +57,7 @@ class FirefighterActivityTypeServiceImplementation(
         firefighterActivityTypeCode: String
     ): FirefighterActivityTypeDtos.FirefighterActivityTypeResponse {
 
-        val firefighterActivityType = firefighterActivityTypeRepository.findById(firefighterActivityTypeCode)
-            .orElseThrow {
-                ResourceNotFoundException(
-                    "Firefighter activitie's type",
-                    "code",
-                    firefighterActivityTypeCode
-                )
-            }
+        val firefighterActivityType = firefighterActivityTypeRepository.findByIdOrThrow(firefighterActivityTypeCode)
 
         return firefighterActivityTypeMapper.toFirefighterActivityTypeDto(firefighterActivityType)
     }
@@ -85,14 +68,7 @@ class FirefighterActivityTypeServiceImplementation(
         firefighterActivityTypeDto: FirefighterActivityTypeDtos.FirefighterActivityTypePatch
     ): FirefighterActivityTypeDtos.FirefighterActivityTypeResponse {
 
-        val firefighterActivityType = firefighterActivityTypeRepository.findById(firefighterActivityTypeCode)
-            .orElseThrow {
-                ResourceNotFoundException(
-                    "Firefighter activitie's type",
-                    "code",
-                    firefighterActivityTypeCode
-                )
-            }
+        val firefighterActivityType = firefighterActivityTypeRepository.findByIdOrThrow(firefighterActivityTypeCode)
 
         firefighterActivityTypeMapper.patchFirefighterActivityType(
             firefighterActivityTypeDto,

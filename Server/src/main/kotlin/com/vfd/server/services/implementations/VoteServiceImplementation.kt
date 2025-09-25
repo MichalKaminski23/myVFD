@@ -1,8 +1,6 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.VoteDtos
-import com.vfd.server.entities.Vote
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.VoteMapper
 import com.vfd.server.repositories.FirefighterRepository
 import com.vfd.server.repositories.InvestmentProposalRepository
@@ -10,6 +8,7 @@ import com.vfd.server.repositories.VoteRepository
 import com.vfd.server.services.VoteService
 import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
+import com.vfd.server.shared.findByIdOrThrow
 import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -57,14 +56,12 @@ class VoteServiceImplementation(
     @Transactional
     override fun createVoteDev(voteDto: VoteDtos.VoteCreateDev): VoteDtos.VoteResponse {
 
-        val vote: Vote = voteMapper.toVoteEntityDev(voteDto)
+        val vote = voteMapper.toVoteEntityDev(voteDto)
 
-        val investmentProposal = investmentProposalRepository.findById(voteDto.investmentProposalId)
-            .orElseThrow { ResourceNotFoundException("Investment's proposal", "id", voteDto.investmentProposalId) }
+        val investmentProposal = investmentProposalRepository.findByIdOrThrow(voteDto.investmentProposalId)
         vote.investmentProposal = investmentProposal
 
-        val firefighter = firefighterRepository.findById(voteDto.firefighterId)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "id", voteDto.firefighterId) }
+        val firefighter = firefighterRepository.findByIdOrThrow(voteDto.firefighterId)
         vote.firefighter = firefighter
 
         return voteMapper.toVoteDto(voteRepository.save(vote))
@@ -89,8 +86,7 @@ class VoteServiceImplementation(
     @Transactional(readOnly = true)
     override fun getVoteByIdDev(voteId: Int): VoteDtos.VoteResponse {
 
-        val vote = voteRepository.findById(voteId)
-            .orElseThrow { ResourceNotFoundException("Vote", "id", voteId) }
+        val vote = voteRepository.findByIdOrThrow(voteId)
 
         return voteMapper.toVoteDto(vote)
     }
@@ -98,8 +94,7 @@ class VoteServiceImplementation(
     @Transactional
     override fun updateVoteDev(voteId: Int, voteDto: VoteDtos.VotePatch): VoteDtos.VoteResponse {
 
-        val vote = voteRepository.findById(voteId)
-            .orElseThrow { ResourceNotFoundException("Vote", "id", voteId) }
+        val vote = voteRepository.findByIdOrThrow(voteId)
 
         voteMapper.patchVote(voteDto, vote)
 

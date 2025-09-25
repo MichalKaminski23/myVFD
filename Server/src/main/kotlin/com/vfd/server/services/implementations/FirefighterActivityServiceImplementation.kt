@@ -1,8 +1,6 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FirefighterActivityDtos
-import com.vfd.server.entities.FirefighterActivity
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.FirefighterActivityMapper
 import com.vfd.server.repositories.FirefighterActivityRepository
 import com.vfd.server.repositories.FirefighterActivityTypeRepository
@@ -10,6 +8,7 @@ import com.vfd.server.repositories.FirefighterRepository
 import com.vfd.server.services.FirefighterActivityService
 import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
+import com.vfd.server.shared.findByIdOrThrow
 import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -60,22 +59,13 @@ class FirefighterActivityServiceImplementation(
         firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityCreateDev
     ): FirefighterActivityDtos.FirefighterActivityResponse {
 
-        val firefighterActivity: FirefighterActivity =
-            firefighterActivityMapper.toFirefighterActivityEntityDev(firefighterActivityDto)
+        val firefighterActivity = firefighterActivityMapper.toFirefighterActivityEntityDev(firefighterActivityDto)
 
-        val firefighter = firefighterRepository.findById(firefighterActivityDto.firefighterId)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "id", firefighterActivityDto.firefighterId) }
+        val firefighter = firefighterRepository.findByIdOrThrow(firefighterActivityDto.firefighterId)
         firefighterActivity.firefighter = firefighter
 
         val firefighterActivityType =
-            firefighterActivityTypeRepository.findById(firefighterActivityDto.firefighterActivityType)
-                .orElseThrow {
-                    ResourceNotFoundException(
-                        "FirefighterActivityType",
-                        "code",
-                        firefighterActivityDto.firefighterActivityType
-                    )
-                }
+            firefighterActivityTypeRepository.findByIdOrThrow(firefighterActivityDto.firefighterActivityType)
         firefighterActivity.firefighterActivityType = firefighterActivityType
 
         return firefighterActivityMapper.toFirefighterActivityDto(
@@ -108,8 +98,7 @@ class FirefighterActivityServiceImplementation(
         firefighterActivityId: Int
     ): FirefighterActivityDtos.FirefighterActivityResponse {
 
-        val firefighterActivity = firefighterActivityRepository.findById(firefighterActivityId)
-            .orElseThrow { ResourceNotFoundException("Firefighter's activity", "id", firefighterActivityId) }
+        val firefighterActivity = firefighterActivityRepository.findByIdOrThrow(firefighterActivityId)
 
         return firefighterActivityMapper.toFirefighterActivityDto(firefighterActivity)
     }
@@ -120,22 +109,15 @@ class FirefighterActivityServiceImplementation(
         firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityPatch
     ): FirefighterActivityDtos.FirefighterActivityResponse {
 
-        val firefighterActivity = firefighterActivityRepository.findById(firefighterActivityId)
-            .orElseThrow { ResourceNotFoundException("Firefighter's activity", "id", firefighterActivityId) }
+        val firefighterActivity = firefighterActivityRepository.findByIdOrThrow(firefighterActivityId)
 
         firefighterActivityMapper.patchFirefighterActivity(firefighterActivityDto, firefighterActivity)
 
         firefighterActivityDto.firefighterActivityType
             ?.let { code ->
                 if (code != firefighterActivity.firefighterActivityType?.firefighterActivityType) {
-                    val firefighterActivityType = firefighterActivityTypeRepository.findById(code)
-                        .orElseThrow {
-                            ResourceNotFoundException(
-                                "Firefighter activitie's type",
-                                "code",
-                                code
-                            )
-                        }
+                    val firefighterActivityType =
+                        firefighterActivityTypeRepository.findByIdOrThrow(firefighterActivityDto.firefighterActivityType)
                     firefighterActivity.firefighterActivityType = firefighterActivityType
                 }
             }

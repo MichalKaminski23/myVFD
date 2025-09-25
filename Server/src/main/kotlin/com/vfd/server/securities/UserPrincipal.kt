@@ -11,7 +11,7 @@ class UserPrincipal(
 ) : UserDetails {
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
-        val role = user.firefighter?.role?.name ?: "USER"
+        val role = user.firefighter?.firefighterRole?.name ?: "USER"
         return listOf(SimpleGrantedAuthority("ROLE_$role"))
     }
 

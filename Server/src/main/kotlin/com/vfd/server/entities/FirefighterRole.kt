@@ -1,6 +1,6 @@
 package com.vfd.server.entities
 
-enum class Role {
+enum class FirefighterRole {
     ADMIN,
     PRESIDENT,
     MEMBER,

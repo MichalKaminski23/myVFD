@@ -26,8 +26,9 @@ class InvestmentProposal {
     @Column(name = "submission_date")
     var submissionDate: LocalDateTime? = null
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 16)
-    var status: String? = null
+    var status: InvestmentProposalStatus? = null
 
     @OneToMany(mappedBy = "investmentProposal", cascade = [CascadeType.ALL], orphanRemoval = true)
     var votes: MutableList<Vote> = mutableListOf()

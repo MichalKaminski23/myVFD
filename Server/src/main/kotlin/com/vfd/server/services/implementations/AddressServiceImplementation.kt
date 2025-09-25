@@ -2,12 +2,12 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.AddressDtos
 import com.vfd.server.entities.Address
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AddressMapper
 import com.vfd.server.repositories.AddressRepository
 import com.vfd.server.services.AddressService
 import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
+import com.vfd.server.shared.findByIdOrThrow
 import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -43,7 +43,7 @@ class AddressServiceImplementation(
     @Transactional
     override fun createAddressDev(addressDto: AddressDtos.AddressCreate): AddressDtos.AddressResponse {
 
-        val address: Address = addressMapper.toAddressEntity(addressDto)
+        val address = addressMapper.toAddressEntity(addressDto)
 
         return addressMapper.toAddressDto(addressRepository.save(address))
     }
@@ -66,8 +66,7 @@ class AddressServiceImplementation(
     @Transactional(readOnly = true)
     override fun getAddressByIdDev(addressId: Int): AddressDtos.AddressResponse {
 
-        val address = addressRepository.findById(addressId)
-            .orElseThrow { ResourceNotFoundException("Address", "id", addressId) }
+        val address = addressRepository.findByIdOrThrow(addressId)
 
         return addressMapper.toAddressDto(address)
     }

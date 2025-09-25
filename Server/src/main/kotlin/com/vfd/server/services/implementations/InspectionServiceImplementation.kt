@@ -1,8 +1,6 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.InspectionDtos
-import com.vfd.server.entities.Inspection
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.InspectionMapper
 import com.vfd.server.repositories.AssetRepository
 import com.vfd.server.repositories.InspectionRepository
@@ -10,6 +8,7 @@ import com.vfd.server.repositories.InspectionTypeRepository
 import com.vfd.server.services.InspectionService
 import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
+import com.vfd.server.shared.findByIdOrThrow
 import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -57,14 +56,12 @@ class InspectionServiceImplementation(
     @Transactional
     override fun createInspectionDev(inspectionDto: InspectionDtos.InspectionCreate): InspectionDtos.InspectionResponse {
 
-        val inspection: Inspection = inspectionMapper.toInspectionEntity(inspectionDto)
+        val inspection = inspectionMapper.toInspectionEntity(inspectionDto)
 
-        val asset = assetRepository.findById(inspectionDto.assetId)
-            .orElseThrow { ResourceNotFoundException("Asset", "id", inspectionDto.assetId) }
+        val asset = assetRepository.findByIdOrThrow(inspectionDto.assetId)
         inspection.asset = asset
 
-        val inspectionType = inspectionTypeRepository.findById(inspectionDto.inspectionType)
-            .orElseThrow { ResourceNotFoundException("Inspection's type", "code", inspectionDto.inspectionType) }
+        val inspectionType = inspectionTypeRepository.findByIdOrThrow(inspectionDto.inspectionType)
         inspection.inspectionType = inspectionType
 
         return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
@@ -93,8 +90,7 @@ class InspectionServiceImplementation(
     @Transactional(readOnly = true)
     override fun getInspectionByIdDev(inspectionId: Int): InspectionDtos.InspectionResponse {
 
-        val inspection = inspectionRepository.findById(inspectionId)
-            .orElseThrow { ResourceNotFoundException("Inspection", "id", inspectionId) }
+        val inspection = inspectionRepository.findByIdOrThrow(inspectionId)
 
         return inspectionMapper.toInspectionDto(inspection)
     }
@@ -105,16 +101,14 @@ class InspectionServiceImplementation(
         inspectionDto: InspectionDtos.InspectionPatch
     ): InspectionDtos.InspectionResponse {
 
-        val inspection = inspectionRepository.findById(inspectionId)
-            .orElseThrow { ResourceNotFoundException("Inspection", "id", inspectionId) }
+        val inspection = inspectionRepository.findByIdOrThrow(inspectionId)
 
         inspectionMapper.patchInspection(inspectionDto, inspection)
 
         inspectionDto.inspectionType
             ?.takeIf { it != inspection.inspectionType?.inspectionType }
             ?.let { code ->
-                val inspectionType = inspectionTypeRepository.findById(code)
-                    .orElseThrow { ResourceNotFoundException("Inspection's type", "code", code) }
+                val inspectionType = inspectionTypeRepository.findByIdOrThrow(code)
                 inspection.inspectionType = inspectionType
             }
 

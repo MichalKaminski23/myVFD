@@ -1,8 +1,6 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.OperationDtos
-import com.vfd.server.entities.Operation
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.AddressMapper
 import com.vfd.server.mappers.OperationMapper
 import com.vfd.server.repositories.AddressRepository
@@ -12,6 +10,7 @@ import com.vfd.server.repositories.OperationTypeRepository
 import com.vfd.server.services.OperationService
 import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
+import com.vfd.server.shared.findByIdOrThrow
 import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -61,17 +60,15 @@ class OperationServiceImplementation(
         operationDto: OperationDtos.OperationCreateDev
     ): OperationDtos.OperationResponse {
 
-        val operation: Operation = operationMapper.toOperationEntityDev(operationDto)
+        val operation = operationMapper.toOperationEntityDev(operationDto)
 
-        val firedepartment = firedepartmentRepository.findById(operationDto.firedepartmentId)
-            .orElseThrow { ResourceNotFoundException("Firedepartment", "id", operationDto.firedepartmentId) }
+        val firedepartment = firedepartmentRepository.findByIdOrThrow(operationDto.firedepartmentId)
         operation.firedepartment = firedepartment
 
         val address = addressMapper.toAddressEntity(operationDto.address)
         operation.address = addressRepository.save(address)
 
-        val operationType = operationTypeRepository.findById(operationDto.operationType)
-            .orElseThrow { ResourceNotFoundException("OperationType", "code", operationDto.operationType) }
+        val operationType = operationTypeRepository.findByIdOrThrow(operationDto.operationType)
         operation.operationType = operationType
 
         return operationMapper.toOperationDto(
@@ -104,8 +101,7 @@ class OperationServiceImplementation(
         operationId: Int
     ): OperationDtos.OperationResponse {
 
-        val operation = operationRepository.findById(operationId)
-            .orElseThrow { ResourceNotFoundException("Operation", "id", operationId) }
+        val operation = operationRepository.findByIdOrThrow(operationId)
 
         return operationMapper.toOperationDto(operation)
     }
@@ -116,16 +112,14 @@ class OperationServiceImplementation(
         operationDto: OperationDtos.OperationPatch
     ): OperationDtos.OperationResponse {
 
-        val operation = operationRepository.findById(operationId)
-            .orElseThrow { ResourceNotFoundException("Operation", "id", operationId) }
+        val operation = operationRepository.findByIdOrThrow(operationId)
 
         operationMapper.patchOperation(operationDto, operation)
 
         operationDto.operationType
             ?.takeIf { it != operation.operationType?.operationType }
             ?.let { code ->
-                val type = operationTypeRepository.findById(code)
-                    .orElseThrow { ResourceNotFoundException("Operation's type", "code", code) }
+                val type = operationTypeRepository.findByIdOrThrow(code)
                 operation.operationType = type
             }
 

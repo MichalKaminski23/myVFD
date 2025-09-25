@@ -2,8 +2,8 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FirefighterDtos
 import com.vfd.server.entities.Firefighter
+import com.vfd.server.entities.FirefighterRole
 import com.vfd.server.entities.FirefighterStatus
-import com.vfd.server.entities.Role
 import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.FirefighterMapper
@@ -13,6 +13,7 @@ import com.vfd.server.repositories.UserRepository
 import com.vfd.server.services.FirefighterService
 import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
+import com.vfd.server.shared.findByEmailOrThrow
 import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -52,8 +53,7 @@ class FirefighterServiceImplementation(
     @Transactional(readOnly = true)
     override fun getFirefighterByEmailAddress(emailAddress: String): FirefighterDtos.FirefighterResponse {
 
-        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
-            ?: throw ResourceNotFoundException("User", "email address", emailAddress)
+        val user = userRepository.findByEmailOrThrow(emailAddress)
 
         val firefighter = firefighterRepository.findById(user.userId!!)
             .orElseThrow { ResourceNotFoundException("Firefighter", "id", user.userId!!) }
@@ -110,7 +110,7 @@ class FirefighterServiceImplementation(
         "firefighterId",
         "firstName",
         "lastName",
-        "role",
+        "firefighterRole",
         "user.userId",
         "firedepartment.firedepartmentId"
     )
@@ -134,7 +134,7 @@ class FirefighterServiceImplementation(
 
         firefighter.user = user
         firefighter.firedepartment = firedepartment
-        firefighter.role = Role.USER
+        firefighter.firefighterRole = FirefighterRole.USER
         firefighter.status = FirefighterStatus.PENDING
 
         return firefighterMapper.toFirefighterDto(

@@ -1,7 +1,7 @@
 package com.vfd.server.dtos
 
+import com.vfd.server.entities.FirefighterRole
 import com.vfd.server.entities.FirefighterStatus
-import com.vfd.server.entities.Role
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 
@@ -21,7 +21,7 @@ object FirefighterDtos {
     @Schema(description = "DTO used for partially updating a firefighter record")
     data class FirefighterPatch(
         @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
-        val role: Role? = null,
+        val firefighterRole: FirefighterRole? = null,
 
         @field:Schema(description = "Status assigned to the firefighter", example = "PENDING")
         val status: FirefighterStatus? = null
@@ -51,7 +51,7 @@ object FirefighterDtos {
         val firedepartmentName: String,
 
         @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
-        val role: Role,
+        val firefighterRole: FirefighterRole,
 
         @field:Schema(description = "Status assigned to the firefighter", example = "PENDING")
         val status: FirefighterStatus

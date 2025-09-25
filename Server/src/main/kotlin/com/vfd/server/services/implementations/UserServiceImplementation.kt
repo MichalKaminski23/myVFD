@@ -2,13 +2,10 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.UserDtos
 import com.vfd.server.exceptions.ResourceConflictException
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.UserMapper
 import com.vfd.server.repositories.UserRepository
 import com.vfd.server.services.UserService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -28,8 +25,7 @@ class UserServiceImplementation(
     @Transactional(readOnly = true)
     override fun getUserByEmailAddress(emailAddress: String): UserDtos.UserResponse {
 
-        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
-            ?: throw ResourceNotFoundException("User", "email address", emailAddress)
+        val user = userRepository.findByEmailOrThrow(emailAddress)
 
         return userMapper.toUserDto(user)
     }
@@ -64,8 +60,7 @@ class UserServiceImplementation(
     @Transactional(readOnly = true)
     override fun getUserByIdDev(userId: Int): UserDtos.UserResponse {
 
-        val user = userRepository.findById(userId)
-            .orElseThrow { ResourceNotFoundException("User", "id", userId) }
+        val user = userRepository.findByIdOrThrow(userId)
 
         return userMapper.toUserDto(user)
     }
@@ -73,8 +68,7 @@ class UserServiceImplementation(
     @Transactional
     override fun updateUserDev(userId: Int, userDto: UserDtos.UserPatch): UserDtos.UserResponse {
 
-        val user = userRepository.findById(userId)
-            .orElseThrow { ResourceNotFoundException("User", "id", userId) }
+        val user = userRepository.findByIdOrThrow(userId)
 
         userDto.emailAddress?.trim()?.lowercase()?.let { newEmail ->
             userRepository.findByEmailAddressIgnoreCase(newEmail)?.let { existing ->

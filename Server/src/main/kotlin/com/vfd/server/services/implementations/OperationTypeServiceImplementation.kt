@@ -1,15 +1,10 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.OperationTypeDtos
-import com.vfd.server.entities.OperationType
-import com.vfd.server.exceptions.ResourceConflictException
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.OperationTypeMapper
 import com.vfd.server.repositories.OperationTypeRepository
 import com.vfd.server.services.OperationTypeService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -26,12 +21,9 @@ class OperationTypeServiceImplementation(
         operationTypeDto: OperationTypeDtos.OperationTypeCreate
     ): OperationTypeDtos.OperationTypeResponse {
 
-        val operationType: OperationType =
-            operationTypeMapper.toOperationTypeEntity(operationTypeDto)
+        val operationType = operationTypeMapper.toOperationTypeEntity(operationTypeDto)
 
-        if (operationTypeRepository.existsByOperationType(operationTypeDto.operationType)) {
-            throw ResourceConflictException("Operation's type", "code", operationTypeDto.operationType)
-        }
+        operationTypeRepository.assertNotExistsByOperationType(operationTypeDto.operationType)
 
         return operationTypeMapper.toOperationTypeDto(
             operationTypeRepository.save(operationType)
@@ -63,8 +55,7 @@ class OperationTypeServiceImplementation(
         operationTypeCode: String
     ): OperationTypeDtos.OperationTypeResponse {
 
-        val operationType = operationTypeRepository.findById(operationTypeCode)
-            .orElseThrow { ResourceNotFoundException("Operation's type", "code", operationTypeCode) }
+        val operationType = operationTypeRepository.findByIdOrThrow(operationTypeCode)
 
         return operationTypeMapper.toOperationTypeDto(operationType)
     }
@@ -75,8 +66,7 @@ class OperationTypeServiceImplementation(
         operationTypeDto: OperationTypeDtos.OperationTypePatch
     ): OperationTypeDtos.OperationTypeResponse {
 
-        val operationType = operationTypeRepository.findById(operationTypeCode)
-            .orElseThrow { ResourceNotFoundException("Operation's type", "code", operationTypeCode) }
+        val operationType = operationTypeRepository.findByIdOrThrow(operationTypeCode)
 
         operationTypeMapper.patchOperationType(operationTypeDto, operationType)
 

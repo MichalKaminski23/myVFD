@@ -1,6 +1,6 @@
 package com.vfd.server.dtos
 
-import com.vfd.server.entities.Status
+import com.vfd.server.entities.InvestmentProposalStatus
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -39,7 +39,7 @@ object InvestmentProposalDtos {
 
         @field:NotNull(message = "Status must not be null.")
         @field:Schema(description = "Status of the proposal", example = "APPROVED")
-        val status: Status? = null
+        val investmentProposalStatus: InvestmentProposalStatus? = null
     )
 
     @Schema(description = "DTO used for returning investment proposal information")
@@ -60,7 +60,7 @@ object InvestmentProposalDtos {
         val submissionDate: LocalDateTime,
 
         @field:Schema(description = "Status of the proposal", example = "APPROVED")
-        val status: String,
+        val status: InvestmentProposalStatus,
 
         @field:Schema(description = "Total number of votes for this proposal", example = "7")
         val votesCount: Int

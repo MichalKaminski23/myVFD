@@ -1,6 +1,6 @@
 package com.vfd.server.entities
 
-enum class Status {
+enum class InvestmentProposalStatus {
     PENDING,
     APPROVED,
     REJECTED,

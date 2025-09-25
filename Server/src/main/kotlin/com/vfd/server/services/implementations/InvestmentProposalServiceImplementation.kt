@@ -1,14 +1,13 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.InvestmentProposalDtos
-import com.vfd.server.entities.InvestmentProposal
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.InvestmentProposalMapper
 import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.repositories.InvestmentProposalRepository
 import com.vfd.server.services.InvestmentProposalService
 import com.vfd.server.shared.PageResponse
 import com.vfd.server.shared.PaginationUtils
+import com.vfd.server.shared.findByIdOrThrow
 import com.vfd.server.shared.toPageResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -55,11 +54,9 @@ class InvestmentProposalServiceImplementation(
         investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreateDev
     ): InvestmentProposalDtos.InvestmentProposalResponse {
 
-        val investmentProposal: InvestmentProposal =
-            investmentProposalMapper.toInvestmentProposalEntityDev(investmentProposalDto)
+        val investmentProposal = investmentProposalMapper.toInvestmentProposalEntityDev(investmentProposalDto)
 
-        val firedepartment = firedepartmentRepository.findById(investmentProposalDto.firedepartmentId)
-            .orElseThrow { ResourceNotFoundException("Firedepartment", "id", investmentProposalDto.firedepartmentId) }
+        val firedepartment = firedepartmentRepository.findByIdOrThrow(investmentProposalDto.firedepartmentId)
 
         investmentProposal.firedepartment = firedepartment
 
@@ -93,8 +90,7 @@ class InvestmentProposalServiceImplementation(
         investmentProposalId: Int
     ): InvestmentProposalDtos.InvestmentProposalResponse {
 
-        val investmentProposal = investmentProposalRepository.findById(investmentProposalId)
-            .orElseThrow { ResourceNotFoundException("Investment's proposal", "id", investmentProposalId) }
+        val investmentProposal = investmentProposalRepository.findByIdOrThrow(investmentProposalId)
 
         return investmentProposalMapper.toInvestmentProposalDto(investmentProposal)
     }
@@ -105,8 +101,7 @@ class InvestmentProposalServiceImplementation(
         investmentProposalDto: InvestmentProposalDtos.InvestmentProposalPatch
     ): InvestmentProposalDtos.InvestmentProposalResponse {
 
-        val investmentProposal = investmentProposalRepository.findById(investmentProposalId)
-            .orElseThrow { ResourceNotFoundException("Investment's proposal", "id", investmentProposalId) }
+        val investmentProposal = investmentProposalRepository.findByIdOrThrow(investmentProposalId)
 
         investmentProposalMapper.patchInvestmentProposal(investmentProposalDto, investmentProposal)
 
