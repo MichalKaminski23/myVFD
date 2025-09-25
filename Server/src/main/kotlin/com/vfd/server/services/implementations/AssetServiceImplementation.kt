@@ -82,11 +82,11 @@ class AssetServiceImplementation(
 
         val asset = assetRepository.findByIdOrThrow(assetId)
 
-        assetMapper.patchAsset(assetDto, asset)
-
         val firedepartmentId = firefighter.requireFiredepartmentId()
 
         asset.requireSameFiredepartment(firedepartmentId)
+
+        assetMapper.patchAsset(assetDto, asset)
 
         assetDto.assetType
             ?.takeIf { it != asset.assetType?.assetType }

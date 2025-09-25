@@ -12,7 +12,7 @@ object FirefighterActivityDtos {
     data class FirefighterActivityCreate(
         @field:NotBlank(message = "Activity type must not be blank.")
         @field:Size(max = 16, message = "Activity type must be at most 16 characters.")
-        @field:Schema(description = "Code of the activity type", example = "Medical")
+        @field:Schema(description = "Code of the activity type", example = "CERT")
         val firefighterActivityType: String,
 
         @field:NotNull(message = "Activity date must not be null.")
@@ -33,11 +33,8 @@ object FirefighterActivityDtos {
     @Schema(description = "DTO used for partially updating a firefighter activity")
     data class FirefighterActivityPatch(
         @field:Size(max = 16, message = "Activity type must be at most 16 characters.")
-        @field:Schema(description = "Code of the activity type", example = "Medical")
+        @field:Schema(description = "Code of the activity type", example = "CERT")
         val firefighterActivityType: String? = null,
-
-        @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
-        val activityDate: LocalDateTime? = null,
 
         @field:Schema(description = "Expiration date of the activity", example = "2025-08-03T15:00:00")
         val expirationDate: LocalDateTime? = null,
@@ -56,10 +53,10 @@ object FirefighterActivityDtos {
         val firefighterActivityId: Int,
 
         @field:Schema(description = "Firefighter who performed the activity")
-        val firefighter: FirefighterDtos.FirefighterResponse,
+        val firefighterId: Int,
 
         @field:Schema(description = "Type of the activity")
-        val firefighterActivityType: FirefighterActivityTypeDtos.FirefighterActivityTypeResponse,
+        val firefighterActivityTypeName: String,
 
         @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
         val activityDate: LocalDateTime,
@@ -82,7 +79,7 @@ object FirefighterActivityDtos {
 
         @field:NotBlank(message = "Activity type must not be blank.")
         @field:Size(max = 16, message = "Activity type must be at most 16 characters.")
-        @field:Schema(description = "Code of the activity type", example = "Medical")
+        @field:Schema(description = "Code of the activity type", example = "CERT")
         val firefighterActivityType: String,
 
         @field:NotNull(message = "Activity date must not be null.")

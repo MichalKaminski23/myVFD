@@ -12,6 +12,8 @@ interface FiredepartmentMapper {
 
     fun toFiredepartmentDto(firedepartment: Firedepartment): FiredepartmentDtos.FiredepartmentResponse
 
+    fun toFiredepartmentDtoShort(firedepartment: Firedepartment): FiredepartmentDtos.FiredepartmentResponseShort
+
     @Mapping(target = "firedepartmentId", ignore = true)
     @Mapping(target = "address", ignore = true)
     fun toFiredepartmentEntity(firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate): Firedepartment

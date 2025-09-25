@@ -36,6 +36,18 @@ fun FirefighterRepository.findByIdOrThrow(firefighterId: Int): Firefighter =
         ResourceNotFoundException("Firefighter", "id", firefighterId)
     }
 
+fun FirefighterRepository.assertNotExistsByUserId(firefighterId: Int) {
+    if (existsById(firefighterId)) {
+        throw ResourceConflictException("Firefighter", "id", firefighterId)
+    }
+}
+
+fun Firefighter.requireSameFiredepartment(firedepartmentId: Int) {
+    if (this.firedepartment?.firedepartmentId != firedepartmentId) {
+        throw ForbiddenException("You cannot modify firefighters of another firedepartment.")
+    }
+}
+
 fun Firefighter.requireFiredepartment(): Firedepartment =
     this.firedepartment ?: throw ResourceNotFoundException(
         "Firefighter", "firedepartment", firedepartment!!.firedepartmentId!!
@@ -69,7 +81,7 @@ fun Asset.requireSameFiredepartment(firedepartmentId: Int) {
 
 fun AssetTypeRepository.findByIdOrThrow(assetType: String): AssetType =
     findById(assetType).orElseThrow {
-        ResourceNotFoundException("AssetType", "code", assetType)
+        ResourceNotFoundException("Asset's type", "code", assetType)
     }
 
 fun AssetTypeRepository.assertNotExistsByAssetType(assetType: String) {
@@ -83,14 +95,26 @@ fun EventRepository.findByIdOrThrow(eventId: Int): Event =
         ResourceNotFoundException("Event", "id", eventId)
     }
 
+fun Event.requireSameFiredepartment(firedepartmentId: Int) {
+    if (this.firedepartment?.firedepartmentId != firedepartmentId) {
+        throw ForbiddenException("You cannot modify assets of another firedepartment.")
+    }
+}
+
 fun FirefighterActivityRepository.findByIdOrThrow(firefighterActivityId: Int): FirefighterActivity =
     findById(firefighterActivityId).orElseThrow {
-        ResourceNotFoundException("FirefighterActivity", "id", firefighterActivityId)
+        ResourceNotFoundException("Firefighter's activity", "id", firefighterActivityId)
     }
+
+fun FirefighterActivity.requireSameFirefighter(firefighterId: Int) {
+    if (this.firefighter?.firefighterId != firefighterId) {
+        throw ForbiddenException("You cannot modify assets of another firefighters.")
+    }
+}
 
 fun FirefighterActivityTypeRepository.findByIdOrThrow(firefighterActivityType: String): FirefighterActivityType =
     findById(firefighterActivityType).orElseThrow {
-        ResourceNotFoundException("FirefighterActivityType", "code", firefighterActivityType)
+        ResourceNotFoundException("Firefighter's activity type", "code", firefighterActivityType)
     }
 
 fun FirefighterActivityTypeRepository.assertNotExistsByActivityType(firefighterActivityType: String) {
@@ -106,7 +130,7 @@ fun InspectionRepository.findByIdOrThrow(inspectionId: Int): Inspection =
 
 fun InspectionTypeRepository.findByIdOrThrow(inspectionType: String): InspectionType =
     findById(inspectionType).orElseThrow {
-        ResourceNotFoundException("InspectionType", "code", inspectionType)
+        ResourceNotFoundException("Inspection's type", "code", inspectionType)
     }
 
 fun InspectionTypeRepository.assertNotExistsByInspectionType(inspectionType: String) {
@@ -117,7 +141,7 @@ fun InspectionTypeRepository.assertNotExistsByInspectionType(inspectionType: Str
 
 fun InvestmentProposalRepository.findByIdOrThrow(investmentProposalId: Int): InvestmentProposal =
     findById(investmentProposalId).orElseThrow {
-        ResourceNotFoundException("InvestmentProposal", "id", investmentProposalId)
+        ResourceNotFoundException("Investment proposal", "id", investmentProposalId)
     }
 
 fun OperationRepository.findByIdOrThrow(operationId: Int): Operation =
@@ -127,7 +151,7 @@ fun OperationRepository.findByIdOrThrow(operationId: Int): Operation =
 
 fun OperationTypeRepository.findByIdOrThrow(operationType: String): OperationType =
     findById(operationType).orElseThrow {
-        ResourceNotFoundException("OperationType", "code", operationType)
+        ResourceNotFoundException("Operation's type", "code", operationType)
     }
 
 fun OperationTypeRepository.assertNotExistsByOperationType(operationType: String) {

@@ -4,6 +4,9 @@ import com.vfd.server.dtos.FiredepartmentDtos
 import com.vfd.server.mappers.FiredepartmentMapper
 import com.vfd.server.repositories.AddressRepository
 import com.vfd.server.repositories.FiredepartmentRepository
+import com.vfd.server.repositories.FirefighterRepository
+import com.vfd.server.repositories.UserRepository
+import com.vfd.server.services.AddressService
 import com.vfd.server.services.FiredepartmentService
 import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
@@ -14,14 +17,26 @@ class FiredepartmentServiceImplementation(
     private val firedepartmentRepository: FiredepartmentRepository,
     private val firedepartmentMapper: FiredepartmentMapper,
     private val addressRepository: AddressRepository,
-    private val addressService: AddressServiceImplementation
+    private val addressService: AddressService,
+    private val userRepository: UserRepository,
+    private val firefighterRepository: FirefighterRepository
 ) : FiredepartmentService {
 
     override fun createFiredepartment(
         emailAddress: String,
         firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
     ): FiredepartmentDtos.FiredepartmentResponse {
-        TODO("Not yet implemented")
+
+        firedepartmentRepository.assertNotExistsByName(firedepartmentDto.name)
+
+        userRepository.findByEmailOrThrow(emailAddress)
+
+        val firedepartment = firedepartmentMapper.toFiredepartmentEntity(firedepartmentDto)
+
+        val address = addressService.findOrCreateAddress(firedepartmentDto.address)
+        firedepartment.address = addressRepository.save(address)
+
+        return firedepartmentMapper.toFiredepartmentDto(firedepartmentRepository.save(firedepartment))
     }
 
     override fun getFiredepartmentsShort(
@@ -29,11 +44,29 @@ class FiredepartmentServiceImplementation(
         size: Int,
         sort: String
     ): PageResponse<FiredepartmentDtos.FiredepartmentResponseShort> {
-        TODO("Not yet implemented")
+
+        val pageable = PaginationUtils.toPageRequest(
+            page = page,
+            size = size,
+            sort = sort,
+            allowedFields = FIREDEPARTMENT_ALLOWED_SORTS,
+            defaultSort = "name,asc",
+            maxSize = 200
+        )
+
+        return firedepartmentRepository.findAll(pageable).map(firedepartmentMapper::toFiredepartmentDtoShort)
+            .toPageResponse()
     }
 
     override fun getFiredepartment(emailAddress: String): FiredepartmentDtos.FiredepartmentResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartment = firefighter.requireFiredepartment()
+
+        return firedepartmentMapper.toFiredepartmentDto(firedepartment)
     }
 
     override fun updateFiredepartment(
@@ -41,7 +74,16 @@ class FiredepartmentServiceImplementation(
         firedepartmentId: Int,
         firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch
     ): FiredepartmentDtos.FiredepartmentResponse {
-        TODO("Not yet implemented")
+
+        firedepartmentRepository.assertNotExistsByName(firedepartmentDto.name!!)
+
+        userRepository.findByEmailOrThrow(emailAddress)
+
+        val firedepartment = firedepartmentRepository.findByIdOrThrow(firedepartmentId)
+
+        firedepartmentMapper.patchFiredepartment(firedepartmentDto, firedepartment)
+
+        return firedepartmentMapper.toFiredepartmentDto(firedepartmentRepository.save(firedepartment))
     }
 
     private val FIREDEPARTMENT_ALLOWED_SORTS = setOf(

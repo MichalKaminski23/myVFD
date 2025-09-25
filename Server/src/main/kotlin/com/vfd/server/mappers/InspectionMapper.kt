@@ -7,6 +7,7 @@ import org.mapstruct.*
 @Mapper(componentModel = "spring", uses = [AssetMapper::class, InspectionTypeMapper::class])
 interface InspectionMapper {
 
+    @Mapping(target = "assetId", source = "asset.assetId")
     fun toInspectionDto(inspection: Inspection): InspectionDtos.InspectionResponse
 
     @Mapping(target = "inspectionId", ignore = true)

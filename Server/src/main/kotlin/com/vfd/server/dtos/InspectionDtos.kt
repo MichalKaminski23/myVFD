@@ -47,7 +47,7 @@ object InspectionDtos {
         val inspectionId: Int,
 
         @field:Schema(description = "Asset that was inspected")
-        val asset: AssetDtos.AssetResponse,
+        val assetId: Int,
 
         @field:Schema(description = "Type of the inspection")
         val inspectionType: InspectionTypeDtos.InspectionTypeResponse,

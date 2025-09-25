@@ -54,7 +54,7 @@ class FirefighterController(
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firstName,asc) e.g. `firefighterRole,desc`
+            - `sort` (default: user.firstName,asc) e.g. `firefighterRole,desc`
         """
     )
     @ApiResponses(
@@ -72,7 +72,7 @@ class FirefighterController(
     fun getFirefighters(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "firstName,asc") sort: String,
+        @RequestParam(defaultValue = "user.firstName,asc") sort: String,
         @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<FirefighterDtos.FirefighterResponse> =
         firefighterService.getFirefighters(page, size, sort, principal.username)
@@ -131,7 +131,7 @@ class FirefighterController(
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firstName,asc) e.g. `firefighterRole,desc`
+            - `sort` (default: user.firstName,asc) e.g. `firefighterRole,desc`
         """
     )
     @ApiResponses(
@@ -149,7 +149,7 @@ class FirefighterController(
     fun getPendingFirefighters(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "firstName,asc") sort: String,
+        @RequestParam(defaultValue = "user.firstName,asc") sort: String,
         @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<FirefighterDtos.FirefighterResponse> {
         return firefighterService.getPendingFirefighters(page, size, sort, principal.username)

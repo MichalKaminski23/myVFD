@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
     println("Server is running...")
 }
 
-// TODO: Extension functions dla repozytoriów, dokończyć serwisy lub ewentualnie poprawić stare, frontend zrobić żeby działał jak dawniej
+// TODO: dokończyć serwisy lub ewentualnie poprawić stare, frontend zrobić żeby działał jak dawniej
 
 // Miękkie usuwanie tylko
 // Pod koniec projektu dodać wszelkie zabezpieczenia dla endpointów oraz zmienić bazę na postgresa

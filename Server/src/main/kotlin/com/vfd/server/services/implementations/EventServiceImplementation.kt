@@ -4,11 +4,10 @@ import com.vfd.server.dtos.EventDtos
 import com.vfd.server.mappers.EventMapper
 import com.vfd.server.repositories.EventRepository
 import com.vfd.server.repositories.FiredepartmentRepository
+import com.vfd.server.repositories.FirefighterRepository
+import com.vfd.server.repositories.UserRepository
 import com.vfd.server.services.EventService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.findByIdOrThrow
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,11 +15,24 @@ import org.springframework.transaction.annotation.Transactional
 class EventServiceImplementation(
     private val eventRepository: EventRepository,
     private val eventMapper: EventMapper,
-    private val firedepartmentRepository: FiredepartmentRepository
+    private val firedepartmentRepository: FiredepartmentRepository,
+    private val userRepository: UserRepository,
+    private val firefighterRepository: FirefighterRepository
 ) : EventService {
 
     override fun createEvent(emailAddress: String, eventDto: EventDtos.EventCreate): EventDtos.EventResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartment = firefighter.requireFiredepartment()
+
+        val event = eventMapper.toEventEntity(eventDto).apply {
+            this.firedepartment = firedepartment
+        }
+
+        return eventMapper.toEventDto(eventRepository.save(event))
     }
 
     override fun getEvents(
@@ -29,7 +41,24 @@ class EventServiceImplementation(
         sort: String,
         emailAddress: String
     ): PageResponse<EventDtos.EventResponse> {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val pageable = PaginationUtils.toPageRequest(
+            page,
+            size,
+            sort,
+            EVENT_ALLOWED_SORTS,
+            "eventDate,asc",
+            200
+        )
+
+        return eventRepository.findAllByFiredepartmentFiredepartmentId(firedepartmentId, pageable)
+            .map(eventMapper::toEventDto).toPageResponse()
     }
 
     override fun updateEvent(
@@ -37,7 +66,20 @@ class EventServiceImplementation(
         eventId: Int,
         eventDto: EventDtos.EventPatch
     ): EventDtos.EventResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val event = eventRepository.findByIdOrThrow(eventId)
+
+        event.requireSameFiredepartment(firedepartmentId)
+
+        eventMapper.patchEvent(eventDto, event)
+
+        return eventMapper.toEventDto(eventRepository.save(event))
     }
 
     private val EVENT_ALLOWED_SORTS = setOf(

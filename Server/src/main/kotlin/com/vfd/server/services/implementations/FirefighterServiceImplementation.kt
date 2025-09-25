@@ -1,20 +1,14 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FirefighterDtos
-import com.vfd.server.entities.Firefighter
 import com.vfd.server.entities.FirefighterRole
 import com.vfd.server.entities.FirefighterStatus
-import com.vfd.server.exceptions.ResourceConflictException
-import com.vfd.server.exceptions.ResourceNotFoundException
 import com.vfd.server.mappers.FirefighterMapper
 import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.repositories.FirefighterRepository
 import com.vfd.server.repositories.UserRepository
 import com.vfd.server.services.FirefighterService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.findByEmailOrThrow
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,7 +24,29 @@ class FirefighterServiceImplementation(
         emailAddress: String,
         firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse {
-        TODO("Not yet implemented")
+
+        val userModerator = userRepository.findByEmailOrThrow(emailAddress)
+
+        firefighterRepository.findByIdOrThrow(userModerator.userId!!)
+
+
+        val userCreated = userRepository.findByIdOrThrow(firefighterDto.userId)
+
+        firefighterRepository.assertNotExistsByUserId(userCreated.userId!!)
+
+
+        val firedepartment = firedepartmentRepository.findByIdOrThrow(firefighterDto.firedepartmentId)
+
+        val firefighter = firefighterMapper.toFirefighterEntity(firefighterDto)
+
+        firefighter.user = userCreated
+        firefighter.firedepartment = firedepartment
+        firefighter.firefighterRole = FirefighterRole.USER
+        firefighter.status = FirefighterStatus.PENDING
+
+        return firefighterMapper.toFirefighterDto(
+            firefighterRepository.save(firefighter)
+        )
     }
 
     override fun getFirefighters(
@@ -39,7 +55,26 @@ class FirefighterServiceImplementation(
         sort: String,
         emailAddress: String
     ): PageResponse<FirefighterDtos.FirefighterResponse> {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val pageable = PaginationUtils.toPageRequest(
+            page,
+            size,
+            sort,
+            FIREFIGHTER_ALLOWED_SORTS,
+            "user.firstName,asc",
+            200
+        )
+
+        return firefighterRepository
+            .findAllByFiredepartmentFiredepartmentIdAndStatus(firedepartmentId, FirefighterStatus.ACTIVE, pageable)
+            .map(firefighterMapper::toFirefighterDto)
+            .toPageResponse()
     }
 
     override fun updateFirefighter(
@@ -47,7 +82,26 @@ class FirefighterServiceImplementation(
         firefighterId: Int,
         firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse {
-        TODO("Not yet implemented")
+
+        val userModerator = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighterModerator = firefighterRepository.findByIdOrThrow(userModerator.userId!!)
+
+
+        val userUpdated = userRepository.findByIdOrThrow(firefighterId)
+
+        val firefighterUpdated = firefighterRepository.findByIdOrThrow(userUpdated.userId!!)
+
+
+        val firedepartmentId = firefighterModerator.requireFiredepartmentId()
+
+        firefighterUpdated.requireSameFiredepartment(firedepartmentId)
+
+        firefighterMapper.patchFirefighter(firefighterDto, firefighterUpdated)
+
+        return firefighterMapper.toFirefighterDto(
+            firefighterRepository.save(firefighterUpdated)
+        )
     }
 
     @Transactional(readOnly = true)
@@ -55,8 +109,7 @@ class FirefighterServiceImplementation(
 
         val user = userRepository.findByEmailOrThrow(emailAddress)
 
-        val firefighter = firefighterRepository.findById(user.userId!!)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "id", user.userId!!) }
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
 
         return firefighterMapper.toFirefighterDto(firefighter)
     }
@@ -67,49 +120,32 @@ class FirefighterServiceImplementation(
         sort: String,
         emailAddress: String
     ): PageResponse<FirefighterDtos.FirefighterResponse> {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val pageable = PaginationUtils.toPageRequest(
+            page,
+            size,
+            sort,
+            FIREFIGHTER_ALLOWED_SORTS,
+            "user.firstName,asc",
+            200
+        )
+
+        return firefighterRepository
+            .findAllByFiredepartmentFiredepartmentIdAndStatus(firedepartmentId, FirefighterStatus.PENDING, pageable)
+            .map(firefighterMapper::toFirefighterDto)
+            .toPageResponse()
     }
-
-//    @Transactional(readOnly = true)
-//    override fun getPendingFirefighters(emailAddress: String): List<FirefighterDtos.FirefighterResponse> {
-//
-//        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
-//            ?: throw ResourceNotFoundException("User", "email", emailAddress)
-//
-//        val firefighter = firefighterRepository.findById(user.userId!!)
-//            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
-//
-//        return firefighterRepository
-//            .findAllByFiredepartmentFiredepartmentIdAndStatus(
-//                firefighter.firedepartment!!.firedepartmentId!!,
-//                FirefighterStatus.PENDING
-//            )
-//            .map(firefighterMapper::toFirefighterDto)
-//    }
-
-//    @Transactional(readOnly = true)
-//    override fun getFirefightersFromLoggedUser(
-//        emailAddress: String
-//    ): List<FirefighterDtos.FirefighterResponse> {
-//
-//        val user = userRepository.findByEmailAddressIgnoreCase(emailAddress)
-//            ?: throw ResourceNotFoundException("User", "email", emailAddress)
-//
-//        val firefighter = firefighterRepository.findById(user.userId!!)
-//            .orElseThrow { ResourceNotFoundException("Firefighter", "userId", user.userId!!) }
-//
-//        return firefighterRepository
-//            .findAllByFiredepartmentFiredepartmentIdAndStatus(
-//                firefighter.firedepartment!!.firedepartmentId!!,
-//                FirefighterStatus.ACTIVE
-//            )
-//            .map(firefighterMapper::toFirefighterDto)
-//    }
 
     private val FIREFIGHTER_ALLOWED_SORTS = setOf(
         "firefighterId",
-        "firstName",
-        "lastName",
+        "user.firstName",
+        "user.lastName",
         "firefighterRole",
         "user.userId",
         "firedepartment.firedepartmentId"
@@ -120,17 +156,13 @@ class FirefighterServiceImplementation(
         firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse {
 
-        val user = userRepository.findById(firefighterDto.userId)
-            .orElseThrow { ResourceNotFoundException("User", "id", firefighterDto.userId) }
+        val user = userRepository.findByIdOrThrow(firefighterDto.userId)
 
-        if (firefighterRepository.existsById(firefighterDto.userId)) {
-            throw ResourceConflictException("Firefighter", "id", firefighterDto.userId)
-        }
+        firefighterRepository.assertNotExistsByUserId(user.userId!!)
 
-        val firedepartment = firedepartmentRepository.findById(firefighterDto.firedepartmentId)
-            .orElseThrow { ResourceNotFoundException("Firedepartment", "id", firefighterDto.firedepartmentId) }
+        val firedepartment = firedepartmentRepository.findByIdOrThrow(firefighterDto.firedepartmentId)
 
-        val firefighter: Firefighter = firefighterMapper.toFirefighterEntity(firefighterDto)
+        val firefighter = firefighterMapper.toFirefighterEntity(firefighterDto)
 
         firefighter.user = user
         firefighter.firedepartment = firedepartment
@@ -167,8 +199,7 @@ class FirefighterServiceImplementation(
         firefighterId: Int
     ): FirefighterDtos.FirefighterResponse {
 
-        val firefighter = firefighterRepository.findById(firefighterId)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "id", firefighterId) }
+        val firefighter = firefighterRepository.findByIdOrThrow(firefighterId)
 
         return firefighterMapper.toFirefighterDto(firefighter)
     }
@@ -179,8 +210,7 @@ class FirefighterServiceImplementation(
         firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse {
 
-        val firefighter = firefighterRepository.findById(firefighterId)
-            .orElseThrow { ResourceNotFoundException("Firefighter", "id", firefighterId) }
+        val firefighter = firefighterRepository.findByIdOrThrow(firefighterId)
 
         firefighterMapper.patchFirefighter(firefighterDto, firefighter)
 

@@ -19,8 +19,8 @@ VALUES ('ResOpe', 'Rescue operation'),
        ('MainWor', 'Maintenance work');
 
 INSERT INTO Firefighter_Activity_Types (firefighter_activity_type, name)
-VALUES ('Train', 'Training'),
-       ('Cert', 'Certification'),
+VALUES ('TRAIN', 'Training'),
+       ('CERT', 'Certification'),
        ('FAC', 'First aid course');
 
 INSERT INTO Users (first_name, last_name, address_id, phone_number, email_address, created_at, logged_at, is_active,
@@ -46,9 +46,9 @@ VALUES (1, 1, 'PRESIDENT', 'ACTIVE'),
 
 INSERT INTO Firefighter_Activities (firefighter_id, firefighter_activity_type, activity_date, expiration_date,
                                     description)
-VALUES (1, 'Train', '2025-07-01 09:00:00', '2026-07-01 09:00:00', 'Basic firefighter training'),
+VALUES (1, 'TRAIN', '2025-07-01 09:00:00', '2026-07-01 09:00:00', 'Basic firefighter training'),
        (2, 'FAC', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'First aid course'),
-       (3, 'Cert', '2025-05-15 08:00:00', '2027-05-15 08:00:00', 'Advanced Certification');
+       (3, 'CERT', '2025-05-15 08:00:00', '2027-05-15 08:00:00', 'Advanced Certification');
 
 INSERT INTO Assets (firedepartment_id, name, asset_type, description)
 VALUES (1, 'Mutant', 'WaterPump', 'Mega pump'),

@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
@@ -41,7 +40,7 @@ class FiredepartmentController(
         ]
     )
     @PostMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     fun createFiredepartment(
         @AuthenticationPrincipal principal: UserDetails,
@@ -57,7 +56,7 @@ class FiredepartmentController(
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firedepartmentId,asc) e.g. `firedepartmentId,asc`
+            - `sort` (default: name,asc) e.g. `name,asc`
         """
     )
     @ApiResponses(
@@ -112,7 +111,8 @@ class FiredepartmentController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PatchMapping("/my/{firedepartmentId}")
+    @PatchMapping("/admin/{firedepartmentId}")
+    //@PreAuthorize("hasRole('ADMIN')")
     fun updateFiredepartment(
         @AuthenticationPrincipal principal: UserDetails,
         @PathVariable firedepartmentId: Int,

@@ -48,7 +48,7 @@ class EventController(
         eventService.createEvent(principal.username, eventDto)
 
     @Operation(
-        summary = "List events (paged)",
+        summary = "Get events from my firedepartment",
         description = """
             Retrieves all events associated with the firedepartment of the currently authenticated user.
 
