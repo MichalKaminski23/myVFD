@@ -43,37 +43,6 @@ object AddressDtos {
         val apartNumber: String? = null
     )
 
-//    @Schema(description = "DTO used for partially updating an existing address")
-//    data class AddressPatch(
-//        @field:Size(max = 64, message = "Country name must be at most 64 characters.")
-//        @field:Schema(description = "Country name", example = "Poland")
-//        val country: String? = null,
-//
-//        @field:Size(max = 64, message = "Voivodeship name must be at most 64 characters.")
-//        @field:Schema(description = "Voivodeship or province", example = "Silesian")
-//        val voivodeship: String? = null,
-//
-//        @field:Size(max = 64, message = "City name must be at most 64 characters.")
-//        @field:Schema(description = "City name", example = "Strzyzowice")
-//        val city: String? = null,
-//
-//        @field:Size(max = 16, message = "Postal code must be at most 16 characters.")
-//        @field:Schema(description = "Postal code", example = "69-420")
-//        val postalCode: String? = null,
-//
-//        @field:Size(max = 64, message = "Street name must be at most 64 characters.")
-//        @field:Schema(description = "Street name", example = "Belna")
-//        val street: String? = null,
-//
-//        @field:Size(max = 8, message = "House number must be at most 8 characters.")
-//        @field:Schema(description = "House number", example = "1")
-//        val houseNumber: String? = null,
-//
-//        @field:Size(max = 8, message = "Apartment number must be at most 8 characters.")
-//        @field:Schema(description = "Apartment number", example = "7")
-//        val apartNumber: String? = null
-//    )
-
     @Schema(description = "DTO used for returning address information")
     data class AddressResponse(
         @field:Schema(description = "Unique identifier of the address", example = "5")

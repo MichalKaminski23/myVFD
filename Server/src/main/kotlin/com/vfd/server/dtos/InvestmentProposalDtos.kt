@@ -1,6 +1,5 @@
 package com.vfd.server.dtos
 
-import com.vfd.server.entities.InvestmentProposalStatus
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -20,6 +19,10 @@ object InvestmentProposalDtos {
         )
         val description: String,
 
+        @field:NotNull(message = "Submission date must not be null.")
+        @field:Schema(description = "Date of the submission", example = "2025-08-03T15:00:00")
+        val submissionDate: LocalDateTime,
+
         @field:NotNull(message = "Amount must not be null.")
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
         val amount: BigDecimal
@@ -37,9 +40,10 @@ object InvestmentProposalDtos {
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
         val amount: BigDecimal? = null,
 
+        @Schema(allowableValues = ["PENDING", "APPROVED", "REJECTED", "CANCELLED"])
         @field:NotNull(message = "Status must not be null.")
         @field:Schema(description = "Status of the proposal", example = "APPROVED")
-        val investmentProposalStatus: InvestmentProposalStatus? = null
+        val status: String? = null
     )
 
     @Schema(description = "DTO used for returning investment proposal information")
@@ -59,8 +63,9 @@ object InvestmentProposalDtos {
         @field:Schema(description = "Date when the proposal was submitted", example = "2025-08-03T14:30:00")
         val submissionDate: LocalDateTime,
 
+        @Schema(allowableValues = ["PENDING", "APPROVED", "REJECTED", "CANCELLED"])
         @field:Schema(description = "Status of the proposal", example = "APPROVED")
-        val status: InvestmentProposalStatus,
+        val status: String,
 
         @field:Schema(description = "Total number of votes for this proposal", example = "7")
         val votesCount: Int
@@ -79,6 +84,10 @@ object InvestmentProposalDtos {
             example = "Purchase of a new thermal imaging camera"
         )
         val description: String,
+
+        @field:NotNull(message = "Submission date must not be null.")
+        @field:Schema(description = "Date of the submission", example = "2025-08-03T15:00:00")
+        val submissionDate: LocalDateTime,
 
         @field:NotNull(message = "Amount must not be null.")
         @field:Schema(description = "Proposed investment amount", example = "24999.99")

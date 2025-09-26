@@ -1,14 +1,15 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.InvestmentProposalDtos
+import com.vfd.server.entities.InvestmentProposalStatus
+import com.vfd.server.exceptions.InvalidStatusException
 import com.vfd.server.mappers.InvestmentProposalMapper
 import com.vfd.server.repositories.FiredepartmentRepository
+import com.vfd.server.repositories.FirefighterRepository
 import com.vfd.server.repositories.InvestmentProposalRepository
+import com.vfd.server.repositories.UserRepository
 import com.vfd.server.services.InvestmentProposalService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.findByIdOrThrow
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,14 +17,42 @@ import org.springframework.transaction.annotation.Transactional
 class InvestmentProposalServiceImplementation(
     private val investmentProposalRepository: InvestmentProposalRepository,
     private val investmentProposalMapper: InvestmentProposalMapper,
-    private val firedepartmentRepository: FiredepartmentRepository
+    private val firedepartmentRepository: FiredepartmentRepository,
+    private val userRepository: UserRepository,
+    private val firefighterRepository: FirefighterRepository
 ) : InvestmentProposalService {
+
+    fun validateStatus(status: String?) {
+        try {
+            InvestmentProposalStatus.valueOf(status!!)
+        } catch (exception: IllegalArgumentException) {
+            throw InvalidStatusException(
+                "Invalid status: ${status!!}. Allowed: ${
+                    InvestmentProposalStatus.entries.joinToString()
+                }"
+            )
+        }
+    }
 
     override fun createInvestmentProposal(
         emailAddress: String,
         investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreate
     ): InvestmentProposalDtos.InvestmentProposalResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartment = firefighter.requireFiredepartment()
+
+        val investmentProposal = investmentProposalMapper.toInvestmentProposalEntity(investmentProposalDto).apply {
+            this.firedepartment = firedepartment
+            this.status = InvestmentProposalStatus.PENDING
+        }
+
+        return investmentProposalMapper.toInvestmentProposalDto(
+            investmentProposalRepository.save(investmentProposal)
+        )
     }
 
     override fun getInvestmentProposals(
@@ -32,7 +61,24 @@ class InvestmentProposalServiceImplementation(
         sort: String,
         emailAddress: String
     ): PageResponse<InvestmentProposalDtos.InvestmentProposalResponse> {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val pageable = PaginationUtils.toPageRequest(
+            page = page,
+            size = size,
+            sort = sort,
+            allowedFields = INVESTMENT_PROPOSAL_ALLOWED_SORTS,
+            defaultSort = "submissionDate,asc",
+            maxSize = 200
+        )
+
+        return investmentProposalRepository.findAllByFiredepartmentFiredepartmentId(firedepartmentId, pageable)
+            .map(investmentProposalMapper::toInvestmentProposalDto).toPageResponse()
     }
 
     override fun updateInvestmentProposal(
@@ -40,7 +86,24 @@ class InvestmentProposalServiceImplementation(
         investmentProposalId: Int,
         investmentProposalDto: InvestmentProposalDtos.InvestmentProposalPatch
     ): InvestmentProposalDtos.InvestmentProposalResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val investmentProposal = investmentProposalRepository.findByIdOrThrow(investmentProposalId)
+
+        investmentProposal.requireSameFiredepartment(firedepartmentId)
+
+        validateStatus(investmentProposalDto.status)
+
+        investmentProposalMapper.patchInvestmentProposal(investmentProposalDto, investmentProposal)
+
+        return investmentProposalMapper.toInvestmentProposalDto(
+            investmentProposalRepository.save(investmentProposal)
+        )
     }
 
     private val INVESTMENT_PROPOSAL_ALLOWED_SORTS = setOf(
@@ -59,6 +122,7 @@ class InvestmentProposalServiceImplementation(
         val firedepartment = firedepartmentRepository.findByIdOrThrow(investmentProposalDto.firedepartmentId)
 
         investmentProposal.firedepartment = firedepartment
+        investmentProposal.status = InvestmentProposalStatus.PENDING
 
         return investmentProposalMapper.toInvestmentProposalDto(
             investmentProposalRepository.save(investmentProposal)

@@ -76,6 +76,17 @@ class GlobalExceptionHandler {
         return ResponseEntity(error, HttpStatus.FORBIDDEN)
     }
 
+    @ExceptionHandler(InvalidStatusException::class)
+    fun handleInvalidStatus(exception: InvalidStatusException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = "Bad Request",
+            message = exception.message ?: "Invalid value",
+            path = request.getDescription(false).replace("uri=", "")
+        )
+        return ResponseEntity(error, HttpStatus.FORBIDDEN)
+    }
+
     @ExceptionHandler(Exception::class)
     fun handleAll(exception: Exception, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(

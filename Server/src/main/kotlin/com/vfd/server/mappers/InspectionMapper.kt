@@ -8,6 +8,7 @@ import org.mapstruct.*
 interface InspectionMapper {
 
     @Mapping(target = "assetId", source = "asset.assetId")
+    @Mapping(target = "inspectionTypeName", source = "inspectionType.name")
     fun toInspectionDto(inspection: Inspection): InspectionDtos.InspectionResponse
 
     @Mapping(target = "inspectionId", ignore = true)

@@ -32,13 +32,17 @@ object OperationDtos {
         val description: String,
 
         @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[12, 15, 18]")
-        val participantIds: List<Int> = emptyList()
+        val participantIds: MutableSet<Int> = linkedSetOf()
     )
 
     @Schema(description = "DTO used for partially updating an operation")
     data class OperationPatch(
         @field:Schema(description = "Type code of the operation", example = "Fire")
         val operationType: String? = null,
+
+        @field:Valid
+        @field:Schema(description = "Firedepartment's address")
+        val address: AddressDtos.AddressCreate? = null,
 
         @field:Size(max = 512, message = "Description must be at most 512 characters.")
         @field:Schema(
@@ -48,7 +52,7 @@ object OperationDtos {
         val description: String? = null,
 
         @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[12, 15, 18]")
-        val participantIds: List<Int>? = null
+        val participantIds: MutableSet<Int> = linkedSetOf()
     )
 
     @Schema(description = "DTO used for returning operation information")
@@ -57,7 +61,7 @@ object OperationDtos {
         val operationId: Int,
 
         @field:Schema(description = "Fire department that executed the operation")
-        val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
+        val firedepartmentId: Int,
 
         @field:Schema(description = "Address where the operation took place")
         val address: AddressDtos.AddressResponse,
@@ -75,7 +79,7 @@ object OperationDtos {
         val description: String,
 
         @field:Schema(description = "List of firefighters who participated in the operation")
-        val participants: List<FirefighterDtos.FirefighterResponse>
+        val participants: List<FirefighterDtos.FirefighterResponseShort>
     )
 
     @Schema(description = "DTO used for creating a new emergency operation for development purposes")
@@ -105,6 +109,6 @@ object OperationDtos {
         val description: String,
 
         @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[12, 15, 18]")
-        val participantIds: List<Int> = emptyList()
+        val participantIds: MutableSet<Int> = linkedSetOf()
     )
 }

@@ -3,15 +3,10 @@ package com.vfd.server.services.implementations
 import com.vfd.server.dtos.OperationDtos
 import com.vfd.server.mappers.AddressMapper
 import com.vfd.server.mappers.OperationMapper
-import com.vfd.server.repositories.AddressRepository
-import com.vfd.server.repositories.FiredepartmentRepository
-import com.vfd.server.repositories.OperationRepository
-import com.vfd.server.repositories.OperationTypeRepository
+import com.vfd.server.repositories.*
+import com.vfd.server.services.AddressService
 import com.vfd.server.services.OperationService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.findByIdOrThrow
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -22,14 +17,39 @@ class OperationServiceImplementation(
     private val firedepartmentRepository: FiredepartmentRepository,
     private val addressRepository: AddressRepository,
     private val addressMapper: AddressMapper,
-    private val operationTypeRepository: OperationTypeRepository
+    private val operationTypeRepository: OperationTypeRepository,
+    private val userRepository: UserRepository,
+    private val firefighterRepository: FirefighterRepository,
+    private val addressService: AddressService,
 ) : OperationService {
 
     override fun createOperation(
         emailAddress: String,
         operationDto: OperationDtos.OperationCreate
     ): OperationDtos.OperationResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartment = firefighter.requireFiredepartment()
+
+        val operationType = operationTypeRepository.findByIdOrThrow(operationDto.operationType)
+
+        val address = addressService.findOrCreateAddress(operationDto.address)
+
+        val participants = firefighterRepository.findAllById(operationDto.participantIds)
+
+        participants.forEach { it.requireSameFiredepartment(firedepartment.firedepartmentId!!) }
+
+        val operation = operationMapper.toOperationEntity(operationDto).apply {
+            this.firedepartment = firedepartment
+            this.operationType = operationType
+            this.address = addressRepository.save(address)
+            this.participants = participants.toMutableSet()
+        }
+
+        return operationMapper.toOperationDto(operationRepository.save(operation))
     }
 
     override fun getOperations(
@@ -38,7 +58,26 @@ class OperationServiceImplementation(
         sort: String,
         emailAddress: String
     ): PageResponse<OperationDtos.OperationResponse> {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val pageable = PaginationUtils.toPageRequest(
+            page,
+            size,
+            sort,
+            OPERATION_ALLOWED_SORTS,
+            "operationDate,desc",
+            200
+        )
+
+        return operationRepository
+            .findAllByFiredepartmentFiredepartmentId(firedepartmentId, pageable)
+            .map(operationMapper::toOperationDto)
+            .toPageResponse()
     }
 
     override fun updateOperation(
@@ -46,7 +85,41 @@ class OperationServiceImplementation(
         operationId: Int,
         operationDto: OperationDtos.OperationPatch
     ): OperationDtos.OperationResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val operation = operationRepository.findByIdOrThrow(operationId)
+
+        operation.requireSameFiredepartment(firedepartmentId)
+
+        operationDto.participantIds.let { participantsIds ->
+            val participants = firefighterRepository.findAllById(participantsIds)
+            operation.participants = participants.toMutableSet()
+        }
+
+        operation.participants.forEach { it.requireSameFiredepartment(firedepartmentId) }
+
+        operationDto.address?.let { addressDto ->
+            val address = addressService.findOrCreateAddress(addressDto)
+            operation.address = address
+        }
+
+        operationMapper.patchOperation(operationDto, operation)
+
+        operationDto.operationType
+            ?.takeIf { it != operation.operationType?.operationType }
+            ?.let { code ->
+                val type = operationTypeRepository.findByIdOrThrow(code)
+                operation.operationType = type
+            }
+
+        return operationMapper.toOperationDto(
+            operationRepository.save(operation)
+        )
     }
 
     private val OPERATION_ALLOWED_SORTS = setOf(
@@ -70,6 +143,8 @@ class OperationServiceImplementation(
 
         val operationType = operationTypeRepository.findByIdOrThrow(operationDto.operationType)
         operation.operationType = operationType
+
+        operation.participants = firefighterRepository.findAllById(operationDto.participantIds).toMutableSet()
 
         return operationMapper.toOperationDto(
             operationRepository.save(operation)
@@ -113,6 +188,16 @@ class OperationServiceImplementation(
     ): OperationDtos.OperationResponse {
 
         val operation = operationRepository.findByIdOrThrow(operationId)
+
+        operationDto.participantIds.let { participantsIds ->
+            val participants = firefighterRepository.findAllById(participantsIds)
+            operation.participants = participants.toMutableSet()
+        }
+
+        operationDto.address?.let { addressDto ->
+            val address = addressService.findOrCreateAddress(addressDto)
+            operation.address = address
+        }
 
         operationMapper.patchOperation(operationDto, operation)
 

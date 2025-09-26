@@ -2,14 +2,9 @@ package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.InspectionDtos
 import com.vfd.server.mappers.InspectionMapper
-import com.vfd.server.repositories.AssetRepository
-import com.vfd.server.repositories.InspectionRepository
-import com.vfd.server.repositories.InspectionTypeRepository
+import com.vfd.server.repositories.*
 import com.vfd.server.services.InspectionService
-import com.vfd.server.shared.PageResponse
-import com.vfd.server.shared.PaginationUtils
-import com.vfd.server.shared.findByIdOrThrow
-import com.vfd.server.shared.toPageResponse
+import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,14 +13,34 @@ class InspectionServiceImplementation(
     private val inspectionRepository: InspectionRepository,
     private val inspectionMapper: InspectionMapper,
     private val assetRepository: AssetRepository,
-    private val inspectionTypeRepository: InspectionTypeRepository
+    private val inspectionTypeRepository: InspectionTypeRepository,
+    private val userRepository: UserRepository,
+    private val firefighterRepository: FirefighterRepository
 ) : InspectionService {
 
     override fun createInspection(
         emailAddress: String,
         inspectionDto: InspectionDtos.InspectionCreate
     ): InspectionDtos.InspectionResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val asset = assetRepository.findByIdOrThrow(inspectionDto.assetId)
+
+        val inspectionType = inspectionTypeRepository.findByIdOrThrow(inspectionDto.inspectionType)
+
+        val inspection = inspectionMapper.toInspectionEntity(inspectionDto).apply {
+            this.asset = asset
+            this.inspectionType = inspectionType
+        }
+
+        inspection.requireSameFiredepartment(firedepartmentId)
+
+        return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
     }
 
     override fun getInspections(
@@ -34,7 +49,25 @@ class InspectionServiceImplementation(
         sort: String,
         emailAddress: String
     ): PageResponse<InspectionDtos.InspectionResponse> {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val pageable = PaginationUtils.toPageRequest(
+            page = page,
+            size = size,
+            sort = sort,
+            allowedFields = INSPECTION_ALLOWED_SORTS,
+            defaultSort = "expirationDate,asc",
+            maxSize = 200
+        )
+
+        return inspectionRepository.findAllByAssetFiredepartmentFiredepartmentId(firedepartmentId, pageable)
+            .map(inspectionMapper::toInspectionDto)
+            .toPageResponse()
     }
 
     override fun updateInspection(
@@ -42,7 +75,28 @@ class InspectionServiceImplementation(
         inspectionId: Int,
         inspectionDto: InspectionDtos.InspectionPatch
     ): InspectionDtos.InspectionResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val inspection = inspectionRepository.findByIdOrThrow(inspectionId)
+
+        inspection.requireSameFiredepartment(firedepartmentId)
+
+        inspectionMapper.patchInspection(inspectionDto, inspection)
+
+        inspectionDto.inspectionType
+            ?.takeIf { it != inspection.inspectionType?.inspectionType }
+            ?.let { code ->
+                val inspectionType = inspectionTypeRepository.findByIdOrThrow(code)
+                inspection.inspectionType = inspectionType
+            }
+
+        return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
+
     }
 
     private val INSPECTION_ALLOWED_SORTS = setOf(

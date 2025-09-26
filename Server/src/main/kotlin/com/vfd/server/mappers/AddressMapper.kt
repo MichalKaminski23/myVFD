@@ -12,7 +12,4 @@ interface AddressMapper {
 
     @Mapping(target = "addressId", ignore = true)
     fun toAddressEntity(addressDto: AddressDtos.AddressCreate): Address
-
-//    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-//    fun patchAddress(addressDto: AddressDtos.AddressPatch, @MappingTarget address: Address)
 }

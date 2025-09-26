@@ -3,6 +3,7 @@ package com.vfd.server.services.implementations
 import com.vfd.server.dtos.FirefighterDtos
 import com.vfd.server.entities.FirefighterRole
 import com.vfd.server.entities.FirefighterStatus
+import com.vfd.server.exceptions.InvalidStatusException
 import com.vfd.server.mappers.FirefighterMapper
 import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.repositories.FirefighterRepository
@@ -19,6 +20,30 @@ class FirefighterServiceImplementation(
     private val userRepository: UserRepository,
     private val firedepartmentRepository: FiredepartmentRepository
 ) : FirefighterService {
+
+    fun validateStatus(status: String?) {
+        try {
+            FirefighterStatus.valueOf(status!!)
+        } catch (exception: IllegalArgumentException) {
+            throw InvalidStatusException(
+                "Invalid status: ${status!!}. Allowed: ${
+                    FirefighterStatus.entries.joinToString()
+                }"
+            )
+        }
+    }
+
+    fun validateRole(role: String?) {
+        try {
+            FirefighterRole.valueOf(role!!)
+        } catch (exception: IllegalArgumentException) {
+            throw InvalidStatusException(
+                "Invalid role: ${role!!}. Allowed: ${
+                    FirefighterRole.entries.joinToString()
+                }"
+            )
+        }
+    }
 
     override fun createFirefighter(
         emailAddress: String,
@@ -41,7 +66,7 @@ class FirefighterServiceImplementation(
 
         firefighter.user = userCreated
         firefighter.firedepartment = firedepartment
-        firefighter.firefighterRole = FirefighterRole.USER
+        firefighter.role = FirefighterRole.USER
         firefighter.status = FirefighterStatus.PENDING
 
         return firefighterMapper.toFirefighterDto(
@@ -96,6 +121,9 @@ class FirefighterServiceImplementation(
         val firedepartmentId = firefighterModerator.requireFiredepartmentId()
 
         firefighterUpdated.requireSameFiredepartment(firedepartmentId)
+
+        validateStatus(firefighterDto.status)
+        validateRole(firefighterDto.role)
 
         firefighterMapper.patchFirefighter(firefighterDto, firefighterUpdated)
 
@@ -166,7 +194,7 @@ class FirefighterServiceImplementation(
 
         firefighter.user = user
         firefighter.firedepartment = firedepartment
-        firefighter.firefighterRole = FirefighterRole.USER
+        firefighter.role = FirefighterRole.USER
         firefighter.status = FirefighterStatus.PENDING
 
         return firefighterMapper.toFirefighterDto(

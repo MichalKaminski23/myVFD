@@ -1,7 +1,5 @@
 package com.vfd.server.dtos
 
-import com.vfd.server.entities.FirefighterRole
-import com.vfd.server.entities.FirefighterStatus
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 
@@ -20,11 +18,13 @@ object FirefighterDtos {
 
     @Schema(description = "DTO used for partially updating a firefighter record")
     data class FirefighterPatch(
+        @Schema(allowableValues = ["ADMIN", "PRESIDENT", "MEMBER", "USER"])
         @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
-        val firefighterRole: FirefighterRole? = null,
+        val role: String? = null,
 
+        @Schema(allowableValues = ["PENDING", "ACTIVE", "REJECTED"])
         @field:Schema(description = "Status assigned to the firefighter", example = "PENDING")
-        val status: FirefighterStatus? = null
+        val status: String? = null
     )
 
     @Schema(description = "DTO used for returning firefighter information")
@@ -51,9 +51,24 @@ object FirefighterDtos {
         val firedepartmentName: String,
 
         @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
-        val firefighterRole: FirefighterRole,
+        val role: String,
 
         @field:Schema(description = "Status assigned to the firefighter", example = "PENDING")
-        val status: FirefighterStatus
+        val status: String
+    )
+
+    @Schema(description = "DTO used for returning firefighter information without personal details")
+    data class FirefighterResponseShort(
+        @field:Schema(description = "Unique identifier of the firefighter", example = "7")
+        val firefighterId: Int,
+
+        @field:Schema(description = "Name of the firefighter", example = "Arek")
+        val firstName: String,
+
+        @field:Schema(description = "Surname of the firefighter", example = "Niemusialski")
+        val lastName: String,
+
+        @field:Schema(description = "Email address of the firefighter", example = "Arek@test.com")
+        val emailAddress: String
     )
 }

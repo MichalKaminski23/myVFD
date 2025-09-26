@@ -50,7 +50,7 @@ object InspectionDtos {
         val assetId: Int,
 
         @field:Schema(description = "Type of the inspection")
-        val inspectionType: InspectionTypeDtos.InspectionTypeResponse,
+        val inspectionTypeName: String,
 
         @field:Schema(description = "Date when the inspection was performed", example = "2025-08-03T10:00:00")
         val inspectionDate: LocalDateTime,

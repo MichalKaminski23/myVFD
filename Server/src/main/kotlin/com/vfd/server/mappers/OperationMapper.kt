@@ -10,6 +10,7 @@ import org.mapstruct.*
 )
 interface OperationMapper {
 
+    @Mapping(target = "firedepartmentId", source = "firedepartment.firedepartmentId")
     @Mapping(target = "operationTypeName", source = "operationType.name")
     fun toOperationDto(operation: Operation): OperationDtos.OperationResponse
 
@@ -17,20 +18,17 @@ interface OperationMapper {
     @Mapping(target = "firedepartment", ignore = true)
     @Mapping(target = "operationType", ignore = true)
     @Mapping(target = "address", ignore = true)
-    @Mapping(target = "participants", ignore = true)
     fun toOperationEntity(operationDto: OperationDtos.OperationCreate): Operation
 
     @Mapping(target = "operationId", ignore = true)
     @Mapping(target = "firedepartment", ignore = true)
     @Mapping(target = "operationType", ignore = true)
     @Mapping(target = "address", ignore = true)
-    @Mapping(target = "participants", ignore = true)
     fun toOperationEntityDev(operationDto: OperationDtos.OperationCreateDev): Operation
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "firedepartment", ignore = true)
     @Mapping(target = "operationType", ignore = true)
     @Mapping(target = "address", ignore = true)
-    @Mapping(target = "participants", ignore = true)
     fun patchOperation(operationDto: OperationDtos.OperationPatch, @MappingTarget operation: Operation)
 }

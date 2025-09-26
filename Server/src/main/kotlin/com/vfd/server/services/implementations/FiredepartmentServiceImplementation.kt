@@ -81,6 +81,11 @@ class FiredepartmentServiceImplementation(
 
         val firedepartment = firedepartmentRepository.findByIdOrThrow(firedepartmentId)
 
+        firedepartmentDto.address?.let { addressDto ->
+            val address = addressService.findOrCreateAddress(addressDto)
+            firedepartment.address = address
+        }
+
         firedepartmentMapper.patchFiredepartment(firedepartmentDto, firedepartment)
 
         return firedepartmentMapper.toFiredepartmentDto(firedepartmentRepository.save(firedepartment))
@@ -145,6 +150,11 @@ class FiredepartmentServiceImplementation(
     ): FiredepartmentDtos.FiredepartmentResponse {
 
         val firedepartment = firedepartmentRepository.findByIdOrThrow(firedepartmentId)
+
+        firedepartmentDto.address?.let { addressDto ->
+            val address = addressService.findOrCreateAddress(addressDto)
+            firedepartment.address = address
+        }
 
         firedepartmentMapper.patchFiredepartment(firedepartmentDto, firedepartment)
 

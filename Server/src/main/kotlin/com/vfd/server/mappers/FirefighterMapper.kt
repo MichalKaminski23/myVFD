@@ -18,6 +18,13 @@ interface FirefighterMapper {
     @Mapping(target = "firedepartmentName", source = "firedepartment.name")
     fun toFirefighterDto(firefighter: Firefighter): FirefighterDtos.FirefighterResponse
 
+    @Mapping(target = "firstName", source = "user.firstName")
+    @Mapping(target = "lastName", source = "user.lastName")
+    @Mapping(target = "emailAddress", source = "user.emailAddress")
+    fun toFirefighterResponseShort(
+        firefighter: Firefighter
+    ): FirefighterDtos.FirefighterResponseShort
+
     @Mapping(target = "firefighterId", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "firedepartment", ignore = true)

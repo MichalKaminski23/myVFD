@@ -4,6 +4,7 @@ import com.vfd.server.dtos.UserDtos
 import com.vfd.server.exceptions.ResourceConflictException
 import com.vfd.server.mappers.UserMapper
 import com.vfd.server.repositories.UserRepository
+import com.vfd.server.services.AddressService
 import com.vfd.server.services.UserService
 import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
@@ -12,14 +13,43 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserServiceImplementation(
     private val userRepository: UserRepository,
-    private val userMapper: UserMapper
+    private val userMapper: UserMapper,
+    private val addressService: AddressService
 ) : UserService {
 
     override fun updateUser(
         emailAddress: String,
         userDto: UserDtos.UserPatch
     ): UserDtos.UserResponse {
-        TODO("Not yet implemented")
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        userDto.emailAddress?.trim()?.lowercase()?.let { newEmail ->
+            userRepository.findByEmailAddressIgnoreCase(newEmail)?.let { existing ->
+                if (existing.userId != user.userId) {
+                    throw ResourceConflictException("User", "email address", newEmail)
+                }
+            }
+        }
+
+        userDto.phoneNumber?.trim()?.let { newPhone ->
+            userRepository.findByPhoneNumber(newPhone)?.let { existing ->
+                if (existing.userId != user.userId) {
+                    throw ResourceConflictException("User", "phone number", newPhone)
+                }
+            }
+        }
+
+        userDto.address?.let { addressDto ->
+            val address = addressService.findOrCreateAddress(addressDto)
+            user.address = address
+        }
+
+        userMapper.patchUser(userDto, user)
+
+        return userMapper.toUserDto(
+            userRepository.save(user)
+        )
     }
 
     @Transactional(readOnly = true)
@@ -84,6 +114,11 @@ class UserServiceImplementation(
                     throw ResourceConflictException("User", "phone number", newPhone)
                 }
             }
+        }
+
+        userDto.address?.let { addressDto ->
+            val address = addressService.findOrCreateAddress(addressDto)
+            user.address = address
         }
 
         userMapper.patchUser(userDto, user)

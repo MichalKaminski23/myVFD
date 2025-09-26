@@ -21,7 +21,7 @@ class Firefighter {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 16)
-    var firefighterRole: FirefighterRole? = null
+    var role: FirefighterRole? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 16)

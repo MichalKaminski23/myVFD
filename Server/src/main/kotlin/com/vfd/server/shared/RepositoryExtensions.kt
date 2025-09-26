@@ -128,6 +128,12 @@ fun InspectionRepository.findByIdOrThrow(inspectionId: Int): Inspection =
         ResourceNotFoundException("Inspection", "id", inspectionId)
     }
 
+fun Inspection.requireSameFiredepartment(firedepartmentId: Int) {
+    if (this.asset?.firedepartment?.firedepartmentId != firedepartmentId) {
+        throw ForbiddenException("You cannot add/modify inspections of another firedepartment.")
+    }
+}
+
 fun InspectionTypeRepository.findByIdOrThrow(inspectionType: String): InspectionType =
     findById(inspectionType).orElseThrow {
         ResourceNotFoundException("Inspection's type", "code", inspectionType)
@@ -144,10 +150,22 @@ fun InvestmentProposalRepository.findByIdOrThrow(investmentProposalId: Int): Inv
         ResourceNotFoundException("Investment proposal", "id", investmentProposalId)
     }
 
+fun InvestmentProposal.requireSameFiredepartment(firedepartmentId: Int) {
+    if (this.firedepartment?.firedepartmentId != firedepartmentId) {
+        throw ForbiddenException("You cannot add/modify inspections of another firedepartment.")
+    }
+}
+
 fun OperationRepository.findByIdOrThrow(operationId: Int): Operation =
     findById(operationId).orElseThrow {
         ResourceNotFoundException("Operation", "id", operationId)
     }
+
+fun Operation.requireSameFiredepartment(firedepartmentId: Int) {
+    if (this.firedepartment?.firedepartmentId != firedepartmentId) {
+        throw ForbiddenException("You cannot modify operations of another firedepartment.")
+    }
+}
 
 fun OperationTypeRepository.findByIdOrThrow(operationType: String): OperationType =
     findById(operationType).orElseThrow {
