@@ -20,6 +20,7 @@ class FirefighterActivityServiceImplementation(
     private val userRepository: UserRepository
 ) : FirefighterActivityService {
 
+    @Transactional
     override fun createFirefighterActivity(
         emailAddress: String,
         firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityCreate
@@ -40,6 +41,7 @@ class FirefighterActivityServiceImplementation(
         return firefighterActivityMapper.toFirefighterActivityDto(firefighterActivityRepository.save(firefighterActivity))
     }
 
+    @Transactional(readOnly = true)
     override fun getFirefighterActivities(
         page: Int,
         size: Int,
@@ -69,6 +71,7 @@ class FirefighterActivityServiceImplementation(
             .map(firefighterActivityMapper::toFirefighterActivityDto).toPageResponse()
     }
 
+    @Transactional
     override fun updateFirefighterActivity(
         emailAddress: String,
         firefighterActivityId: Int,

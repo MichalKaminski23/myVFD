@@ -4,10 +4,7 @@ import com.vfd.server.dtos.InvestmentProposalDtos
 import com.vfd.server.entities.InvestmentProposalStatus
 import com.vfd.server.exceptions.InvalidStatusException
 import com.vfd.server.mappers.InvestmentProposalMapper
-import com.vfd.server.repositories.FiredepartmentRepository
-import com.vfd.server.repositories.FirefighterRepository
-import com.vfd.server.repositories.InvestmentProposalRepository
-import com.vfd.server.repositories.UserRepository
+import com.vfd.server.repositories.*
 import com.vfd.server.services.InvestmentProposalService
 import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
@@ -19,7 +16,8 @@ class InvestmentProposalServiceImplementation(
     private val investmentProposalMapper: InvestmentProposalMapper,
     private val firedepartmentRepository: FiredepartmentRepository,
     private val userRepository: UserRepository,
-    private val firefighterRepository: FirefighterRepository
+    private val firefighterRepository: FirefighterRepository,
+    private val voteRepository: VoteRepository
 ) : InvestmentProposalService {
 
     fun validateStatus(status: String?) {
@@ -34,6 +32,7 @@ class InvestmentProposalServiceImplementation(
         }
     }
 
+    @Transactional
     override fun createInvestmentProposal(
         emailAddress: String,
         investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreate
@@ -55,6 +54,7 @@ class InvestmentProposalServiceImplementation(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun getInvestmentProposals(
         page: Int,
         size: Int,
@@ -78,9 +78,28 @@ class InvestmentProposalServiceImplementation(
         )
 
         return investmentProposalRepository.findAllByFiredepartmentFiredepartmentId(firedepartmentId, pageable)
-            .map(investmentProposalMapper::toInvestmentProposalDto).toPageResponse()
+            .map { investmentProposal ->
+                val investmentProposalDto = investmentProposalMapper.toInvestmentProposalDto(investmentProposal)
+
+                val votesCount =
+                    voteRepository.countByInvestmentProposalInvestmentProposalId(investmentProposal.investmentProposalId!!)
+
+                val votesYesCount = voteRepository.countByInvestmentProposalInvestmentProposalIdAndVoteValue(
+                    investmentProposal.investmentProposalId!!,
+                    true
+                )
+
+                val myVote = voteRepository.findByInvestmentProposalInvestmentProposalIdAndFirefighterFirefighterId(
+                    investmentProposal.investmentProposalId!!,
+                    firefighter.firefighterId!!
+                )?.voteValue
+
+                investmentProposalDto.copy(votesCount = votesCount, votesYesCount = votesYesCount, myVote = myVote)
+            }
+            .toPageResponse()
     }
 
+    @Transactional(readOnly = true)
     override fun updateInvestmentProposal(
         emailAddress: String,
         investmentProposalId: Int,

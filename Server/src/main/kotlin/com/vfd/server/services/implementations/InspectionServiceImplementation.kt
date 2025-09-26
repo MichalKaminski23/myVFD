@@ -18,6 +18,7 @@ class InspectionServiceImplementation(
     private val firefighterRepository: FirefighterRepository
 ) : InspectionService {
 
+    @Transactional
     override fun createInspection(
         emailAddress: String,
         inspectionDto: InspectionDtos.InspectionCreate
@@ -43,6 +44,7 @@ class InspectionServiceImplementation(
         return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
     }
 
+    @Transactional(readOnly = true)
     override fun getInspections(
         page: Int,
         size: Int,
@@ -70,6 +72,7 @@ class InspectionServiceImplementation(
             .toPageResponse()
     }
 
+    @Transactional
     override fun updateInspection(
         emailAddress: String,
         inspectionId: Int,

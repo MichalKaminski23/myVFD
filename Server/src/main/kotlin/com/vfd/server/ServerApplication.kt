@@ -12,10 +12,7 @@ fun main(args: Array<String>) {
     println("Server is running...")
 }
 
-// TODO: dokończyć Vote, frontend zrobić żeby działał jak dawniej
-
-// Miękkie usuwanie tylko
-// Pod koniec projektu dodać wszelkie zabezpieczenia dla endpointów oraz zmienić bazę na postgresa
+// Pod koniec projektu dodać wszelkie zabezpieczenia dla endpointów oraz zmienić bazę na postgresa/azure
 
 // Moderator -> akceptuje wszelkie prośby od strażaków (i ich prośby utworzenia przez użytkowników (User - gotowe) (FirefighterActivity) a strażacy sami sobie je wpisują
 // Moderator -> dodaje sprzęt (Asset) i badania (Inspection), wydarzenia (Event), Działania (Operation) oraz propozycje zakupów (InvestmentProposal)

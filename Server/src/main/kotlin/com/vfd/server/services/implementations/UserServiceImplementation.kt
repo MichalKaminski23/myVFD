@@ -17,6 +17,7 @@ class UserServiceImplementation(
     private val addressService: AddressService
 ) : UserService {
 
+    @Transactional
     override fun updateUser(
         emailAddress: String,
         userDto: UserDtos.UserPatch

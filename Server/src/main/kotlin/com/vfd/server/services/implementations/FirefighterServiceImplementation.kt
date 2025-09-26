@@ -45,6 +45,7 @@ class FirefighterServiceImplementation(
         }
     }
 
+    @Transactional
     override fun createFirefighter(
         emailAddress: String,
         firefighterDto: FirefighterDtos.FirefighterCreate
@@ -74,6 +75,7 @@ class FirefighterServiceImplementation(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun getFirefighters(
         page: Int,
         size: Int,
@@ -102,6 +104,7 @@ class FirefighterServiceImplementation(
             .toPageResponse()
     }
 
+    @Transactional
     override fun updateFirefighter(
         emailAddress: String,
         firefighterId: Int,

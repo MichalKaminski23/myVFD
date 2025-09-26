@@ -14,6 +14,7 @@ interface VoteService {
         page: Int = 0,
         size: Int = 20,
         sort: String = "voteId,asc",
+        investmentProposalId: Int,
         emailAddress: String
     ): PageResponse<VoteDtos.VoteResponse>
 

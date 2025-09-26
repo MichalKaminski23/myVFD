@@ -55,6 +55,7 @@ class VoteController(
             - `page` (default: 0)
             - `size` (default: 20)
             - `sort` (default: voteId,asc) e.g. `voteId,asc`
+            - `investmentProposalId` (required): ID of the investment proposal to filter votes
         """
     )
     @ApiResponses(
@@ -71,9 +72,10 @@ class VoteController(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
         @RequestParam(defaultValue = "voteId,asc") sort: String,
+        @RequestParam investmentProposalId: Int,
         @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<VoteDtos.VoteResponse> =
-        voteService.getVotes(page, size, sort, principal.username)
+        voteService.getVotes(page, size, sort, investmentProposalId, principal.username)
 
     @Operation(
         summary = "Update vote from my firedepartment",

@@ -22,6 +22,7 @@ class FiredepartmentServiceImplementation(
     private val firefighterRepository: FirefighterRepository
 ) : FiredepartmentService {
 
+    @Transactional
     override fun createFiredepartment(
         emailAddress: String,
         firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
@@ -39,6 +40,7 @@ class FiredepartmentServiceImplementation(
         return firedepartmentMapper.toFiredepartmentDto(firedepartmentRepository.save(firedepartment))
     }
 
+    @Transactional(readOnly = true)
     override fun getFiredepartmentsShort(
         page: Int,
         size: Int,
@@ -58,6 +60,7 @@ class FiredepartmentServiceImplementation(
             .toPageResponse()
     }
 
+    @Transactional(readOnly = true)
     override fun getFiredepartment(emailAddress: String): FiredepartmentDtos.FiredepartmentResponse {
 
         val user = userRepository.findByEmailOrThrow(emailAddress)
@@ -69,6 +72,7 @@ class FiredepartmentServiceImplementation(
         return firedepartmentMapper.toFiredepartmentDto(firedepartment)
     }
 
+    @Transactional
     override fun updateFiredepartment(
         emailAddress: String,
         firedepartmentId: Int,

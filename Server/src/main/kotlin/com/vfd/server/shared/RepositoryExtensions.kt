@@ -152,7 +152,7 @@ fun InvestmentProposalRepository.findByIdOrThrow(investmentProposalId: Int): Inv
 
 fun InvestmentProposal.requireSameFiredepartment(firedepartmentId: Int) {
     if (this.firedepartment?.firedepartmentId != firedepartmentId) {
-        throw ForbiddenException("You cannot add/modify inspections of another firedepartment.")
+        throw ForbiddenException("You cannot add/view/modify investment's proposal of another firedepartment.")
     }
 }
 
@@ -182,3 +182,32 @@ fun VoteRepository.findByIdOrThrow(voteId: Int): Vote =
     findById(voteId).orElseThrow {
         ResourceNotFoundException("Vote", "id", voteId)
     }
+
+fun Vote.requireSameFiredepartment(firedepartmentId: Int) {
+    if (investmentProposal?.firedepartment?.firedepartmentId != firedepartmentId) {
+        throw ForbiddenException("You cannot view/modify votes for proposals from another firedepartment.")
+    }
+}
+
+fun Vote.requireSameFirefighter(firefighterId: Int) {
+    if (firefighter?.firefighterId != firefighterId) {
+        throw ForbiddenException("You cannot view/modify votes for proposals from another firefighters.")
+    }
+}
+
+fun VoteRepository.assertNotExistsByFirefighter(
+    investmentProposalId: Int,
+    firefighterId: Int
+) {
+    if (existsByInvestmentProposalInvestmentProposalIdAndFirefighterFirefighterId(
+            investmentProposalId,
+            firefighterId
+        )
+    ) {
+        throw ResourceConflictException(
+            "Vote",
+            "investment proposal's id and firefighter's id",
+            "$investmentProposalId and $firefighterId"
+        )
+    }
+}

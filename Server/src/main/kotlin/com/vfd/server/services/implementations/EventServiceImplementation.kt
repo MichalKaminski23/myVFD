@@ -20,6 +20,7 @@ class EventServiceImplementation(
     private val firefighterRepository: FirefighterRepository
 ) : EventService {
 
+    @Transactional
     override fun createEvent(emailAddress: String, eventDto: EventDtos.EventCreate): EventDtos.EventResponse {
 
         val user = userRepository.findByEmailOrThrow(emailAddress)
@@ -35,6 +36,7 @@ class EventServiceImplementation(
         return eventMapper.toEventDto(eventRepository.save(event))
     }
 
+    @Transactional(readOnly = true)
     override fun getEvents(
         page: Int,
         size: Int,
@@ -61,6 +63,7 @@ class EventServiceImplementation(
             .map(eventMapper::toEventDto).toPageResponse()
     }
 
+    @Transactional
     override fun updateEvent(
         emailAddress: String,
         eventId: Int,

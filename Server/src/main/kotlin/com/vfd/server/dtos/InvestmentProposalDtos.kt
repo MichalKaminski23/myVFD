@@ -68,7 +68,13 @@ object InvestmentProposalDtos {
         val status: String,
 
         @field:Schema(description = "Total number of votes for this proposal", example = "7")
-        val votesCount: Int
+        val votesCount: Int,
+
+        @field:Schema(description = "Number of YES votes for this proposal", example = "9")
+        val votesYesCount: Int,
+
+        @field:Schema(description = "Current firefighter's vote: true=YES, false=NO, null=not voted", example = "true")
+        val myVote: Boolean? = null
     )
 
     @Schema(description = "DTO used for creating a new investment proposal for development purposes")

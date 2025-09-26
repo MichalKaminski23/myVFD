@@ -23,6 +23,7 @@ class OperationServiceImplementation(
     private val addressService: AddressService,
 ) : OperationService {
 
+    @Transactional
     override fun createOperation(
         emailAddress: String,
         operationDto: OperationDtos.OperationCreate
@@ -52,6 +53,7 @@ class OperationServiceImplementation(
         return operationMapper.toOperationDto(operationRepository.save(operation))
     }
 
+    @Transactional(readOnly = true)
     override fun getOperations(
         page: Int,
         size: Int,
@@ -80,6 +82,7 @@ class OperationServiceImplementation(
             .toPageResponse()
     }
 
+    @Transactional(readOnly = true)
     override fun updateOperation(
         emailAddress: String,
         operationId: Int,
