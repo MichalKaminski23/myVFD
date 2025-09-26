@@ -73,7 +73,7 @@ class InvestmentProposalServiceImplementation(
             size = size,
             sort = sort,
             allowedFields = INVESTMENT_PROPOSAL_ALLOWED_SORTS,
-            defaultSort = "submissionDate,asc",
+            defaultSort = "submissionDate,desc",
             maxSize = 200
         )
 

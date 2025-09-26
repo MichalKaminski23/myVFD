@@ -9,8 +9,6 @@ object VoteDtos {
     data class VoteCreate(
         val investmentProposalId: Int,
 
-        val firefighterId: Int,
-
         val voteValue: Boolean
     )
 
@@ -23,9 +21,9 @@ object VoteDtos {
     data class VoteResponse(
         val voteId: Int,
 
-        val investmentProposal: InvestmentProposalDtos.InvestmentProposalResponse,
+        val investmentProposalId: Int,
 
-        val firefighter: FirefighterDtos.FirefighterResponse,
+        val firefighterId: Int,
 
         val voteValue: Boolean,
 

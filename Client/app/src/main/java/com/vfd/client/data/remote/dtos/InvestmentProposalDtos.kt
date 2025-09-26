@@ -8,9 +8,9 @@ object InvestmentProposalDtos {
 
     @Serializable
     data class InvestmentProposalCreate(
-        val firedepartmentId: Int,
-
         val description: String,
+
+        val submissionDate: LocalDateTime,
 
         @Serializable(with = BigDecimalSerializer::class)
         val amount: BigDecimal
@@ -23,14 +23,14 @@ object InvestmentProposalDtos {
         @Serializable(with = BigDecimalSerializer::class)
         val amount: BigDecimal? = null,
 
-        val status: Status? = null
+        val status: String? = null
     )
 
     @Serializable
     data class InvestmentProposalResponse(
         val investmentProposalId: Int,
 
-        val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
+        val firedepartmentId: Int,
 
         val description: String,
 
@@ -41,6 +41,10 @@ object InvestmentProposalDtos {
 
         val status: String,
 
-        val votesCount: Int
+        val votesCount: Int,
+
+        val votesYesCount: Int,
+
+        val myVote: Boolean? = null
     )
 }

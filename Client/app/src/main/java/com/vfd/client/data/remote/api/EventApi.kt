@@ -11,24 +11,19 @@ import retrofit2.http.Query
 
 interface EventApi {
 
-    @POST("api/events")
+    @POST("api/events/my")
     suspend fun createEvent(
         @Body eventDto: EventDtos.EventCreate
     ): EventDtos.EventResponse
 
-    @GET("api/events")
-    suspend fun getAllEvents(
+    @GET("api/events/my")
+    suspend fun getEvents(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "eventId,asc"
+        @Query("sort") sort: String = "eventDate,desc"
     ): PageResponse<EventDtos.EventResponse>
 
-    @GET("api/events/{eventId}")
-    suspend fun getEventById(
-        @Path("eventId") eventId: Int
-    ): EventDtos.EventResponse
-
-    @PATCH("api/events/{eventId}")
+    @PATCH("api/events/my/{eventId}")
     suspend fun updateEvent(
         @Path("eventId") eventId: Int,
         @Body eventDto: EventDtos.EventPatch

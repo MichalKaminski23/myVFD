@@ -45,14 +45,14 @@ class AssetTypeController(
         assetTypeService.createAssetType(assetTypeDto)
 
     @Operation(
-        summary = "List asset types (paged)",
+        summary = "Get all asset types",
         description = """
-            Returns a paginated list of asset types.
+            Retrieves all asset types.
             
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: assetType,asc) e.g. `name,desc`
+            - `sort` (default: assetType,asc) e.g. `assetType,desc`
         """
     )
     @ApiResponses(

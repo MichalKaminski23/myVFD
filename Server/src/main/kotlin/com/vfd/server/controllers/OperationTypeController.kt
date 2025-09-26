@@ -45,14 +45,14 @@ class OperationTypeController(
         operationTypeService.createOperationType(operationTypeDto)
 
     @Operation(
-        summary = "List operation types (paged)",
+        summary = "Get all operation types",
         description = """
-            Returns a paginated list of all operation types.
+            Retrieves all operation types.
             
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: operationTypeCode,asc) e.g. `name,desc`
+            - `sort` (default: operationType,asc) e.g. `operationType,asc`
         """
     )
     @ApiResponses(

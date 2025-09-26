@@ -71,7 +71,7 @@ class InvestmentProposalController(
     fun getInvestmentProposals(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "investmentProposalId,asc") sort: String,
+        @RequestParam(defaultValue = "submissionDate,desc") sort: String,
         @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<InvestmentProposalDtos.InvestmentProposalResponse> =
         investmentProposalService.getInvestmentProposals(page, size, sort, principal.username)

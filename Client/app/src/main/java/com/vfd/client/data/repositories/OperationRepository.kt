@@ -17,17 +17,12 @@ class OperationRepository @Inject constructor(
     ): ApiResult<OperationDtos.OperationResponse> =
         safeApiCall { operationApi.createOperation(operationDto) }
 
-    suspend fun getAllOperations(
+    suspend fun getOperations(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "operationId,asc"
+        sort: String = "operationDate,desc"
     ): ApiResult<PageResponse<OperationDtos.OperationResponse>> =
-        safeApiCall { operationApi.getAllOperations(page, size, sort) }
-
-    suspend fun getOperationById(
-        operationId: Int
-    ): ApiResult<OperationDtos.OperationResponse> =
-        safeApiCall { operationApi.getOperationById(operationId) }
+        safeApiCall { operationApi.getOperations(page, size, sort) }
 
     suspend fun updateOperation(
         operationId: Int,

@@ -17,17 +17,12 @@ class VoteRepository @Inject constructor(
     ): ApiResult<VoteDtos.VoteResponse> =
         safeApiCall { voteApi.createVote(voteDto) }
 
-    suspend fun getAllVotes(
+    suspend fun getVotes(
         page: Int = 0,
         size: Int = 20,
         sort: String = "voteId,asc"
     ): ApiResult<PageResponse<VoteDtos.VoteResponse>> =
-        safeApiCall { voteApi.getAllVotes(page, size, sort) }
-
-    suspend fun getVoteById(
-        voteId: Int
-    ): ApiResult<VoteDtos.VoteResponse> =
-        safeApiCall { voteApi.getVoteById(voteId) }
+        safeApiCall { voteApi.getVotes(page, size, sort) }
 
     suspend fun updateVote(
         voteId: Int,

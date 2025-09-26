@@ -29,9 +29,9 @@ object InspectionDtos {
     data class InspectionResponse(
         val inspectionId: Int,
 
-        val asset: AssetDtos.AssetResponse,
+        val assetId: Int,
 
-        val inspectionType: InspectionTypeDtos.InspectionTypeResponse,
+        val inspectionTypeName: String,
 
         val inspectionDate: LocalDateTime,
 

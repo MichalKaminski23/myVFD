@@ -45,14 +45,14 @@ class FirefighterActivityTypeController(
         firefighterActivityTypeService.createFirefighterActivityType(firefighterActivityTypeDto)
 
     @Operation(
-        summary = "List firefighter activity types (paged)",
+        summary = "Get all firefighter activity types",
         description = """
-            Returns a paginated list of firefighter activity types.
+            Retrieves all firefighter activity types.
             
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: firefighterActivityType,asc) e.g. `name,desc`
+            - `sort` (default: firefighterActivityType,asc) e.g. `firefighterActivityType,asc`
         """
     )
     @ApiResponses(

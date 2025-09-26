@@ -22,9 +22,6 @@ class AssetTypeRepository @Inject constructor(
     ): ApiResult<PageResponse<AssetTypeDtos.AssetTypeResponse>> =
         safeApiCall { assetTypeApi.getAllAssetTypes(page, size, sort) }
 
-    suspend fun getAssetTypeByCode(assetTypeCode: String): ApiResult<AssetTypeDtos.AssetTypeResponse> =
-        safeApiCall { assetTypeApi.getAssetTypeByCode(assetTypeCode) }
-
     suspend fun updateAssetType(
         assetTypeCode: String,
         assetTypeDto: AssetTypeDtos.AssetTypePatch

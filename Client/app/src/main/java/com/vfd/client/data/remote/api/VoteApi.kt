@@ -11,24 +11,19 @@ import retrofit2.http.Query
 
 interface VoteApi {
 
-    @POST("api/votes")
+    @POST("api/votes/my")
     suspend fun createVote(
         @Body voteDto: VoteDtos.VoteCreate
     ): VoteDtos.VoteResponse
 
-    @GET("api/votes")
-    suspend fun getAllVotes(
+    @GET("api/votes/my")
+    suspend fun getVotes(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
         @Query("sort") sort: String = "voteId,asc"
     ): PageResponse<VoteDtos.VoteResponse>
 
-    @GET("api/votes/{voteId}")
-    suspend fun getVoteById(
-        @Path("voteId") voteId: Int
-    ): VoteDtos.VoteResponse
-
-    @PATCH("api/votes/{voteId}")
+    @PATCH("api/votes/my/{voteId}")
     suspend fun updateVote(
         @Path("voteId") voteId: Int,
         @Body voteDto: VoteDtos.VotePatch

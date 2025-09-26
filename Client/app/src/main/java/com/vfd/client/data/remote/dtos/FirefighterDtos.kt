@@ -9,15 +9,13 @@ object FirefighterDtos {
         val userId: Int,
 
         val firedepartmentId: Int,
-
-        //val role: Role
     )
 
     @Serializable
     data class FirefighterPatch(
-        val role: Role? = null,
+        val role: String? = null,
 
-        val status: FirefighterStatus? = null
+        val status: String? = null
     )
 
     @Serializable
@@ -30,16 +28,25 @@ object FirefighterDtos {
 
         val emailAddress: String,
 
-        //val user: UserDtos.UserResponse,
         val userId: Int,
 
-        // val firedepartment: FiredepartmentDtos.FiredepartmentResponse,
         val firedepartmentId: Int,
 
         val firedepartmentName: String,
 
-        val role: Role,
+        val role: String,
 
-        val status: FirefighterStatus
+        val status: String
+    )
+
+    @Serializable
+    data class FirefighterResponseShort(
+        val firefighterId: Int,
+
+        val firstName: String,
+
+        val lastName: String,
+
+        val emailAddress: String
     )
 }

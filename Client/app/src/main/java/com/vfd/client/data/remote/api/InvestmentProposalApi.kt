@@ -11,24 +11,19 @@ import retrofit2.http.Query
 
 interface InvestmentProposalApi {
 
-    @POST("api/investment-proposals")
+    @POST("api/investment-proposals/my")
     suspend fun createInvestmentProposal(
         @Body investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreate
     ): InvestmentProposalDtos.InvestmentProposalResponse
 
-    @GET("api/investment-proposals")
-    suspend fun getAllInvestmentProposals(
+    @GET("api/investment-proposals/my")
+    suspend fun getInvestmentProposals(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "investmentProposalId,asc"
+        @Query("sort") sort: String = "submissionDate,desc"
     ): PageResponse<InvestmentProposalDtos.InvestmentProposalResponse>
 
-    @GET("api/investment-proposals/{proposalId}")
-    suspend fun getInvestmentProposalById(
-        @Path("proposalId") proposalId: Int
-    ): InvestmentProposalDtos.InvestmentProposalResponse
-
-    @PATCH("api/investment-proposals/{proposalId}")
+    @PATCH("api/investment-proposals/my/{proposalId}")
     suspend fun updateInvestmentProposal(
         @Path("proposalId") proposalId: Int,
         @Body investmentProposalDto: InvestmentProposalDtos.InvestmentProposalPatch

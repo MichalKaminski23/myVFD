@@ -11,35 +11,31 @@ import retrofit2.http.Query
 
 interface FirefighterApi {
 
-    @POST("api/firefighters")
+    @POST("api/firefighters/my")
     suspend fun createFirefighter(
         @Body firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse
 
-    @GET("api/firefighters")
-    suspend fun getAllFirefighters(
+    @GET("api/firefighters/my")
+    suspend fun getFirefighters(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "firefighterId,asc"
+        @Query("sort") sort: String = "user.firstName,asc"
     ): PageResponse<FirefighterDtos.FirefighterResponse>
 
-    @GET("api/firefighters/{firefighterId}")
-    suspend fun getFirefighterById(
-        @Path("firefighterId") firefighterId: Int
-    ): FirefighterDtos.FirefighterResponse
-
-    @PATCH("api/firefighters/{firefighterId}")
+    @PATCH("api/firefighters/my/{firefighterId}")
     suspend fun updateFirefighter(
         @Path("firefighterId") firefighterId: Int,
         @Body firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse
 
     @GET("api/firefighters/me")
-    suspend fun getCurrentFirefighter(): FirefighterDtos.FirefighterResponse
+    suspend fun getFirefighterByEmailAddress(): FirefighterDtos.FirefighterResponse
 
-    @GET("api/firefighters/friends")
-    suspend fun getFirefightersFromMyFiredepartment(): List<FirefighterDtos.FirefighterResponse>
-
-    @GET("api/firefighters/pending")
-    suspend fun getPendingFirefighters(): List<FirefighterDtos.FirefighterResponse>
+    @GET("api/firefighters/my/pending")
+    suspend fun getPendingFirefighters(
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 20,
+        @Query("sort") sort: String = "user.firstName,asc"
+    ): PageResponse<FirefighterDtos.FirefighterResponse>
 }

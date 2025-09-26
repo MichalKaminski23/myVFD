@@ -40,7 +40,7 @@ fun AssetScreen(
     navController: NavController
 ) {
 
-    val assetsFromMyFiredepartment by assetViewModel.assetsFromMyDepartment.collectAsState()
+    val assets by assetViewModel.assetUiState.collectAsState()
 
     val assetTypeUiState by assetTypeViewModel.assetTypeUiState.collectAsState()
 
@@ -48,7 +48,7 @@ fun AssetScreen(
     var editingAssetId by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(Unit) {
-        assetViewModel.getAssetsFromMyFiredepartment()
+        assetViewModel.getAssets()
     }
 
     LaunchedEffect(assetUpdateUiState.success) {
@@ -63,7 +63,7 @@ fun AssetScreen(
             .verticalScroll(rememberScrollState()),
     )
     {
-        if (assetsFromMyFiredepartment.isEmpty()) {
+        if (assets.assets.isEmpty()) {
             Text(
                 "There aren't any assets in your VFD",
                 textAlign = TextAlign.Center,
@@ -71,7 +71,7 @@ fun AssetScreen(
                 modifier = Modifier.padding(16.dp)
             )
         } else {
-            assetsFromMyFiredepartment.forEach { asset ->
+            assets.assets.forEach { asset ->
                 if (editingAssetId == asset.assetId) {
                     AppCard(
                         header = "\uD83E\uDE93 Editing: ${asset.name}",

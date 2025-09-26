@@ -1,6 +1,6 @@
 package com.vfd.client.data.remote.dtos
 
-enum class Status {
+enum class InvestmentProposalStatus {
     PENDING,
     APPROVED,
     REJECTED,

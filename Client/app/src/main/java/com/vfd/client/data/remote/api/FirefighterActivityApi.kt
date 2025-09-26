@@ -11,24 +11,19 @@ import retrofit2.http.Query
 
 interface FirefighterActivityApi {
 
-    @POST("api/firefighter-activities")
+    @POST("api/firefighter-activities/my")
     suspend fun createFirefighterActivity(
         @Body firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityCreate
     ): FirefighterActivityDtos.FirefighterActivityResponse
 
-    @GET("api/firefighter-activities")
-    suspend fun getAllFirefighterActivities(
+    @GET("api/firefighter-activities/my")
+    suspend fun getFirefighterActivities(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "firefighterActivityId,asc"
+        @Query("sort") sort: String = "activityDate,asc"
     ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse>
 
-    @GET("api/firefighter-activities/{firefighterActivityId}")
-    suspend fun getFirefighterActivityById(
-        @Path("firefighterActivityId") firefighterActivityId: Int
-    ): FirefighterActivityDtos.FirefighterActivityResponse
-
-    @PATCH("api/firefighter-activities/{firefighterActivityId}")
+    @PATCH("api/firefighter-activities/my/{firefighterActivityId}")
     suspend fun updateFirefighterActivity(
         @Path("firefighterActivityId") firefighterActivityId: Int,
         @Body firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityPatch

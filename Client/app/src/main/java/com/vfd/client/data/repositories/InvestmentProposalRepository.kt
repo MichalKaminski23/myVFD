@@ -17,17 +17,12 @@ class InvestmentProposalRepository @Inject constructor(
     ): ApiResult<InvestmentProposalDtos.InvestmentProposalResponse> =
         safeApiCall { investmentProposalApi.createInvestmentProposal(investmentProposalDto) }
 
-    suspend fun getAllInvestmentProposals(
+    suspend fun getInvestmentProposals(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "investmentProposalId,asc"
+        sort: String = "submissionDate,desc"
     ): ApiResult<PageResponse<InvestmentProposalDtos.InvestmentProposalResponse>> =
-        safeApiCall { investmentProposalApi.getAllInvestmentProposals(page, size, sort) }
-
-    suspend fun getInvestmentProposalById(
-        investmentProposalId: Int
-    ): ApiResult<InvestmentProposalDtos.InvestmentProposalResponse> =
-        safeApiCall { investmentProposalApi.getInvestmentProposalById(investmentProposalId) }
+        safeApiCall { investmentProposalApi.getInvestmentProposals(page, size, sort) }
 
     suspend fun updateInvestmentProposal(
         investmentProposalId: Int,

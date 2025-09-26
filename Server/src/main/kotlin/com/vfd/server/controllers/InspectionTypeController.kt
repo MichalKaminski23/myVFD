@@ -45,14 +45,14 @@ class InspectionTypeController(
         inspectionTypeService.createInspectionType(inspectionTypeDto)
 
     @Operation(
-        summary = "List inspection types (paged)",
+        summary = "Get all inspection types",
         description = """
-            Returns a paginated list of inspection types.
+            Retrieves all inspection types.
             
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: inspectionType,asc) e.g. `name,desc`
+            - `sort` (default: inspectionType,asc) e.g. `inspectionType,asc`
         """
     )
     @ApiResponses(

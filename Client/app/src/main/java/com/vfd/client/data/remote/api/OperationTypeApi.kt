@@ -20,7 +20,7 @@ interface OperationTypeApi {
     suspend fun getAllOperationTypes(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "operationTypeCode,asc"
+        @Query("sort") sort: String = "operationType,asc"
     ): PageResponse<OperationTypeDtos.OperationTypeResponse>
 
     @GET("api/operation-types/{operationTypeCode}")

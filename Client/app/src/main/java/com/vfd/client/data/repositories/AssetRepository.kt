@@ -15,18 +15,12 @@ class AssetRepository @Inject constructor(
     suspend fun createAsset(assetDto: AssetDtos.AssetCreate): ApiResult<AssetDtos.AssetResponse> =
         safeApiCall { assetApi.createAsset(assetDto) }
 
-    suspend fun getAllAssets(
+    suspend fun getAssets(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "assetId,asc"
+        sort: String = "name,asc"
     ): ApiResult<PageResponse<AssetDtos.AssetResponse>> =
-        safeApiCall { assetApi.getAllAssets(page, size, sort) }
-
-    suspend fun getAssetById(assetId: Int): ApiResult<AssetDtos.AssetResponse> =
-        safeApiCall { assetApi.getAssetById(assetId) }
-    
-    suspend fun getAssetsFromMyFiredepartment(): ApiResult<List<AssetDtos.AssetResponse>> =
-        safeApiCall { assetApi.getAssetsFromMyFiredepartment() }
+        safeApiCall { assetApi.getAssets(page, size, sort) }
 
     suspend fun updateAsset(
         assetId: Int,

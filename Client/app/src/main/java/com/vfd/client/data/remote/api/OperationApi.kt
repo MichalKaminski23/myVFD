@@ -11,24 +11,19 @@ import retrofit2.http.Query
 
 interface OperationApi {
 
-    @POST("api/operations")
+    @POST("api/operations/my")
     suspend fun createOperation(
         @Body operationDto: OperationDtos.OperationCreate
     ): OperationDtos.OperationResponse
 
-    @GET("api/operations")
-    suspend fun getAllOperations(
+    @GET("api/operations/my")
+    suspend fun getOperations(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "operationId,asc"
+        @Query("sort") sort: String = "operationDate,desc"
     ): PageResponse<OperationDtos.OperationResponse>
 
-    @GET("api/operations/{operationId}")
-    suspend fun getOperationById(
-        @Path("operationId") operationId: Int
-    ): OperationDtos.OperationResponse
-
-    @PATCH("api/operations/{operationId}")
+    @PATCH("api/operations/my/{operationId}")
     suspend fun updateOperation(
         @Path("operationId") operationId: Int,
         @Body operationDto: OperationDtos.OperationPatch

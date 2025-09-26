@@ -7,8 +7,6 @@ object FirefighterActivityDtos {
 
     @Serializable
     data class FirefighterActivityCreate(
-        val firefighterId: Int,
-
         val firefighterActivityType: String,
 
         val activityDate: LocalDateTime,
@@ -33,9 +31,9 @@ object FirefighterActivityDtos {
     data class FirefighterActivityResponse(
         val firefighterActivityId: Int,
 
-        val firefighter: FirefighterDtos.FirefighterResponse,
+        val firefighterId: Int,
 
-        val firefighterActivityType: FirefighterActivityTypeDtos.FirefighterActivityTypeResponse,
+        val firefighterActivityTypeName: String,
 
         val activityDate: LocalDateTime,
 

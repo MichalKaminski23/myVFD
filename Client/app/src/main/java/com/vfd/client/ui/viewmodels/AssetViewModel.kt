@@ -12,9 +12,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class AssetUiState(
-    val loading: Boolean = false,
-    val success: Boolean = false,
-    val error: String? = null
+    val assets: List<AssetDtos.AssetResponse> = emptyList(),
+    val page: Int = 0,
+    val totalPages: Int = 0,
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )
 
 data class AssetUpdateUiState(
@@ -41,39 +43,40 @@ class AssetViewModel @Inject constructor(
         _assetUpdateUiState.value = field(_assetUpdateUiState.value)
     }
 
-    private val _assetsFromMyDepartment =
-        MutableStateFlow<List<AssetDtos.AssetResponse>>(emptyList())
-    val assetsFromMyDepartment = _assetsFromMyDepartment.asStateFlow()
-
-    fun getAssetsFromMyFiredepartment() {
+    fun getAssets(page: Int = 0, size: Int = 20) {
         viewModelScope.launch {
             _assetUiState.value =
-                _assetUiState.value.copy(loading = true, error = null, success = false)
+                _assetUiState.value.copy(isLoading = true, errorMessage = null)
 
-            when (val result = assetRepository.getAssetsFromMyFiredepartment()) {
+            when (val result = assetRepository.getAssets(page, size)) {
 
                 is ApiResult.Success -> {
+                    val response = result.data!!
                     _assetUiState.value =
-                        _assetUiState.value.copy(loading = false, success = true, error = null)
-                    _assetsFromMyDepartment.value = result.data ?: emptyList()
+                        _assetUiState.value.copy(
+                            assets = _assetUiState.value.assets + response.items,
+                            page = response.page,
+                            totalPages = response.totalPages,
+                            isLoading = false,
+                            errorMessage = null
+                        )
                 }
 
                 is ApiResult.Error -> {
                     _assetUiState.value = _assetUiState.value.copy(
-                        loading = false,
-                        success = false,
-                        error = result.message ?: "Failed to load assets"
+                        isLoading = false,
+                        errorMessage = result.message ?: "Failed to load assets"
                     )
-                    _assetsFromMyDepartment.value = emptyList()
                 }
 
                 is ApiResult.Loading -> {
-                    Unit
+                    _assetUiState.value =
+                        _assetUiState.value.copy(isLoading = true)
                 }
             }
         }
     }
-    
+
     fun updateAsset(
         assetId: Int,
         name: String,
@@ -100,13 +103,15 @@ class AssetViewModel @Inject constructor(
                             error = null
                         )
 
-                    _assetsFromMyDepartment.value = _assetsFromMyDepartment.value.map {
-                        if (it.assetId == assetId) it.copy(
-                            name = result.data?.name ?: it.name,
-                            assetTypeName = result.data?.assetTypeName ?: it.assetTypeName,
-                            description = result.data?.description ?: it.description
-                        ) else it
+                    val updatedAssets = _assetUiState.value.assets.map { asset ->
+                        if (asset.assetId == assetId) asset.copy(
+                            name = result.data?.name ?: asset.name,
+                            assetTypeName = result.data?.assetTypeName ?: asset.assetTypeName,
+                            description = result.data?.description ?: asset.description
+                        ) else asset
                     }
+
+                    _assetUiState.value = _assetUiState.value.copy(assets = updatedAssets)
                 }
 
                 is ApiResult.Error -> {

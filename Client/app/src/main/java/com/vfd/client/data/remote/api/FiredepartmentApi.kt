@@ -11,24 +11,22 @@ import retrofit2.http.Query
 
 interface FiredepartmentApi {
 
-    @POST("api/firedepartments")
+    @POST("api/firedepartments/admin")
     suspend fun createFiredepartment(
         @Body firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
     ): FiredepartmentDtos.FiredepartmentResponse
 
     @GET("api/firedepartments")
-    suspend fun getAllFiredepartments(
+    suspend fun getFiredepartmentsShort(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "firedepartmentId,asc"
-    ): PageResponse<FiredepartmentDtos.FiredepartmentResponse>
+        @Query("sort") sort: String = "name,asc"
+    ): PageResponse<FiredepartmentDtos.FiredepartmentResponseShort>
 
-    @GET("api/firedepartments/{firedepartmentId}")
-    suspend fun getFiredepartmentById(
-        @Path("firedepartmentId") firedepartmentId: Int
-    ): FiredepartmentDtos.FiredepartmentResponse
+    @GET("api/firedepartments/my")
+    suspend fun getFiredepartment(): FiredepartmentDtos.FiredepartmentResponse
 
-    @PATCH("api/firedepartments/{firedepartmentId}")
+    @PATCH("api/firedepartments/admin/{firedepartmentId}")
     suspend fun updateFiredepartment(
         @Path("firedepartmentId") firedepartmentId: Int,
         @Body firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch

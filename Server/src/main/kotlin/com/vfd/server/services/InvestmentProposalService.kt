@@ -13,7 +13,7 @@ interface InvestmentProposalService {
     fun getInvestmentProposals(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "investmentProposalId,asc",
+        sort: String = "submissionDate,desc",
         emailAddress: String
     ): PageResponse<InvestmentProposalDtos.InvestmentProposalResponse>
 

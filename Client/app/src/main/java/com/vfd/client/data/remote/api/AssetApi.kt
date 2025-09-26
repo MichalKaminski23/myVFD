@@ -11,23 +11,17 @@ import retrofit2.http.Query
 
 interface AssetApi {
 
-    @POST("api/assets")
+    @POST("api/assets/my")
     suspend fun createAsset(@Body assetDto: AssetDtos.AssetCreate): AssetDtos.AssetResponse
 
-    @GET("api/assets")
-    suspend fun getAllAssets(
+    @GET("api/assets/my")
+    suspend fun getAssets(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "assetId,asc"
+        @Query("sort") sort: String = "name,asc"
     ): PageResponse<AssetDtos.AssetResponse>
 
-    @GET("api/assets/{assetId}")
-    suspend fun getAssetById(@Path("assetId") assetId: Int): AssetDtos.AssetResponse
-
-    @GET("api/assets/my")
-    suspend fun getAssetsFromMyFiredepartment(): List<AssetDtos.AssetResponse>
-
-    @PATCH("api/assets/{assetId}")
+    @PATCH("api/assets/my/{assetId}")
     suspend fun updateAsset(
         @Path("assetId") assetId: Int,
         @Body assetDto: AssetDtos.AssetPatch

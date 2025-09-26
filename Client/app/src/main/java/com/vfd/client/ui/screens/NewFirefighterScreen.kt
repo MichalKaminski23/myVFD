@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterDtos
+import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.FirefighterStatus
-import com.vfd.client.data.remote.dtos.Role
 import com.vfd.client.ui.components.AppButton
 import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
@@ -65,7 +65,7 @@ fun NewFirefighterScreen(
                                     firefighterViewModel.changeFirefighterRoleOrStatus(
                                         firefighterId = firefighter.firefighterId,
                                         firefighterDto = FirefighterDtos.FirefighterPatch(
-                                            role = Role.MEMBER,
+                                            role = FirefighterRole.MEMBER,
                                             status = FirefighterStatus.ACTIVE,
                                         )
                                     )
@@ -79,7 +79,7 @@ fun NewFirefighterScreen(
                                     firefighterViewModel.changeFirefighterRoleOrStatus(
                                         firefighterId = firefighter.firefighterId,
                                         firefighterDto = FirefighterDtos.FirefighterPatch(
-                                            role = Role.USER,
+                                            role = FirefighterRole.USER,
                                             status = FirefighterStatus.REJECTED,
                                         )
                                     )

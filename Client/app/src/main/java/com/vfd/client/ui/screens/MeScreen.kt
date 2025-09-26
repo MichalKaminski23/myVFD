@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterDtos
+import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.FirefighterStatus
-import com.vfd.client.data.remote.dtos.Role
 import com.vfd.client.ui.components.AppButton
 import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
@@ -138,7 +138,7 @@ fun MeScreen(
                                 val firedepartmentId = selectedFiredepartmentId
                                 if (userId != null && firedepartmentId != null) {
                                     val updatedFirefighter = FirefighterDtos.FirefighterPatch(
-                                        role = Role.USER,
+                                        role = FirefighterRole.USER,
                                         status = FirefighterStatus.PENDING,
                                     )
                                     firefighterViewModel.changeFirefighterRoleOrStatus(
@@ -211,7 +211,7 @@ fun MeScreen(
                         val firedepartmentId = selectedFiredepartmentId
                         if (userId != null && firedepartmentId != null) {
                             FirefighterDtos.FirefighterPatch(
-                                role = Role.USER,
+                                role = FirefighterRole.USER,
                                 status = FirefighterStatus.PENDING,
                             )
                             firefighterViewModel.createFirefighter(

@@ -15,15 +15,15 @@ class FiredepartmentRepository @Inject constructor(
     suspend fun createFiredepartment(firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate): ApiResult<FiredepartmentDtos.FiredepartmentResponse> =
         safeApiCall { firedepartmentApi.createFiredepartment(firedepartmentDto) }
 
-    suspend fun getAllFiredepartments(
+    suspend fun getFiredepartmentsShort(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "firedepartmentId,asc"
-    ): ApiResult<PageResponse<FiredepartmentDtos.FiredepartmentResponse>> =
-        safeApiCall { firedepartmentApi.getAllFiredepartments(page, size, sort) }
+        sort: String = "name,asc"
+    ): ApiResult<PageResponse<FiredepartmentDtos.FiredepartmentResponseShort>> =
+        safeApiCall { firedepartmentApi.getFiredepartmentsShort(page, size, sort) }
 
-    suspend fun getFiredepartmentById(firedepartmentId: Int): ApiResult<FiredepartmentDtos.FiredepartmentResponse> =
-        safeApiCall { firedepartmentApi.getFiredepartmentById(firedepartmentId) }
+    suspend fun getFiredepartment(): ApiResult<FiredepartmentDtos.FiredepartmentResponse> =
+        safeApiCall { firedepartmentApi.getFiredepartment() }
 
     suspend fun updateFiredepartment(
         firedepartmentId: Int,

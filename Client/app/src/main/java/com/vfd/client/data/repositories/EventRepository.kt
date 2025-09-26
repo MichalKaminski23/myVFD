@@ -15,15 +15,12 @@ class EventRepository @Inject constructor(
     suspend fun createEvent(eventDto: EventDtos.EventCreate): ApiResult<EventDtos.EventResponse> =
         safeApiCall { eventApi.createEvent(eventDto) }
 
-    suspend fun getAllEvents(
+    suspend fun getEvents(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "eventId,asc"
+        sort: String = "eventDate,desc"
     ): ApiResult<PageResponse<EventDtos.EventResponse>> =
-        safeApiCall { eventApi.getAllEvents(page, size, sort) }
-
-    suspend fun getEventById(eventId: Int): ApiResult<EventDtos.EventResponse> =
-        safeApiCall { eventApi.getEventById(eventId) }
+        safeApiCall { eventApi.getEvents(page, size, sort) }
 
     suspend fun updateEvent(
         eventId: Int,

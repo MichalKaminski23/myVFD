@@ -17,17 +17,12 @@ class FirefighterRepository @Inject constructor(
     ): ApiResult<FirefighterDtos.FirefighterResponse> =
         safeApiCall { firefighterApi.createFirefighter(firefighterDto) }
 
-    suspend fun getAllFirefighters(
+    suspend fun getFirefighters(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "firefighterId,asc"
+        sort: String = "user.firstName,asc"
     ): ApiResult<PageResponse<FirefighterDtos.FirefighterResponse>> =
-        safeApiCall { firefighterApi.getAllFirefighters(page, size, sort) }
-
-    suspend fun getFirefighterById(
-        firefighterId: Int
-    ): ApiResult<FirefighterDtos.FirefighterResponse> =
-        safeApiCall { firefighterApi.getFirefighterById(firefighterId) }
+        safeApiCall { firefighterApi.getFirefighters(page, size, sort) }
 
     suspend fun updateFirefighter(
         firefighterId: Int,
@@ -35,12 +30,13 @@ class FirefighterRepository @Inject constructor(
     ): ApiResult<FirefighterDtos.FirefighterResponse> =
         safeApiCall { firefighterApi.updateFirefighter(firefighterId, firefighterDto) }
 
-    suspend fun getCurrentFirefighter(): ApiResult<FirefighterDtos.FirefighterResponse> =
-        safeApiCall { firefighterApi.getCurrentFirefighter() }
+    suspend fun getFirefighterByEmailAddress(): ApiResult<FirefighterDtos.FirefighterResponse> =
+        safeApiCall { firefighterApi.getFirefighterByEmailAddress() }
 
-    suspend fun getFirefightersFromMyFiredepartment(): ApiResult<List<FirefighterDtos.FirefighterResponse>> =
-        safeApiCall { firefighterApi.getFirefightersFromMyFiredepartment() }
-
-    suspend fun getPendingFirefighters(): ApiResult<List<FirefighterDtos.FirefighterResponse>> =
-        safeApiCall { firefighterApi.getPendingFirefighters() }
+    suspend fun getPendingFirefighters(
+        page: Int = 0,
+        size: Int = 20,
+        sort: String = "user.firstName,asc"
+    ): ApiResult<PageResponse<FirefighterDtos.FirefighterResponse>> =
+        safeApiCall { firefighterApi.getPendingFirefighters(page, size, sort) }
 }

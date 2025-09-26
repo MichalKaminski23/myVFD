@@ -7,8 +7,6 @@ object EventDtos {
 
     @Serializable
     data class EventCreate(
-        val firedepartmentId: Int,
-
         val header: String,
 
         val description: String,

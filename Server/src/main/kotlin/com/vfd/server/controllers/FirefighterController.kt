@@ -54,7 +54,7 @@ class FirefighterController(
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: user.firstName,asc) e.g. `firefighterRole,desc`
+            - `sort` (default: user.firstName,asc) e.g. `firstName,asc`
         """
     )
     @ApiResponses(
@@ -145,7 +145,7 @@ class FirefighterController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping("/pending")
+    @GetMapping("/my/pending")
     fun getPendingFirefighters(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,

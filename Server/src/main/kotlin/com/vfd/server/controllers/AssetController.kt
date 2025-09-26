@@ -54,7 +54,7 @@ class AssetController(
             Query params:
             - `page` (default: 0)
             - `size` (default: 20)
-            - `sort` (default: assetId,asc) e.g. `assetId,asc`
+            - `sort` (default: name,asc) e.g. `name,asc`
         """
     )
     @ApiResponses(
@@ -70,7 +70,7 @@ class AssetController(
     fun getAssets(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "assetId,asc") sort: String,
+        @RequestParam(defaultValue = "name,asc") sort: String,
         @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<AssetDtos.AssetResponse> {
         return assetService.getAssets(page, size, sort, principal.username)

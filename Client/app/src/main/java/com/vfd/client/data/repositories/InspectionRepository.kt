@@ -17,17 +17,12 @@ class InspectionRepository @Inject constructor(
     ): ApiResult<InspectionDtos.InspectionResponse> =
         safeApiCall { inspectionApi.createInspection(inspectionDto) }
 
-    suspend fun getAllInspections(
+    suspend fun getInspections(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "inspectionId,asc"
+        sort: String = "inspectionDate,asc"
     ): ApiResult<PageResponse<InspectionDtos.InspectionResponse>> =
-        safeApiCall { inspectionApi.getAllInspections(page, size, sort) }
-
-    suspend fun getInspectionById(
-        inspectionId: Int
-    ): ApiResult<InspectionDtos.InspectionResponse> =
-        safeApiCall { inspectionApi.getInspectionById(inspectionId) }
+        safeApiCall { inspectionApi.getInspections(page, size, sort) }
 
     suspend fun updateInspection(
         inspectionId: Int,

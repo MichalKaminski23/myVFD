@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.vfd.client.data.remote.dtos.Role
+import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.ui.components.AppButton
 import com.vfd.client.ui.components.AppColumn
 import com.vfd.client.ui.components.AppTextField
@@ -54,7 +54,7 @@ fun LoginScreen(
         if (firefighterUiState.loading) return@LaunchedEffect
 
         when {
-            currentFirefighter?.role == Role.PRESIDENT -> {
+            currentFirefighter?.role == FirefighterRole.PRESIDENT -> {
                 routed = true
                 navController.navigate("moderatorScreen") {
                     popUpTo("welcomeScreen") { inclusive = false }

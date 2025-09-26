@@ -12,7 +12,4 @@ interface AuthApi {
 
     @POST("/api/auth/login")
     suspend fun login(@Body userDto: UserDtos.UserLogin): AuthResponseDto
-
-    @POST("/api/auth/logout")
-    suspend fun logout()
 }

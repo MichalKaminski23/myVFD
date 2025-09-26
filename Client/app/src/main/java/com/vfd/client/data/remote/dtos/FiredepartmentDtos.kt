@@ -17,7 +17,7 @@ object FiredepartmentDtos {
     data class FiredepartmentPatch(
         val name: String? = null,
 
-//        val address: AddressDtos.AddressPatch? = null,
+        val address: AddressDtos.AddressCreate? = null,
 
         val nrfs: Boolean? = null
     )
@@ -31,5 +31,11 @@ object FiredepartmentDtos {
         val address: AddressDtos.AddressResponse,
 
         val nrfs: Boolean
+    )
+
+    data class FiredepartmentResponseShort(
+        val firedepartmentId: Int,
+
+        val name: String
     )
 }

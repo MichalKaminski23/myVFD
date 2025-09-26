@@ -67,7 +67,7 @@ class VoteController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @GetMapping
+    @GetMapping("/my")
     fun getVotes(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,

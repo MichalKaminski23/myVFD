@@ -6,13 +6,11 @@ object AssetDtos {
 
     @Serializable
     data class AssetCreate(
-        val firedepartmentId: Int,
-
         val name: String,
 
         val assetType: String,
 
-        val description: String
+        val description: String? = null
     )
 
     @Serializable
@@ -34,6 +32,6 @@ object AssetDtos {
 
         val assetTypeName: String,
 
-        val description: String
+        val description: String?
     )
 }

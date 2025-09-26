@@ -36,6 +36,9 @@ object FirefighterActivityDtos {
         @field:Schema(description = "Code of the activity type", example = "CERT")
         val firefighterActivityType: String? = null,
 
+        @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
+        val activityDate: LocalDateTime? = null,
+
         @field:Schema(description = "Expiration date of the activity", example = "2025-08-03T15:00:00")
         val expirationDate: LocalDateTime? = null,
 

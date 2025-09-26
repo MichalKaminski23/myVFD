@@ -23,11 +23,6 @@ interface AssetTypeApi {
         @Query("sort") sort: String = "assetType,asc"
     ): PageResponse<AssetTypeDtos.AssetTypeResponse>
 
-    @GET("api/asset-types/{assetTypeCode}")
-    suspend fun getAssetTypeByCode(
-        @Path("assetTypeCode") assetTypeCode: String
-    ): AssetTypeDtos.AssetTypeResponse
-
     @PATCH("api/asset-types/{assetTypeCode}")
     suspend fun updateAssetType(
         @Path("assetTypeCode") assetTypeCode: String,

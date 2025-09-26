@@ -11,24 +11,19 @@ import retrofit2.http.Query
 
 interface InspectionApi {
 
-    @POST("api/inspections")
+    @POST("api/inspections/my")
     suspend fun createInspection(
         @Body inspectionDto: InspectionDtos.InspectionCreate
     ): InspectionDtos.InspectionResponse
 
-    @GET("api/inspections")
-    suspend fun getAllInspections(
+    @GET("api/inspections/my")
+    suspend fun getInspections(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "inspectionId,asc"
+        @Query("sort") sort: String = "inspectionDate,desc"
     ): PageResponse<InspectionDtos.InspectionResponse>
 
-    @GET("api/inspections/{inspectionId}")
-    suspend fun getInspectionById(
-        @Path("inspectionId") inspectionId: Int
-    ): InspectionDtos.InspectionResponse
-
-    @PATCH("api/inspections/{inspectionId}")
+    @PATCH("api/inspections/my/{inspectionId}")
     suspend fun updateInspection(
         @Path("inspectionId") inspectionId: Int,
         @Body inspectionDto: InspectionDtos.InspectionPatch
