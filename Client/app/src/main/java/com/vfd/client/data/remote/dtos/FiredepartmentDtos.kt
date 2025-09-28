@@ -33,6 +33,7 @@ object FiredepartmentDtos {
         val nrfs: Boolean
     )
 
+    @Serializable
     data class FiredepartmentResponseShort(
         val firedepartmentId: Int,
 

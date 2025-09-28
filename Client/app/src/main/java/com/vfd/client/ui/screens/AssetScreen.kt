@@ -178,7 +178,7 @@ fun AssetScreen(
                                         it.copy(
                                             name = asset.name,
                                             assetType = "",
-                                            description = asset.description
+                                            description = asset.description!!
                                         )
                                     }
                                 }

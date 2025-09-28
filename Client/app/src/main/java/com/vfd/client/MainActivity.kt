@@ -45,9 +45,11 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = navBackStackEntry?.destination?.route
                 val mainViewModel: MainViewModel = hiltViewModel()
                 val pending by mainViewModel.pendingFirefighters.collectAsState()
+                val active by mainViewModel.activeFirefighters.collectAsState()
                 LaunchedEffect(currentRoute) {
-                    if (currentRoute == "firefighterScreen") {
-                        mainViewModel.refreshBadges()
+                    when (currentRoute) {
+                        "moderatorScreen" -> mainViewModel.refreshBadges()
+                        "firefighterScreen" -> mainViewModel.refreshBadges()
                     }
                 }
                 Scaffold(
@@ -141,7 +143,8 @@ class MainActivity : ComponentActivity() {
                                     NavBarButton(
                                         "Firefighters",
                                         Icons.Default.Person,
-                                        { navController.navigate("firefighterScreen") }
+                                        { navController.navigate("firefighterScreen") },
+                                        badgeCount = active
                                     ),
                                     NavBarButton(
                                         "Assets",

@@ -1,5 +1,6 @@
 package com.vfd.client.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.remote.dtos.AssetDtos
@@ -60,6 +61,7 @@ class AssetViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = null
                         )
+                    Log.w("MeScreen", "Firedepartments: ${response.items}")
                 }
 
                 is ApiResult.Error -> {

@@ -37,24 +37,23 @@ fun LoginScreen(
     navController: NavController
 ) {
     val loginUiState by authViewModel.loginUiState.collectAsState()
-    val currentFirefighter by firefighterViewModel.firefighter.collectAsState()
-    val firefighterUiState by firefighterViewModel.firefighterUiState.collectAsState()
+    val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
 
     LaunchedEffect(loginUiState.success) {
         if (loginUiState.success) {
-            userViewModel.getCurrentUser()
-            firefighterViewModel.getCurrentFirefighter()
+            userViewModel.getUserByEmailAddress()
+            firefighterViewModel.getFirefighterByEmailAddress()
         }
     }
 
     var routed by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(loginUiState.success, firefighterUiState, currentFirefighter) {
+    LaunchedEffect(loginUiState.success, currentFirefighterUiState) {
         if (!loginUiState.success || routed) return@LaunchedEffect
-        if (firefighterUiState.loading) return@LaunchedEffect
+        if (currentFirefighterUiState.isLoading) return@LaunchedEffect
 
         when {
-            currentFirefighter?.role == FirefighterRole.PRESIDENT -> {
+            currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString() -> {
                 routed = true
                 navController.navigate("moderatorScreen") {
                     popUpTo("welcomeScreen") { inclusive = false }
@@ -62,7 +61,7 @@ fun LoginScreen(
                 }
             }
 
-            currentFirefighter != null -> {
+            currentFirefighterUiState.currentFirefighter != null -> {
                 routed = true
                 navController.navigate("meScreen") {
                     popUpTo("welcomeScreen") { inclusive = false }
@@ -70,7 +69,7 @@ fun LoginScreen(
                 }
             }
 
-            firefighterUiState.notFound || firefighterUiState.success -> {
+            currentFirefighterUiState.notFound || currentFirefighterUiState.success -> {
                 routed = true
                 navController.navigate("meScreen") {
                     popUpTo("welcomeScreen") { inclusive = false }
@@ -78,7 +77,7 @@ fun LoginScreen(
                 }
             }
 
-            firefighterUiState.error != null -> {
+            currentFirefighterUiState.errorMessage != null -> {
                 routed = true
                 navController.navigate("meScreen") {
                     popUpTo("welcomeScreen") { inclusive = false }
@@ -124,7 +123,7 @@ fun LoginScreen(
             label = "Login",
             onClick = { authViewModel.login() },
             fullWidth = true,
-            enabled = !loginUiState.loading,
+            enabled = loginUiState.emailAddress.isNotBlank() && loginUiState.password.isNotBlank() && !loginUiState.loading,
             loading = loginUiState.loading
         )
     }

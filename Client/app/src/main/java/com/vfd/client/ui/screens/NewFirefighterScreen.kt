@@ -2,6 +2,8 @@ package com.vfd.client.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -25,6 +27,7 @@ import com.vfd.client.data.remote.dtos.FirefighterStatus
 import com.vfd.client.ui.components.AppButton
 import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
+import com.vfd.client.ui.components.AppLoadMore
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
 @Composable
@@ -32,7 +35,9 @@ fun NewFirefighterScreen(
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val pendingFirefighters by firefighterViewModel.pendingFirefighters.collectAsState()
+    val pendingFirefighters by firefighterViewModel.pendingFirefightersUiState.collectAsState()
+
+    val hasMore = pendingFirefighters.page + 1 < pendingFirefighters.totalPages
 
     LaunchedEffect(Unit) {
         firefighterViewModel.getPendingFirefighters()
@@ -43,7 +48,7 @@ fun NewFirefighterScreen(
             .verticalScroll(rememberScrollState())
     )
     {
-        if (pendingFirefighters.isEmpty()) {
+        if (pendingFirefighters.pendingFirefighters.isEmpty()) {
             Text(
                 "No pending applications",
                 textAlign = TextAlign.Center,
@@ -51,7 +56,7 @@ fun NewFirefighterScreen(
                 modifier = Modifier.padding(16.dp)
             )
         } else {
-            pendingFirefighters.forEach { firefighter ->
+            pendingFirefighters.pendingFirefighters.forEach { firefighter ->
                 AppCard(
                     "👤 ${firefighter.firstName} ${firefighter.lastName}",
                     "🚒 Firedepartment: ${firefighter.firedepartmentName}",
@@ -65,8 +70,8 @@ fun NewFirefighterScreen(
                                     firefighterViewModel.changeFirefighterRoleOrStatus(
                                         firefighterId = firefighter.firefighterId,
                                         firefighterDto = FirefighterDtos.FirefighterPatch(
-                                            role = FirefighterRole.MEMBER,
-                                            status = FirefighterStatus.ACTIVE,
+                                            role = FirefighterRole.MEMBER.toString(),
+                                            status = FirefighterStatus.ACTIVE.toString(),
                                         )
                                     )
                                 },
@@ -79,8 +84,8 @@ fun NewFirefighterScreen(
                                     firefighterViewModel.changeFirefighterRoleOrStatus(
                                         firefighterId = firefighter.firefighterId,
                                         firefighterDto = FirefighterDtos.FirefighterPatch(
-                                            role = FirefighterRole.USER,
-                                            status = FirefighterStatus.REJECTED,
+                                            role = FirefighterRole.USER.toString(),
+                                            status = FirefighterStatus.REJECTED.toString(),
                                         )
                                     )
                                 },
@@ -91,5 +96,18 @@ fun NewFirefighterScreen(
                 )
             }
         }
+
+        Spacer(Modifier.height(12.dp))
+        AppLoadMore(
+            hasMore = hasMore,
+            isLoading = pendingFirefighters.isLoading,
+            onLoadMore = {
+                if (hasMore && !pendingFirefighters.isLoading) {
+                    firefighterViewModel.getPendingFirefighters(
+                        page = pendingFirefighters.page + 1
+                    )
+                }
+            }
+        )
     }
 }

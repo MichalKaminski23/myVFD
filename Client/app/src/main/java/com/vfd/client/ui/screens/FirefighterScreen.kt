@@ -1,5 +1,7 @@
 package com.vfd.client.ui.screens
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
+import com.vfd.client.ui.components.AppLoadMore
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
 @Composable
@@ -24,10 +27,12 @@ fun FirefighterScreen(
     navController: NavController
 ) {
 
-    val firefightersFromMyFiredepartment by firefighterViewModel.firefightersFromMyFiredepartment.collectAsState()
+    val firefighters by firefighterViewModel.activeFirefightersUiState.collectAsState()
+
+    val hasMore = firefighters.page + 1 < firefighters.totalPages
 
     LaunchedEffect(Unit) {
-        firefighterViewModel.getFirefightersFromMyFiredepartment()
+        firefighterViewModel.getFirefighters()
     }
 
     AppColumn(
@@ -35,7 +40,7 @@ fun FirefighterScreen(
             .verticalScroll(rememberScrollState()),
     )
     {
-        if (firefightersFromMyFiredepartment.isEmpty()) {
+        if (firefighters.activeFirefighters.isEmpty()) {
             Text(
                 "There aren't any firefighters in your VFD",
                 textAlign = TextAlign.Center,
@@ -43,7 +48,7 @@ fun FirefighterScreen(
                 modifier = Modifier.padding(16.dp)
             )
         } else {
-            firefightersFromMyFiredepartment.forEach { firefighter ->
+            firefighters.activeFirefighters.forEach { firefighter ->
                 AppCard(
                     "👤 ${firefighter.firstName} ${firefighter.lastName}",
                     "🚒 Firedepartment: ${firefighter.firedepartmentName}",
@@ -52,5 +57,16 @@ fun FirefighterScreen(
                 )
             }
         }
+
+        Spacer(Modifier.height(12.dp))
+        AppLoadMore(
+            hasMore = hasMore,
+            isLoading = firefighters.isLoading,
+            onLoadMore = {
+                if (hasMore && !firefighters.isLoading) firefighterViewModel.getFirefighters(
+                    page = firefighters.page + 1
+                )
+            }
+        )
     }
 }

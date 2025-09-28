@@ -51,9 +51,9 @@ class FirefighterServiceImplementation(
         firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse {
 
-        val userModerator = userRepository.findByEmailOrThrow(emailAddress)
-
-        firefighterRepository.findByIdOrThrow(userModerator.userId!!)
+//        val userModerator = userRepository.findByEmailOrThrow(emailAddress)
+//
+//        firefighterRepository.findByIdOrThrow(userModerator.userId!!)
 
 
         val userCreated = userRepository.findByIdOrThrow(firefighterDto.userId)

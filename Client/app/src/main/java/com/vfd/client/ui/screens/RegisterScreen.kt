@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -152,11 +152,15 @@ fun RegisterScreen(
         }
 
         AppButton(
-            icon = Icons.Filled.Lock,
+            icon = Icons.Filled.Add,
             label = "Register",
             onClick = { authViewModel.register() },
             fullWidth = true,
-            enabled = !registerUiState.loading,
+            enabled =
+                registerUiState.firstName.isNotBlank() && registerUiState.lastName.isNotBlank() && registerUiState.country.isNotBlank()
+                        && registerUiState.voivodeship.isNotBlank() && registerUiState.city.isNotBlank() && registerUiState.postalCode.isNotBlank()
+                        && registerUiState.street.isNotBlank() && registerUiState.houseNumber.isNotBlank() && registerUiState.emailAddress.isNotBlank() && registerUiState.phoneNumber.isNotBlank()
+                        && registerUiState.password.isNotBlank() && !registerUiState.loading,
             loading = registerUiState.loading
         )
     }

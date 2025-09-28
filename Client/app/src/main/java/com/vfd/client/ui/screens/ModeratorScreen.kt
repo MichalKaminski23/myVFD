@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,12 +29,12 @@ fun ModeratorScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val currentUser by userViewModel.user.collectAsState()
-    val currentFirefighter by firefighterViewModel.firefighter.collectAsState()
+    val currentUser by userViewModel.currentUser.collectAsState()
+    val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        userViewModel.getCurrentUser()
-        firefighterViewModel.getCurrentFirefighter()
+        userViewModel.getUserByEmailAddress()
+        firefighterViewModel.getFirefighterByEmailAddress()
     }
 
     AppColumn(
@@ -42,24 +42,22 @@ fun ModeratorScreen(
             .verticalScroll(rememberScrollState()),
     )
     {
-        if (currentUser != null) {
+        currentUser.user?.let { user ->
             AppCard(
-                "👤 ${currentUser!!.firstName} ${currentUser!!.lastName}",
-                "\uD83D\uDCE7 ${currentUser!!.emailAddress}" + "\n📱 ${currentUser!!.phoneNumber}",
-                "🏠 ${currentUser!!.address.country}, ${currentUser!!.address.voivodeship}, " +
-                        "${currentUser!!.address.street} ${currentUser!!.address.houseNumber}" + "/" +
-                        (currentUser!!.address.apartNumber ?: "null") +
-                        " ${currentUser!!.address.postalCode} ${currentUser!!.address.city}",
+                "👤 ${user.firstName} ${user.lastName}",
+                "\uD83D\uDCE7 ${user.emailAddress}" + "\n📱 ${user.phoneNumber}",
+                "🏠 ${user.address.country}, ${user.address.voivodeship}, " +
+                        "${user.address.street} ${user.address.houseNumber}" + "/" +
+                        (user.address.apartNumber ?: "null") +
+                        " ${user.address.postalCode} ${user.address.city}",
                 null
             )
-        } else {
-            CircularProgressIndicator()
-        }
+        } ?: CircularProgressIndicator()
 
-        if (currentFirefighter != null) {
+        if (currentFirefighterUiState.currentFirefighter != null) {
             AppCard(
-                "\uD83D\uDE92 ${currentFirefighter!!.firedepartmentName}",
-                "\uD83E\uDDD1\u200D\uD83D\uDE92 Role: ${currentFirefighter!!.role}",
+                "\uD83D\uDE92 ${currentFirefighterUiState.currentFirefighter!!.firedepartmentName}",
+                "\uD83E\uDDD1\u200D\uD83D\uDE92 Role: ${currentFirefighterUiState.currentFirefighter!!.role}",
                 "✨ To God for glory, to people for salvation.",
                 null
             )
@@ -69,7 +67,7 @@ fun ModeratorScreen(
 
         Spacer(Modifier.height(24.dp))
         AppButton(
-            icon = Icons.Filled.ArrowBack,
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
             label = "Logout",
             onClick = {
                 authViewModel.logout()
