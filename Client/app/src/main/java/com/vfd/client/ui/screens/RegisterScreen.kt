@@ -2,27 +2,23 @@ package com.vfd.client.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.ui.components.AppButton
 import com.vfd.client.ui.components.AppColumn
+import com.vfd.client.ui.components.AppErrorText
 import com.vfd.client.ui.components.AppSectionHeader
 import com.vfd.client.ui.components.AppTextField
 import com.vfd.client.ui.viewmodels.AuthViewModel
@@ -139,16 +135,8 @@ fun RegisterScreen(
             visualTransformation = PasswordVisualTransformation()
         )
 
-        if (registerUiState.error != null) {
-            Text(
-                text = registerUiState.error!!,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 4.dp, top = 2.dp)
-            )
+        if (registerUiState.errorMessage != null) {
+            AppErrorText(registerUiState.errorMessage!!)
         }
 
         AppButton(
@@ -160,8 +148,8 @@ fun RegisterScreen(
                 registerUiState.firstName.isNotBlank() && registerUiState.lastName.isNotBlank() && registerUiState.country.isNotBlank()
                         && registerUiState.voivodeship.isNotBlank() && registerUiState.city.isNotBlank() && registerUiState.postalCode.isNotBlank()
                         && registerUiState.street.isNotBlank() && registerUiState.houseNumber.isNotBlank() && registerUiState.emailAddress.isNotBlank() && registerUiState.phoneNumber.isNotBlank()
-                        && registerUiState.password.isNotBlank() && !registerUiState.loading,
-            loading = registerUiState.loading
+                        && registerUiState.password.isNotBlank() && !registerUiState.isLoading,
+            loading = registerUiState.isLoading
         )
     }
 }

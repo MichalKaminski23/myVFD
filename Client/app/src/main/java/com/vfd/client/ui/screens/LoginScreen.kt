@@ -1,13 +1,9 @@
 package com.vfd.client.ui.screens
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -17,13 +13,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.ui.components.AppButton
 import com.vfd.client.ui.components.AppColumn
+import com.vfd.client.ui.components.AppErrorText
 import com.vfd.client.ui.components.AppTextField
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
@@ -106,16 +101,8 @@ fun LoginScreen(
             visualTransformation = PasswordVisualTransformation()
         )
 
-        if (loginUiState.error != null) {
-            Text(
-                text = loginUiState.error!!,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 4.dp, top = 2.dp)
-            )
+        if (loginUiState.errorMessage != null) {
+            AppErrorText(loginUiState.errorMessage!!)
         }
 
         AppButton(
@@ -123,8 +110,8 @@ fun LoginScreen(
             label = "Login",
             onClick = { authViewModel.login() },
             fullWidth = true,
-            enabled = loginUiState.emailAddress.isNotBlank() && loginUiState.password.isNotBlank() && !loginUiState.loading,
-            loading = loginUiState.loading
+            enabled = loginUiState.emailAddress.isNotBlank() && loginUiState.password.isNotBlank() && !loginUiState.isLoading,
+            loading = loginUiState.isLoading
         )
     }
 }

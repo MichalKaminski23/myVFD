@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
@@ -14,13 +15,19 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,6 +53,8 @@ class MainActivity : ComponentActivity() {
                 val mainViewModel: MainViewModel = hiltViewModel()
                 val pending by mainViewModel.pendingFirefighters.collectAsState()
                 val active by mainViewModel.activeFirefighters.collectAsState()
+                val snackbarHostState = remember { SnackbarHostState() }
+                remember { SnackbarHostState() }
                 LaunchedEffect(currentRoute) {
                     when (currentRoute) {
                         "moderatorScreen" -> mainViewModel.refreshBadges()
@@ -53,6 +62,20 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 Scaffold(
+                    snackbarHost = {
+                        SnackbarHost(
+                            hostState = snackbarHostState,
+                            snackbar = { snackbarData ->
+                                Snackbar(
+                                    snackbarData = snackbarData,
+                                    containerColor = MaterialTheme.colorScheme.secondary,
+                                    contentColor = Color.White,
+                                    actionContentColor = MaterialTheme.colorScheme.primary,
+                                    shape = RoundedCornerShape(12.dp)
+                                ) // Snackbar
+                            }
+                        )
+                    },
                     topBar = {
                         TopAppBar(
                             title = {
@@ -210,7 +233,8 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         modifier = Modifier
                             .padding(innerPadding)
-                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        snackbarHostState = snackbarHostState
                     )
                 }
             }

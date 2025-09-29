@@ -11,14 +11,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.vfd.client.ui.components.AppButton
 import com.vfd.client.ui.components.AppColumn
+import com.vfd.client.ui.components.AppText
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
@@ -30,12 +29,9 @@ fun WelcomeScreen(navController: NavController) {
     )
     {
         Spacer(modifier = Modifier.height(100.dp))
-        Text(
-            text = "My Volunteer Fire Department",
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
+        AppText("My Volunteer Fire Department", style = MaterialTheme.typography.headlineLarge)
+        Spacer(modifier = Modifier.height(40.dp))
+        AppText("Login or create a new account.", style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(40.dp))
         AppButton(
             icon = Icons.Filled.Lock,

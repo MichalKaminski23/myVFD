@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -25,6 +26,7 @@ import com.vfd.client.ui.screens.WelcomeScreen
 fun AppNavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState
 ) {
     NavHost(
         navController = navController,
@@ -60,7 +62,7 @@ fun AppNavGraph(
             FirefighterScreen(navController = navController)
         }
         composable("assetScreen") {
-            AssetScreen(navController = navController)
+            AssetScreen(navController = navController, snackbarHostState = snackbarHostState)
         }
     }
 }

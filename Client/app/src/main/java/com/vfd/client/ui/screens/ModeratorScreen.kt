@@ -16,8 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.ui.components.AppButton
-import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
+import com.vfd.client.ui.components.AppFirefighterCard
+import com.vfd.client.ui.components.AppUserCard
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
@@ -29,7 +30,7 @@ fun ModeratorScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val currentUser by userViewModel.currentUser.collectAsState()
+    val currentUserUiState by userViewModel.currentUserUiState.collectAsState()
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -42,25 +43,12 @@ fun ModeratorScreen(
             .verticalScroll(rememberScrollState()),
     )
     {
-        currentUser.user?.let { user ->
-            AppCard(
-                "👤 ${user.firstName} ${user.lastName}",
-                "\uD83D\uDCE7 ${user.emailAddress}" + "\n📱 ${user.phoneNumber}",
-                "🏠 ${user.address.country}, ${user.address.voivodeship}, " +
-                        "${user.address.street} ${user.address.houseNumber}" + "/" +
-                        (user.address.apartNumber ?: "null") +
-                        " ${user.address.postalCode} ${user.address.city}",
-                null
-            )
+        currentUserUiState.currentUser?.let { user ->
+            AppUserCard(user)
         } ?: CircularProgressIndicator()
 
         if (currentFirefighterUiState.currentFirefighter != null) {
-            AppCard(
-                "\uD83D\uDE92 ${currentFirefighterUiState.currentFirefighter!!.firedepartmentName}",
-                "\uD83E\uDDD1\u200D\uD83D\uDE92 Role: ${currentFirefighterUiState.currentFirefighter!!.role}",
-                "✨ To God for glory, to people for salvation.",
-                null
-            )
+            AppFirefighterCard(currentFirefighterUiState.currentFirefighter!!)
         } else {
             CircularProgressIndicator()
         }

@@ -1,5 +1,6 @@
 package com.vfd.client.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,7 +14,10 @@ fun AppErrorText(message: String) {
     Text(
         message,
         color = MaterialTheme.colorScheme.error,
-        modifier = Modifier.padding(8.dp),
-        textAlign = TextAlign.Center
+        style = MaterialTheme.typography.bodyMedium,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .padding(6.dp)
+            .fillMaxWidth()
     )
 }

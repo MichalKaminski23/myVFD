@@ -2,8 +2,6 @@ package com.vfd.client.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -12,7 +10,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,26 +19,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.data.remote.dtos.AssetDtos
+import com.vfd.client.ui.components.AppAssetCard
 import com.vfd.client.ui.components.AppButton
-import com.vfd.client.ui.components.AppCard
 import com.vfd.client.ui.components.AppColumn
 import com.vfd.client.ui.components.AppDropdown
+import com.vfd.client.ui.components.AppErrorText
+import com.vfd.client.ui.components.AppText
 import com.vfd.client.ui.components.AppTextField
 import com.vfd.client.ui.viewmodels.AssetTypeViewModel
 import com.vfd.client.ui.viewmodels.AssetViewModel
+import com.vfd.client.ui.viewmodels.UiEvent
 
 @Composable
 fun AssetScreen(
     assetViewModel: AssetViewModel = hiltViewModel(),
     assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    snackbarHostState: SnackbarHostState,
 ) {
 
-    val assets by assetViewModel.assetUiState.collectAsState()
+    val assetUiState by assetViewModel.assetUiState.collectAsState()
 
     val assetTypeUiState by assetTypeViewModel.assetTypeUiState.collectAsState()
 
@@ -51,6 +53,26 @@ fun AssetScreen(
         assetViewModel.getAssets()
     }
 
+    LaunchedEffect(Unit) {
+        assetViewModel.events.collect { event ->
+            when (event) {
+                is UiEvent.Success -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = "OK"
+                    )
+                }
+
+                is UiEvent.Error -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.message,
+                        withDismissAction = true
+                    )
+                }
+            }
+        }
+    } // Snackbar
+
     LaunchedEffect(assetUpdateUiState.success) {
         if (assetUpdateUiState.success) {
             editingAssetId = null
@@ -60,23 +82,19 @@ fun AssetScreen(
 
     AppColumn(
         modifier = Modifier
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
     )
     {
-        if (assets.assets.isEmpty()) {
-            Text(
+        if (assetUiState.assets.isEmpty()) {
+            AppText(
                 "There aren't any assets in your VFD",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(16.dp)
+                style = MaterialTheme.typography.headlineLarge
             )
         } else {
-            assets.assets.forEach { asset ->
+            assetUiState.assets.forEach { asset ->
                 if (editingAssetId == asset.assetId) {
-                    AppCard(
-                        header = "\uD83E\uDE93 Editing: ${asset.name}",
-                        smallerHeader = "\uD83D\uDEA8 Type: ${asset.assetTypeName}",
-                        otherText = "✏\uFE0F Description: ${asset.description}",
+                    AppAssetCard(
+                        asset,
                         actions = {
                             AppTextField(
                                 value = assetUpdateUiState.name,
@@ -88,8 +106,7 @@ fun AssetScreen(
                                     }
                                 },
                                 label = "Name",
-                                errorMessage = null,
-                                redBackground = true
+                                errorMessage = null
                             )
 
                             AppDropdown(
@@ -131,8 +148,7 @@ fun AssetScreen(
                                 },
                                 label = "Description",
                                 errorMessage = null,
-                                singleLine = false,
-                                redBackground = true
+                                singleLine = false
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp))
                             {
@@ -141,18 +157,21 @@ fun AssetScreen(
                                     label = "Save",
                                     onClick = {
                                         asset.assetId.let {
+                                            val assetDto = AssetDtos.AssetPatch(
+                                                name = assetUpdateUiState.name,
+                                                assetType = assetUpdateUiState.assetType.takeIf { it.isNotBlank() },
+                                                description = assetUpdateUiState.description
+                                            )
                                             assetViewModel.updateAsset(
                                                 it,
-                                                assetUpdateUiState.name,
-                                                assetUpdateUiState.assetType,
-                                                assetUpdateUiState.description
+                                                assetDto
                                             )
                                         }
                                     },
                                     modifier = Modifier.weight(1f),
                                     enabled = assetUpdateUiState.name.isNotBlank() && assetUpdateUiState.description.isNotBlank()
-                                            && !assetUpdateUiState.loading,
-                                    loading = assetUpdateUiState.loading
+                                            && !assetUpdateUiState.isLoading,
+                                    loading = assetUpdateUiState.isLoading
                                 )
                                 AppButton(
                                     icon = Icons.Default.Close,
@@ -164,11 +183,8 @@ fun AssetScreen(
                         }
                     )
                 } else {
-                    AppCard(
-                        "\uD83E\uDE93 ${asset.name}",
-                        "\uD83D\uDEA8 Type: ${asset.assetTypeName}",
-                        "✏\uFE0F Description: ${asset.description}",
-                        {
+                    AppAssetCard(
+                        asset, {
                             AppButton(
                                 icon = Icons.Default.Edit,
                                 label = "Edit",
@@ -189,16 +205,8 @@ fun AssetScreen(
             }
         }
 
-        if (assetUpdateUiState.error != null) {
-            Text(
-                text = assetUpdateUiState.error!!,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 4.dp, top = 2.dp)
-            )
+        if (assetUpdateUiState.errorMessage != null) {
+            AppErrorText(assetUpdateUiState.errorMessage!!)
         }
     }
 }

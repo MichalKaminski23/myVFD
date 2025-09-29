@@ -1,14 +1,15 @@
 package com.vfd.client.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.remote.dtos.AssetDtos
 import com.vfd.client.data.repositories.AssetRepository
 import com.vfd.client.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,15 +25,23 @@ data class AssetUpdateUiState(
     val name: String = "",
     val assetType: String = "",
     val description: String = "",
-    val loading: Boolean = false,
+    val isLoading: Boolean = false,
     val success: Boolean = false,
-    val error: String? = null
+    val errorMessage: String? = null
 )
+
+sealed class UiEvent {
+    data class Success(val message: String) : UiEvent()
+    data class Error(val message: String) : UiEvent()
+} // Snackbar
 
 @HiltViewModel
 class AssetViewModel @Inject constructor(
     private val assetRepository: AssetRepository
 ) : ViewModel() {
+
+    private val _events = Channel<UiEvent>()
+    val events = _events.receiveAsFlow() // Snackbar
 
     private val _assetUiState = MutableStateFlow(AssetUiState())
     val assetUiState = _assetUiState.asStateFlow()
@@ -61,7 +70,6 @@ class AssetViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = null
                         )
-                    Log.w("MeScreen", "Firedepartments: ${response.items}")
                 }
 
                 is ApiResult.Error -> {
@@ -81,29 +89,26 @@ class AssetViewModel @Inject constructor(
 
     fun updateAsset(
         assetId: Int,
-        name: String,
-        assetType: String,
-        description: String
+        assetDto: AssetDtos.AssetPatch,
     ) {
         viewModelScope.launch {
             _assetUpdateUiState.value =
-                _assetUpdateUiState.value.copy(loading = true, error = null, success = false)
-
-            val assetDto = AssetDtos.AssetPatch(
-                name = name,
-                assetType = assetType.ifBlank { null },
-                description = description
-            )
+                _assetUpdateUiState.value.copy(
+                    isLoading = true,
+                    errorMessage = null,
+                    success = false
+                )
 
             when (val result = assetRepository.updateAsset(assetId, assetDto)) {
 
                 is ApiResult.Success -> {
                     _assetUpdateUiState.value =
                         _assetUpdateUiState.value.copy(
-                            loading = false,
+                            isLoading = false,
                             success = true,
-                            error = null
+                            errorMessage = null
                         )
+                    _events.send(UiEvent.Success("Asset updated successfully")) // Snackbar
 
                     val updatedAssets = _assetUiState.value.assets.map { asset ->
                         if (asset.assetId == assetId) asset.copy(
@@ -120,14 +125,18 @@ class AssetViewModel @Inject constructor(
                     val message = result.message ?: "Unknown error"
 
                     _assetUpdateUiState.value = _assetUpdateUiState.value.copy(
-                        loading = false,
+                        isLoading = false,
                         success = false,
-                        error = message
+                        errorMessage = message
                     )
+                    _events.send(UiEvent.Error("Failed to update asset"))
                 }
 
                 is ApiResult.Loading -> {
-                    Unit
+                    _assetUpdateUiState.value =
+                        _assetUpdateUiState.value.copy(
+                            isLoading = true
+                        )
                 }
             }
         }

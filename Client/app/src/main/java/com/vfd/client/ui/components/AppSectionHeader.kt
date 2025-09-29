@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 fun AppSectionHeader(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp, bottom = 4.dp)

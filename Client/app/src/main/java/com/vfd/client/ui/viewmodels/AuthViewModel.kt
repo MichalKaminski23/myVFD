@@ -28,18 +28,18 @@ data class RegisterUiState(
     val emailAddress: String = "",
     val phoneNumber: String = "",
     val password: String = "",
-    val loading: Boolean = false,
+    val isLoading: Boolean = false,
     val success: Boolean = false,
-    val error: String? = null,
+    val errorMessage: String? = null,
     val fieldErrors: Map<String, String> = emptyMap()
 )
 
 data class LoginUiState(
     val emailAddress: String = "",
     val password: String = "",
-    val loading: Boolean = false,
+    val isLoading: Boolean = false,
     val success: Boolean = false,
-    val error: String? = null,
+    val errorMessage: String? = null,
     val fieldErrors: Map<String, String> = emptyMap(),
 )
 
@@ -107,7 +107,7 @@ class AuthViewModel @Inject constructor(
 
         viewModelScope.launch {
             _registerUiState.value =
-                _registerUiState.value.copy(loading = true, error = null, success = false)
+                _registerUiState.value.copy(isLoading = true, errorMessage = null, success = false)
 
             when (val result = authRepository.register(newUser)) {
                 is ApiResult.Success<AuthResponseDto> -> {
@@ -118,7 +118,7 @@ class AuthViewModel @Inject constructor(
                     }
 
                     _registerUiState.value =
-                        _registerUiState.value.copy(loading = false, success = true)
+                        _registerUiState.value.copy(isLoading = false, success = true)
                 }
 
                 is ApiResult.Error -> {
@@ -135,14 +135,14 @@ class AuthViewModel @Inject constructor(
                     }
 
                     _registerUiState.value = _registerUiState.value.copy(
-                        loading = false,
-                        error = if (fieldErrors.isEmpty()) message else null,
+                        isLoading = false,
+                        errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
                 }
 
                 is ApiResult.Loading -> {
-                    _registerUiState.value = _registerUiState.value.copy(loading = true)
+                    _registerUiState.value = _registerUiState.value.copy(isLoading = true)
                 }
             }
         }
@@ -156,7 +156,7 @@ class AuthViewModel @Inject constructor(
 
         viewModelScope.launch {
             _loginUiState.value =
-                _loginUiState.value.copy(loading = true, error = null, success = false)
+                _loginUiState.value.copy(isLoading = true, errorMessage = null, success = false)
 
             when (val result = authRepository.login(user)) {
                 is ApiResult.Success<AuthResponseDto> -> {
@@ -166,7 +166,8 @@ class AuthViewModel @Inject constructor(
                         authRepository.saveToken(jwt)
                     }
 
-                    _loginUiState.value = _loginUiState.value.copy(loading = false, success = true)
+                    _loginUiState.value =
+                        _loginUiState.value.copy(isLoading = false, success = true)
                 }
 
                 is ApiResult.Error -> {
@@ -183,14 +184,14 @@ class AuthViewModel @Inject constructor(
                     }
 
                     _loginUiState.value = _loginUiState.value.copy(
-                        loading = false,
-                        error = if (fieldErrors.isEmpty()) message else null,
+                        isLoading = false,
+                        errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
                 }
 
                 is ApiResult.Loading -> {
-                    _loginUiState.value = _loginUiState.value.copy(loading = true)
+                    _loginUiState.value = _loginUiState.value.copy(isLoading = true)
                 }
             }
         }

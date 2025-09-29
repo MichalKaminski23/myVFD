@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class UserUiState(
-    val user: UserDtos.UserResponse? = null,
+data class CurrentUserUiState(
+    val currentUser: UserDtos.UserResponse? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
@@ -22,34 +22,35 @@ class UserViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _currentUser = MutableStateFlow(UserUiState())
-    val currentUser = _currentUser.asStateFlow()
+    private val _currentUserUiState = MutableStateFlow(CurrentUserUiState())
+    val currentUserUiState = _currentUserUiState.asStateFlow()
 
     fun getUserByEmailAddress() {
         viewModelScope.launch {
-            _currentUser.value = _currentUser.value.copy(isLoading = true, errorMessage = null)
+            _currentUserUiState.value =
+                _currentUserUiState.value.copy(isLoading = true, errorMessage = null)
 
             when (val result = userRepository.getUserByEmailAddress()) {
 
                 is ApiResult.Success -> {
                     val response = result.data!!
-                    _currentUser.value = _currentUser.value.copy(
-                        user = response,
+                    _currentUserUiState.value = _currentUserUiState.value.copy(
+                        currentUser = response,
                         isLoading = false,
                         errorMessage = null
                     )
                 }
 
                 is ApiResult.Error -> {
-                    _currentUser.value = _currentUser.value.copy(
-                        user = null,
+                    _currentUserUiState.value = _currentUserUiState.value.copy(
+                        currentUser = null,
                         isLoading = false,
                         errorMessage = result.message ?: "Failed to load current user"
                     )
                 }
 
                 is ApiResult.Loading -> {
-                    _currentUser.value = _currentUser.value.copy(isLoading = true)
+                    _currentUserUiState.value = _currentUserUiState.value.copy(isLoading = true)
                 }
             }
         }

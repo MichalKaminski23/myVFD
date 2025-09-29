@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun AppButton(
@@ -50,7 +51,8 @@ fun AppButton(
             )
             Text(
                 text = label,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontSize = 15.sp
             )
         }
     }

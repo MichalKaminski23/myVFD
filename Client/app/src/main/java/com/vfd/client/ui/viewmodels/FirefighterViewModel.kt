@@ -49,15 +49,10 @@ class FirefighterViewModel @Inject constructor(
     private val _pendingFirefightersUiState = MutableStateFlow(PendingFirefightersUiState())
     val pendingFirefightersUiState = _pendingFirefightersUiState.asStateFlow()
 
-    fun createFirefighter(userId: Int, firedepartmentId: Int) {
+    fun createFirefighter(firefighterDto: FirefighterDtos.FirefighterCreate) {
         viewModelScope.launch {
             _currentFirefighterUiState.value =
                 _currentFirefighterUiState.value.copy(isLoading = true, errorMessage = null)
-
-            val firefighterDto = FirefighterDtos.FirefighterCreate(
-                userId = userId,
-                firedepartmentId = firedepartmentId
-            )
 
             when (val result = firefighterRepository.createFirefighter(firefighterDto)) {
 

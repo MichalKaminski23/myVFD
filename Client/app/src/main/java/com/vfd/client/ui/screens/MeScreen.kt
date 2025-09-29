@@ -48,7 +48,7 @@ fun MeScreen(
 ) {
     val token by authViewModel.token.collectAsState()
 
-    val currentUser by userViewModel.currentUser.collectAsState()
+    val currentUserUiState by userViewModel.currentUserUiState.collectAsState()
 
     val firedepartmentUiState by firedepartmentViewModel.firedepartmentUiState.collectAsState()
     var selectedFiredepartmentId by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -67,18 +67,18 @@ fun MeScreen(
             .verticalScroll(rememberScrollState())
     )
     {
-        currentUser.user?.let {
+        currentUserUiState.currentUser?.let {
             AppUserCard(it)
         } ?: CircularProgressIndicator()
 
-        currentUser.errorMessage?.let { AppErrorText(it) }
+        currentUserUiState.errorMessage?.let { AppErrorText(it) }
 
         FirefighterSection(
             firefighter = currentFirefighterUiState.currentFirefighter,
             firedepartmentUiState = firedepartmentUiState,
             selectedFiredepartmentId = selectedFiredepartmentId,
             onSelected = { selectedFiredepartmentId = it },
-            onApply = { userId, deptId ->
+            onApply = { userId, firedepartmentId ->
                 if (currentFirefighterUiState.currentFirefighter?.status == FirefighterStatus.REJECTED.toString()) {
                     firefighterViewModel.changeFirefighterRoleOrStatus(
                         userId,
@@ -88,10 +88,15 @@ fun MeScreen(
                         )
                     )
                 } else {
-                    firefighterViewModel.createFirefighter(userId, deptId)
+
+                    val firefighterDto = FirefighterDtos.FirefighterCreate(
+                        userId = userId,
+                        firedepartmentId = firedepartmentId
+                    )
+                    firefighterViewModel.createFirefighter(firefighterDto)
                 }
             },
-            currentUserId = currentUser.user?.userId,
+            currentUserId = currentUserUiState.currentUser?.userId,
             firedepartmentViewModel = firedepartmentViewModel
         )
 

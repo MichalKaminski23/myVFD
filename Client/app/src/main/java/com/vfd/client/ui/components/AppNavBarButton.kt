@@ -68,7 +68,7 @@ fun NavBarAction(
                     Spacer(Modifier.height(7.dp))
                     Text(
                         text = actions[0].label,
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }
