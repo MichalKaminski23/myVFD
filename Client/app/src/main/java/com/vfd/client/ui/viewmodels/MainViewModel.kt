@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val firefighterRepository: FirefighterRepository,
+    private val firefighterRepository: FirefighterRepository
 ) : ViewModel() {
 
     private val _pendingFirefighters = MutableStateFlow(0)
@@ -20,10 +20,6 @@ class MainViewModel @Inject constructor(
 
     private val _activeFirefighters = MutableStateFlow(0)
     val activeFirefighters: StateFlow<Int> = _activeFirefighters
-
-    init {
-        refreshBadges()
-    }
 
     fun refreshBadges() {
         viewModelScope.launch {

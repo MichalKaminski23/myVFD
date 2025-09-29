@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,20 +26,37 @@ import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.buttons.AppLoadMoreButton
 import com.vfd.client.ui.components.cards.AppFirefightersCard
 import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
+import com.vfd.client.utils.RefreshEvent
+import com.vfd.client.utils.RefreshManager
 
 @Composable
 fun NewFirefighterScreen(
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
 ) {
     val pendingFirefighters by firefighterViewModel.pendingFirefightersUiState.collectAsState()
 
     val hasMore = pendingFirefighters.page + 1 < pendingFirefighters.totalPages
 
+    AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
+
     LaunchedEffect(Unit) {
-        firefighterViewModel.getPendingFirefighters()
+        firefighterViewModel.getPendingFirefighters(page = 0, refresh = true)
+
+        RefreshManager.events.collect { event ->
+            when (event) {
+                is RefreshEvent.NewFirefighterScreen -> firefighterViewModel.getPendingFirefighters(
+                    page = 0,
+                    refresh = true
+                )
+
+                else -> {}
+            }
+        }
     }
 
     AppColumn(
@@ -48,7 +66,7 @@ fun NewFirefighterScreen(
     {
         if (pendingFirefighters.pendingFirefighters.isEmpty()) {
             AppText(
-                "There aren't any pending firefighters to your VFD",
+                "There aren't any pending firefighters to your VFD or the firefighters are still loading",
                 style = MaterialTheme.typography.headlineLarge
             )
         } else {
@@ -97,9 +115,7 @@ fun NewFirefighterScreen(
             isLoading = pendingFirefighters.isLoading,
             onLoadMore = {
                 if (hasMore && !pendingFirefighters.isLoading) {
-                    firefighterViewModel.getPendingFirefighters(
-                        page = pendingFirefighters.page + 1
-                    )
+                    firefighterViewModel.getPendingFirefighters(page = pendingFirefighters.page + 1)
                 }
             }
         )

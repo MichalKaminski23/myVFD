@@ -7,7 +7,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,21 +31,25 @@ import com.vfd.client.ui.components.cards.AppUserCard
 import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.elements.AppDropdown
 import com.vfd.client.ui.components.globals.AppLoadingBar
+import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppErrorText
+import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FiredepartmentUiState
 import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
+import com.vfd.client.utils.RefreshEvent
+import com.vfd.client.utils.RefreshManager
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MeScreen(
     userViewModel: UserViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel(),
     firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(),
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
 ) {
     val token by authViewModel.token.collectAsState()
 
@@ -55,10 +60,25 @@ fun MeScreen(
 
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
 
+    AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
+
     LaunchedEffect(token) {
         if (!token.isNullOrBlank()) {
             userViewModel.getUserByEmailAddress()
             firefighterViewModel.getFirefighterByEmailAddress()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        RefreshManager.events.collect { event ->
+            when (event) {
+                is RefreshEvent.MeScreen -> {
+                    userViewModel.getUserByEmailAddress()
+                    firefighterViewModel.getFirefighterByEmailAddress()
+                }
+
+                else -> {}
+            }
         }
     }
 
@@ -67,6 +87,13 @@ fun MeScreen(
             .verticalScroll(rememberScrollState())
     )
     {
+        if (currentUserUiState.isLoading) {
+            AppText(
+                "The data is loading...",
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+
         AppLoadingBar(currentUserUiState.isLoading)
         AppLoadingBar(currentFirefighterUiState.isLoading)
 
@@ -74,32 +101,34 @@ fun MeScreen(
 
         currentUserUiState.errorMessage?.let { AppErrorText(it) }
 
-        FirefighterSection(
-            firefighter = currentFirefighterUiState.currentFirefighter,
-            firedepartmentUiState = firedepartmentUiState,
-            selectedFiredepartmentId = selectedFiredepartmentId,
-            onSelected = { selectedFiredepartmentId = it },
-            onApply = { userId, firedepartmentId ->
-                if (currentFirefighterUiState.currentFirefighter?.status == FirefighterStatus.REJECTED.toString()) {
-                    firefighterViewModel.changeFirefighterRoleOrStatus(
-                        userId,
-                        FirefighterDtos.FirefighterPatch(
-                            role = FirefighterRole.USER.toString(),
-                            status = FirefighterStatus.PENDING.toString()
+        if (!currentFirefighterUiState.isLoading) {
+            FirefighterSection(
+                firefighter = currentFirefighterUiState.currentFirefighter,
+                firedepartmentUiState = firedepartmentUiState,
+                selectedFiredepartmentId = selectedFiredepartmentId,
+                onSelected = { selectedFiredepartmentId = it },
+                onApply = { userId, firedepartmentId ->
+                    if (currentFirefighterUiState.currentFirefighter?.status == FirefighterStatus.REJECTED.toString()) {
+                        firefighterViewModel.changeFirefighterRoleOrStatus(
+                            userId,
+                            FirefighterDtos.FirefighterPatch(
+                                role = FirefighterRole.USER.toString(),
+                                status = FirefighterStatus.PENDING.toString()
+                            )
                         )
-                    )
-                } else {
+                    } else {
 
-                    val firefighterDto = FirefighterDtos.FirefighterCreate(
-                        userId = userId,
-                        firedepartmentId = firedepartmentId
-                    )
-                    firefighterViewModel.createFirefighter(firefighterDto)
-                }
-            },
-            currentUserId = currentUserUiState.currentUser?.userId,
-            firedepartmentViewModel = firedepartmentViewModel
-        )
+                        val firefighterDto = FirefighterDtos.FirefighterCreate(
+                            userId = userId,
+                            firedepartmentId = firedepartmentId
+                        )
+                        firefighterViewModel.createFirefighter(firefighterDto)
+                    }
+                },
+                currentUserId = currentUserUiState.currentUser?.userId,
+                firedepartmentViewModel = firedepartmentViewModel
+            )
+        }
 
         AppButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,

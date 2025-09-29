@@ -5,10 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.repositories.FirefighterRepository
 import com.vfd.client.utils.ApiResult
+import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,6 +44,9 @@ class FirefighterViewModel @Inject constructor(
     private val firefighterRepository: FirefighterRepository
 ) : ViewModel() {
 
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvents = _uiEvent.receiveAsFlow()
+
     private val _currentFirefighterUiState = MutableStateFlow(CurrentFirefighterUiState())
     val currentFirefighterUiState = _currentFirefighterUiState.asStateFlow()
 
@@ -65,6 +71,7 @@ class FirefighterViewModel @Inject constructor(
                             errorMessage = null,
                             success = true
                         )
+                    _uiEvent.send(UiEvent.Success("Firefighter created successfully"))
                 }
 
                 is ApiResult.Error -> {
@@ -73,6 +80,7 @@ class FirefighterViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = result.message ?: "Failed to create firefighter"
                         )
+                    _uiEvent.send(UiEvent.Success("Failed to create firefighter"))
                 }
 
                 is ApiResult.Loading -> {
@@ -153,7 +161,7 @@ class FirefighterViewModel @Inject constructor(
                             .filterNot { it.firefighterId == firefighterId },
                         isLoading = false
                     )
-                    getPendingFirefighters()
+                    _uiEvent.send(UiEvent.Success("Firefighter updated successfully"))
                 }
 
                 is ApiResult.Error -> {
@@ -162,6 +170,7 @@ class FirefighterViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = result.message ?: "Failed to change role or status"
                         )
+                    _uiEvent.send(UiEvent.Success("Failed to update firefighter"))
                 }
 
                 is ApiResult.Loading -> {
@@ -174,22 +183,27 @@ class FirefighterViewModel @Inject constructor(
         }
     }
 
-    fun getPendingFirefighters(page: Int = 0, size: Int = 20) {
+    fun getPendingFirefighters(page: Int = 0, size: Int = 20, refresh: Boolean = false) {
         viewModelScope.launch {
             _pendingFirefightersUiState.value =
-                _pendingFirefightersUiState.value.copy(isLoading = true, errorMessage = null)
+                _pendingFirefightersUiState.value.copy(
+                    pendingFirefighters = if (refresh || page == 0) emptyList() else _pendingFirefightersUiState.value.pendingFirefighters,
+                    isLoading = true,
+                    errorMessage = null
+                )
 
             when (val result = firefighterRepository.getPendingFirefighters(page, size)) {
 
                 is ApiResult.Success -> {
-                    delay(400)
                     val response = result.data!!
-                    val merged =
-                        (_pendingFirefightersUiState.value.pendingFirefighters + response.items)
-                            .distinctBy { it.firefighterId }
+                    delay(400)
                     _pendingFirefightersUiState.value =
                         _pendingFirefightersUiState.value.copy(
-                            pendingFirefighters = merged,
+                            pendingFirefighters = if (refresh || page == 0) {
+                                response.items
+                            } else {
+                                _pendingFirefightersUiState.value.pendingFirefighters + response.items
+                            },
                             page = response.page,
                             totalPages = response.totalPages,
                             isLoading = false,
@@ -213,22 +227,27 @@ class FirefighterViewModel @Inject constructor(
         }
     }
 
-    fun getFirefighters(page: Int = 0, size: Int = 20) {
+    fun getFirefighters(page: Int = 0, size: Int = 20, refresh: Boolean = false) {
         viewModelScope.launch {
             _activeFirefightersUiState.value =
-                _activeFirefightersUiState.value.copy(isLoading = true, errorMessage = null)
+                _activeFirefightersUiState.value.copy(
+                    activeFirefighters = if (refresh || page == 0) emptyList() else _activeFirefightersUiState.value.activeFirefighters,
+                    isLoading = true,
+                    errorMessage = null
+                )
 
             when (val result = firefighterRepository.getFirefighters(page, size)) {
 
                 is ApiResult.Success -> {
                     val response = result.data!!
                     delay(400)
-                    val merged =
-                        (_activeFirefightersUiState.value.activeFirefighters + response.items)
-                            .distinctBy { it.firefighterId }
                     _activeFirefightersUiState.value =
                         _activeFirefightersUiState.value.copy(
-                            activeFirefighters = merged,
+                            activeFirefighters = if (refresh || page == 0) {
+                                response.items
+                            } else {
+                                _activeFirefightersUiState.value.activeFirefighters + response.items
+                            },
                             page = response.page,
                             totalPages = response.totalPages,
                             isLoading = false,

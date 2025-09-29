@@ -47,7 +47,7 @@ fun AppNavGraph(
             RegisterScreen(navController = navController)
         }
         composable("meScreen") {
-            MeScreen(navController = navController)
+            MeScreen(navController = navController, snackbarHostState = snackbarHostState)
         }
         composable("infoScreen") {
             InfoScreen(navController = navController)
@@ -56,7 +56,9 @@ fun AppNavGraph(
             ModeratorScreen(navController = navController)
         }
         composable("newFirefighterScreen") {
-            NewFirefighterScreen(navController = navController)
+            NewFirefighterScreen(
+                navController = navController, snackbarHostState = snackbarHostState
+            )
         }
         composable("firefighterScreen") {
             FirefighterScreen(navController = navController)

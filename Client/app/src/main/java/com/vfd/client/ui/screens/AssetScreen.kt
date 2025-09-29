@@ -38,6 +38,8 @@ import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.AssetTypeViewModel
 import com.vfd.client.ui.viewmodels.AssetViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
+import com.vfd.client.utils.RefreshEvent
+import com.vfd.client.utils.RefreshManager
 
 @Composable
 fun AssetScreen(
@@ -60,8 +62,15 @@ fun AssetScreen(
     val hasMore = assetUiState.page + 1 < assetUiState.totalPages
 
     LaunchedEffect(Unit) {
-        assetViewModel.getAssets()
+        assetViewModel.getAssets(page = 0, refresh = true)
         firefighterViewModel.getFirefighterByEmailAddress()
+
+        RefreshManager.events.collect { event ->
+            when (event) {
+                is RefreshEvent.AssetScreen -> assetViewModel.getAssets(page = 0, refresh = true)
+                else -> {}
+            }
+        }
     }
 
     AppUiEvents(assetViewModel.uiEvents, snackbarHostState)
@@ -219,9 +228,8 @@ fun AssetScreen(
             hasMore = hasMore,
             isLoading = assetUiState.isLoading,
             onLoadMore = {
-                if (hasMore && !assetUiState.isLoading) firefighterViewModel.getFirefighters(
-                    page = assetUiState.page + 1
-                )
+                if (hasMore && !assetUiState.isLoading)
+                    assetViewModel.getAssets(page = assetUiState.page + 1)
             }
         )
 

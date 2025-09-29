@@ -36,6 +36,6 @@ fun InfoScreen(navController: NavController) {
         AppHorizontalDivider()
 
         AppText("Contact", style = MaterialTheme.typography.headlineLarge)
-        AppText("dmin@vfd_name@example.pl", style = MaterialTheme.typography.bodyMedium)
+        AppText("admin@vfd_name@example.pl", style = MaterialTheme.typography.bodyMedium)
     }
 }

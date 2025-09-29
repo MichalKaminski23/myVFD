@@ -18,6 +18,8 @@ import com.vfd.client.ui.components.cards.AppFirefightersCard
 import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
+import com.vfd.client.utils.RefreshEvent
+import com.vfd.client.utils.RefreshManager
 
 @Composable
 fun FirefighterScreen(
@@ -30,7 +32,18 @@ fun FirefighterScreen(
     val hasMore = activeFirefightersUiState.page + 1 < activeFirefightersUiState.totalPages
 
     LaunchedEffect(Unit) {
-        firefighterViewModel.getFirefighters()
+        firefighterViewModel.getFirefighters(page = 0, refresh = true)
+
+        RefreshManager.events.collect { event ->
+            when (event) {
+                is RefreshEvent.FirefighterScreen -> firefighterViewModel.getFirefighters(
+                    page = 0,
+                    refresh = true
+                )
+
+                else -> {}
+            }
+        }
     }
 
     AppColumn(
@@ -40,7 +53,7 @@ fun FirefighterScreen(
     {
         if (activeFirefightersUiState.activeFirefighters.isEmpty()) {
             AppText(
-                "There aren't any firefighters in your VFD",
+                "There aren't any firefighters in your VFD or the firefighters are still loading",
                 style = MaterialTheme.typography.headlineLarge
             )
         } else {
@@ -54,9 +67,8 @@ fun FirefighterScreen(
             hasMore = hasMore,
             isLoading = activeFirefightersUiState.isLoading,
             onLoadMore = {
-                if (hasMore && !activeFirefightersUiState.isLoading) firefighterViewModel.getFirefighters(
-                    page = activeFirefightersUiState.page + 1
-                )
+                if (hasMore && !activeFirefightersUiState.isLoading)
+                    firefighterViewModel.getFirefighters(page = activeFirefightersUiState.page + 1)
             }
         )
     }

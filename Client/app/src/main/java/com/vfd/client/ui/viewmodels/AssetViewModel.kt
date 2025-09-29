@@ -50,10 +50,14 @@ class AssetViewModel @Inject constructor(
         _assetUpdateUiState.value = field(_assetUpdateUiState.value)
     }
 
-    fun getAssets(page: Int = 0, size: Int = 20) {
+    fun getAssets(page: Int = 0, size: Int = 20, refresh: Boolean = false) {
         viewModelScope.launch {
             _assetUiState.value =
-                _assetUiState.value.copy(isLoading = true, errorMessage = null)
+                _assetUiState.value.copy(
+                    assets = if (refresh || page == 0) emptyList() else _assetUiState.value.assets,
+                    isLoading = true,
+                    errorMessage = null
+                )
 
             when (val result = assetRepository.getAssets(page, size)) {
 
@@ -62,7 +66,11 @@ class AssetViewModel @Inject constructor(
                     delay(400)
                     _assetUiState.value =
                         _assetUiState.value.copy(
-                            assets = _assetUiState.value.assets + response.items,
+                            assets = if (refresh || page == 0) {
+                                response.items
+                            } else {
+                                _assetUiState.value.assets + response.items
+                            },
                             page = response.page,
                             totalPages = response.totalPages,
                             isLoading = false,
