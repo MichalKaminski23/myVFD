@@ -1,5 +1,6 @@
 package com.vfd.client.ui.screens
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +40,7 @@ import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FiredepartmentUiState
 import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
+import com.vfd.client.ui.viewmodels.MainViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
@@ -59,6 +62,12 @@ fun MeScreen(
     var selectedFiredepartmentId by rememberSaveable { mutableStateOf<Int?>(null) }
 
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
+
+    val mainViewModel: MainViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+
+    LaunchedEffect(currentFirefighterUiState.currentFirefighter?.role) {
+        mainViewModel.setUserRole(currentFirefighterUiState.currentFirefighter?.role)
+    }
 
     AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
 
@@ -100,7 +109,6 @@ fun MeScreen(
         currentUserUiState.currentUser?.let { AppUserCard(it) }
 
         currentUserUiState.errorMessage?.let { AppErrorText(it) }
-
         if (!currentFirefighterUiState.isLoading) {
             FirefighterSection(
                 firefighter = currentFirefighterUiState.currentFirefighter,

@@ -7,6 +7,7 @@ import com.vfd.client.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +21,13 @@ class MainViewModel @Inject constructor(
 
     private val _activeFirefighters = MutableStateFlow(0)
     val activeFirefighters: StateFlow<Int> = _activeFirefighters
+
+    private val _canCreateThings = MutableStateFlow(false)
+    val canCreateThings = _canCreateThings.asStateFlow()
+
+    fun setUserRole(role: String?) {
+        _canCreateThings.value = role?.uppercase() == "PRESIDENT"
+    }
 
     fun refreshBadges() {
         viewModelScope.launch {

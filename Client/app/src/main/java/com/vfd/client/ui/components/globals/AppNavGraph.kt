@@ -61,7 +61,7 @@ fun AppNavGraph(
             )
         }
         composable("firefighterScreen") {
-            FirefighterScreen(navController = navController)
+            FirefighterScreen(navController = navController, snackbarHostState = snackbarHostState)
         }
         composable("assetScreen") {
             AssetScreen(navController = navController, snackbarHostState = snackbarHostState)

@@ -161,6 +161,11 @@ class FirefighterViewModel @Inject constructor(
                             .filterNot { it.firefighterId == firefighterId },
                         isLoading = false
                     )
+                    _activeFirefightersUiState.value = _activeFirefightersUiState.value.copy(
+                        activeFirefighters = _activeFirefightersUiState.value.activeFirefighters
+                            .filterNot { it.firefighterId == firefighterId },
+                        isLoading = false
+                    )
                     _uiEvent.send(UiEvent.Success("Firefighter updated successfully"))
                 }
 

@@ -31,8 +31,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import com.vfd.client.ui.components.buttons.NavBarAction
 import com.vfd.client.ui.components.buttons.NavBarButton
 import com.vfd.client.ui.components.globals.AppNavGraph
+import com.vfd.client.ui.screens.AssetCreateDialog
 import com.vfd.client.ui.theme.MyVFDMobileTheme
 import com.vfd.client.ui.viewmodels.MainViewModel
 import com.vfd.client.utils.RefreshEvent
@@ -64,6 +67,8 @@ class MainActivity : ComponentActivity() {
                 val mainViewModel: MainViewModel = hiltViewModel()
                 val pending by mainViewModel.pendingFirefighters.collectAsState()
                 val active by mainViewModel.activeFirefighters.collectAsState()
+                val canCreateThings by mainViewModel.canCreateThings.collectAsState()
+                var showCreateDialog by remember { mutableStateOf(false) }
                 val snackbarHostState = remember { SnackbarHostState() }
                 val snackbarShape = RoundedCornerShape(12.dp)
                 rememberCoroutineScope()
@@ -247,7 +252,23 @@ class MainActivity : ComponentActivity() {
                             }
 
                             "assetScreen" -> {
-                                GoBackButton(navController)
+                                val actions = mutableListOf<NavBarButton>()
+                                actions.add(
+                                    NavBarButton(
+                                        "Back",
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        { navController.popBackStack() }),
+                                )
+                                if (canCreateThings) {
+                                    actions.add(
+                                        NavBarButton(
+                                            "Create asset",
+                                            Icons.Default.Build,
+                                            { showCreateDialog = true }
+                                        )
+                                    )
+                                }
+                                NavBarAction(actions)
                             }
                         }
                     }
@@ -257,6 +278,13 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(innerPadding)
                             .padding(horizontal = 16.dp, vertical = 12.dp),
+                        snackbarHostState = snackbarHostState
+                    )
+                    AssetCreateDialog(
+                        assetViewModel = hiltViewModel(),
+                        assetTypeViewModel = hiltViewModel(),
+                        showDialog = showCreateDialog,
+                        onDismiss = { showCreateDialog = false },
                         snackbarHostState = snackbarHostState
                     )
                 }

@@ -1,5 +1,6 @@
 package com.vfd.client.ui.screens
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -23,6 +25,7 @@ import com.vfd.client.ui.components.globals.AppLoadingBar
 import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
+import com.vfd.client.ui.viewmodels.MainViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
@@ -37,6 +40,12 @@ fun ModeratorScreen(
     val currentUserUiState by userViewModel.currentUserUiState.collectAsState()
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
 
+    val mainViewModel: MainViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+
+    LaunchedEffect(currentFirefighterUiState.currentFirefighter?.role) {
+        mainViewModel.setUserRole(currentFirefighterUiState.currentFirefighter?.role)
+    }
+    
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
         firefighterViewModel.getFirefighterByEmailAddress()

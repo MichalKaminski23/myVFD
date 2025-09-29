@@ -102,7 +102,6 @@ fun <T> AppDropdown(
         errorCursorColor = MaterialTheme.colorScheme.error
     )
 
-
     val shape = RoundedCornerShape(14.dp)
 
     Box(modifier = modifier) {
@@ -158,10 +157,21 @@ fun <T> AppDropdown(
                     text = {
                         LinearProgressIndicator(
                             modifier = Modifier.fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     },
                     onClick = { /* no-op while loading */ }
+                )
+            } else if (items.isEmpty()) {
+                DropdownMenuItem(
+                    text = {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    },
+                    onClick = { /* no-op */ },
+                    enabled = false
                 )
             } else {
                 items.forEach { item ->
@@ -233,7 +243,8 @@ fun <T> AppDropdown(
                                 color = itemTextColor.copy(alpha = 0.8f)
                             )
                         },
-                        onClick = { /* No-op */ },
+                        onClick = { /* no-op */ },
+                        enabled = false,
                         colors = MenuDefaults.itemColors(textColor = itemTextColor)
                     )
                 }

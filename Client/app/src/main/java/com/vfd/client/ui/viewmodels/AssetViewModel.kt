@@ -32,6 +32,15 @@ data class AssetUpdateUiState(
     val errorMessage: String? = null
 )
 
+data class AssetCreateUiState(
+    val name: String = "",
+    val assetType: String = "",
+    val description: String = "",
+    val isLoading: Boolean = false,
+    val success: Boolean = false,
+    val errorMessage: String? = null
+)
+
 @HiltViewModel
 class AssetViewModel @Inject constructor(
     private val assetRepository: AssetRepository
@@ -46,8 +55,60 @@ class AssetViewModel @Inject constructor(
     private val _assetUpdateUiState = MutableStateFlow(AssetUpdateUiState())
     val assetUpdateUiState = _assetUpdateUiState.asStateFlow()
 
+    private val _assetCreateUiState = MutableStateFlow(AssetCreateUiState())
+    val assetCreateUiState = _assetCreateUiState.asStateFlow()
+
     fun onAssetUpdateValueChange(field: (AssetUpdateUiState) -> AssetUpdateUiState) {
         _assetUpdateUiState.value = field(_assetUpdateUiState.value)
+    }
+
+    fun onAssetCreateValueChange(field: (AssetCreateUiState) -> AssetCreateUiState) {
+        _assetCreateUiState.value = field(_assetCreateUiState.value)
+    }
+
+    fun createAsset(
+        assetDto: AssetDtos.AssetCreate,
+    ) {
+        viewModelScope.launch {
+            _assetCreateUiState.value =
+                _assetCreateUiState.value.copy(
+                    isLoading = true,
+                    errorMessage = null,
+                    success = false
+                )
+
+            when (val result = assetRepository.createAsset(assetDto)) {
+
+                is ApiResult.Success -> {
+                    _assetCreateUiState.value = _assetCreateUiState.value.copy(
+                        isLoading = false,
+                        success = true
+                    )
+                    
+                    _assetUiState.value = _assetUiState.value.copy(
+                        assets = listOf(result.data!!) + _assetUiState.value.assets
+                    )
+                    _uiEvent.send(UiEvent.Success("Asset created successfully"))
+                    getAssets(refresh = true)
+                }
+
+                is ApiResult.Error -> {
+                    _assetCreateUiState.value = _assetCreateUiState.value.copy(
+                        isLoading = false,
+                        success = false,
+                        errorMessage = result.message ?: "Failed to create asset"
+                    )
+                    _uiEvent.send(UiEvent.Error("Failed to create asset"))
+                }
+
+                is ApiResult.Loading -> {
+                    _assetCreateUiState.value =
+                        _assetCreateUiState.value.copy(
+                            isLoading = true
+                        )
+                }
+            }
+        }
     }
 
     fun getAssets(page: Int = 0, size: Int = 20, refresh: Boolean = false) {
