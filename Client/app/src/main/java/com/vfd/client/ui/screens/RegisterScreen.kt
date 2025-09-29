@@ -16,11 +16,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.vfd.client.ui.components.AppButton
-import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.AppErrorText
-import com.vfd.client.ui.components.AppSectionHeader
-import com.vfd.client.ui.components.AppTextField
+import com.vfd.client.ui.components.buttons.AppButton
+import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.texts.AppErrorText
+import com.vfd.client.ui.components.texts.AppSectionHeader
+import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

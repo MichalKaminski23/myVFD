@@ -1,4 +1,4 @@
-package com.vfd.client.ui.components
+package com.vfd.client.ui.components.elements
 
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme

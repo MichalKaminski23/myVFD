@@ -6,6 +6,7 @@ import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.repositories.FirefighterRepository
 import com.vfd.client.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -87,12 +88,17 @@ class FirefighterViewModel @Inject constructor(
     fun getFirefighterByEmailAddress() {
         viewModelScope.launch {
             _currentFirefighterUiState.value =
-                _currentFirefighterUiState.value.copy(isLoading = true, errorMessage = null)
+                _currentFirefighterUiState.value.copy(
+                    currentFirefighter = null,
+                    isLoading = true,
+                    errorMessage = null
+                )
 
             when (val result = firefighterRepository.getFirefighterByEmailAddress()) {
 
                 is ApiResult.Success -> {
                     _currentFirefighterUiState.value.currentFirefighter = result.data
+                    delay(400)
                     _currentFirefighterUiState.value = _currentFirefighterUiState.value.copy(
                         currentFirefighter = result.data,
                         isLoading = false,
@@ -176,6 +182,7 @@ class FirefighterViewModel @Inject constructor(
             when (val result = firefighterRepository.getPendingFirefighters(page, size)) {
 
                 is ApiResult.Success -> {
+                    delay(400)
                     val response = result.data!!
                     val merged =
                         (_pendingFirefightersUiState.value.pendingFirefighters + response.items)
@@ -215,6 +222,7 @@ class FirefighterViewModel @Inject constructor(
 
                 is ApiResult.Success -> {
                     val response = result.data!!
+                    delay(400)
                     val merged =
                         (_activeFirefightersUiState.value.activeFirefighters + response.items)
                             .distinctBy { it.firefighterId }

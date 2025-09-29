@@ -1,4 +1,4 @@
-package com.vfd.client.ui.components
+package com.vfd.client.ui.components.buttons
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AppLoadMore(
+fun AppLoadMoreButton(
     hasMore: Boolean,
     isLoading: Boolean,
     onLoadMore: () -> Unit,

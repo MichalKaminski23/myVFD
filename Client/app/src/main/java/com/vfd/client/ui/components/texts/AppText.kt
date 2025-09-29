@@ -1,4 +1,4 @@
-package com.vfd.client.ui.components
+package com.vfd.client.ui.components.texts
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text

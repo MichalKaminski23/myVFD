@@ -1,4 +1,4 @@
-package com.vfd.client.ui.components
+package com.vfd.client.ui.components.buttons
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth

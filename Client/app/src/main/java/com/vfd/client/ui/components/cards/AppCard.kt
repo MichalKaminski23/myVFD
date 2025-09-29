@@ -1,4 +1,4 @@
-package com.vfd.client.ui.components
+package com.vfd.client.ui.components.cards
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.texts.AppText
 
 @Composable
 fun AppCard(

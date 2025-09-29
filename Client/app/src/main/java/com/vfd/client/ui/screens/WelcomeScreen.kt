@@ -15,9 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.vfd.client.ui.components.AppButton
-import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.AppText
+import com.vfd.client.ui.components.buttons.AppButton
+import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.texts.AppText
 
 @Composable
 fun WelcomeScreen(navController: NavController) {

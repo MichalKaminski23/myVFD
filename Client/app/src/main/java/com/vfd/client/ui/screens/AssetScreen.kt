@@ -2,6 +2,8 @@ package com.vfd.client.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -23,16 +25,19 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.AssetDtos
-import com.vfd.client.ui.components.AppAssetCard
-import com.vfd.client.ui.components.AppButton
-import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.AppDropdown
-import com.vfd.client.ui.components.AppErrorText
-import com.vfd.client.ui.components.AppText
-import com.vfd.client.ui.components.AppTextField
+import com.vfd.client.data.remote.dtos.FirefighterRole
+import com.vfd.client.ui.components.buttons.AppButton
+import com.vfd.client.ui.components.buttons.AppLoadMoreButton
+import com.vfd.client.ui.components.cards.AppAssetCard
+import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.elements.AppDropdown
+import com.vfd.client.ui.components.globals.AppUiEvents
+import com.vfd.client.ui.components.texts.AppErrorText
+import com.vfd.client.ui.components.texts.AppText
+import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.AssetTypeViewModel
 import com.vfd.client.ui.viewmodels.AssetViewModel
-import com.vfd.client.ui.viewmodels.UiEvent
+import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
 @Composable
 fun AssetScreen(
@@ -40,6 +45,7 @@ fun AssetScreen(
     assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
+    firefighterViewModel: FirefighterViewModel = hiltViewModel()
 ) {
 
     val assetUiState by assetViewModel.assetUiState.collectAsState()
@@ -49,29 +55,16 @@ fun AssetScreen(
     val assetUpdateUiState by assetViewModel.assetUpdateUiState.collectAsState()
     var editingAssetId by remember { mutableStateOf<Int?>(null) }
 
+    val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
+
+    val hasMore = assetUiState.page + 1 < assetUiState.totalPages
+
     LaunchedEffect(Unit) {
         assetViewModel.getAssets()
+        firefighterViewModel.getFirefighterByEmailAddress()
     }
 
-    LaunchedEffect(Unit) {
-        assetViewModel.events.collect { event ->
-            when (event) {
-                is UiEvent.Success -> {
-                    snackbarHostState.showSnackbar(
-                        message = event.message,
-                        actionLabel = "OK"
-                    )
-                }
-
-                is UiEvent.Error -> {
-                    snackbarHostState.showSnackbar(
-                        message = event.message,
-                        withDismissAction = true
-                    )
-                }
-            }
-        }
-    } // Snackbar
+    AppUiEvents(assetViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(assetUpdateUiState.success) {
         if (assetUpdateUiState.success) {
@@ -79,7 +72,6 @@ fun AssetScreen(
             assetViewModel.onAssetUpdateValueChange { it.copy(success = false) }
         }
     }
-
     AppColumn(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -87,123 +79,142 @@ fun AssetScreen(
     {
         if (assetUiState.assets.isEmpty()) {
             AppText(
-                "There aren't any assets in your VFD",
+                "There aren't any assets in your VFD or the assets are still loading",
                 style = MaterialTheme.typography.headlineLarge
             )
         } else {
             assetUiState.assets.forEach { asset ->
                 if (editingAssetId == asset.assetId) {
-                    AppAssetCard(
-                        asset,
-                        actions = {
-                            AppTextField(
-                                value = assetUpdateUiState.name,
-                                onValueChange = { new ->
-                                    assetViewModel.onAssetUpdateValueChange {
-                                        it.copy(
-                                            name = new
-                                        )
-                                    }
-                                },
-                                label = "Name",
-                                errorMessage = null
-                            )
-
-                            AppDropdown(
-                                items = assetTypeUiState.assetTypes,
-                                selectedCode = assetUpdateUiState.assetType,
-                                codeSelector = { it.assetType },
-                                labelSelector = { it.name },
-                                label = "Choose asset type",
-                                onSelected = { assetType ->
-                                    assetViewModel.onAssetUpdateValueChange {
-                                        it.copy(
-                                            assetType = assetType.assetType
-                                        )
-                                    }
-                                },
-                                onLoadMore = {
-                                    if (assetTypeUiState.page + 1 < assetTypeUiState.totalPages) {
-                                        assetTypeViewModel.getAllAssetTypes(
-                                            page = assetTypeUiState.page + 1
-                                        )
-                                    }
-                                },
-                                hasMore = assetTypeUiState.page + 1 < assetTypeUiState.totalPages,
-                                onExpand = {
-                                    if (assetTypeUiState.assetTypes.isEmpty())
-                                        assetTypeViewModel.getAllAssetTypes(page = 0)
-                                },
-                                icon = Icons.Default.Build
-                            )
-
-                            AppTextField(
-                                value = assetUpdateUiState.description,
-                                onValueChange = { new ->
-                                    assetViewModel.onAssetUpdateValueChange {
-                                        it.copy(
-                                            description = new
-                                        )
-                                    }
-                                },
-                                label = "Description",
-                                errorMessage = null,
-                                singleLine = false
-                            )
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp))
-                            {
-                                AppButton(
-                                    icon = Icons.Default.Check,
-                                    label = "Save",
-                                    onClick = {
-                                        asset.assetId.let {
-                                            val assetDto = AssetDtos.AssetPatch(
-                                                name = assetUpdateUiState.name,
-                                                assetType = assetUpdateUiState.assetType.takeIf { it.isNotBlank() },
-                                                description = assetUpdateUiState.description
-                                            )
-                                            assetViewModel.updateAsset(
-                                                it,
-                                                assetDto
+                    if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
+                        AppAssetCard(
+                            asset,
+                            actions = {
+                                AppTextField(
+                                    value = assetUpdateUiState.name,
+                                    onValueChange = { new ->
+                                        assetViewModel.onAssetUpdateValueChange {
+                                            it.copy(
+                                                name = new
                                             )
                                         }
                                     },
-                                    modifier = Modifier.weight(1f),
-                                    enabled = assetUpdateUiState.name.isNotBlank() && assetUpdateUiState.description.isNotBlank()
-                                            && !assetUpdateUiState.isLoading,
-                                    loading = assetUpdateUiState.isLoading
+                                    label = "Name",
+                                    errorMessage = null
                                 )
-                                AppButton(
-                                    icon = Icons.Default.Close,
-                                    label = "Cancel",
-                                    onClick = { editingAssetId = null },
-                                    modifier = Modifier.weight(1f)
+
+                                AppDropdown(
+                                    items = assetTypeUiState.assetTypes,
+                                    selectedCode = assetUpdateUiState.assetType,
+                                    codeSelector = { it.assetType },
+                                    labelSelector = { it.name },
+                                    label = "Choose asset type",
+                                    onSelected = { assetType ->
+                                        assetViewModel.onAssetUpdateValueChange {
+                                            it.copy(
+                                                assetType = assetType.assetType
+                                            )
+                                        }
+                                    },
+                                    onLoadMore = {
+                                        if (assetTypeUiState.page + 1 < assetTypeUiState.totalPages) {
+                                            assetTypeViewModel.getAllAssetTypes(
+                                                page = assetTypeUiState.page + 1
+                                            )
+                                        }
+                                    },
+                                    hasMore = assetTypeUiState.page + 1 < assetTypeUiState.totalPages,
+                                    onExpand = {
+                                        if (assetTypeUiState.assetTypes.isEmpty())
+                                            assetTypeViewModel.getAllAssetTypes(page = 0)
+                                    },
+                                    icon = Icons.Default.Build
                                 )
+
+                                AppTextField(
+                                    value = assetUpdateUiState.description,
+                                    onValueChange = { new ->
+                                        assetViewModel.onAssetUpdateValueChange {
+                                            it.copy(
+                                                description = new
+                                            )
+                                        }
+                                    },
+                                    label = "Description",
+                                    errorMessage = null,
+                                    singleLine = false
+                                )
+                                Row(horizontalArrangement = Arrangement.spacedBy(8.dp))
+                                {
+                                    AppButton(
+                                        icon = Icons.Default.Check,
+                                        label = "Save",
+                                        onClick = {
+                                            asset.assetId.let {
+                                                val assetDto = AssetDtos.AssetPatch(
+                                                    name = assetUpdateUiState.name,
+                                                    assetType = assetUpdateUiState.assetType.takeIf { it.isNotBlank() },
+                                                    description = assetUpdateUiState.description
+                                                )
+                                                assetViewModel.updateAsset(
+                                                    it,
+                                                    assetDto
+                                                )
+                                            }
+                                        },
+                                        modifier = Modifier.weight(1f),
+                                        enabled = assetUpdateUiState.name.isNotBlank() && assetUpdateUiState.description.isNotBlank()
+                                                && !assetUpdateUiState.isLoading,
+                                        loading = assetUpdateUiState.isLoading
+                                    )
+                                    AppButton(
+                                        icon = Icons.Default.Close,
+                                        label = "Cancel",
+                                        onClick = { editingAssetId = null },
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        AppAssetCard(
+                            asset
+                        )
+                    }
                 } else {
                     AppAssetCard(
                         asset, {
-                            AppButton(
-                                icon = Icons.Default.Edit,
-                                label = "Edit",
-                                onClick = {
-                                    editingAssetId = asset.assetId
-                                    assetViewModel.onAssetUpdateValueChange {
-                                        it.copy(
-                                            name = asset.name,
-                                            assetType = "",
-                                            description = asset.description!!
-                                        )
+                            if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
+                                AppButton(
+                                    icon = Icons.Default.Edit,
+                                    label = "Edit",
+                                    onClick = {
+                                        editingAssetId = asset.assetId
+                                        assetViewModel.onAssetUpdateValueChange {
+                                            it.copy(
+                                                name = asset.name,
+                                                assetType = "",
+                                                description = asset.description!!
+                                            )
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                     )
                 }
             }
         }
+
+        Spacer(Modifier.height(12.dp))
+        AppLoadMoreButton(
+            hasMore = hasMore,
+            isLoading = assetUiState.isLoading,
+            onLoadMore = {
+                if (hasMore && !assetUiState.isLoading) firefighterViewModel.getFirefighters(
+                    page = assetUiState.page + 1
+                )
+            }
+        )
 
         if (assetUpdateUiState.errorMessage != null) {
             AppErrorText(assetUpdateUiState.errorMessage!!)

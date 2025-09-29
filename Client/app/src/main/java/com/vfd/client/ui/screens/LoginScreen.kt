@@ -16,10 +16,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterRole
-import com.vfd.client.ui.components.AppButton
-import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.AppErrorText
-import com.vfd.client.ui.components.AppTextField
+import com.vfd.client.ui.components.buttons.AppButton
+import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.texts.AppErrorText
+import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel

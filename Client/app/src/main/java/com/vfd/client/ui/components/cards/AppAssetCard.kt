@@ -1,4 +1,4 @@
-package com.vfd.client.ui.components
+package com.vfd.client.ui.components.cards
 
 import androidx.compose.runtime.Composable
 import com.vfd.client.data.remote.dtos.AssetDtos

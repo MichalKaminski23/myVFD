@@ -6,9 +6,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.AppHorizontalDivider
-import com.vfd.client.ui.components.AppText
+import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.elements.AppHorizontalDivider
+import com.vfd.client.ui.components.texts.AppText
 
 
 @Composable
@@ -18,7 +18,6 @@ fun InfoScreen(navController: NavController) {
             .verticalScroll(rememberScrollState())
     )
     {
-
         AppText(text = "About application", style = MaterialTheme.typography.headlineLarge)
         AppText(
             text = "This app was created to support the operations of Volunteer Fire Departments. " +

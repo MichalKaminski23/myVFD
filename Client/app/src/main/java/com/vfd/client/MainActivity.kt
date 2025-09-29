@@ -4,6 +4,8 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,15 +29,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.vfd.client.ui.components.AppNavGraph
-import com.vfd.client.ui.components.NavBarAction
-import com.vfd.client.ui.components.NavBarButton
+import com.vfd.client.ui.components.buttons.NavBarAction
+import com.vfd.client.ui.components.buttons.NavBarButton
+import com.vfd.client.ui.components.globals.AppNavGraph
 import com.vfd.client.ui.theme.MyVFDMobileTheme
 import com.vfd.client.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,6 +56,7 @@ class MainActivity : ComponentActivity() {
                 val pending by mainViewModel.pendingFirefighters.collectAsState()
                 val active by mainViewModel.activeFirefighters.collectAsState()
                 val snackbarHostState = remember { SnackbarHostState() }
+                val snackbarShape = RoundedCornerShape(12.dp)
                 remember { SnackbarHostState() }
                 LaunchedEffect(currentRoute) {
                     when (currentRoute) {
@@ -68,11 +71,23 @@ class MainActivity : ComponentActivity() {
                             snackbar = { snackbarData ->
                                 Snackbar(
                                     snackbarData = snackbarData,
-                                    containerColor = MaterialTheme.colorScheme.secondary,
-                                    contentColor = Color.White,
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                                    actionColor = MaterialTheme.colorScheme.onPrimary,
                                     actionContentColor = MaterialTheme.colorScheme.primary,
-                                    shape = RoundedCornerShape(12.dp)
-                                ) // Snackbar
+                                    shape = snackbarShape,
+                                    modifier = Modifier
+                                        .border(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.onPrimary,
+                                            shape = snackbarShape
+                                        )
+                                        .clip(snackbarShape)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            shape = snackbarShape
+                                        )
+                                )
                             }
                         )
                     },
@@ -105,9 +120,9 @@ class MainActivity : ComponentActivity() {
                                         Icons.Default.Person,
                                         { /* navController.navigate("TO DO") */ }),
                                     NavBarButton(
-                                        "TO DO",
-                                        Icons.Default.Person,
-                                        { /* navController.navigate("TO DO") */ }),
+                                        "Assets",
+                                        Icons.Default.Build,
+                                        { navController.navigate("assetScreen") }),
                                     NavBarButton(
                                         "TO DO",
                                         Icons.Default.Person,

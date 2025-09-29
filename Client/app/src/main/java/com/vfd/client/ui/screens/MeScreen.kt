@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,12 +24,13 @@ import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.FirefighterStatus
-import com.vfd.client.ui.components.AppButton
-import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.AppDropdown
-import com.vfd.client.ui.components.AppErrorText
-import com.vfd.client.ui.components.AppFirefighterCard
-import com.vfd.client.ui.components.AppUserCard
+import com.vfd.client.ui.components.buttons.AppButton
+import com.vfd.client.ui.components.cards.AppFirefighterCard
+import com.vfd.client.ui.components.cards.AppUserCard
+import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.elements.AppDropdown
+import com.vfd.client.ui.components.globals.AppLoadingBar
+import com.vfd.client.ui.components.texts.AppErrorText
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FiredepartmentUiState
 import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
@@ -67,9 +67,10 @@ fun MeScreen(
             .verticalScroll(rememberScrollState())
     )
     {
-        currentUserUiState.currentUser?.let {
-            AppUserCard(it)
-        } ?: CircularProgressIndicator()
+        AppLoadingBar(currentUserUiState.isLoading)
+        AppLoadingBar(currentFirefighterUiState.isLoading)
+
+        currentUserUiState.currentUser?.let { AppUserCard(it) }
 
         currentUserUiState.errorMessage?.let { AppErrorText(it) }
 
@@ -165,7 +166,8 @@ private fun FirefighterSection(
                     if (firedepartmentUiState.firedepartments.isEmpty())
                         firedepartmentViewModel.getFiredepartmentsShort(page = 0)
                 },
-                icon = Icons.Default.Home
+                icon = Icons.Default.Home,
+                isLoading = firedepartmentUiState.isLoading
             )
             AppButton(
                 icon = Icons.AutoMirrored.Filled.Send,

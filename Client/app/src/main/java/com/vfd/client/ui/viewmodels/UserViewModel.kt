@@ -6,6 +6,7 @@ import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.data.repositories.UserRepository
 import com.vfd.client.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -28,12 +29,17 @@ class UserViewModel @Inject constructor(
     fun getUserByEmailAddress() {
         viewModelScope.launch {
             _currentUserUiState.value =
-                _currentUserUiState.value.copy(isLoading = true, errorMessage = null)
+                _currentUserUiState.value.copy(
+                    currentUser = null,
+                    isLoading = true,
+                    errorMessage = null
+                )
 
             when (val result = userRepository.getUserByEmailAddress()) {
 
                 is ApiResult.Success -> {
                     val response = result.data!!
+                    delay(400)
                     _currentUserUiState.value = _currentUserUiState.value.copy(
                         currentUser = response,
                         isLoading = false,

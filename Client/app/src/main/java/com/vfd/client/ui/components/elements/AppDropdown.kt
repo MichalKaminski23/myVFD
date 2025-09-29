@@ -1,4 +1,4 @@
-package com.vfd.client.ui.components
+package com.vfd.client.ui.components.elements
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,6 +16,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
@@ -54,7 +55,8 @@ fun <T> AppDropdown(
     onLoadMore: () -> Unit,
     hasMore: Boolean = false,
     onExpand: (() -> Unit)? = null,
-    icon: ImageVector
+    icon: ImageVector,
+    isLoading: Boolean = false
 ) {
     var expanded by remember { mutableStateOf(false) }
     var initialized by remember { mutableStateOf(false) }
@@ -150,77 +152,90 @@ fun <T> AppDropdown(
             border = BorderStroke(1.dp, Color.White),
             shape = shape
         ) {
-            items.forEach { item ->
-                val isSelected = selected != null && labelSelector(item) == labelSelector(selected)
+            if (isLoading) {
                 DropdownMenuItem(
-                    leadingIcon = {
-                        Icon(
-                            icon,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)
-                        )
-                    },
-                    trailingIcon = {
-                        if (isSelected) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    },
                     text = {
-                        Box(
+                        LinearProgressIndicator(
                             modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                labelSelector(item),
-                                textAlign = TextAlign.Center,
-                                color = itemTextColor
-                            )
-                        }
-                    },
-                    onClick = {
-                        onSelected(item)
-                        expanded = false
-                    },
-                    colors = MenuDefaults.itemColors(
-                        textColor = itemTextColor,
-                        leadingIconColor = itemTextColor,
-                        trailingIconColor = MaterialTheme.colorScheme.primary
-                    )
-                )
-            }
-
-            AppHorizontalDivider(color = menuBorder)
-
-            if (hasMore) {
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            "Load more...",
-                            textAlign = TextAlign.Center,
-                            fontStyle = FontStyle.Italic,
-                            color = itemTextColor
+                            color = MaterialTheme.colorScheme.primary
                         )
                     },
-                    onClick = { onLoadMore() },
-                    colors = MenuDefaults.itemColors(textColor = itemTextColor)
+                    onClick = { /* no-op while loading */ }
                 )
             } else {
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            "No more items...",
-                            textAlign = TextAlign.Center,
-                            fontStyle = FontStyle.Italic,
-                            color = itemTextColor.copy(alpha = 0.8f)
+                items.forEach { item ->
+                    val isSelected =
+                        selected != null && labelSelector(item) == labelSelector(selected)
+                    DropdownMenuItem(
+                        leadingIcon = {
+                            Icon(
+                                icon,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)
+                            )
+                        },
+                        trailingIcon = {
+                            if (isSelected) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        },
+                        text = {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    labelSelector(item),
+                                    textAlign = TextAlign.Center,
+                                    color = itemTextColor
+                                )
+                            }
+                        },
+                        onClick = {
+                            onSelected(item)
+                            expanded = false
+                        },
+                        colors = MenuDefaults.itemColors(
+                            textColor = itemTextColor,
+                            leadingIconColor = itemTextColor,
+                            trailingIconColor = MaterialTheme.colorScheme.primary
                         )
-                    },
-                    onClick = { /* No-op */ },
-                    colors = MenuDefaults.itemColors(textColor = itemTextColor)
-                )
+                    )
+                }
+
+                AppHorizontalDivider(color = menuBorder)
+
+                if (hasMore) {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                "Load more...",
+                                textAlign = TextAlign.Center,
+                                fontStyle = FontStyle.Italic,
+                                color = itemTextColor
+                            )
+                        },
+                        onClick = { onLoadMore() },
+                        colors = MenuDefaults.itemColors(textColor = itemTextColor)
+                    )
+                } else {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                "No more items...",
+                                textAlign = TextAlign.Center,
+                                fontStyle = FontStyle.Italic,
+                                color = itemTextColor.copy(alpha = 0.8f)
+                            )
+                        },
+                        onClick = { /* No-op */ },
+                        colors = MenuDefaults.itemColors(textColor = itemTextColor)
+                    )
+                }
             }
         }
     }

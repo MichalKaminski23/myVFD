@@ -6,6 +6,7 @@ import com.vfd.client.data.remote.dtos.FiredepartmentDtos
 import com.vfd.client.data.repositories.FiredepartmentRepository
 import com.vfd.client.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ class FiredepartmentViewModel @Inject constructor(
 
                 is ApiResult.Success -> {
                     val response = result.data!!
+                    delay(400)
                     _firedepartmentUiState.value = _firedepartmentUiState.value.copy(
                         firedepartments = response.items,
                         page = response.page,

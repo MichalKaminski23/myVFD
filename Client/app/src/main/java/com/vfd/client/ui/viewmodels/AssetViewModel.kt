@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.remote.dtos.AssetDtos
 import com.vfd.client.data.repositories.AssetRepository
 import com.vfd.client.utils.ApiResult
+import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -30,18 +32,13 @@ data class AssetUpdateUiState(
     val errorMessage: String? = null
 )
 
-sealed class UiEvent {
-    data class Success(val message: String) : UiEvent()
-    data class Error(val message: String) : UiEvent()
-} // Snackbar
-
 @HiltViewModel
 class AssetViewModel @Inject constructor(
     private val assetRepository: AssetRepository
 ) : ViewModel() {
 
-    private val _events = Channel<UiEvent>()
-    val events = _events.receiveAsFlow() // Snackbar
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvents = _uiEvent.receiveAsFlow()
 
     private val _assetUiState = MutableStateFlow(AssetUiState())
     val assetUiState = _assetUiState.asStateFlow()
@@ -62,6 +59,7 @@ class AssetViewModel @Inject constructor(
 
                 is ApiResult.Success -> {
                     val response = result.data!!
+                    delay(400)
                     _assetUiState.value =
                         _assetUiState.value.copy(
                             assets = _assetUiState.value.assets + response.items,
@@ -108,7 +106,6 @@ class AssetViewModel @Inject constructor(
                             success = true,
                             errorMessage = null
                         )
-                    _events.send(UiEvent.Success("Asset updated successfully")) // Snackbar
 
                     val updatedAssets = _assetUiState.value.assets.map { asset ->
                         if (asset.assetId == assetId) asset.copy(
@@ -119,6 +116,7 @@ class AssetViewModel @Inject constructor(
                     }
 
                     _assetUiState.value = _assetUiState.value.copy(assets = updatedAssets)
+                    _uiEvent.send(UiEvent.Success("Asset updated successfully"))
                 }
 
                 is ApiResult.Error -> {
@@ -129,7 +127,7 @@ class AssetViewModel @Inject constructor(
                         success = false,
                         errorMessage = message
                     )
-                    _events.send(UiEvent.Error("Failed to update asset"))
+                    _uiEvent.send(UiEvent.Error("Failed to update asset"))
                 }
 
                 is ApiResult.Loading -> {

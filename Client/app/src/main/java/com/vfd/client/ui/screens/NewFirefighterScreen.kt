@@ -21,11 +21,11 @@ import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.FirefighterStatus
-import com.vfd.client.ui.components.AppButton
-import com.vfd.client.ui.components.AppColumn
-import com.vfd.client.ui.components.AppFirefightersCard
-import com.vfd.client.ui.components.AppLoadMore
-import com.vfd.client.ui.components.AppText
+import com.vfd.client.ui.components.buttons.AppButton
+import com.vfd.client.ui.components.buttons.AppLoadMoreButton
+import com.vfd.client.ui.components.cards.AppFirefightersCard
+import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
 @Composable
@@ -92,7 +92,7 @@ fun NewFirefighterScreen(
         }
 
         Spacer(Modifier.height(12.dp))
-        AppLoadMore(
+        AppLoadMoreButton(
             hasMore = hasMore,
             isLoading = pendingFirefighters.isLoading,
             onLoadMore = {

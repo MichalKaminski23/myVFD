@@ -1,4 +1,4 @@
-package com.vfd.client.ui.components
+package com.vfd.client.ui.components.buttons
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.vfd.client.ui.components.elements.AppColumn
 
 data class NavBarButton(
     val label: String,
@@ -53,7 +55,7 @@ fun NavBarAction(
                         BadgedBox(
                             badge = {
                                 if (actions[0].badgeCount != null && actions[0].badgeCount!! > 0) {
-                                    androidx.compose.material3.Badge {
+                                    Badge {
                                         Text(actions[0].badgeCount.toString())
                                     }
                                 }
@@ -83,7 +85,7 @@ fun NavBarAction(
                         BadgedBox(
                             badge = {
                                 if (action.badgeCount != null && action.badgeCount > 0) {
-                                    androidx.compose.material3.Badge {
+                                    Badge {
                                         Text(action.badgeCount.toString())
                                     }
                                 }

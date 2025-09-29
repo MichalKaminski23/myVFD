@@ -6,6 +6,7 @@ import com.vfd.client.data.remote.dtos.AssetTypeDtos
 import com.vfd.client.data.repositories.AssetTypeRepository
 import com.vfd.client.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ class AssetTypeViewModel @Inject constructor(
 
                 is ApiResult.Success -> {
                     val response = result.data!!
+                    delay(400)
                     _assetTypeUiState.value = _assetTypeUiState.value.copy(
                         assetTypes = _assetTypeUiState.value.assetTypes + response.items,
                         page = response.page,
