@@ -2,6 +2,7 @@ package com.vfd.client.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.data.repositories.AssetRepository
 import com.vfd.client.data.repositories.FirefighterRepository
 import com.vfd.client.utils.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val firefighterRepository: FirefighterRepository
+    private val firefighterRepository: FirefighterRepository,
+    private val assetRepository: AssetRepository
 ) : ViewModel() {
 
     private val _pendingFirefighters = MutableStateFlow(0)
@@ -21,6 +23,9 @@ class MainViewModel @Inject constructor(
 
     private val _activeFirefighters = MutableStateFlow(0)
     val activeFirefighters: StateFlow<Int> = _activeFirefighters
+
+    val _totalAssets = MutableStateFlow(0)
+    val totalAssets: StateFlow<Int> = _totalAssets
 
     private val _canCreateThings = MutableStateFlow(false)
     val canCreateThings = _canCreateThings.asStateFlow()
@@ -43,13 +48,23 @@ class MainViewModel @Inject constructor(
             _pendingFirefighters.value = pending
 
             val active =
-                when (val result = firefighterRepository.getFirefighters(page = 0, size = 1)) {
+                when (val result =
+                    firefighterRepository.getFirefighters(page = 0, size = 1)) {
                     is ApiResult.Success -> result.data?.totalElements ?: result.data?.items?.size
                     ?: 0
 
                     else -> 0
                 }
             _activeFirefighters.value = active
+
+            val assets =
+                when (val result = assetRepository.getAssets(page = 0, size = 1)) {
+                    is ApiResult.Success -> result.data?.totalElements ?: result.data?.items?.size
+                    ?: 0
+
+                    else -> 0
+                }
+            _totalAssets.value = assets
         }
     }
 }

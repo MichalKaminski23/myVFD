@@ -67,6 +67,7 @@ class MainActivity : ComponentActivity() {
                 val mainViewModel: MainViewModel = hiltViewModel()
                 val pending by mainViewModel.pendingFirefighters.collectAsState()
                 val active by mainViewModel.activeFirefighters.collectAsState()
+                val assets by mainViewModel.totalAssets.collectAsState()
                 val canCreateThings by mainViewModel.canCreateThings.collectAsState()
                 var showCreateDialog by remember { mutableStateOf(false) }
                 val snackbarHostState = remember { SnackbarHostState() }
@@ -212,7 +213,9 @@ class MainActivity : ComponentActivity() {
                                     NavBarButton(
                                         "Assets",
                                         Icons.Default.Build,
-                                        { navController.navigate("assetScreen") }),
+                                        { navController.navigate("assetScreen") },
+                                        badgeCount = assets
+                                    ),
                                     NavBarButton(
                                         "Events",
                                         Icons.Default.Favorite,
