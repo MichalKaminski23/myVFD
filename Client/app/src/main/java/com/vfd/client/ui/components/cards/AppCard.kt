@@ -1,5 +1,6 @@
 package com.vfd.client.ui.components.cards
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -17,7 +18,7 @@ import com.vfd.client.ui.components.texts.AppText
 fun AppCard(
     texts: List<String>,
     actions: @Composable (() -> Unit)? = null,
-    modifier: Modifier = Modifier
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier,

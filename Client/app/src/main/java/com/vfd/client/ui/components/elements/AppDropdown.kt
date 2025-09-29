@@ -1,5 +1,6 @@
 package com.vfd.client.ui.components.elements
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,7 +52,7 @@ fun <T> AppDropdown(
     labelSelector: (T) -> String,
     label: String,
     onSelected: (T) -> Unit,
-    modifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     onLoadMore: () -> Unit,
     hasMore: Boolean = false,
     onExpand: (() -> Unit)? = null,

@@ -77,6 +77,15 @@ fun AssetScreen(
             .verticalScroll(rememberScrollState())
     )
     {
+        if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.USER.toString()) {
+            AppText(
+                "You do not have permission to view assets.",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.error
+            )
+            return@AppColumn
+        }
+
         if (assetUiState.assets.isEmpty()) {
             AppText(
                 "There aren't any assets in your VFD or the assets are still loading",
@@ -149,7 +158,7 @@ fun AssetScreen(
                                         icon = Icons.Default.Check,
                                         label = "Save",
                                         onClick = {
-                                            asset.assetId.let {
+                                            asset.assetId.let { it ->
                                                 val assetDto = AssetDtos.AssetPatch(
                                                     name = assetUpdateUiState.name,
                                                     assetType = assetUpdateUiState.assetType.takeIf { it.isNotBlank() },

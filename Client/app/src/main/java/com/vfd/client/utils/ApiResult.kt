@@ -13,7 +13,6 @@ sealed class ApiResult<out T>(
     class Error(
         message: String,
         code: Int? = null,
-        val cause: Throwable? = null,
         fieldErrors: Map<String, String> = emptyMap()
     ) : ApiResult<Nothing>(null, message, code, fieldErrors)
 }

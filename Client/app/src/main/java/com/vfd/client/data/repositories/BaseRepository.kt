@@ -44,19 +44,19 @@ abstract class BaseRepository(
                 }
             }
 
-            ApiResult.Error(message, code, exception, fieldErrors)
+            ApiResult.Error(message, code, fieldErrors)
 
         } catch (exception: SocketTimeoutException) {
             val code = (exception.cause as? HttpException)?.code()
-            ApiResult.Error("Connection timed out. Please try again.", code, exception)
+            ApiResult.Error("Connection timed out. Please try again.", code)
 
         } catch (exception: IOException) {
             val code = (exception.cause as? HttpException)?.code()
-            ApiResult.Error("Network error: could not connect to server.", code, exception)
+            ApiResult.Error("Network error: could not connect to server.", code)
 
         } catch (exception: Exception) {
             val code = (exception.cause as? HttpException)?.code()
-            ApiResult.Error("Unexpected error: ${exception.message}", code, exception)
+            ApiResult.Error("Unexpected error: ${exception.message}", code)
         }
     }
 }
