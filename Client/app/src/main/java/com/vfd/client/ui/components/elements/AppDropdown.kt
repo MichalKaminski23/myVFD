@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vfd.client.ui.theme.appTextFieldColors
 
 @Composable
 fun <T> AppDropdown(
@@ -81,27 +81,6 @@ fun <T> AppDropdown(
         }
     }
 
-    val fieldColors = TextFieldDefaults.colors(
-        focusedContainerColor = Color.Transparent,
-        unfocusedContainerColor = Color.Transparent,
-        disabledContainerColor = Color.Transparent,
-
-        focusedIndicatorColor = MaterialTheme.colorScheme.onBackground,
-        unfocusedIndicatorColor = MaterialTheme.colorScheme.onBackground,
-        errorIndicatorColor = MaterialTheme.colorScheme.error,
-
-        focusedLabelColor = MaterialTheme.colorScheme.onSurface,
-        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        errorLabelColor = MaterialTheme.colorScheme.error,
-
-        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-        disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-
-        cursorColor = MaterialTheme.colorScheme.primary,
-        errorCursorColor = MaterialTheme.colorScheme.error
-    )
-
     val shape = RoundedCornerShape(14.dp)
 
     Box(modifier = modifier) {
@@ -132,7 +111,7 @@ fun <T> AppDropdown(
                 .onGloballyPositioned { coords ->
                     menuWidth = with(density) { coords.size.width.toDp() }
                 },
-            colors = fieldColors
+            colors = appTextFieldColors()
         )
 
         val menuElevation = 8.dp
