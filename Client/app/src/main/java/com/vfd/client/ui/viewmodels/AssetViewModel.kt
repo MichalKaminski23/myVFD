@@ -81,10 +81,13 @@ class AssetViewModel @Inject constructor(
 
                 is ApiResult.Success -> {
                     _assetCreateUiState.value = _assetCreateUiState.value.copy(
+                        name = "",
+                        assetType = "",
+                        description = "",
                         isLoading = false,
                         success = true
                     )
-                    
+
                     _assetUiState.value = _assetUiState.value.copy(
                         assets = listOf(result.data!!) + _assetUiState.value.assets
                     )

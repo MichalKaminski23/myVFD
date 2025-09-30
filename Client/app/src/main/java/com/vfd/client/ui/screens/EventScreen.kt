@@ -1,5 +1,7 @@
 package com.vfd.client.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
@@ -25,68 +26,62 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.vfd.client.data.remote.dtos.AssetDtos
+import com.vfd.client.data.remote.dtos.EventDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.buttons.AppLoadMoreButton
-import com.vfd.client.ui.components.cards.AppAssetCard
-import com.vfd.client.ui.components.elements.AppDropdown
+import com.vfd.client.ui.components.cards.AppEventCard
+import com.vfd.client.ui.components.elements.AppDateTimePicker
 import com.vfd.client.ui.components.elements.AppSearchBar
 import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppErrorText
 import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.components.texts.AppTextField
-import com.vfd.client.ui.viewmodels.AssetTypeViewModel
-import com.vfd.client.ui.viewmodels.AssetViewModel
+import com.vfd.client.ui.viewmodels.EventViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AssetScreen(
-    assetViewModel: AssetViewModel = hiltViewModel(),
-    assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
+fun EventScreen(
+    eventViewModel: EventViewModel = hiltViewModel(),
+    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
     navController: NavController,
-    snackbarHostState: SnackbarHostState,
-    firefighterViewModel: FirefighterViewModel = hiltViewModel()
+    snackbarHostState: SnackbarHostState
 ) {
-    val assetUiState by assetViewModel.assetUiState.collectAsState()
-    val assetTypeUiState by assetTypeViewModel.assetTypeUiState.collectAsState()
-    val assetUpdateUiState by assetViewModel.assetUpdateUiState.collectAsState()
-    var editingAssetId by remember { mutableStateOf<Int?>(null) }
+    val eventUiState = eventViewModel.eventUiState.collectAsState().value
+    val eventUpdateUiState = eventViewModel.eventUpdateUiState.collectAsState().value
+    var editingEventId by remember { mutableStateOf<Int?>(null) }
 
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
-    val hasMore = assetUiState.page + 1 < assetUiState.totalPages
+    val hasMore = eventUiState.page + 1 < eventUiState.totalPages
 
     var searchQuery by remember { mutableStateOf("") }
 
-    val filteredAssets = assetUiState.assets.filter {
-        val fullInfo = "${it.name} ${it.assetTypeName} ${it.description.orEmpty()}"
+    val filteredEvents = eventUiState.events.filter {
         searchQuery.isBlank() ||
-                it.name.contains(searchQuery, ignoreCase = true) ||
-                it.assetTypeName.contains(searchQuery, ignoreCase = true) ||
-                it.description?.contains(searchQuery, ignoreCase = true) == true ||
-                fullInfo.contains(searchQuery, ignoreCase = true)
+                it.header.contains(searchQuery, ignoreCase = true)
     }
 
+    AppUiEvents(eventViewModel.uiEvents, snackbarHostState)
+
     LaunchedEffect(Unit) {
-        assetViewModel.getAssets(page = 0, refresh = true)
+        eventViewModel.getEvents(page = 0, refresh = true)
         firefighterViewModel.getFirefighterByEmailAddress()
 
         RefreshManager.events.collect { event ->
             when (event) {
-                is RefreshEvent.AssetScreen -> assetViewModel.getAssets(page = 0, refresh = true)
+                is RefreshEvent.EventScreen -> eventViewModel.getEvents(page = 0, refresh = true)
                 else -> {}
             }
         }
     }
 
-    AppUiEvents(assetViewModel.uiEvents, snackbarHostState)
-
-    LaunchedEffect(assetUpdateUiState.success) {
-        if (assetUpdateUiState.success) {
-            editingAssetId = null
-            assetViewModel.onAssetUpdateValueChange { it.copy(success = false) }
+    LaunchedEffect(eventUpdateUiState.success) {
+        if (eventUpdateUiState.success) {
+            editingEventId = null
+            eventViewModel.onEventUpdateValueChange { it.copy(success = false) }
         }
     }
 
@@ -96,9 +91,9 @@ fun AssetScreen(
                 query = searchQuery,
                 onQueryChange = { searchQuery = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = "Search assets...",
-                enabled = !assetUiState.isLoading,
-                loading = assetUiState.isLoading,
+                placeholder = "Search events...",
+                enabled = !eventUiState.isLoading,
+                loading = eventUiState.isLoading,
             )
             Spacer(Modifier.height(12.dp))
         }
@@ -106,70 +101,51 @@ fun AssetScreen(
         if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.USER.toString()) {
             item {
                 AppText(
-                    "You do not have permission to view assets.",
+                    "You do not have permission to view events.",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.error
                 )
             }
         } else {
-            if (filteredAssets.isEmpty()) {
+            if (filteredEvents.isEmpty()) {
                 item {
                     AppText(
                         if (searchQuery.isBlank())
-                            "There aren't any assets in your VFD or the assets are still loading"
+                            "There aren't any events in your VFD or the events are still loading"
                         else
-                            "No assets match your search",
+                            "No events match your search",
                         style = MaterialTheme.typography.headlineLarge
                     )
                 }
             } else {
-                items(filteredAssets) { asset ->
-                    if (editingAssetId == asset.assetId) {
+                items(filteredEvents) { event ->
+                    if (editingEventId == event.eventId) {
                         if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
-                            AppAssetCard(
-                                asset,
+                            AppEventCard(
+                                event,
                                 actions = {
                                     AppTextField(
-                                        value = assetUpdateUiState.name,
+                                        value = eventUpdateUiState.header,
                                         onValueChange = { new ->
-                                            assetViewModel.onAssetUpdateValueChange {
-                                                it.copy(name = new)
+                                            eventViewModel.onEventUpdateValueChange {
+                                                it.copy(header = new)
                                             }
                                         },
-                                        label = "Name",
+                                        label = "Header",
                                         errorMessage = null
                                     )
-
-                                    AppDropdown(
-                                        items = assetTypeUiState.assetTypes,
-                                        selectedCode = assetUpdateUiState.assetType,
-                                        codeSelector = { it.assetType },
-                                        labelSelector = { it.name },
-                                        label = "Choose asset type",
-                                        onSelected = { assetType ->
-                                            assetViewModel.onAssetUpdateValueChange {
-                                                it.copy(assetType = assetType.assetType)
+                                    AppDateTimePicker(
+                                        selectedDateTime = eventUpdateUiState.eventDate,
+                                        onDateTimeSelected = { newDateTime ->
+                                            eventViewModel.onEventUpdateValueChange {
+                                                it.copy(eventDate = newDateTime)
                                             }
-                                        },
-                                        onLoadMore = {
-                                            if (assetTypeUiState.page + 1 < assetTypeUiState.totalPages) {
-                                                assetTypeViewModel.getAllAssetTypes(
-                                                    page = assetTypeUiState.page + 1
-                                                )
-                                            }
-                                        },
-                                        hasMore = assetTypeUiState.page + 1 < assetTypeUiState.totalPages,
-                                        onExpand = {
-                                            if (assetTypeUiState.assetTypes.isEmpty())
-                                                assetTypeViewModel.getAllAssetTypes(page = 0)
-                                        },
-                                        icon = Icons.Default.Build
+                                        }
                                     )
-
                                     AppTextField(
-                                        value = assetUpdateUiState.description,
+                                        value = eventUpdateUiState.description,
                                         onValueChange = { new ->
-                                            assetViewModel.onAssetUpdateValueChange {
+                                            eventViewModel.onEventUpdateValueChange {
                                                 it.copy(description = new)
                                             }
                                         },
@@ -182,25 +158,25 @@ fun AssetScreen(
                                             icon = Icons.Default.Check,
                                             label = "Save",
                                             onClick = {
-                                                asset.assetId.let { id ->
-                                                    val assetDto = AssetDtos.AssetPatch(
-                                                        name = assetUpdateUiState.name,
-                                                        assetType = assetUpdateUiState.assetType.takeIf { it.isNotBlank() },
-                                                        description = assetUpdateUiState.description
+                                                event.eventId.let { id ->
+                                                    val eventDto = EventDtos.EventPatch(
+                                                        header = eventUpdateUiState.header,
+                                                        eventDate = eventUpdateUiState.eventDate,
+                                                        description = eventUpdateUiState.description
                                                     )
-                                                    assetViewModel.updateAsset(id, assetDto)
+                                                    eventViewModel.updateEvent(id, eventDto)
                                                 }
                                             },
                                             modifier = Modifier.weight(1f),
-                                            enabled = assetUpdateUiState.name.isNotBlank() &&
-                                                    assetUpdateUiState.description.isNotBlank() &&
-                                                    !assetUpdateUiState.isLoading,
-                                            loading = assetUpdateUiState.isLoading
+                                            enabled = eventUpdateUiState.header.isNotBlank() &&
+                                                    eventUpdateUiState.description.isNotBlank() &&
+                                                    !eventUpdateUiState.isLoading,
+                                            loading = eventUpdateUiState.isLoading
                                         )
                                         AppButton(
                                             icon = Icons.Default.Close,
                                             label = "Cancel",
-                                            onClick = { editingAssetId = null },
+                                            onClick = { editingEventId = null },
                                             modifier = Modifier.weight(1f)
                                         )
                                     }
@@ -208,23 +184,23 @@ fun AssetScreen(
                             )
                             Spacer(Modifier.height(12.dp))
                         } else {
-                            AppAssetCard(asset)
+                            AppEventCard(event)
                         }
                     } else {
-                        AppAssetCard(
-                            asset,
+                        AppEventCard(
+                            event,
                             actions = {
                                 if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
                                     AppButton(
                                         icon = Icons.Default.Edit,
                                         label = "Edit",
                                         onClick = {
-                                            editingAssetId = asset.assetId
-                                            assetViewModel.onAssetUpdateValueChange {
+                                            editingEventId = event.eventId
+                                            eventViewModel.onEventUpdateValueChange {
                                                 it.copy(
-                                                    name = asset.name,
-                                                    assetType = "",
-                                                    description = asset.description ?: ""
+                                                    header = event.header,
+                                                    eventDate = event.eventDate,
+                                                    description = event.description
                                                 )
                                             }
                                         }
@@ -242,18 +218,19 @@ fun AssetScreen(
             Spacer(Modifier.height(12.dp))
             AppLoadMoreButton(
                 hasMore = hasMore,
-                isLoading = assetUiState.isLoading,
+                isLoading = eventUiState.isLoading,
                 onLoadMore = {
-                    if (hasMore && !assetUiState.isLoading)
-                        assetViewModel.getAssets(page = assetUiState.page + 1)
+                    if (hasMore && !eventUiState.isLoading)
+                        eventViewModel.getEvents(page = eventUiState.page + 1)
                 }
             )
         }
 
-        if (assetUpdateUiState.errorMessage != null) {
+        if (eventUpdateUiState.errorMessage != null) {
             item {
-                AppErrorText(assetUpdateUiState.errorMessage!!)
+                AppErrorText(eventUpdateUiState.errorMessage)
             }
         }
     }
 }
+

@@ -1,5 +1,7 @@
 package com.vfd.client.ui.components.globals
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Left
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Right
 import androidx.compose.animation.core.tween
@@ -12,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.vfd.client.ui.screens.AssetScreen
+import com.vfd.client.ui.screens.EventScreen
 import com.vfd.client.ui.screens.FirefighterScreen
 import com.vfd.client.ui.screens.InfoScreen
 import com.vfd.client.ui.screens.LoginScreen
@@ -22,6 +25,7 @@ import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
@@ -65,6 +69,9 @@ fun AppNavGraph(
         }
         composable("assetScreen") {
             AssetScreen(navController = navController, snackbarHostState = snackbarHostState)
+        }
+        composable("eventScreen") {
+            EventScreen(navController = navController, snackbarHostState = snackbarHostState)
         }
     }
 }

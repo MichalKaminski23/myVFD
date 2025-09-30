@@ -1,9 +1,11 @@
 package com.vfd.client
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
@@ -12,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
@@ -47,6 +50,7 @@ import com.vfd.client.ui.components.buttons.NavBarAction
 import com.vfd.client.ui.components.buttons.NavBarButton
 import com.vfd.client.ui.components.globals.AppNavGraph
 import com.vfd.client.ui.screens.AssetCreateDialog
+import com.vfd.client.ui.screens.EventCreateDialog
 import com.vfd.client.ui.theme.MyVFDMobileTheme
 import com.vfd.client.ui.viewmodels.MainViewModel
 import com.vfd.client.utils.RefreshEvent
@@ -56,6 +60,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +74,8 @@ class MainActivity : ComponentActivity() {
                 val active by mainViewModel.activeFirefighters.collectAsState()
                 val assets by mainViewModel.totalAssets.collectAsState()
                 val canCreateThings by mainViewModel.canCreateThings.collectAsState()
-                var showCreateDialog by remember { mutableStateOf(false) }
+                var showCreateAssetDialog by remember { mutableStateOf(false) }
+                var showCreateEventDialog by remember { mutableStateOf(false) }
                 val snackbarHostState = remember { SnackbarHostState() }
                 val snackbarShape = RoundedCornerShape(12.dp)
                 rememberCoroutineScope()
@@ -121,6 +127,7 @@ class MainActivity : ComponentActivity() {
                                         "welcomeScreen" -> "My VFD"
                                         "firefighterScreen" -> "Firefighters"
                                         "assetScreen" -> "Assets"
+                                        "eventScreen" -> "Events"
                                         else -> "My VFD"
                                     }
                                 )
@@ -147,6 +154,10 @@ class MainActivity : ComponentActivity() {
                                         RefreshButton(currentRoute)
                                     }
 
+                                    "eventScreen" -> {
+                                        RefreshButton(currentRoute)
+                                    }
+
                                     else -> {
                                         // No action
                                     }
@@ -168,9 +179,9 @@ class MainActivity : ComponentActivity() {
                                         Icons.Default.Build,
                                         { navController.navigate("assetScreen") }),
                                     NavBarButton(
-                                        "TO DO",
-                                        Icons.Default.Person,
-                                        { /* navController.navigate("TO DO") */ }),
+                                        "Events",
+                                        Icons.Default.Favorite,
+                                        { navController.navigate("eventScreen") }),
                                     NavBarButton(
                                         "TO DO",
                                         Icons.Default.Person,
@@ -219,7 +230,7 @@ class MainActivity : ComponentActivity() {
                                     NavBarButton(
                                         "Events",
                                         Icons.Default.Favorite,
-                                        {  /* navController.navigate("eventScreen")*/ }),
+                                        { navController.navigate("eventScreen") }),
                                     NavBarButton(
                                         "Operations",
                                         Icons.Default.Settings,
@@ -267,11 +278,35 @@ class MainActivity : ComponentActivity() {
                                         NavBarButton(
                                             "Create asset",
                                             Icons.Default.Build,
-                                            { showCreateDialog = true }
+                                            { showCreateAssetDialog = true }
                                         )
                                     )
                                 }
                                 NavBarAction(actions)
+                            }
+
+                            "eventScreen" -> {
+                                val actions = mutableListOf<NavBarButton>()
+                                actions.add(
+                                    NavBarButton(
+                                        "Back",
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        { navController.popBackStack() }),
+                                )
+                                if (canCreateThings) {
+                                    actions.add(
+                                        NavBarButton(
+                                            "Create event",
+                                            Icons.Default.DateRange,
+                                            { showCreateEventDialog = true }
+                                        )
+                                    )
+                                }
+                                NavBarAction(actions)
+                            }
+
+                            else -> {
+                                // No action
                             }
                         }
                     }
@@ -286,8 +321,14 @@ class MainActivity : ComponentActivity() {
                     AssetCreateDialog(
                         assetViewModel = hiltViewModel(),
                         assetTypeViewModel = hiltViewModel(),
-                        showDialog = showCreateDialog,
-                        onDismiss = { showCreateDialog = false },
+                        showDialog = showCreateAssetDialog,
+                        onDismiss = { showCreateAssetDialog = false },
+                        snackbarHostState = snackbarHostState
+                    )
+                    EventCreateDialog(
+                        eventViewModel = hiltViewModel(),
+                        showDialog = showCreateEventDialog,
+                        onDismiss = { showCreateEventDialog = false },
                         snackbarHostState = snackbarHostState
                     )
                 }
@@ -317,6 +358,7 @@ fun RefreshButton(currentRoute: String?) {
         "newFirefighterScreen" -> RefreshEvent.NewFirefighterScreen
         "firefighterScreen" -> RefreshEvent.FirefighterScreen
         "assetScreen" -> RefreshEvent.AssetScreen
+        "eventScreen" -> RefreshEvent.EventScreen
         else -> null
     }
 
