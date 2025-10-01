@@ -92,7 +92,6 @@ class AssetViewModel @Inject constructor(
                         assets = listOf(result.data!!) + _assetUiState.value.assets
                     )
                     _uiEvent.send(UiEvent.Success("Asset created successfully"))
-                    getAssets(refresh = true)
                 }
 
                 is ApiResult.Error -> {

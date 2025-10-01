@@ -34,10 +34,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -49,8 +47,6 @@ import androidx.navigation.compose.rememberNavController
 import com.vfd.client.ui.components.buttons.NavBarAction
 import com.vfd.client.ui.components.buttons.NavBarButton
 import com.vfd.client.ui.components.globals.AppNavGraph
-import com.vfd.client.ui.screens.AssetCreateDialog
-import com.vfd.client.ui.screens.EventCreateDialog
 import com.vfd.client.ui.theme.MyVFDMobileTheme
 import com.vfd.client.ui.viewmodels.MainViewModel
 import com.vfd.client.utils.RefreshEvent
@@ -74,12 +70,10 @@ class MainActivity : ComponentActivity() {
                 val active by mainViewModel.activeFirefighters.collectAsState()
                 val assets by mainViewModel.totalAssets.collectAsState()
                 val canCreateThings by mainViewModel.canCreateThings.collectAsState()
-                var showCreateAssetDialog by remember { mutableStateOf(false) }
-                var showCreateEventDialog by remember { mutableStateOf(false) }
                 val snackbarHostState = remember { SnackbarHostState() }
                 val snackbarShape = RoundedCornerShape(12.dp)
-                rememberCoroutineScope()
-                remember { SnackbarHostState() }
+//                rememberCoroutineScope()
+//                remember { SnackbarHostState() }
                 LaunchedEffect(currentRoute) {
                     when (currentRoute) {
                         "moderatorScreen" -> mainViewModel.refreshBadges()
@@ -126,8 +120,8 @@ class MainActivity : ComponentActivity() {
                                         "newFirefighterScreen" -> "New Firefighters"
                                         "welcomeScreen" -> "My VFD"
                                         "firefighterScreen" -> "Firefighters"
-                                        "assetScreen" -> "Assets"
-                                        "eventScreen" -> "Events"
+                                        "assets/list" -> "Assets"
+                                        "events/list" -> "Events"
                                         else -> "My VFD"
                                     }
                                 )
@@ -150,11 +144,11 @@ class MainActivity : ComponentActivity() {
                                         RefreshButton(currentRoute)
                                     }
 
-                                    "assetScreen" -> {
+                                    "assets/list" -> {
                                         RefreshButton(currentRoute)
                                     }
 
-                                    "eventScreen" -> {
+                                    "events/list" -> {
                                         RefreshButton(currentRoute)
                                     }
 
@@ -177,11 +171,20 @@ class MainActivity : ComponentActivity() {
                                     NavBarButton(
                                         "Assets",
                                         Icons.Default.Build,
-                                        { navController.navigate("assetScreen") }),
+                                        {
+                                            navController.navigate("assets/list") {
+                                                launchSingleTop = true
+                                            }
+                                        },
+                                    ),
                                     NavBarButton(
                                         "Events",
                                         Icons.Default.Favorite,
-                                        { navController.navigate("eventScreen") }),
+                                        {
+                                            navController.navigate("events/list") {
+                                                launchSingleTop = true
+                                            }
+                                        }),
                                     NavBarButton(
                                         "TO DO",
                                         Icons.Default.Person,
@@ -224,13 +227,21 @@ class MainActivity : ComponentActivity() {
                                     NavBarButton(
                                         "Assets",
                                         Icons.Default.Build,
-                                        { navController.navigate("assetScreen") },
+                                        {
+                                            navController.navigate("assets/list") {
+                                                launchSingleTop = true
+                                            }
+                                        },
                                         badgeCount = assets
                                     ),
                                     NavBarButton(
                                         "Events",
                                         Icons.Default.Favorite,
-                                        { navController.navigate("eventScreen") }),
+                                        {
+                                            navController.navigate("events/list") {
+                                                launchSingleTop = true
+                                            }
+                                        }),
                                     NavBarButton(
                                         "Operations",
                                         Icons.Default.Settings,
@@ -265,7 +276,7 @@ class MainActivity : ComponentActivity() {
                                 GoBackButton(navController)
                             }
 
-                            "assetScreen" -> {
+                            "assets/list" -> {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
                                     NavBarButton(
@@ -277,15 +288,19 @@ class MainActivity : ComponentActivity() {
                                     actions.add(
                                         NavBarButton(
                                             "Create asset",
-                                            Icons.Default.Build,
-                                            { showCreateAssetDialog = true }
+                                            Icons.Default.DateRange,
+                                            {
+                                                navController.navigate("assets/create") {
+                                                    launchSingleTop = true
+                                                }
+                                            }
                                         )
                                     )
                                 }
                                 NavBarAction(actions)
                             }
 
-                            "eventScreen" -> {
+                            "events/list" -> {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
                                     NavBarButton(
@@ -298,7 +313,11 @@ class MainActivity : ComponentActivity() {
                                         NavBarButton(
                                             "Create event",
                                             Icons.Default.DateRange,
-                                            { showCreateEventDialog = true }
+                                            {
+                                                navController.navigate("events/create") {
+                                                    launchSingleTop = true
+                                                }
+                                            }
                                         )
                                     )
                                 }
@@ -316,19 +335,6 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(innerPadding)
                             .padding(horizontal = 16.dp, vertical = 12.dp),
-                        snackbarHostState = snackbarHostState
-                    )
-                    AssetCreateDialog(
-                        assetViewModel = hiltViewModel(),
-                        assetTypeViewModel = hiltViewModel(),
-                        showDialog = showCreateAssetDialog,
-                        onDismiss = { showCreateAssetDialog = false },
-                        snackbarHostState = snackbarHostState
-                    )
-                    EventCreateDialog(
-                        eventViewModel = hiltViewModel(),
-                        showDialog = showCreateEventDialog,
-                        onDismiss = { showCreateEventDialog = false },
                         snackbarHostState = snackbarHostState
                     )
                 }
@@ -357,8 +363,8 @@ fun RefreshButton(currentRoute: String?) {
         "moderatorScreen" -> RefreshEvent.ModeratorScreen
         "newFirefighterScreen" -> RefreshEvent.NewFirefighterScreen
         "firefighterScreen" -> RefreshEvent.FirefighterScreen
-        "assetScreen" -> RefreshEvent.AssetScreen
-        "eventScreen" -> RefreshEvent.EventScreen
+        "assets/list" -> RefreshEvent.AssetScreen
+        "events/list" -> RefreshEvent.EventScreen
         else -> null
     }
 

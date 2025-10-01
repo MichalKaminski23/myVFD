@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.vfd.client.data.remote.dtos.AssetDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.elements.AppColumn
@@ -34,7 +35,7 @@ import com.vfd.client.ui.viewmodels.AssetViewModel
 @Composable
 fun AssetCreateDialog(
     assetViewModel: AssetViewModel,
-    assetTypeViewModel: AssetTypeViewModel,
+    assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
     showDialog: Boolean,
     onDismiss: () -> Unit,
     snackbarHostState: SnackbarHostState

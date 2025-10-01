@@ -44,11 +44,12 @@ import com.vfd.client.utils.RefreshManager
 
 @Composable
 fun AssetScreen(
-    assetViewModel: AssetViewModel = hiltViewModel(),
+    assetViewModel: AssetViewModel,
     assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
+    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
     navController: NavController,
-    snackbarHostState: SnackbarHostState,
-    firefighterViewModel: FirefighterViewModel = hiltViewModel()
+    snackbarHostState: SnackbarHostState
+
 ) {
     val assetUiState by assetViewModel.assetUiState.collectAsState()
     val assetTypeUiState by assetTypeViewModel.assetTypeUiState.collectAsState()

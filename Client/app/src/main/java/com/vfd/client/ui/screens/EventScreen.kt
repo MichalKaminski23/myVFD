@@ -45,7 +45,7 @@ import com.vfd.client.utils.RefreshManager
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EventScreen(
-    eventViewModel: EventViewModel = hiltViewModel(),
+    eventViewModel: EventViewModel,
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState

@@ -9,11 +9,17 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
+import androidx.navigation.compose.navigation
+import com.vfd.client.ui.screens.AssetCreateDialog
 import com.vfd.client.ui.screens.AssetScreen
+import com.vfd.client.ui.screens.EventCreateDialog
 import com.vfd.client.ui.screens.EventScreen
 import com.vfd.client.ui.screens.FirefighterScreen
 import com.vfd.client.ui.screens.InfoScreen
@@ -23,6 +29,8 @@ import com.vfd.client.ui.screens.ModeratorScreen
 import com.vfd.client.ui.screens.NewFirefighterScreen
 import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
+import com.vfd.client.ui.viewmodels.AssetViewModel
+import com.vfd.client.ui.viewmodels.EventViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -67,11 +75,65 @@ fun AppNavGraph(
         composable("firefighterScreen") {
             FirefighterScreen(navController = navController, snackbarHostState = snackbarHostState)
         }
-        composable("assetScreen") {
-            AssetScreen(navController = navController, snackbarHostState = snackbarHostState)
+
+        navigation(startDestination = "assets/list", route = "assets_graph") {
+
+            composable("assets/list") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("assets_graph")
+                }
+                val assetViewModel: AssetViewModel = hiltViewModel(parentEntry)
+
+                AssetScreen(
+                    navController = navController,
+                    snackbarHostState = snackbarHostState,
+                    assetViewModel = assetViewModel
+                )
+            }
+
+            dialog("assets/create") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("assets_graph")
+                }
+                val assetViewModel: AssetViewModel = hiltViewModel(parentEntry)
+
+                AssetCreateDialog(
+                    assetViewModel = assetViewModel,
+                    showDialog = true,
+                    onDismiss = { navController.popBackStack() },
+                    snackbarHostState = snackbarHostState
+                )
+            }
         }
-        composable("eventScreen") {
-            EventScreen(navController = navController, snackbarHostState = snackbarHostState)
+
+        navigation(startDestination = "events/list", route = "events_graph") {
+
+            composable("events/list") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("events_graph")
+                }
+                val eventViewModel: EventViewModel = hiltViewModel(parentEntry)
+
+                EventScreen(
+                    navController = navController,
+                    snackbarHostState = snackbarHostState,
+                    eventViewModel = eventViewModel
+                )
+            }
+
+            dialog("events/create") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("events_graph")
+                }
+                val eventViewModel: EventViewModel = hiltViewModel(parentEntry)
+
+                EventCreateDialog(
+                    eventViewModel = eventViewModel,
+                    showDialog = true,
+                    onDismiss = { navController.popBackStack() },
+                    snackbarHostState = snackbarHostState
+                )
+            }
         }
     }
 }

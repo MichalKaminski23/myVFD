@@ -91,7 +91,6 @@ class EventViewModel @Inject constructor(
                         events = listOf(result.data!!) + _eventUiState.value.events
                     )
                     _uiEvent.send(UiEvent.Success("Event created successfully"))
-                    getEvents(refresh = true)
                 }
 
                 is ApiResult.Error -> {
