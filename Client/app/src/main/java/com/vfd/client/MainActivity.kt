@@ -70,10 +70,9 @@ class MainActivity : ComponentActivity() {
                 val active by mainViewModel.activeFirefighters.collectAsState()
                 val assets by mainViewModel.totalAssets.collectAsState()
                 val canCreateThings by mainViewModel.canCreateThings.collectAsState()
+                val hasRole by mainViewModel.hasRole.collectAsState()
                 val snackbarHostState = remember { SnackbarHostState() }
                 val snackbarShape = RoundedCornerShape(12.dp)
-//                rememberCoroutineScope()
-//                remember { SnackbarHostState() }
                 LaunchedEffect(currentRoute) {
                     when (currentRoute) {
                         "moderatorScreen" -> mainViewModel.refreshBadges()
@@ -163,34 +162,37 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         when (currentRoute) {
                             "meScreen" -> {
-                                val actions = listOf(
-                                    NavBarButton(
-                                        "TO DO",
-                                        Icons.Default.Person,
-                                        { /* navController.navigate("TO DO") */ }),
-                                    NavBarButton(
-                                        "Assets",
-                                        Icons.Default.Build,
-                                        {
-                                            navController.navigate("assets/list") {
-                                                launchSingleTop = true
-                                            }
-                                        },
-                                    ),
-                                    NavBarButton(
-                                        "Events",
-                                        Icons.Default.Favorite,
-                                        {
-                                            navController.navigate("events/list") {
-                                                launchSingleTop = true
-                                            }
-                                        }),
-                                    NavBarButton(
-                                        "TO DO",
-                                        Icons.Default.Person,
-                                        { /* navController.navigate("TO DO") */ })
-                                )
-                                NavBarAction(actions)
+                                if (hasRole) {
+                                    val actions = listOf(
+                                        NavBarButton(
+                                            "TO DO",
+                                            Icons.Default.Person,
+                                            { /* navController.navigate("TO DO") */ }),
+                                        NavBarButton(
+                                            "Assets",
+                                            Icons.Default.Build,
+                                            {
+                                                navController.navigate("assets/list") {
+                                                    launchSingleTop = true
+                                                }
+                                            },
+                                        ),
+                                        NavBarButton(
+                                            "Events",
+                                            Icons.Default.Favorite,
+                                            {
+                                                navController.navigate("events/list") {
+                                                    launchSingleTop = true
+                                                }
+                                            }),
+                                        NavBarButton(
+                                            "TO DO",
+                                            Icons.Default.Person,
+                                            { /* navController.navigate("TO DO") */ })
+                                    )
+                                    NavBarAction(actions)
+                                }
+
                             }
 
                             "welcomeScreen" -> {

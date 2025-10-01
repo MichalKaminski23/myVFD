@@ -17,9 +17,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
-import com.vfd.client.ui.screens.AssetCreateDialog
+import com.vfd.client.ui.components.dialogs.AssetCreateDialog
+import com.vfd.client.ui.components.dialogs.EventCreateDialog
 import com.vfd.client.ui.screens.AssetScreen
-import com.vfd.client.ui.screens.EventCreateDialog
 import com.vfd.client.ui.screens.EventScreen
 import com.vfd.client.ui.screens.FirefighterScreen
 import com.vfd.client.ui.screens.InfoScreen

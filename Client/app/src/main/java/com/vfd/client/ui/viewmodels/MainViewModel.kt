@@ -28,10 +28,14 @@ class MainViewModel @Inject constructor(
     val totalAssets: StateFlow<Int> = _totalAssets
 
     private val _canCreateThings = MutableStateFlow(false)
-    val canCreateThings = _canCreateThings.asStateFlow()
+    val canCreateThings: StateFlow<Boolean> = _canCreateThings.asStateFlow()
+
+    private val _hasRole = MutableStateFlow(false)
+    val hasRole: StateFlow<Boolean> = _hasRole.asStateFlow()
 
     fun setUserRole(role: String?) {
         _canCreateThings.value = role?.uppercase() == "PRESIDENT"
+        _hasRole.value = !role.isNullOrBlank()
     }
 
     fun refreshBadges() {
