@@ -26,7 +26,7 @@ interface FiredepartmentApi {
     @GET("api/firedepartments/my")
     suspend fun getFiredepartment(): FiredepartmentDtos.FiredepartmentResponse
 
-    @PATCH("api/firedepartments/admin/{firedepartmentId}")
+    @PATCH("api/firedepartments/{firedepartmentId}")
     suspend fun updateFiredepartment(
         @Path("firedepartmentId") firedepartmentId: Int,
         @Body firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch

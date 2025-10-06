@@ -10,7 +10,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AppErrorText(message: String) {
+fun AppErrorText(
+    message: String,
+    modifier: Modifier = Modifier
+) {
     Text(
         message,
         color = MaterialTheme.colorScheme.error,

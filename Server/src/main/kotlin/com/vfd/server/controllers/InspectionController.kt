@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
@@ -39,6 +40,7 @@ class InspectionController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('PRESIDENT')")
     @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createInspection(
@@ -68,6 +70,7 @@ class InspectionController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasAnyRole('MEMBER', 'PRESIDENT')")
     @GetMapping("/my")
     fun getInspections(
         @RequestParam(defaultValue = "0") page: Int,
@@ -95,6 +98,7 @@ class InspectionController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('PRESIDENT')")
     @PatchMapping("/my/{inspectionId}")
     fun updateInspection(
         @AuthenticationPrincipal principal: UserDetails,

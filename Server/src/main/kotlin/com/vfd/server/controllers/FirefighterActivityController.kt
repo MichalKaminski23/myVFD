@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
@@ -38,6 +39,7 @@ class FirefighterActivityController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasAnyRole('MEMBER', 'PRESIDENT')")
     @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createFirefighterActivity(
@@ -66,6 +68,7 @@ class FirefighterActivityController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasAnyRole('MEMBER', 'PRESIDENT')")
     @GetMapping("/my")
     fun getFirefighterActivities(
         @RequestParam(defaultValue = "0") page: Int,
@@ -93,6 +96,7 @@ class FirefighterActivityController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasAnyRole('MEMBER', 'PRESIDENT')")
     @PatchMapping("/my/{firefighterActivityId}")
     fun updateFirefighterActivity(
         @AuthenticationPrincipal principal: UserDetails,

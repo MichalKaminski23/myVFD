@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
@@ -39,6 +40,7 @@ class InvestmentProposalController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('PRESIDENT')")
     @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createInvestmentProposal(
@@ -67,6 +69,7 @@ class InvestmentProposalController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasAnyRole('MEMBER', 'PRESIDENT')")
     @GetMapping("/my")
     fun getInvestmentProposals(
         @RequestParam(defaultValue = "0") page: Int,
@@ -94,6 +97,7 @@ class InvestmentProposalController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('PRESIDENT')")
     @PatchMapping("/my/{investmentProposalId}")
     fun updateInvestmentProposal(
         @AuthenticationPrincipal principal: UserDetails,

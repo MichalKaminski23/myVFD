@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
@@ -38,6 +39,7 @@ class FirefighterController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createFirefighter(
@@ -68,6 +70,7 @@ class FirefighterController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('PRESIDENT')")
     @GetMapping("/my")
     fun getFirefighters(
         @RequestParam(defaultValue = "0") page: Int,
@@ -95,6 +98,7 @@ class FirefighterController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/my/{firefighterId}")
     fun updateFirefighter(
         @AuthenticationPrincipal principal: UserDetails,
@@ -118,6 +122,7 @@ class FirefighterController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     fun getFirefighterByEmailAddress(@AuthenticationPrincipal principal: UserDetails): FirefighterDtos.FirefighterResponse {
         return firefighterService.getFirefighterByEmailAddress(principal.username)
@@ -145,6 +150,7 @@ class FirefighterController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('PRESIDENT')")
     @GetMapping("/my/pending")
     fun getPendingFirefighters(
         @RequestParam(defaultValue = "0") page: Int,

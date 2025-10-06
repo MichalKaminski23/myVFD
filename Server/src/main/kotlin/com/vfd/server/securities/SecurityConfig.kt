@@ -34,14 +34,15 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it
-//                    .requestMatchers(
-//                        "/api/auth/**",
-//                        "/swagger-ui/**", "/v3/api-docs/**",
-//                        "/h2-console/**",
-//                        "/error"
-//                    ).permitAll()
-//                    .anyRequest().authenticated()
-                    .anyRequest().permitAll()
+                    .requestMatchers(
+                        "/api/auth/**",
+                        "/api/dev/**",
+                        "/swagger-ui/**", "/v3/api-docs/**",
+                        "/h2-console/**",
+                        "/error"
+                    ).permitAll()
+                    .anyRequest().authenticated()
+                //.anyRequest().permitAll()
             }
             .exceptionHandling {
                 it.authenticationEntryPoint(authenticationEntryPoint)

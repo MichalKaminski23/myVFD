@@ -17,7 +17,7 @@ val Typography = Typography(
     ),
     bodyMedium = TextStyle(
         fontFamily = FontFamily.Default,
-        fontSize = 18.sp,
+        fontSize = 20.sp,
         lineHeight = 22.sp,
         textAlign = TextAlign.Center
     ),

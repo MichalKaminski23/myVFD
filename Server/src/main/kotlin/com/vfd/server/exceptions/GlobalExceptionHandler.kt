@@ -89,6 +89,11 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     fun handleAll(exception: Exception, request: WebRequest): ResponseEntity<ErrorResponse> {
+        if (exception is org.springframework.security.access.AccessDeniedException ||
+            exception is org.springframework.security.authorization.AuthorizationDeniedException
+        ) {
+            throw exception
+        }
         val error = ErrorResponse(
             status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
             error = "Internal Server Error",

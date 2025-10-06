@@ -12,8 +12,6 @@ fun main(args: Array<String>) {
     println("Server is running...")
 }
 
-// Pod koniec projektu dodać wszelkie zabezpieczenia dla endpointów oraz zmienić bazę na postgresa/azure
-
 // Moderator -> akceptuje wszelkie prośby od strażaków (i ich prośby utworzenia przez użytkowników (User - gotowe) (FirefighterActivity) a strażacy sami sobie je wpisują
 // Moderator -> dodaje sprzęt (Asset) i badania (Inspection), wydarzenia (Event), Działania (Operation) oraz propozycje zakupów (InvestmentProposal)
 // Strażak -> dodaje swoje aktywności (FirefighterActivity) oraz zgłasza propozycje zakupów (InvestmentProposal), może przeglądać wszystko w swojej jednostce

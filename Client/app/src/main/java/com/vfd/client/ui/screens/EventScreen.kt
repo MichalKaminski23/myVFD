@@ -52,18 +52,6 @@ fun EventScreen(
 
     AppUiEvents(eventViewModel.uiEvents, snackbarHostState)
 
-    LaunchedEffect(Unit) {
-        eventViewModel.getEvents(page = 0, refresh = true)
-        firefighterViewModel.getFirefighterByEmailAddress()
-
-        RefreshManager.events.collect { event ->
-            when (event) {
-                is RefreshEvent.EventScreen -> eventViewModel.getEvents(page = 0, refresh = true)
-                else -> {}
-            }
-        }
-    }
-
     LaunchedEffect(eventUpdateUiState.success) {
         if (eventUpdateUiState.success) {
             editingEventId = null
@@ -74,11 +62,27 @@ fun EventScreen(
     val hasPermission =
         currentFirefighterUiState.currentFirefighter?.role.toString() != FirefighterRole.USER.toString()
 
+    if (hasPermission) {
+        LaunchedEffect(Unit) {
+            eventViewModel.getEvents(page = 0, refresh = true)
+            firefighterViewModel.getFirefighterByEmailAddress()
+
+            RefreshManager.events.collect { event ->
+                when (event) {
+                    is RefreshEvent.EventScreen -> eventViewModel.getEvents(
+                        page = 0,
+                        refresh = true
+                    )
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
     AppListScreen(
         data = eventUiState.events,
         isLoading = eventUiState.isLoading,
-        hasPermission = hasPermission,
-        noPermissionText = "You do not have permission to view events.",
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
         searchPlaceholder = "Search events...",
@@ -92,7 +96,7 @@ fun EventScreen(
             if (hasMore && !eventUiState.isLoading)
                 eventViewModel.getEvents(page = eventUiState.page + 1)
         },
-        errorMessage = eventUpdateUiState.errorMessage,
+        errorMessage = eventUiState.errorMessage,
         itemKey = { it.eventId }
     ) { event ->
         if (editingEventId == event.eventId) {

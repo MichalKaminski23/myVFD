@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -37,6 +38,7 @@ class AssetTypeController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createAssetType(
@@ -61,6 +63,7 @@ class AssetTypeController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasAnyRole('MEMBER', 'PRESIDENT', 'ADMIN')")
     @GetMapping
     fun getAllAssetTypes(
         @RequestParam(defaultValue = "0") page: Int,
@@ -84,6 +87,7 @@ class AssetTypeController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{assetTypeCode}")
     fun getAssetTypeByCode(
         @PathVariable assetTypeCode: String
@@ -106,6 +110,7 @@ class AssetTypeController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{assetTypeCode}")
     fun updateAssetType(
         @PathVariable assetTypeCode: String,

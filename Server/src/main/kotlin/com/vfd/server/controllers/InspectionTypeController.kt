@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -37,6 +38,7 @@ class InspectionTypeController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createInspectionType(
@@ -65,6 +67,7 @@ class InspectionTypeController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasAnyRole('MEMBER', 'PRESIDENT', 'ADMIN')")
     @GetMapping
     fun getAllInspectionTypes(
         @RequestParam(defaultValue = "0") page: Int,
@@ -88,6 +91,7 @@ class InspectionTypeController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{inspectionTypeCode}")
     fun getInspectionTypeByCode(
         @PathVariable inspectionTypeCode: String
@@ -110,6 +114,7 @@ class InspectionTypeController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{inspectionTypeCode}")
     fun updateInspectionType(
         @PathVariable inspectionTypeCode: String,

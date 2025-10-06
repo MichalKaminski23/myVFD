@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
@@ -42,6 +43,7 @@ class UserController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/me")
     fun updateUser(
         @AuthenticationPrincipal principal: UserDetails,
@@ -64,6 +66,7 @@ class UserController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     fun getUserByEmailAddress(@AuthenticationPrincipal principal: UserDetails): UserDtos.UserResponse {
         return userService.getUserByEmailAddress(principal.username)

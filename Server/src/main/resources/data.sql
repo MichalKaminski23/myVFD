@@ -73,10 +73,12 @@ VALUES ('Jan', 'Kowalski', 1, '+48123456789', 'jan.kowalski@test.com', '2025-01-
         '2025-08-09 15:30:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
        ('Alicja', 'Borkowska', 2, '+48505553311', 'alicja.borkowska@test.com', '2025-07-21 10:45:00',
         '2025-08-10 17:25:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
-       ('Alicja', 'Zyga', 2, '+48505753301', 'alicja.zyga@test.com', '2025-07-21 10:45:00',
-        '2025-08-10 17:25:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
-       ('Alicja', 'Terlin', 2, '+48505750090', 'alicja.terlin@test.com', '2025-07-21 10:45:00',
-        '2025-08-10 17:25:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS');
+       ('Alicja', 'Zyga', 2, '+48505753301', 'alicja.zyga@test.com', '2025-07-21 10:25:00',
+        '2025-08-10 17:35:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
+       ('Alicja', 'Terlin', 2, '+48505750090', 'alicja.terlin@test.com', '2025-07-21 10:15:00',
+        '2025-08-10 17:45:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
+       ('Michal', 'Kozak', 1, '+48515515515', 'michal.kozak@test.com', '2025-07-21 10:55:00',
+        '2025-08-10 17:55:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS');
 
 INSERT INTO Firedepartments (name, address_id, is_nrfs)
 VALUES ('OSP Strzyzowice', 1, TRUE),
@@ -108,7 +110,8 @@ VALUES (1, 1, 'PRESIDENT', 'ACTIVE'),
        (23, 1, 'MEMBER', 'ACTIVE'),
        (24, 1, 'MEMBER', 'ACTIVE'),
        (25, 1, 'MEMBER', 'ACTIVE'),
-       (26, 1, 'MEMBER', 'ACTIVE');
+       (26, 1, 'MEMBER', 'ACTIVE'),
+       (27, 1, 'ADMIN', 'ACTIVE');
 
 INSERT INTO Firefighter_Activities (firefighter_id, firefighter_activity_type, activity_date, expiration_date,
                                     description)
@@ -146,5 +149,5 @@ VALUES (1, 1, TRUE, '2025-07-11 10:00:00'),
        (2, 3, TRUE, '2025-07-13 09:15:00');
 
 INSERT INTO Events(firedepartment_id, header, description, event_date)
-VALUES (1, 'Potato_s Day', 'The best dat in the world.', '2025-08-01 10:00:00'),
+VALUES (1, 'Potato_s Day', 'The best day in the world.', '2025-08-01 10:00:00'),
        (2, 'Community Fire Safety Day', 'Fire safety awareness event in Dabie', '2025-08-05 14:00:00');

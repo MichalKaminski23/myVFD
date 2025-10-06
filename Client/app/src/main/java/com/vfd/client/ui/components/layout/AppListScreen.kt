@@ -18,8 +18,6 @@ import com.vfd.client.ui.components.texts.AppText
 fun <T> AppListScreen(
     data: List<T>,
     isLoading: Boolean,
-    hasPermission: Boolean,
-    noPermissionText: String,
     searchQuery: String,
     onSearchChange: (String) -> Unit,
     searchPlaceholder: String,
@@ -33,27 +31,22 @@ fun <T> AppListScreen(
     itemContent: @Composable (item: T) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        item {
-            AppSearchBar(
-                query = searchQuery,
-                onQueryChange = onSearchChange,
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = searchPlaceholder,
-                enabled = !isLoading,
-                loading = isLoading,
-            )
-            Spacer(Modifier.height(12.dp))
-        }
-
-        if (!hasPermission) {
+        if (errorMessage != null) {
             item {
-                AppText(
-                    noPermissionText,
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.error
-                )
+                AppErrorText(errorMessage)
             }
         } else {
+            item {
+                AppSearchBar(
+                    query = searchQuery,
+                    onQueryChange = onSearchChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = searchPlaceholder,
+                    enabled = !isLoading,
+                    loading = isLoading,
+                )
+                Spacer(Modifier.height(12.dp))
+            }
             val filtered =
                 if (searchQuery.isBlank()) data else data.filter { filter(it, searchQuery) }
 
@@ -77,23 +70,26 @@ fun <T> AppListScreen(
                     }
                 }
             }
-        }
 
-        item {
-            Spacer(Modifier.height(12.dp))
-            AppLoadMoreButton(
-                hasMore = hasMore,
-                isLoading = isLoading,
-                onLoadMore = {
-                    if (hasMore && !isLoading) onLoadMore()
-                }
-            )
-        }
 
-        if (errorMessage != null) {
             item {
-                AppErrorText(errorMessage)
+                Spacer(Modifier.height(12.dp))
+                AppLoadMoreButton(
+                    hasMore = hasMore,
+                    isLoading = isLoading,
+                    onLoadMore = {
+                        if (hasMore && !isLoading) onLoadMore()
+                    }
+                )
             }
+
+//        if (errorMessage != null && data.isEmpty()) {
+//            item {
+//                AppErrorText(errorMessage)
+//            }
+//            return@LazyColumn
+//        }
         }
     }
 }
+

@@ -51,18 +51,6 @@ fun AssetScreen(
 
     var searchQuery by remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
-        assetViewModel.getAssets(page = 0, refresh = true)
-        firefighterViewModel.getFirefighterByEmailAddress()
-
-        RefreshManager.events.collect { event ->
-            when (event) {
-                is RefreshEvent.AssetScreen -> assetViewModel.getAssets(page = 0, refresh = true)
-                else -> {}
-            }
-        }
-    }
-
     AppUiEvents(assetViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(assetUpdateUiState.success) {
@@ -75,11 +63,27 @@ fun AssetScreen(
     val hasPermission =
         currentFirefighterUiState.currentFirefighter?.role.toString() != FirefighterRole.USER.toString()
 
+    if (hasPermission) {
+        LaunchedEffect(Unit) {
+            assetViewModel.getAssets(page = 0, refresh = true)
+            firefighterViewModel.getFirefighterByEmailAddress()
+
+            RefreshManager.events.collect { event ->
+                when (event) {
+                    is RefreshEvent.AssetScreen -> assetViewModel.getAssets(
+                        page = 0,
+                        refresh = true
+                    )
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
     AppListScreen(
         data = assetUiState.assets,
         isLoading = assetUiState.isLoading,
-        hasPermission = hasPermission,
-        noPermissionText = "You do not have permission to view assets.",
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
         searchPlaceholder = "Search assets...",
@@ -98,7 +102,7 @@ fun AssetScreen(
         onLoadMore = {
             if (hasMore && !assetUiState.isLoading) assetViewModel.getAssets(page = assetUiState.page + 1)
         },
-        errorMessage = assetUpdateUiState.errorMessage,
+        errorMessage = assetUiState.errorMessage,
         itemKey = { it.assetId }
     ) { asset ->
         if (editingAssetId == asset.assetId) {
@@ -199,7 +203,7 @@ fun AssetScreen(
                                 assetViewModel.onAssetUpdateValueChange {
                                     it.copy(
                                         name = asset.name,
-                                        assetType = asset.assetTypeName,
+                                        assetType = "",
                                         description = asset.description ?: ""
                                     )
                                 }
