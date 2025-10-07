@@ -27,6 +27,7 @@ import com.vfd.client.ui.components.cards.AppEventCard
 import com.vfd.client.ui.components.elements.AppDateTimePicker
 import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.layout.AppListScreen
+import com.vfd.client.ui.components.texts.AppDaysCounter
 import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.EventViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
@@ -185,6 +186,7 @@ fun EventScreen(
                             }
                         )
                     }
+                    AppDaysCounter(ourDate = event.eventDate)
                 }
             )
         }

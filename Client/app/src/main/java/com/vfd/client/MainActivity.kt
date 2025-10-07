@@ -69,6 +69,7 @@ class MainActivity : ComponentActivity() {
                 val pending by mainViewModel.pendingFirefighters.collectAsState()
                 val active by mainViewModel.activeFirefighters.collectAsState()
                 val assets by mainViewModel.totalAssets.collectAsState()
+                val events by mainViewModel.upcomingEvents.collectAsState()
                 val canCreateThings by mainViewModel.canCreateThings.collectAsState()
                 val hasRole by mainViewModel.hasRole.collectAsState()
                 val snackbarHostState = remember { SnackbarHostState() }
@@ -176,6 +177,7 @@ class MainActivity : ComponentActivity() {
                                                     launchSingleTop = true
                                                 }
                                             },
+                                            badgeCount = assets
                                         ),
                                         NavBarButton(
                                             "Events",
@@ -184,7 +186,9 @@ class MainActivity : ComponentActivity() {
                                                 navController.navigate("events/list") {
                                                     launchSingleTop = true
                                                 }
-                                            }),
+                                            },
+                                            badgeCount = events
+                                        ),
                                         NavBarButton(
                                             "TO DO",
                                             Icons.Default.Person,
@@ -243,7 +247,9 @@ class MainActivity : ComponentActivity() {
                                             navController.navigate("events/list") {
                                                 launchSingleTop = true
                                             }
-                                        }),
+                                        },
+                                        badgeCount = events
+                                    ),
                                     NavBarButton(
                                         "Operations",
                                         Icons.Default.Settings,
