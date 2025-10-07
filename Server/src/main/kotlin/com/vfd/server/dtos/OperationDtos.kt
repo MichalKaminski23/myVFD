@@ -44,6 +44,9 @@ object OperationDtos {
         @field:Schema(description = "Firedepartment's address")
         val address: AddressDtos.AddressCreate? = null,
 
+        @field:Schema(description = "Date and time of the operation", example = "2025-09-01T19:00:00")
+        val operationDate: LocalDateTime? = null,
+
         @field:Size(max = 512, message = "Description must be at most 512 characters.")
         @field:Schema(
             description = "Description of the operation",

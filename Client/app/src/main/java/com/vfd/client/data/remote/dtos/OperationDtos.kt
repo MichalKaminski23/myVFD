@@ -24,6 +24,8 @@ object OperationDtos {
 
         val address: AddressDtos.AddressCreate? = null,
 
+        val operationDate: LocalDateTime? = null,
+
         val description: String? = null,
 
         val participantIds: MutableSet<Int> = linkedSetOf()

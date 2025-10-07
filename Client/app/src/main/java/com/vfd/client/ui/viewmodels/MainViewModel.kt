@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.repositories.AssetRepository
 import com.vfd.client.data.repositories.EventRepository
 import com.vfd.client.data.repositories.FirefighterRepository
+import com.vfd.client.data.repositories.OperationRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.daysUntilSomething
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val firefighterRepository: FirefighterRepository,
     private val assetRepository: AssetRepository,
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    private val operationRepository: OperationRepository
 ) : ViewModel() {
 
     private val _pendingFirefighters = MutableStateFlow(0)
@@ -34,6 +36,9 @@ class MainViewModel @Inject constructor(
 
     val _upcomingEvents = MutableStateFlow(0)
     val upcomingEvents: StateFlow<Int> = _upcomingEvents
+
+    val _totalOperations = MutableStateFlow(0)
+    val totalOperations: StateFlow<Int> = _totalOperations
 
     private val _canCreateThings = MutableStateFlow(false)
     val canCreateThings: StateFlow<Boolean> = _canCreateThings.asStateFlow()
@@ -91,6 +96,15 @@ class MainViewModel @Inject constructor(
                     else -> 0
                 }
             _upcomingEvents.value = eventsCount
+
+            val operations =
+                when (val result = operationRepository.getOperations(page = 0, size = 1)) {
+                    is ApiResult.Success -> result.data?.totalElements ?: result.data?.items?.size
+                    ?: 0
+
+                    else -> 0
+                }
+            _totalOperations.value = operations
         }
     }
 }

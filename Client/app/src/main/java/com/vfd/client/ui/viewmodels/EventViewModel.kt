@@ -97,7 +97,7 @@ class EventViewModel @Inject constructor(
                     _eventCreateUiState.value = _eventCreateUiState.value.copy(
                         isLoading = false,
                         success = false,
-                        errorMessage = result.message ?: "An unexpected error occurred"
+                        errorMessage = result.message ?: "Failed to create event"
                     )
                     _uiEvent.send(UiEvent.Error("Failed to create event"))
                 }

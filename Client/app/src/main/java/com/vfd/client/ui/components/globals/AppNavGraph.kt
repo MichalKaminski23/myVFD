@@ -19,6 +19,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import com.vfd.client.ui.components.dialogs.AssetCreateDialog
 import com.vfd.client.ui.components.dialogs.EventCreateDialog
+import com.vfd.client.ui.components.dialogs.OperationCreateDialog
 import com.vfd.client.ui.screens.AssetScreen
 import com.vfd.client.ui.screens.EventScreen
 import com.vfd.client.ui.screens.FirefighterScreen
@@ -27,10 +28,12 @@ import com.vfd.client.ui.screens.LoginScreen
 import com.vfd.client.ui.screens.MeScreen
 import com.vfd.client.ui.screens.ModeratorScreen
 import com.vfd.client.ui.screens.NewFirefighterScreen
+import com.vfd.client.ui.screens.OperationScreen
 import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
 import com.vfd.client.ui.viewmodels.AssetViewModel
 import com.vfd.client.ui.viewmodels.EventViewModel
+import com.vfd.client.ui.viewmodels.OperationViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -132,6 +135,36 @@ fun AppNavGraph(
                     showDialog = true,
                     onDismiss = { navController.popBackStack() },
                     snackbarHostState = snackbarHostState
+                )
+            }
+        }
+
+        navigation(startDestination = "operations/list", route = "operations_graph") {
+
+            composable("operations/list") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("operations_graph")
+                }
+                val operationViewModel: OperationViewModel = hiltViewModel(parentEntry)
+
+                OperationScreen(
+                    navController = navController,
+                    snackbarHostState = snackbarHostState,
+                    operationViewModel = operationViewModel
+                )
+            }
+
+            dialog("operations/create") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("operations_graph")
+                }
+                val operationViewModel: OperationViewModel = hiltViewModel(parentEntry)
+
+                OperationCreateDialog(
+//                    operationViewModel = operationViewModel,
+//                    showDialog = true,
+//                    onDismiss = { navController.popBackStack() },
+//                    snackbarHostState = snackbarHostState
                 )
             }
         }

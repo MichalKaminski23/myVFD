@@ -70,6 +70,7 @@ class MainActivity : ComponentActivity() {
                 val active by mainViewModel.activeFirefighters.collectAsState()
                 val assets by mainViewModel.totalAssets.collectAsState()
                 val events by mainViewModel.upcomingEvents.collectAsState()
+                val operations by mainViewModel.totalOperations.collectAsState()
                 val canCreateThings by mainViewModel.canCreateThings.collectAsState()
                 val hasRole by mainViewModel.hasRole.collectAsState()
                 val snackbarHostState = remember { SnackbarHostState() }
@@ -122,6 +123,7 @@ class MainActivity : ComponentActivity() {
                                         "firefighterScreen" -> "Firefighters"
                                         "assets/list" -> "Assets"
                                         "events/list" -> "Events"
+                                        "operations/list" -> "Operations"
                                         else -> "My VFD"
                                     }
                                 )
@@ -152,6 +154,10 @@ class MainActivity : ComponentActivity() {
                                         RefreshButton(currentRoute)
                                     }
 
+                                    "operations/list" -> {
+                                        RefreshButton(currentRoute)
+                                    }
+
                                     else -> {
                                         // No action
                                     }
@@ -165,10 +171,6 @@ class MainActivity : ComponentActivity() {
                             "meScreen" -> {
                                 if (hasRole) {
                                     val actions = listOf(
-                                        NavBarButton(
-                                            "TO DO",
-                                            Icons.Default.Person,
-                                            { /* navController.navigate("TO DO") */ }),
                                         NavBarButton(
                                             "Assets",
                                             Icons.Default.Build,
@@ -190,8 +192,18 @@ class MainActivity : ComponentActivity() {
                                             badgeCount = events
                                         ),
                                         NavBarButton(
+                                            "Operations",
+                                            Icons.Default.Settings,
+                                            {
+                                                navController.navigate("operations/list") {
+                                                    launchSingleTop = true
+                                                }
+                                            },
+                                            badgeCount = operations
+                                        ),
+                                        NavBarButton(
                                             "TO DO",
-                                            Icons.Default.Person,
+                                            Icons.Default.ShoppingCart,
                                             { /* navController.navigate("TO DO") */ })
                                     )
                                     NavBarAction(actions)
@@ -227,7 +239,11 @@ class MainActivity : ComponentActivity() {
                                     NavBarButton(
                                         "Firefighters",
                                         Icons.Default.Person,
-                                        { navController.navigate("firefighterScreen") },
+                                        {
+                                            navController.navigate("firefighterScreen") {
+                                                launchSingleTop = true
+                                            }
+                                        },
                                         badgeCount = active
                                     ),
                                     NavBarButton(
@@ -253,12 +269,17 @@ class MainActivity : ComponentActivity() {
                                     NavBarButton(
                                         "Operations",
                                         Icons.Default.Settings,
-                                        { /* navController.navigate("operationScreen") */ }
+                                        {
+                                            navController.navigate("operations/list") {
+                                                launchSingleTop = true
+                                            }
+                                        },
+                                        badgeCount = operations
                                     ),
                                     NavBarButton(
-                                        "Investments",
+                                        "TO DO",
                                         Icons.Default.ShoppingCart,
-                                        { /* navController.navigate("investmentScreen") */ }
+                                        { /* navController.navigate("TO DO") */ }
                                     )
                                 )
                                 NavBarAction(actions)
@@ -332,6 +353,30 @@ class MainActivity : ComponentActivity() {
                                 NavBarAction(actions)
                             }
 
+                            "operations/list" -> {
+                                val actions = mutableListOf<NavBarButton>()
+                                actions.add(
+                                    NavBarButton(
+                                        "Back",
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        { navController.popBackStack() }),
+                                )
+                                if (canCreateThings) {
+                                    actions.add(
+                                        NavBarButton(
+                                            "Create operation",
+                                            Icons.Default.Settings,
+                                            {
+                                                navController.navigate("operations/create") {
+                                                    launchSingleTop = true
+                                                }
+                                            }
+                                        )
+                                    )
+                                }
+                                NavBarAction(actions)
+                            }
+
                             else -> {
                                 // No action
                             }
@@ -373,6 +418,7 @@ fun RefreshButton(currentRoute: String?) {
         "firefighterScreen" -> RefreshEvent.FirefighterScreen
         "assets/list" -> RefreshEvent.AssetScreen
         "events/list" -> RefreshEvent.EventScreen
+        "operations/list" -> RefreshEvent.OperationScreen
         else -> null
     }
 
