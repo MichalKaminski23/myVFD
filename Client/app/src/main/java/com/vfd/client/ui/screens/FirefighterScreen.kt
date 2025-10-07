@@ -1,11 +1,5 @@
 package com.vfd.client.ui.screens
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,15 +8,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.vfd.client.ui.components.buttons.AppLoadMoreButton
 import com.vfd.client.ui.components.cards.AppFirefightersCard
-import com.vfd.client.ui.components.elements.AppSearchBar
 import com.vfd.client.ui.components.globals.AppUiEvents
-import com.vfd.client.ui.components.texts.AppText
+import com.vfd.client.ui.components.layout.AppListScreen
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
@@ -37,15 +27,6 @@ fun FirefighterScreen(
     val hasMore = activeFirefightersUiState.page + 1 < activeFirefightersUiState.totalPages
 
     var searchQuery by remember { mutableStateOf("") }
-
-    val filteredFirefighters = activeFirefightersUiState.activeFirefighters.filter {
-        val fullName = "${it.firstName} ${it.lastName}"
-        searchQuery.isBlank() ||
-                it.firstName.contains(searchQuery, ignoreCase = true) ||
-                it.lastName.contains(searchQuery, ignoreCase = true) ||
-                fullName.contains(searchQuery, ignoreCase = true) ||
-                it.emailAddress.contains(searchQuery, ignoreCase = true)
-    }
 
     AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
 
@@ -64,51 +45,34 @@ fun FirefighterScreen(
         }
     }
 
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        item {
-            AppSearchBar(
-                query = searchQuery,
-                onQueryChange = { searchQuery = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = "Search firefighters...",
-                enabled = !activeFirefightersUiState.isLoading,
-                loading = activeFirefightersUiState.isLoading,
-            )
-            Spacer(Modifier.height(12.dp))
-        }
-
-        if (filteredFirefighters.isEmpty()) {
-            item {
-                AppText(
-                    if (searchQuery.isBlank())
-                        "There aren't any firefighters in your VFD or the firefighters are still loading"
-                    else
-                        "No firefighters match your search",
-                    style = MaterialTheme.typography.headlineLarge
-                )
+    AppListScreen(
+        data = activeFirefightersUiState.activeFirefighters,
+        isLoading = activeFirefightersUiState.isLoading,
+        searchQuery = searchQuery,
+        onSearchChange = { searchQuery = it },
+        searchPlaceholder = "Search firefighters...",
+        filter = { firefighter, query ->
+            val fullName = "${firefighter.firstName} ${firefighter.lastName}"
+            query.isBlank() ||
+                    firefighter.firstName.contains(query, ignoreCase = true) ||
+                    firefighter.lastName.contains(query, ignoreCase = true) ||
+                    fullName.contains(query, ignoreCase = true) ||
+                    firefighter.emailAddress.contains(query, ignoreCase = true)
+        },
+        emptyText = "There aren't any firefighters in your VFD or the firefighters are still loading",
+        emptyFilteredText = "No firefighters match your search",
+        hasMore = hasMore,
+        onLoadMore = {
+            if (hasMore && !activeFirefightersUiState.isLoading)
+                firefighterViewModel.getFirefighters(page = activeFirefightersUiState.page + 1)
+        },
+        errorMessage = activeFirefightersUiState.errorMessage,
+        itemKey = { it.firefighterId }
+    ) { firefighter ->
+        AppFirefightersCard(
+            firefighter = firefighter,
+            actions = {
             }
-        } else {
-            items(filteredFirefighters) { firefighter ->
-                AppFirefightersCard(
-                    firefighter = firefighter,
-                    actions = {
-
-                    }
-                )
-                Spacer(Modifier.height(12.dp))
-            }
-        }
-
-        item {
-            Spacer(Modifier.height(12.dp))
-            AppLoadMoreButton(
-                hasMore = hasMore,
-                isLoading = activeFirefightersUiState.isLoading,
-                onLoadMore = {
-                    if (hasMore && !activeFirefightersUiState.isLoading)
-                        firefighterViewModel.getFirefighters(page = activeFirefightersUiState.page + 1)
-                }
-            )
-        }
+        )
     }
 }
