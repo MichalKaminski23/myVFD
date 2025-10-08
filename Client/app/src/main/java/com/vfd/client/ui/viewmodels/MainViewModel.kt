@@ -46,13 +46,20 @@ class MainViewModel @Inject constructor(
     private val _hasRole = MutableStateFlow(false)
     val hasRole: StateFlow<Boolean> = _hasRole.asStateFlow()
 
+    private val _role = MutableStateFlow("")
+    val role: StateFlow<String> = _role.asStateFlow()
+
     fun setUserRole(role: String?) {
         _canCreateThings.value = role?.uppercase() == "PRESIDENT"
         _hasRole.value = !role.isNullOrBlank()
+        _role.value = role?.uppercase() ?: ""
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun refreshBadges() {
+        if (_role.value == "USER") {
+            return
+        }
         viewModelScope.launch {
 
             val pending =

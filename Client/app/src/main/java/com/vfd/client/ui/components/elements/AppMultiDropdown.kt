@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -12,10 +13,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -46,36 +47,24 @@ import androidx.compose.ui.unit.sp
 import com.vfd.client.ui.theme.appTextFieldColors
 
 @Composable
-fun <T> AppDropdown(
+fun <T> AppMultiDropdown(
     items: List<T>,
-    selectedId: Int? = null,
-    selectedCode: String? = null,
-    idSelector: ((T) -> Int)? = null,
-    codeSelector: ((T) -> String)? = null,
+    selectedIds: Set<Int>,
+    idSelector: (T) -> Int,
     labelSelector: (T) -> String,
     label: String,
-    onSelected: (T) -> Unit,
+    onToggle: (Int) -> Unit,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     onLoadMore: () -> Unit,
     hasMore: Boolean = false,
     onExpand: (() -> Unit)? = null,
     icon: ImageVector,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var initialized by remember { mutableStateOf(false) }
     var menuWidth by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
-
-    val selected: T? = when {
-        selectedId != null && idSelector != null ->
-            items.firstOrNull { idSelector(it) == selectedId }
-
-        !selectedCode.isNullOrBlank() && codeSelector != null ->
-            items.firstOrNull { codeSelector(it) == selectedCode }
-
-        else -> null
-    }
 
     LaunchedEffect(expanded) {
         if (expanded && !initialized) {
@@ -88,15 +77,11 @@ fun <T> AppDropdown(
 
     Box(modifier = modifier) {
         OutlinedTextField(
-            value = selected?.let(labelSelector) ?: "",
+            value = if (selectedIds.isNotEmpty()) "${selectedIds.size} selected" else "",
             onValueChange = {},
             readOnly = true,
             label = {
-                Text(
-                    label,
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Text(label, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             },
             placeholder = { Text("Select...") },
             trailingIcon = {
@@ -113,7 +98,8 @@ fun <T> AppDropdown(
                 .fillMaxWidth()
                 .onGloballyPositioned { coords ->
                     menuWidth = with(density) { coords.size.width.toDp() }
-                },
+                }
+                .clickable { expanded = true },
             colors = appTextFieldColors()
         )
 
@@ -138,94 +124,25 @@ fun <T> AppDropdown(
                 IconButton(onClick = { expanded = false }) { Icon(Icons.Default.Close, null) }
             }
             AppHorizontalDivider()
-            if (isLoading) {
-                DropdownMenuItem(
-                    text = {
-                        LinearProgressIndicator(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    },
-                    onClick = { /* no-op while loading */ }
-                )
-            } else if (items.isEmpty()) {
-                DropdownMenuItem(
-                    text = {
-                        LinearProgressIndicator(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    },
-                    onClick = { /* no-op */ },
-                    enabled = false
-                )
-            } else {
-                items.forEach { item ->
-                    val isSelected =
-                        selected != null && labelSelector(item) == labelSelector(selected)
+            when {
+                isLoading -> {
                     DropdownMenuItem(
-                        leadingIcon = {
-                            Icon(
-                                icon,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)
+                        text = {
+                            LinearProgressIndicator(
+                                modifier = Modifier.fillMaxWidth(),
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         },
-                        trailingIcon = {
-                            if (isSelected) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        },
-                        text = {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    labelSelector(item),
-                                    textAlign = TextAlign.Center,
-                                    color = itemTextColor
-                                )
-                            }
-                        },
-                        onClick = {
-                            onSelected(item)
-                            expanded = false
-                        },
-                        colors = MenuDefaults.itemColors(
-                            textColor = itemTextColor,
-                            leadingIconColor = itemTextColor,
-                            trailingIconColor = MaterialTheme.colorScheme.primary
-                        )
+                        onClick = { /* no-op */ }
                     )
                 }
 
-                AppHorizontalDivider(color = menuBorder)
-
-                if (hasMore) {
+                items.isEmpty() -> {
                     DropdownMenuItem(
                         text = {
                             Text(
-                                "Load more...",
+                                "No items...",
                                 textAlign = TextAlign.Center,
-                                fontStyle = FontStyle.Italic,
-                                color = itemTextColor
-                            )
-                        },
-                        onClick = { onLoadMore() },
-                        colors = MenuDefaults.itemColors(textColor = itemTextColor)
-                    )
-                } else {
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                "No more items...",
-                                textAlign = TextAlign.Center,
-                                fontStyle = FontStyle.Italic,
                                 color = itemTextColor.copy(alpha = 0.8f)
                             )
                         },
@@ -233,6 +150,79 @@ fun <T> AppDropdown(
                         enabled = false,
                         colors = MenuDefaults.itemColors(textColor = itemTextColor)
                     )
+                }
+
+                else -> {
+                    items.forEach { item ->
+                        val id = idSelector(item)
+                        val labelTxt = labelSelector(item)
+                        val checked = id in selectedIds
+
+                        DropdownMenuItem(
+                            leadingIcon = {
+                                Icon(
+                                    icon,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f)
+                                )
+                            },
+                            trailingIcon = {
+                                Checkbox(
+                                    checked = checked,
+                                    onCheckedChange = { onToggle(id) }
+                                )
+                            },
+                            text = {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        labelTxt,
+                                        textAlign = TextAlign.Center,
+                                        color = itemTextColor
+                                    )
+                                }
+                            },
+                            onClick = { onToggle(id) },
+                            colors = MenuDefaults.itemColors(
+                                textColor = itemTextColor,
+                                leadingIconColor = itemTextColor,
+                                trailingIconColor = MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    }
+
+                    AppHorizontalDivider(color = menuBorder)
+
+                    if (hasMore) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    "Load more...",
+                                    textAlign = TextAlign.Center,
+                                    fontStyle = FontStyle.Italic,
+                                    color = itemTextColor
+                                )
+                            },
+                            onClick = { onLoadMore() },
+                            colors = MenuDefaults.itemColors(textColor = itemTextColor)
+                        )
+                    } else {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    "No more items...",
+                                    textAlign = TextAlign.Center,
+                                    fontStyle = FontStyle.Italic,
+                                    color = itemTextColor.copy(alpha = 0.8f)
+                                )
+                            },
+                            onClick = { /* no-op */ },
+                            enabled = false,
+                            colors = MenuDefaults.itemColors(textColor = itemTextColor)
+                        )
+                    }
                 }
             }
         }

@@ -39,7 +39,7 @@ class OperationServiceImplementation(
 
         val address = addressService.findOrCreateAddress(operationDto.address)
 
-        val participants = firefighterRepository.findAllById(operationDto.participantIds)
+        val participants = firefighterRepository.findAllById(operationDto.participantsIds)
 
         participants.forEach { it.requireSameFiredepartment(firedepartment.firedepartmentId!!) }
 
@@ -82,7 +82,7 @@ class OperationServiceImplementation(
             .toPageResponse()
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     override fun updateOperation(
         emailAddress: String,
         operationId: Int,
@@ -99,9 +99,10 @@ class OperationServiceImplementation(
 
         operation.requireSameFiredepartment(firedepartmentId)
 
-        operationDto.participantIds.let { participantsIds ->
-            val participants = firefighterRepository.findAllById(participantsIds)
+        operationDto.participantsIds?.let { ids ->
+            val participants = firefighterRepository.findAllById(ids)
             operation.participants = participants.toMutableSet()
+            operation.participants.forEach { it.requireSameFiredepartment(firedepartmentId) }
         }
 
         operation.participants.forEach { it.requireSameFiredepartment(firedepartmentId) }
@@ -192,8 +193,8 @@ class OperationServiceImplementation(
 
         val operation = operationRepository.findByIdOrThrow(operationId)
 
-        operationDto.participantIds.let { participantsIds ->
-            val participants = firefighterRepository.findAllById(participantsIds)
+        operationDto.participantsIds?.let { ids ->
+            val participants = firefighterRepository.findAllById(ids)
             operation.participants = participants.toMutableSet()
         }
 

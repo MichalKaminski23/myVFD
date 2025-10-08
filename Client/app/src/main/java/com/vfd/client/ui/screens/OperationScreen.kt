@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +28,7 @@ import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppOperationCard
 import com.vfd.client.ui.components.elements.AppDateTimePicker
 import com.vfd.client.ui.components.elements.AppDropdown
+import com.vfd.client.ui.components.elements.AppMultiDropdown
 import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.layout.AppListScreen
 import com.vfd.client.ui.components.texts.AppTextField
@@ -52,6 +54,8 @@ fun OperationScreen(
 
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
     val hasMore = operationUiState.page + 1 < operationUiState.totalPages
+
+    val firefighterUiState by firefighterViewModel.activeFirefightersUiState.collectAsState()
 
     var searchQuery by remember { mutableStateOf("") }
 
@@ -145,6 +149,29 @@ fun OperationScreen(
                                 }
                             }
                         )
+                        AppMultiDropdown(
+                            items = firefighterUiState.activeFirefighters,
+                            selectedIds = operationUpdateUiState.participantsIds,
+                            idSelector = { it.firefighterId },
+                            labelSelector = { it.firstName + " " + it.lastName },
+                            label = "Participants",
+                            onToggle = { id ->
+                                operationViewModel.onOperationUpdateValueChange { s ->
+                                    val set = s.participantsIds.toMutableSet()
+                                    if (!set.add(id)) set.remove(id)
+                                    s.copy(participantsIds = set, participantsTouched = true)
+                                }
+                            },
+                            onExpand = {
+                                if (firefighterUiState.activeFirefighters.isEmpty()) {
+                                    firefighterViewModel.getFirefighters(page = 0)
+                                }
+                            },
+                            onLoadMore = { firefighterViewModel.getFirefighters(page = firefighterUiState.page + 1) },
+                            hasMore = firefighterUiState.page + 1 < firefighterUiState.totalPages,
+                            icon = Icons.Default.Face,
+                            isLoading = firefighterUiState.isLoading
+                        )
                         AppTextField(
                             value = operationUpdateUiState.description,
                             onValueChange = { new ->
@@ -165,7 +192,10 @@ fun OperationScreen(
                                         val operationDto = OperationDtos.OperationPatch(
                                             operationType = operationUpdateUiState.operationType.takeIf { it.isNotBlank() },
                                             operationDate = operationUpdateUiState.operationDate,
-                                            description = operationUpdateUiState.description
+                                            description = operationUpdateUiState.description.takeIf { it.isNotBlank() },
+                                            participantsIds = if (operationUpdateUiState.participantsTouched)
+                                                operationUpdateUiState.participantsIds.toSet()
+                                            else null
                                         )
                                         operationViewModel.updateOperation(id, operationDto)
                                     }
@@ -202,7 +232,10 @@ fun OperationScreen(
                                     it.copy(
                                         operationType = "",
                                         operationDate = operation.operationDate,
-                                        description = operation.description
+                                        description = operation.description,
+                                        participantsIds = operation.participants.map { p -> p.firefighterId }
+                                            .toMutableSet(),
+                                        participantsTouched = false
                                     )
                                 }
                             }

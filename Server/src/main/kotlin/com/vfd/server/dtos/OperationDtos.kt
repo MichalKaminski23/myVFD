@@ -32,7 +32,7 @@ object OperationDtos {
         val description: String,
 
         @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[12, 15, 18]")
-        val participantIds: MutableSet<Int> = linkedSetOf()
+        val participantsIds: Set<Int>
     )
 
     @Schema(description = "DTO used for partially updating an operation")
@@ -55,7 +55,7 @@ object OperationDtos {
         val description: String? = null,
 
         @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[12, 15, 18]")
-        val participantIds: MutableSet<Int> = linkedSetOf()
+        val participantsIds: Set<Int>? = null
     )
 
     @Schema(description = "DTO used for returning operation information")

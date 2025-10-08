@@ -15,7 +15,7 @@ object OperationDtos {
 
         val description: String,
 
-        val participantIds: MutableSet<Int> = linkedSetOf()
+        val participantsIds: Set<Int>? = null
     )
 
     @Serializable
@@ -28,7 +28,7 @@ object OperationDtos {
 
         val description: String? = null,
 
-        val participantIds: MutableSet<Int> = linkedSetOf()
+        val participantsIds: Set<Int>? = null
     )
 
     @Serializable
