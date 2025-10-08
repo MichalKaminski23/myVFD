@@ -11,6 +11,7 @@ interface InvestmentProposalMapper {
     fun toInvestmentProposalDto(investmentProposal: InvestmentProposal): InvestmentProposalDtos.InvestmentProposalResponse
 
     @Mapping(target = "investmentProposalId", ignore = true)
+    @Mapping(target = "submissionDate", ignore = true)
     @Mapping(target = "firedepartment", ignore = true)
     @Mapping(target = "votes", ignore = true)
     fun toInvestmentProposalEntity(investmentProposalDto: InvestmentProposalDtos.InvestmentProposalCreate): InvestmentProposal

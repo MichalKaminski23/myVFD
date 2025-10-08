@@ -19,10 +19,6 @@ object InvestmentProposalDtos {
         )
         val description: String,
 
-        @field:NotNull(message = "Submission date must not be null.")
-        @field:Schema(description = "Date of the submission", example = "2025-08-03T15:00:00")
-        val submissionDate: LocalDateTime,
-
         @field:NotNull(message = "Amount must not be null.")
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
         val amount: BigDecimal

@@ -10,8 +10,6 @@ object InvestmentProposalDtos {
     data class InvestmentProposalCreate(
         val description: String,
 
-        val submissionDate: LocalDateTime,
-
         @Serializable(with = BigDecimalSerializer::class)
         val amount: BigDecimal
     )

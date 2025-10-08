@@ -9,6 +9,8 @@ import com.vfd.server.services.InvestmentProposalService
 import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Service
 class InvestmentProposalServiceImplementation(
@@ -44,8 +46,11 @@ class InvestmentProposalServiceImplementation(
 
         val firedepartment = firefighter.requireFiredepartment()
 
+        val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+
         val investmentProposal = investmentProposalMapper.toInvestmentProposalEntity(investmentProposalDto).apply {
             this.firedepartment = firedepartment
+            this.submissionDate = now
             this.status = InvestmentProposalStatus.PENDING
         }
 
@@ -140,7 +145,10 @@ class InvestmentProposalServiceImplementation(
 
         val firedepartment = firedepartmentRepository.findByIdOrThrow(investmentProposalDto.firedepartmentId)
 
+        val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+
         investmentProposal.firedepartment = firedepartment
+        investmentProposal.submissionDate = now
         investmentProposal.status = InvestmentProposalStatus.PENDING
 
         return investmentProposalMapper.toInvestmentProposalDto(
