@@ -28,6 +28,9 @@ data class EventUpdateUiState(
     val header: String = "",
     val description: String = "",
     val eventDate: LocalDateTime? = null,
+    val headerTouched: Boolean = false,
+    val eventDateTouched: Boolean = false,
+    val descriptionTouched: Boolean = false,
     val isLoading: Boolean = false,
     val success: Boolean = false,
     val errorMessage: String? = null

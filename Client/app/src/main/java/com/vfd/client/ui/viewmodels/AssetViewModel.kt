@@ -27,6 +27,9 @@ data class AssetUpdateUiState(
     val name: String = "",
     val assetType: String = "",
     val description: String = "",
+    val nameTouched: Boolean = false,
+    val assetTypeTouched: Boolean = false,
+    val descriptionTouched: Boolean = false,
     val isLoading: Boolean = false,
     val success: Boolean = false,
     val errorMessage: String? = null

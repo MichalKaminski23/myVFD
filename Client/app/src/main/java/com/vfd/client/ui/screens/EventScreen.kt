@@ -109,17 +109,17 @@ fun EventScreen(
                             value = eventUpdateUiState.header,
                             onValueChange = { new ->
                                 eventViewModel.onEventUpdateValueChange {
-                                    it.copy(header = new)
+                                    it.copy(header = new, headerTouched = true)
                                 }
                             },
                             label = "Header",
-                            errorMessage = null
+                            errorMessage = eventUpdateUiState.errorMessage
                         )
                         AppDateTimePicker(
                             selectedDateTime = eventUpdateUiState.eventDate,
                             onDateTimeSelected = { newDateTime ->
                                 eventViewModel.onEventUpdateValueChange {
-                                    it.copy(eventDate = newDateTime)
+                                    it.copy(eventDate = newDateTime, eventDateTouched = true)
                                 }
                             }
                         )
@@ -127,11 +127,11 @@ fun EventScreen(
                             value = eventUpdateUiState.description,
                             onValueChange = { new ->
                                 eventViewModel.onEventUpdateValueChange {
-                                    it.copy(description = new)
+                                    it.copy(description = new, descriptionTouched = true)
                                 }
                             },
                             label = "Description",
-                            errorMessage = null,
+                            errorMessage = eventUpdateUiState.errorMessage,
                             singleLine = false
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -141,9 +141,17 @@ fun EventScreen(
                                 onClick = {
                                     event.eventId.let { id ->
                                         val eventDto = EventDtos.EventPatch(
-                                            header = eventUpdateUiState.header,
-                                            eventDate = eventUpdateUiState.eventDate,
-                                            description = eventUpdateUiState.description
+                                            header = if (eventUpdateUiState.headerTouched)
+                                                eventUpdateUiState.header
+                                            else null,
+
+                                            eventDate = if (eventUpdateUiState.eventDateTouched)
+                                                eventUpdateUiState.eventDate
+                                            else null,
+
+                                            description = if (eventUpdateUiState.descriptionTouched)
+                                                eventUpdateUiState.description
+                                            else null
                                         )
                                         eventViewModel.updateEvent(id, eventDto)
                                     }

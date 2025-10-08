@@ -52,7 +52,7 @@ fun AssetCreateDialog(
                 assetViewModel.onAssetCreateValueChange { it.copy(name = new) }
             },
             label = "Name",
-            errorMessage = null
+            errorMessage = assetCreateUiState.errorMessage
         )
 
         AppDropdown(
@@ -81,7 +81,7 @@ fun AssetCreateDialog(
                 assetViewModel.onAssetCreateValueChange { it.copy(description = new) }
             },
             label = "Description",
-            errorMessage = null,
+            errorMessage = assetCreateUiState.errorMessage,
             singleLine = false
         )
     }

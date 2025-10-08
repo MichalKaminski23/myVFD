@@ -1,7 +1,5 @@
 package com.vfd.client.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -13,10 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.ui.components.buttons.AppButton
+import com.vfd.client.ui.components.elements.AppAddressActions
 import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.texts.AppErrorText
 import com.vfd.client.ui.components.texts.AppSectionHeader
@@ -59,57 +57,22 @@ fun RegisterScreen(
         )
 
         AppSectionHeader("Address")
-        AppTextField(
-            value = registerUiState.country,
-            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(country = new) } },
-            label = "Country",
-            errorMessage = registerUiState.fieldErrors["address.country"]
+        AppAddressActions(
+            address = registerUiState.address,
+            errors = registerUiState.fieldErrors,
+            onAddressChange = { newAddress ->
+                authViewModel.onRegisterValueChange {
+                    it.copy(address = newAddress, addressTouched = true)
+                }
+            },
+            onTouched = {
+                authViewModel.onRegisterValueChange {
+                    it.copy(
+                        addressTouched = true
+                    )
+                }
+            }
         )
-
-        AppTextField(
-            value = registerUiState.voivodeship,
-            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(voivodeship = new) } },
-            label = "Voivodeship",
-            errorMessage = registerUiState.fieldErrors["address.voivodeship"]
-        )
-
-        AppTextField(
-            value = registerUiState.city,
-            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(city = new) } },
-            label = "City",
-            errorMessage = registerUiState.fieldErrors["address.city"]
-        )
-
-        AppTextField(
-            value = registerUiState.postalCode,
-            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(postalCode = new) } },
-            label = "Postal code",
-            errorMessage = registerUiState.fieldErrors["address.postalCode"]
-        )
-
-        AppTextField(
-            value = registerUiState.street,
-            onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(street = new) } },
-            label = "Street",
-            errorMessage = registerUiState.fieldErrors["address.street"]
-        )
-
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            AppTextField(
-                value = registerUiState.houseNumber,
-                onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(houseNumber = new) } },
-                label = "House number",
-                errorMessage = registerUiState.fieldErrors["address.houseNumber"],
-                modifier = Modifier.weight(1.0f)
-            )
-            AppTextField(
-                value = registerUiState.apartNumber,
-                onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(apartNumber = new) } },
-                label = "Apartment number",
-                errorMessage = registerUiState.fieldErrors["address.apartNumber"],
-                modifier = Modifier.weight(1.0f)
-            )
-        }
 
         AppSectionHeader("Contact")
         AppTextField(
@@ -145,9 +108,9 @@ fun RegisterScreen(
             onClick = { authViewModel.register() },
             fullWidth = true,
             enabled =
-                registerUiState.firstName.isNotBlank() && registerUiState.lastName.isNotBlank() && registerUiState.country.isNotBlank()
-                        && registerUiState.voivodeship.isNotBlank() && registerUiState.city.isNotBlank() && registerUiState.postalCode.isNotBlank()
-                        && registerUiState.street.isNotBlank() && registerUiState.houseNumber.isNotBlank() && registerUiState.emailAddress.isNotBlank() && registerUiState.phoneNumber.isNotBlank()
+                registerUiState.firstName.isNotBlank() && registerUiState.lastName.isNotBlank() && registerUiState.address.country.isNotBlank()
+                        && registerUiState.address.voivodeship.isNotBlank() && registerUiState.address.city.isNotBlank() && registerUiState.address.postalCode.isNotBlank()
+                        && registerUiState.address.street.isNotBlank() && registerUiState.address.houseNumber.isNotBlank() && registerUiState.emailAddress.isNotBlank() && registerUiState.phoneNumber.isNotBlank()
                         && registerUiState.password.isNotBlank() && !registerUiState.isLoading,
             loading = registerUiState.isLoading
         )

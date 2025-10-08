@@ -50,7 +50,7 @@ fun EventCreateDialog(
                 eventViewModel.onEventCreateValueChange { it.copy(header = new) }
             },
             label = "Header",
-            errorMessage = null
+            errorMessage = eventCreateUiState.errorMessage
         )
 
         AppDateTimePicker(
@@ -68,7 +68,7 @@ fun EventCreateDialog(
                 eventViewModel.onEventCreateValueChange { it.copy(description = new) }
             },
             label = "Description",
-            errorMessage = null,
+            errorMessage = eventCreateUiState.errorMessage,
             singleLine = false
         )
     }

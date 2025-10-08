@@ -18,20 +18,24 @@ import javax.inject.Inject
 data class RegisterUiState(
     val firstName: String = "",
     val lastName: String = "",
-    val country: String = "",
-    val voivodeship: String = "",
-    val city: String = "",
-    val postalCode: String = "",
-    val street: String = "",
-    val houseNumber: String = "",
-    val apartNumber: String = "",
+    val address: AddressDtos.AddressCreate
+    = AddressDtos.AddressCreate(
+        country = "",
+        voivodeship = "",
+        city = "",
+        postalCode = "",
+        street = "",
+        houseNumber = "",
+        apartNumber = null
+    ),
     val emailAddress: String = "",
     val phoneNumber: String = "",
     val password: String = "",
     val isLoading: Boolean = false,
     val success: Boolean = false,
     val errorMessage: String? = null,
-    val fieldErrors: Map<String, String> = emptyMap()
+    val fieldErrors: Map<String, String> = emptyMap(),
+    val addressTouched: Boolean = false,
 )
 
 data class LoginUiState(
@@ -66,13 +70,15 @@ class AuthViewModel @Inject constructor(
         _registerUiState.value = RegisterUiState(
             firstName = "Arek",
             lastName = "Niemusialski",
-            country = "Poland",
-            voivodeship = "Silesian",
-            city = "Strzyzowice",
-            postalCode = "69-420",
-            street = "Belna",
-            houseNumber = "1",
-            apartNumber = "7",
+            address = AddressDtos.AddressCreate(
+                country = "Poland",
+                voivodeship = "Silesian",
+                city = "Dabie",
+                postalCode = "42-690",
+                street = "Starawies",
+                houseNumber = "12",
+                apartNumber = "12"
+            ),
             emailAddress = "arek@test.com",
             phoneNumber = "123123123",
             password = "Dupa12345!"
@@ -91,15 +97,7 @@ class AuthViewModel @Inject constructor(
         val newUser = UserDtos.UserCreate(
             firstName = _registerUiState.value.firstName,
             lastName = _registerUiState.value.lastName,
-            address = AddressDtos.AddressCreate(
-                country = _registerUiState.value.country,
-                voivodeship = _registerUiState.value.voivodeship,
-                city = _registerUiState.value.city,
-                postalCode = _registerUiState.value.postalCode,
-                street = _registerUiState.value.street,
-                houseNumber = _registerUiState.value.houseNumber,
-                apartNumber = _registerUiState.value.apartNumber.ifBlank { null }
-            ),
+            address = _registerUiState.value.address,
             emailAddress = _registerUiState.value.emailAddress,
             phoneNumber = _registerUiState.value.phoneNumber,
             password = _registerUiState.value.password

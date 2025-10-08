@@ -31,10 +31,15 @@ data class OperationUpdateUiState(
     val operationDate: LocalDateTime? = null,
     val description: String = "",
     val participantsIds: MutableSet<Int> = linkedSetOf(),
+    val operationTypeTouched: Boolean = false,
+    val operationDateTouched: Boolean = false,
+    val descriptionTouched: Boolean = false,
+    val addressTouched: Boolean = false,
     val participantsTouched: Boolean = false,
     val isLoading: Boolean = false,
     val success: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val fieldErrors: Map<String, String> = emptyMap()
 )
 
 data class OperationCreateUiState(
@@ -45,7 +50,8 @@ data class OperationCreateUiState(
     val participantsIds: MutableSet<Int> = linkedSetOf(),
     val isLoading: Boolean = false,
     val success: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val fieldErrors: Map<String, String> = emptyMap()
 )
 
 @HiltViewModel
@@ -81,7 +87,8 @@ class OperationViewModel @Inject constructor(
                 _operationCreateUiState.value.copy(
                     isLoading = true,
                     errorMessage = null,
-                    success = false
+                    success = false,
+                    fieldErrors = emptyMap()
                 )
 
             when (val result = operationRepository.createOperation(operationDto)) {
@@ -104,10 +111,15 @@ class OperationViewModel @Inject constructor(
                 }
 
                 is ApiResult.Error -> {
+                    val message = result.message ?: "Unknown error"
+
+                    val fieldErrors = result.fieldErrors
+
                     _operationCreateUiState.value = _operationCreateUiState.value.copy(
                         isLoading = false,
                         success = false,
-                        errorMessage = result.message ?: "Failed to create operation"
+                        errorMessage = if (fieldErrors.isEmpty()) message else null,
+                        fieldErrors = fieldErrors
                     )
                     _uiEvent.send(UiEvent.Error("Failed to create operation"))
                 }
@@ -184,7 +196,8 @@ class OperationViewModel @Inject constructor(
                         _operationUpdateUiState.value.copy(
                             isLoading = false,
                             success = true,
-                            errorMessage = null
+                            errorMessage = null,
+                            fieldErrors = emptyMap()
                         )
 
                     val updatedOperations = _operationUiState.value.operations.map { operation ->
@@ -192,7 +205,24 @@ class OperationViewModel @Inject constructor(
                             operationTypeName = result.data?.operationTypeName
                                 ?: operation.operationTypeName,
                             operationDate = result.data?.operationDate ?: operation.operationDate,
-                            address = result.data?.address ?: operation.address,
+                            address = AddressDtos.AddressResponse(
+                                addressId = result.data?.address?.addressId
+                                    ?: operation.address.addressId,
+                                country = result.data?.address?.country
+                                    ?: operation.address.country,
+                                voivodeship = result.data?.address?.voivodeship
+                                    ?: operation.address.voivodeship,
+                                city = result.data?.address?.city
+                                    ?: operation.address.city,
+                                postalCode = result.data?.address?.postalCode
+                                    ?: operation.address.postalCode,
+                                street = result.data?.address?.street
+                                    ?: operation.address.street,
+                                houseNumber = result.data?.address?.houseNumber
+                                    ?: operation.address.houseNumber,
+                                apartNumber = result.data?.address?.apartNumber
+                                    ?: operation.address.apartNumber
+                            ),
                             description = result.data?.description ?: operation.description,
                             participants = result.data?.participants ?: operation.participants
                         ) else operation
@@ -206,10 +236,13 @@ class OperationViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     val message = result.message ?: "Unknown error"
 
+                    val fieldErrors = result.fieldErrors
+
                     _operationUpdateUiState.value = _operationUpdateUiState.value.copy(
                         isLoading = false,
                         success = false,
-                        errorMessage = message
+                        errorMessage = if (fieldErrors.isEmpty()) message else null,
+                        fieldErrors = fieldErrors
                     )
                     _uiEvent.send(UiEvent.Error("Failed to update operation"))
                 }

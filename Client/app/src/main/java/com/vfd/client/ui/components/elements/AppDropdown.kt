@@ -60,7 +60,8 @@ fun <T> AppDropdown(
     hasMore: Boolean = false,
     onExpand: (() -> Unit)? = null,
     icon: ImageVector,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
+    selectedLabelFallback: String? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
     var initialized by remember { mutableStateOf(false) }
@@ -78,17 +79,19 @@ fun <T> AppDropdown(
     }
 
     LaunchedEffect(expanded) {
-        if (expanded && !initialized) {
+        if (!initialized) {
             onExpand?.invoke()
             initialized = true
         }
     }
 
+    val displayLabel = selected?.let(labelSelector) ?: selectedLabelFallback.orEmpty()
+
     val shape = RoundedCornerShape(14.dp)
 
     Box(modifier = modifier) {
         OutlinedTextField(
-            value = selected?.let(labelSelector) ?: "",
+            value = displayLabel,
             onValueChange = {},
             readOnly = true,
             label = {

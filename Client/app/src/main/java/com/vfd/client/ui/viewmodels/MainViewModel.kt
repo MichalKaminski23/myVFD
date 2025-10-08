@@ -31,13 +31,13 @@ class MainViewModel @Inject constructor(
     private val _activeFirefighters = MutableStateFlow(0)
     val activeFirefighters: StateFlow<Int> = _activeFirefighters
 
-    val _totalAssets = MutableStateFlow(0)
+    private val _totalAssets = MutableStateFlow(0)
     val totalAssets: StateFlow<Int> = _totalAssets
 
-    val _upcomingEvents = MutableStateFlow(0)
+    private val _upcomingEvents = MutableStateFlow(0)
     val upcomingEvents: StateFlow<Int> = _upcomingEvents
 
-    val _totalOperations = MutableStateFlow(0)
+    private val _totalOperations = MutableStateFlow(0)
     val totalOperations: StateFlow<Int> = _totalOperations
 
     private val _canCreateThings = MutableStateFlow(false)
@@ -61,7 +61,6 @@ class MainViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-
             val pending =
                 when (val result =
                     firefighterRepository.getPendingFirefighters(page = 0, size = 1)) {

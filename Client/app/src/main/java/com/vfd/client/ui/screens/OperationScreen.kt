@@ -22,10 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.OperationDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppOperationCard
+import com.vfd.client.ui.components.elements.AppAddressActions
 import com.vfd.client.ui.components.elements.AppDateTimePicker
 import com.vfd.client.ui.components.elements.AppDropdown
 import com.vfd.client.ui.components.elements.AppMultiDropdown
@@ -111,6 +113,12 @@ fun OperationScreen(
         errorMessage = operationUiState.errorMessage,
         itemKey = { it.operationId }
     ) { operation ->
+        val effectiveSelectedCode =
+            operationUpdateUiState.operationType.ifBlank {
+                operationTypeUiState.operationTypes
+                    .firstOrNull { it.name == operation.operationTypeName }
+                    ?.operationType ?: ""
+            }
         if (editingOperationId == operation.operationId) {
             if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
                 AppOperationCard(
@@ -118,13 +126,16 @@ fun OperationScreen(
                     actions = {
                         AppDropdown(
                             items = operationTypeUiState.operationTypes,
-                            selectedCode = operationUpdateUiState.operationType,
+                            selectedCode = effectiveSelectedCode,
                             codeSelector = { it.operationType },
                             labelSelector = { it.name },
                             label = "Choose operation type",
                             onSelected = { operationType ->
                                 operationViewModel.onOperationUpdateValueChange {
-                                    it.copy(operationType = operationType.operationType)
+                                    it.copy(
+                                        operationType = operationType.operationType,
+                                        operationTypeTouched = true
+                                    )
                                 }
                             },
                             onLoadMore = {
@@ -145,7 +156,10 @@ fun OperationScreen(
                             selectedDateTime = operationUpdateUiState.operationDate,
                             onDateTimeSelected = { newDateTime ->
                                 operationViewModel.onOperationUpdateValueChange {
-                                    it.copy(operationDate = newDateTime)
+                                    it.copy(
+                                        operationDate = newDateTime,
+                                        operationDateTouched = true
+                                    )
                                 }
                             }
                         )
@@ -172,15 +186,31 @@ fun OperationScreen(
                             icon = Icons.Default.Face,
                             isLoading = firefighterUiState.isLoading
                         )
+                        AppAddressActions(
+                            address = operationUpdateUiState.address,
+                            errors = operationUpdateUiState.fieldErrors,
+                            onAddressChange = { newAddress ->
+                                operationViewModel.onOperationUpdateValueChange {
+                                    it.copy(address = newAddress, addressTouched = true)
+                                }
+                            },
+                            onTouched = {
+                                operationViewModel.onOperationUpdateValueChange {
+                                    it.copy(
+                                        addressTouched = true
+                                    )
+                                }
+                            }
+                        )
                         AppTextField(
                             value = operationUpdateUiState.description,
                             onValueChange = { new ->
                                 operationViewModel.onOperationUpdateValueChange {
-                                    it.copy(description = new)
+                                    it.copy(description = new, descriptionTouched = true)
                                 }
                             },
                             label = "Description",
-                            errorMessage = null,
+                            errorMessage = operationUpdateUiState.errorMessage,
                             singleLine = false
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -190,9 +220,22 @@ fun OperationScreen(
                                 onClick = {
                                     operation.operationId.let { id ->
                                         val operationDto = OperationDtos.OperationPatch(
-                                            operationType = operationUpdateUiState.operationType.takeIf { it.isNotBlank() },
-                                            operationDate = operationUpdateUiState.operationDate,
-                                            description = operationUpdateUiState.description.takeIf { it.isNotBlank() },
+                                            operationType = if (operationUpdateUiState.operationTypeTouched)
+                                                operationUpdateUiState.operationType
+                                            else null,
+
+                                            operationDate = if (operationUpdateUiState.operationDateTouched)
+                                                operationUpdateUiState.operationDate
+                                            else null,
+
+                                            description = if (operationUpdateUiState.descriptionTouched)
+                                                operationUpdateUiState.description.takeIf { it.isNotBlank() }
+                                            else null,
+
+                                            address = if (operationUpdateUiState.addressTouched)
+                                                operationUpdateUiState.address
+                                            else null,
+
                                             participantsIds = if (operationUpdateUiState.participantsTouched)
                                                 operationUpdateUiState.participantsIds.toSet()
                                             else null
@@ -202,6 +245,13 @@ fun OperationScreen(
                                 },
                                 modifier = Modifier.weight(1f),
                                 enabled = operationUpdateUiState.operationDate != null &&
+                                        effectiveSelectedCode.isNotBlank() &&
+                                        operationUpdateUiState.address?.country?.isNotBlank() == true &&
+                                        operationUpdateUiState.address?.voivodeship?.isNotBlank() == true &&
+                                        operationUpdateUiState.address?.city?.isNotBlank() == true &&
+                                        operationUpdateUiState.address?.postalCode?.isNotBlank() == true &&
+                                        operationUpdateUiState.address?.street?.isNotBlank() == true &&
+                                        operationUpdateUiState.address?.houseNumber?.isNotBlank() == true &&
                                         operationUpdateUiState.description.isNotBlank() &&
                                         !operationUpdateUiState.isLoading,
                                 loading = operationUpdateUiState.isLoading
@@ -228,13 +278,30 @@ fun OperationScreen(
                             label = "Edit",
                             onClick = {
                                 editingOperationId = operation.operationId
+                                val preselectedCode = operationTypeUiState.operationTypes
+                                    .firstOrNull { it.name == operation.operationTypeName }
+                                    ?.operationType ?: ""
                                 operationViewModel.onOperationUpdateValueChange {
                                     it.copy(
-                                        operationType = "",
+                                        operationType = preselectedCode,
                                         operationDate = operation.operationDate,
                                         description = operation.description,
+                                        address =
+                                            AddressDtos.AddressCreate(
+                                                country = operation.address.country,
+                                                voivodeship = operation.address.voivodeship,
+                                                city = operation.address.city,
+                                                postalCode = operation.address.postalCode,
+                                                street = operation.address.street,
+                                                houseNumber = operation.address.houseNumber,
+                                                apartNumber = operation.address.apartNumber
+                                            ),
                                         participantsIds = operation.participants.map { p -> p.firefighterId }
                                             .toMutableSet(),
+                                        operationTypeTouched = false,
+                                        operationDateTouched = false,
+                                        descriptionTouched = false,
+                                        addressTouched = false,
                                         participantsTouched = false
                                     )
                                 }

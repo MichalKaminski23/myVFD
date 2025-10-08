@@ -161,10 +161,10 @@ fun AppNavGraph(
                 val operationViewModel: OperationViewModel = hiltViewModel(parentEntry)
 
                 OperationCreateDialog(
-//                    operationViewModel = operationViewModel,
-//                    showDialog = true,
-//                    onDismiss = { navController.popBackStack() },
-//                    snackbarHostState = snackbarHostState
+                    operationViewModel = operationViewModel,
+                    showDialog = true,
+                    onDismiss = { navController.popBackStack() },
+                    snackbarHostState = snackbarHostState
                 )
             }
         }

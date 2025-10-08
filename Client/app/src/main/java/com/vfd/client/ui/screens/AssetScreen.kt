@@ -105,6 +105,12 @@ fun AssetScreen(
         errorMessage = assetUiState.errorMessage,
         itemKey = { it.assetId }
     ) { asset ->
+        val effectiveSelectedCode =
+            assetUpdateUiState.assetType.ifBlank {
+                assetTypeUiState.assetTypes
+                    .firstOrNull { it.name == asset.assetTypeName }
+                    ?.assetType ?: ""
+            }
         if (editingAssetId == asset.assetId) {
             if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
                 AppAssetCard(
@@ -114,16 +120,16 @@ fun AssetScreen(
                             value = assetUpdateUiState.name,
                             onValueChange = { new ->
                                 assetViewModel.onAssetUpdateValueChange {
-                                    it.copy(name = new)
+                                    it.copy(name = new, nameTouched = true)
                                 }
                             },
                             label = "Name",
-                            errorMessage = null
+                            errorMessage = assetUpdateUiState.errorMessage
                         )
 
                         AppDropdown(
                             items = assetTypeUiState.assetTypes,
-                            selectedCode = assetUpdateUiState.assetType,
+                            selectedCode = effectiveSelectedCode,
                             codeSelector = { it.assetType },
                             labelSelector = { it.name },
                             label = "Choose asset type",
@@ -151,11 +157,11 @@ fun AssetScreen(
                             value = assetUpdateUiState.description,
                             onValueChange = { new ->
                                 assetViewModel.onAssetUpdateValueChange {
-                                    it.copy(description = new)
+                                    it.copy(description = new, descriptionTouched = true)
                                 }
                             },
                             label = "Description",
-                            errorMessage = null,
+                            errorMessage = assetUpdateUiState.errorMessage,
                             singleLine = false
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -165,9 +171,15 @@ fun AssetScreen(
                                 onClick = {
                                     asset.assetId.let { id ->
                                         val assetDto = AssetDtos.AssetPatch(
-                                            name = assetUpdateUiState.name,
+                                            name = if (assetUpdateUiState.nameTouched)
+                                                assetUpdateUiState.name
+                                            else null,
+
                                             assetType = assetUpdateUiState.assetType.takeIf { it.isNotBlank() },
-                                            description = assetUpdateUiState.description
+
+                                            description = if (assetUpdateUiState.descriptionTouched)
+                                                assetUpdateUiState.description
+                                            else null,
                                         )
                                         assetViewModel.updateAsset(id, assetDto)
                                     }
@@ -200,11 +212,17 @@ fun AssetScreen(
                             label = "Edit",
                             onClick = {
                                 editingAssetId = asset.assetId
+                                val preselectedCode = assetTypeUiState.assetTypes
+                                    .firstOrNull { it.name == asset.assetTypeName }
+                                    ?.assetType ?: ""
                                 assetViewModel.onAssetUpdateValueChange {
                                     it.copy(
                                         name = asset.name,
-                                        assetType = "",
-                                        description = asset.description ?: ""
+                                        assetType = preselectedCode,
+                                        description = asset.description ?: "",
+                                        nameTouched = false,
+                                        assetTypeTouched = false,
+                                        descriptionTouched = false,
                                     )
                                 }
                             }
