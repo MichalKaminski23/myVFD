@@ -24,6 +24,7 @@ import com.vfd.client.ui.screens.AssetScreen
 import com.vfd.client.ui.screens.EventScreen
 import com.vfd.client.ui.screens.FirefighterScreen
 import com.vfd.client.ui.screens.InfoScreen
+import com.vfd.client.ui.screens.InvestmentProposalScreen
 import com.vfd.client.ui.screens.LoginScreen
 import com.vfd.client.ui.screens.MeScreen
 import com.vfd.client.ui.screens.ModeratorScreen
@@ -33,6 +34,7 @@ import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
 import com.vfd.client.ui.viewmodels.AssetViewModel
 import com.vfd.client.ui.viewmodels.EventViewModel
+import com.vfd.client.ui.viewmodels.InvestmentProposalViewModel
 import com.vfd.client.ui.viewmodels.OperationViewModel
 
 
@@ -166,6 +168,41 @@ fun AppNavGraph(
                     onDismiss = { navController.popBackStack() },
                     snackbarHostState = snackbarHostState
                 )
+            }
+        }
+
+        navigation(
+            startDestination = "investments/list",
+            route = "investments_graph"
+        ) {
+
+            composable("investments/list") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("investments_graph")
+                }
+                val investmentProposalViewModel: InvestmentProposalViewModel =
+                    hiltViewModel(parentEntry)
+
+                InvestmentProposalScreen(
+                    navController = navController,
+                    snackbarHostState = snackbarHostState,
+                    investmentProposalViewModel = investmentProposalViewModel
+                )
+            }
+
+            dialog("investments/create") { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("investments_graph")
+                }
+                val investmentProposalViewModel: InvestmentProposalViewModel =
+                    hiltViewModel(parentEntry)
+
+//                OperationCreateDialog(
+//                    operationViewModel = operationViewModel,
+//                    showDialog = true,
+//                    onDismiss = { navController.popBackStack() },
+//                    snackbarHostState = snackbarHostState
+//                )
             }
         }
     }

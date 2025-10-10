@@ -16,7 +16,7 @@ fun AppOperationCard(
             "🏠 ${operation?.address?.country}, ${operation?.address?.voivodeship}, " +
                     "${operation?.address?.street} ${operation?.address?.houseNumber}/${operation?.address?.apartNumber ?: ""} " +
                     "${operation?.address?.postalCode} ${operation?.address?.city}",
-            "👩‍🚒 Participants: ${operation?.participants?.joinToString { "${it.firstName} ${it.lastName}" }}"
+            "👩‍🚒 Participants: \n ${operation?.participants?.joinToString { "${it.firstName} ${it.lastName}" }}"
         ),
         actions = actions
     )

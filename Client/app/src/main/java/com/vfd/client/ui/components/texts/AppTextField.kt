@@ -1,6 +1,7 @@
 package com.vfd.client.ui.components.texts
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -19,7 +20,8 @@ fun AppTextField(
     errorMessage: String?,
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     AppColumn(modifier = modifier) {
         OutlinedTextField(
@@ -36,7 +38,8 @@ fun AppTextField(
             shape = MaterialTheme.shapes.medium,
             visualTransformation = visualTransformation,
             singleLine = singleLine,
-            colors = appTextFieldColors()
+            colors = appTextFieldColors(),
+            keyboardOptions = keyboardOptions
         )
         if (errorMessage != null) {
             AppErrorText(errorMessage)

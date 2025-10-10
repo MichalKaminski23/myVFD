@@ -124,6 +124,7 @@ class MainActivity : ComponentActivity() {
                                         "assets/list" -> "Assets"
                                         "events/list" -> "Events"
                                         "operations/list" -> "Operations"
+                                        "investments/list" -> "Investments"
                                         else -> "My VFD"
                                     }
                                 )
@@ -155,6 +156,10 @@ class MainActivity : ComponentActivity() {
                                     }
 
                                     "operations/list" -> {
+                                        RefreshButton(currentRoute)
+                                    }
+
+                                    "investments/list" -> {
                                         RefreshButton(currentRoute)
                                     }
 
@@ -202,9 +207,9 @@ class MainActivity : ComponentActivity() {
                                             badgeCount = operations
                                         ),
                                         NavBarButton(
-                                            "TO DO",
+                                            "Investments",
                                             Icons.Default.ShoppingCart,
-                                            { /* navController.navigate("TO DO") */ })
+                                            { navController.navigate("investments/list") })
                                     )
                                     NavBarAction(actions)
                                 }
@@ -277,9 +282,9 @@ class MainActivity : ComponentActivity() {
                                         badgeCount = operations
                                     ),
                                     NavBarButton(
-                                        "TO DO",
+                                        "Investments",
                                         Icons.Default.ShoppingCart,
-                                        { /* navController.navigate("TO DO") */ }
+                                        { navController.navigate("investments/list") }
                                     )
                                 )
                                 NavBarAction(actions)
@@ -377,6 +382,30 @@ class MainActivity : ComponentActivity() {
                                 NavBarAction(actions)
                             }
 
+                            "investments/list" -> {
+                                val actions = mutableListOf<NavBarButton>()
+                                actions.add(
+                                    NavBarButton(
+                                        "Back",
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        { navController.popBackStack() }),
+                                )
+                                if (canCreateThings) {
+                                    actions.add(
+                                        NavBarButton(
+                                            "Create investment",
+                                            Icons.Default.ShoppingCart,
+                                            {
+                                                navController.navigate("investments/create") {
+                                                    launchSingleTop = true
+                                                }
+                                            }
+                                        )
+                                    )
+                                }
+                                NavBarAction(actions)
+                            }
+
                             else -> {
                                 // No action
                             }
@@ -419,6 +448,7 @@ fun RefreshButton(currentRoute: String?) {
         "assets/list" -> RefreshEvent.AssetScreen
         "events/list" -> RefreshEvent.EventScreen
         "operations/list" -> RefreshEvent.OperationScreen
+        "investments/list" -> RefreshEvent.InvestmentProposalScreen
         else -> null
     }
 

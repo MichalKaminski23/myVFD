@@ -1,9 +1,8 @@
 package com.vfd.server.dtos
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.v3.oas.annotations.media.Schema
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Size
+import jakarta.validation.constraints.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -19,8 +18,11 @@ object InvestmentProposalDtos {
         )
         val description: String,
 
-        @field:NotNull(message = "Amount must not be null.")
+        @field:NotBlank(message = "Amount must not be null.")
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
+        @field:JsonFormat(shape = JsonFormat.Shape.STRING)
+        @field:Digits(integer = 12, fraction = 2)
+        @field:PositiveOrZero
         val amount: BigDecimal
     )
 
@@ -34,10 +36,12 @@ object InvestmentProposalDtos {
         val description: String? = null,
 
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
+        @field:JsonFormat(shape = JsonFormat.Shape.STRING)
+        @field:Digits(integer = 12, fraction = 2)
+        @field:PositiveOrZero
         val amount: BigDecimal? = null,
 
         @Schema(allowableValues = ["PENDING", "APPROVED", "REJECTED", "CANCELLED"])
-        @field:NotNull(message = "Status must not be null.")
         @field:Schema(description = "Status of the proposal", example = "APPROVED")
         val status: String? = null
     )
@@ -54,6 +58,7 @@ object InvestmentProposalDtos {
         val description: String,
 
         @field:Schema(description = "Proposed amount", example = "24999.99")
+        @field:JsonFormat(shape = JsonFormat.Shape.STRING)
         val amount: BigDecimal,
 
         @field:Schema(description = "Date when the proposal was submitted", example = "2025-08-03T14:30:00")

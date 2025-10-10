@@ -1,5 +1,6 @@
 package com.vfd.client.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.remote.dtos.InvestmentProposalDtos
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
+import java.math.BigDecimal
 import javax.inject.Inject
 
 data class InvestmentProposalUiState(
@@ -26,7 +27,7 @@ data class InvestmentProposalUiState(
 
 data class InvestmentProposalUpdateUiState(
     val description: String = "",
-    val amount: LocalDateTime? = null,
+    val amount: BigDecimal? = null,
     val status: String = "",
     val descriptionTouched: Boolean = false,
     val amountTouched: Boolean = false,
@@ -38,7 +39,7 @@ data class InvestmentProposalUpdateUiState(
 
 data class InvestmentProposalCreateUiState(
     val description: String = "",
-    val amount: LocalDateTime? = null,
+    val amount: BigDecimal? = null,
     val descriptionTouched: Boolean = false,
     val amountTouched: Boolean = false,
     val isLoading: Boolean = false,
@@ -206,6 +207,11 @@ class InvestmentProposalViewModel @Inject constructor(
                             success = false,
                             errorMessage = message
                         )
+                    Log.w(
+                        "InvestmentProposalViewModel",
+                        "Updated investment proposal: ${result.data}"
+                    )
+
                     _uiEvent.send(UiEvent.Error("Failed to update investment proposal"))
                 }
 

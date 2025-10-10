@@ -154,10 +154,12 @@ fun <T> AppDropdown(
             } else if (items.isEmpty()) {
                 DropdownMenuItem(
                     text = {
-                        LinearProgressIndicator(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                            LinearProgressIndicator(
+                                modifier = Modifier.fillMaxWidth(),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     },
                     onClick = { /* no-op */ },
                     enabled = false
@@ -197,7 +199,7 @@ fun <T> AppDropdown(
                         },
                         onClick = {
                             onSelected(item)
-                            expanded = false
+                            expanded = true
                         },
                         colors = MenuDefaults.itemColors(
                             textColor = itemTextColor,
@@ -212,12 +214,17 @@ fun <T> AppDropdown(
                 if (hasMore) {
                     DropdownMenuItem(
                         text = {
-                            Text(
-                                "Load more...",
-                                textAlign = TextAlign.Center,
-                                fontStyle = FontStyle.Italic,
-                                color = itemTextColor
-                            )
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    "Load more...",
+                                    textAlign = TextAlign.Center,
+                                    fontStyle = FontStyle.Italic,
+                                    color = itemTextColor
+                                )
+                            }
                         },
                         onClick = { onLoadMore() },
                         colors = MenuDefaults.itemColors(textColor = itemTextColor)
@@ -225,12 +232,17 @@ fun <T> AppDropdown(
                 } else {
                     DropdownMenuItem(
                         text = {
-                            Text(
-                                "No more items...",
-                                textAlign = TextAlign.Center,
-                                fontStyle = FontStyle.Italic,
-                                color = itemTextColor.copy(alpha = 0.8f)
-                            )
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    "No more items...",
+                                    textAlign = TextAlign.Center,
+                                    fontStyle = FontStyle.Italic,
+                                    color = itemTextColor.copy(alpha = 0.8f)
+                                )
+                            }
                         },
                         onClick = { /* no-op */ },
                         enabled = false,

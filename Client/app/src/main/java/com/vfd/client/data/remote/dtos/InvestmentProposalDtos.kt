@@ -33,7 +33,7 @@ object InvestmentProposalDtos {
         val description: String,
 
         @Serializable(with = BigDecimalSerializer::class)
-        val amount: BigDecimal? = null,
+        val amount: BigDecimal,
 
         val submissionDate: LocalDateTime,
 

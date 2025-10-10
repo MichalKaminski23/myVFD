@@ -104,7 +104,7 @@ class InvestmentProposalServiceImplementation(
             .toPageResponse()
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     override fun updateInvestmentProposal(
         emailAddress: String,
         investmentProposalId: Int,

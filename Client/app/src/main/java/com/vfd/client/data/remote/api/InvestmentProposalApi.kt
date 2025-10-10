@@ -23,9 +23,9 @@ interface InvestmentProposalApi {
         @Query("sort") sort: String = "submissionDate,desc"
     ): PageResponse<InvestmentProposalDtos.InvestmentProposalResponse>
 
-    @PATCH("api/investment-proposals/my/{proposalId}")
+    @PATCH("api/investment-proposals/my/{investmentProposalId}")
     suspend fun updateInvestmentProposal(
-        @Path("proposalId") proposalId: Int,
+        @Path("investmentProposalId") investmentProposalId: Int,
         @Body investmentProposalDto: InvestmentProposalDtos.InvestmentProposalPatch
     ): InvestmentProposalDtos.InvestmentProposalResponse
 }
