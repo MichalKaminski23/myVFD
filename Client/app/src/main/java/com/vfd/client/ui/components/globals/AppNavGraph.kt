@@ -19,6 +19,7 @@ import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import com.vfd.client.ui.components.dialogs.AssetCreateDialog
 import com.vfd.client.ui.components.dialogs.EventCreateDialog
+import com.vfd.client.ui.components.dialogs.InvestmentProposalCreateDialog
 import com.vfd.client.ui.components.dialogs.OperationCreateDialog
 import com.vfd.client.ui.screens.AssetScreen
 import com.vfd.client.ui.screens.EventScreen
@@ -197,12 +198,12 @@ fun AppNavGraph(
                 val investmentProposalViewModel: InvestmentProposalViewModel =
                     hiltViewModel(parentEntry)
 
-//                OperationCreateDialog(
-//                    operationViewModel = operationViewModel,
-//                    showDialog = true,
-//                    onDismiss = { navController.popBackStack() },
-//                    snackbarHostState = snackbarHostState
-//                )
+                InvestmentProposalCreateDialog(
+                    investmentProposalViewModel = investmentProposalViewModel,
+                    showDialog = true,
+                    onDismiss = { navController.popBackStack() },
+                    snackbarHostState = snackbarHostState
+                )
             }
         }
     }

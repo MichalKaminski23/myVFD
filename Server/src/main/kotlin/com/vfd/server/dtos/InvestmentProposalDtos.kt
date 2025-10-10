@@ -18,7 +18,7 @@ object InvestmentProposalDtos {
         )
         val description: String,
 
-        @field:NotBlank(message = "Amount must not be null.")
+        @field:NotNull(message = "Amount must not be null.")
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
         @field:JsonFormat(shape = JsonFormat.Shape.STRING)
         @field:Digits(integer = 12, fraction = 2)

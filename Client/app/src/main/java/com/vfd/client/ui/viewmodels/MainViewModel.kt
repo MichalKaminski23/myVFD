@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.repositories.AssetRepository
 import com.vfd.client.data.repositories.EventRepository
 import com.vfd.client.data.repositories.FirefighterRepository
+import com.vfd.client.data.repositories.InvestmentProposalRepository
 import com.vfd.client.data.repositories.OperationRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.daysUntilSomething
@@ -22,7 +23,8 @@ class MainViewModel @Inject constructor(
     private val firefighterRepository: FirefighterRepository,
     private val assetRepository: AssetRepository,
     private val eventRepository: EventRepository,
-    private val operationRepository: OperationRepository
+    private val operationRepository: OperationRepository,
+    private val investmentProposalRepository: InvestmentProposalRepository
 ) : ViewModel() {
 
     private val _pendingFirefighters = MutableStateFlow(0)
@@ -39,6 +41,9 @@ class MainViewModel @Inject constructor(
 
     private val _totalOperations = MutableStateFlow(0)
     val totalOperations: StateFlow<Int> = _totalOperations
+
+    private val _pendingInvestments = MutableStateFlow(0)
+    val pendingInvestments: StateFlow<Int> = _pendingInvestments
 
     private val _canCreateThings = MutableStateFlow(false)
     val canCreateThings: StateFlow<Boolean> = _canCreateThings.asStateFlow()
@@ -61,7 +66,7 @@ class MainViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            val pending =
+            val pendingFirefighters =
                 when (val result =
                     firefighterRepository.getPendingFirefighters(page = 0, size = 1)) {
                     is ApiResult.Success -> result.data?.totalElements ?: result.data?.items?.size
@@ -69,7 +74,7 @@ class MainViewModel @Inject constructor(
 
                     else -> 0
                 }
-            _pendingFirefighters.value = pending
+            _pendingFirefighters.value = pendingFirefighters
 
             val active =
                 when (val result =
@@ -111,6 +116,17 @@ class MainViewModel @Inject constructor(
                     else -> 0
                 }
             _totalOperations.value = operations
+
+            val pendingInvestments: Int =
+                when (val result =
+                    investmentProposalRepository.getInvestmentProposals(page = 0, size = 20)) {
+                    is ApiResult.Success -> result.data?.items?.count { dto ->
+                        dto.status.equals("PENDING", ignoreCase = true)
+                    } ?: 0
+
+                    else -> 0
+                }
+            _pendingInvestments.value = pendingInvestments
         }
     }
 }

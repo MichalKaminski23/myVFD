@@ -107,7 +107,7 @@ class InvestmentProposalViewModel @Inject constructor(
                             success = false,
                             errorMessage = result.message ?: "Failed to create investment proposal"
                         )
-                    _uiEvent.send(UiEvent.Error("Failed to create investment proposa"))
+                    _uiEvent.send(UiEvent.Error("Failed to create investment proposal"))
                 }
 
                 is ApiResult.Loading -> {

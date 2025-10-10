@@ -71,6 +71,7 @@ class MainActivity : ComponentActivity() {
                 val assets by mainViewModel.totalAssets.collectAsState()
                 val events by mainViewModel.upcomingEvents.collectAsState()
                 val operations by mainViewModel.totalOperations.collectAsState()
+                val investments by mainViewModel.pendingInvestments.collectAsState()
                 val canCreateThings by mainViewModel.canCreateThings.collectAsState()
                 val hasRole by mainViewModel.hasRole.collectAsState()
                 val snackbarHostState = remember { SnackbarHostState() }
@@ -209,7 +210,13 @@ class MainActivity : ComponentActivity() {
                                         NavBarButton(
                                             "Investments",
                                             Icons.Default.ShoppingCart,
-                                            { navController.navigate("investments/list") })
+                                            {
+                                                navController.navigate("investments/list") {
+                                                    launchSingleTop = true
+                                                }
+                                            },
+                                            badgeCount = investments
+                                        )
                                     )
                                     NavBarAction(actions)
                                 }
@@ -284,7 +291,12 @@ class MainActivity : ComponentActivity() {
                                     NavBarButton(
                                         "Investments",
                                         Icons.Default.ShoppingCart,
-                                        { navController.navigate("investments/list") }
+                                        {
+                                            navController.navigate("investments/list") {
+                                                launchSingleTop = true
+                                            }
+                                        },
+                                        badgeCount = investments
                                     )
                                 )
                                 NavBarAction(actions)
