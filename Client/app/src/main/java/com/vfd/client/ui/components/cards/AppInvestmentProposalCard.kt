@@ -16,7 +16,7 @@ fun AppInvestmentProposalCard(
             "✅ Status: ${investmentProposal.status}",
             "\uD83D\uDD22 Total votes: ${investmentProposal.votesCount}",
             "\uD83D\uDCB0 Votes for: ${investmentProposal.votesYesCount}",
-            "\uD83E\uDDD1\uD83C\uDFFF My vote: ${if (investmentProposal.myVote == true) "For yes" else "For no"} ",
+            "\uD83E\uDDD1\uD83C\uDFFF My vote: ${if (investmentProposal.myVote == true) "Yes" else "No"} ",
         ),
         actions = actions
     )

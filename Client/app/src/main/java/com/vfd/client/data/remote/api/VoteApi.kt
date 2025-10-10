@@ -20,7 +20,8 @@ interface VoteApi {
     suspend fun getVotes(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
-        @Query("sort") sort: String = "voteId,asc"
+        @Query("sort") sort: String = "voteId,asc",
+        @Query("investmentProposalId") investmentProposalId: Int
     ): PageResponse<VoteDtos.VoteResponse>
 
     @PATCH("api/votes/my/{voteId}")

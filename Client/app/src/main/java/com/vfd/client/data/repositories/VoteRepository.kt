@@ -20,9 +20,10 @@ class VoteRepository @Inject constructor(
     suspend fun getVotes(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "voteId,asc"
+        sort: String = "voteId,asc",
+        investmentProposalId: Int
     ): ApiResult<PageResponse<VoteDtos.VoteResponse>> =
-        safeApiCall { voteApi.getVotes(page, size, sort) }
+        safeApiCall { voteApi.getVotes(page, size, sort, investmentProposalId) }
 
     suspend fun updateVote(
         voteId: Int,

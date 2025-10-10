@@ -102,7 +102,12 @@ class VoteViewModel @Inject constructor(
         }
     }
 
-    fun getVotes(page: Int = 0, size: Int = 20, refresh: Boolean = false) {
+    fun getVotes(
+        page: Int = 0,
+        size: Int = 20,
+        investmentProposalId: Int,
+        refresh: Boolean = false
+    ) {
         viewModelScope.launch {
             _voteUiState.value = _voteUiState.value.copy(
                 votes = if (refresh || page == 0) emptyList() else _voteUiState.value.votes,
@@ -110,7 +115,8 @@ class VoteViewModel @Inject constructor(
                 errorMessage = null
             )
 
-            when (val result = voteRepository.getVotes(page, size)) {
+            when (val result =
+                voteRepository.getVotes(page, size, "voteId,asc", investmentProposalId)) {
                 is ApiResult.Success -> {
                     val response = result.data!!
                     delay(400)

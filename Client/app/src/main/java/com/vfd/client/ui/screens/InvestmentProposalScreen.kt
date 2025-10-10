@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.InvestmentProposalDtos
 import com.vfd.client.data.remote.dtos.InvestmentProposalStatus
+import com.vfd.client.data.remote.dtos.VoteDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppInvestmentProposalCard
 import com.vfd.client.ui.components.elements.AppStringDropdown
@@ -48,8 +49,9 @@ fun InvestmentProposalScreen(
     val investmentProposalUpdatelUiState by investmentProposalViewModel.investmentProposalUpdateUiState.collectAsState()
     var editingInvestmentProposalId by remember { mutableStateOf<Int?>(null) }
 
-    val voteUiState = voteViewModel.voteUiState.collectAsState().value
-    val voteUpdateUiState = voteViewModel.voteUpdateUiState.collectAsState().value
+    val voteUiState by voteViewModel.voteUiState.collectAsState()
+    val voteCreateUiState by voteViewModel.voteCreateUiState.collectAsState()
+    val voteUpdateUiState by voteViewModel.voteUpdateUiState.collectAsState()
 
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
     val hasMore = investmentProposalUiState.page + 1 < investmentProposalUiState.totalPages
@@ -57,11 +59,24 @@ fun InvestmentProposalScreen(
     var searchQuery by remember { mutableStateOf("") }
 
     AppUiEvents(investmentProposalViewModel.uiEvents, snackbarHostState)
+    AppUiEvents(voteViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(investmentProposalUpdatelUiState.success) {
         if (investmentProposalUpdatelUiState.success) {
             editingInvestmentProposalId = null
             investmentProposalViewModel.onInvestmentProposalUpdateValueChange { it.copy(success = false) }
+        }
+    }
+    LaunchedEffect(voteCreateUiState.success) {
+        if (voteCreateUiState.success) {
+            investmentProposalViewModel.getInvestmentProposals(page = 0, refresh = true)
+            voteViewModel.onVoteCreateValueChange { it.copy(success = false) }
+        }
+    }
+    LaunchedEffect(voteUpdateUiState.success) {
+        if (voteUpdateUiState.success) {
+            investmentProposalViewModel.getInvestmentProposals(page = 0, refresh = true)
+            voteViewModel.onVoteUpdateValueChange { it.copy(success = false) }
         }
     }
 
@@ -85,6 +100,46 @@ fun InvestmentProposalScreen(
         }
     }
 
+    var pendingVote by remember { mutableStateOf<Pair<Int, Boolean>?>(null) }
+
+    LaunchedEffect(
+        voteUiState.isLoading,
+        pendingVote,
+        currentFirefighterUiState.currentFirefighter
+    ) {
+        val toHandle = pendingVote
+        val myId = currentFirefighterUiState.currentFirefighter?.firefighterId
+
+        if (toHandle != null && !voteUiState.isLoading && myId != null) {
+            val (proposalId, desired) = toHandle
+            val myVote = voteUiState.votes.firstOrNull {
+                it.investmentProposalId == proposalId && it.firefighterId == myId
+            }
+            when {
+                myVote == null -> {
+                    voteViewModel.createVote(
+                        VoteDtos.VoteCreate(
+                            investmentProposalId = proposalId,
+                            voteValue = desired
+                        )
+                    )
+                }
+
+                myVote.voteValue != desired -> {
+                    voteViewModel.updateVote(
+                        myVote.voteId,
+                        VoteDtos.VotePatch(voteValue = desired)
+                    )
+                }
+
+                else -> {
+                    investmentProposalViewModel.getInvestmentProposals(page = 0, refresh = true)
+                }
+            }
+            pendingVote = null
+        }
+    }
+
     AppListScreen(
         data = investmentProposalUiState.investmentProposals,
         isLoading = investmentProposalUiState.isLoading,
@@ -96,7 +151,7 @@ fun InvestmentProposalScreen(
                     investmentProposal.description.contains(
                         query,
                         ignoreCase = true
-                    )
+                    ) || investmentProposal.status.contains(query, ignoreCase = true)
         },
         emptyText = "There aren't any investments in your VFD or the investments are still loading",
         emptyFilteredText = "No investments match your search",
@@ -187,9 +242,7 @@ fun InvestmentProposalScreen(
                     }
                 )
             } else {
-                AppInvestmentProposalCard(
-                    investmentProposal
-                )
+                AppInvestmentProposalCard(investmentProposal)
             }
         } else {
             AppInvestmentProposalCard(
@@ -216,18 +269,69 @@ fun InvestmentProposalScreen(
                             }
                         )
                     }
-//                    AppButton(
-//                        icon = Icons.Default.Close,
-//                        label = "Vote yes",
-//                        onClick = {
-//                            voteViewModel.onVoteUpdateValueChange {
-//                                it.copy(
-//                                    voteValue = true
-//                                )
-//                            }
-//                        },
-//                        modifier = Modifier.fillMaxWidth()
-//                    )
+                    val myVote = investmentProposal.myVote
+                    val isThisItemLoading =
+                        voteCreateUiState.isLoading ||
+                                voteUpdateUiState.isLoading ||
+                                (pendingVote?.first == investmentProposal.investmentProposalId && voteUiState.isLoading)
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        AppButton(
+                            icon = Icons.Default.Check,
+                            label = "Vote YES",
+                            onClick = {
+                                val id = investmentProposal.investmentProposalId
+                                if (myVote == null) {
+                                    voteViewModel.createVote(
+                                        VoteDtos.VoteCreate(
+                                            investmentProposalId = id,
+                                            voteValue = true
+                                        )
+                                    )
+                                } else {
+                                    pendingVote = id to true
+                                    voteViewModel.getVotes(
+                                        page = 0,
+                                        size = 50,
+                                        investmentProposalId = id,
+                                        refresh = true
+                                    )
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
+                            enabled = !isThisItemLoading && myVote != true,
+                            loading = isThisItemLoading
+                        )
+                        AppButton(
+                            icon = Icons.Default.Close,
+                            label = "Vote NO",
+                            onClick = {
+                                val id = investmentProposal.investmentProposalId
+                                if (myVote == null) {
+                                    voteViewModel.createVote(
+                                        VoteDtos.VoteCreate(
+                                            investmentProposalId = id,
+                                            voteValue = false
+                                        )
+                                    )
+                                } else {
+                                    pendingVote = id to false
+                                    voteViewModel.getVotes(
+                                        page = 0,
+                                        size = 50,
+                                        investmentProposalId = id,
+                                        refresh = true
+                                    )
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
+                            enabled = !isThisItemLoading && myVote != false,
+                            loading = isThisItemLoading
+                        )
+                    }
                 }
             )
         }
