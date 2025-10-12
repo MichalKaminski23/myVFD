@@ -45,16 +45,17 @@ class FirefighterServiceImplementation(
         }
     }
 
+    private val PROTECTED_ROLES = setOf(
+        FirefighterRole.ADMIN,
+        FirefighterRole.PRESIDENT,
+        FirefighterRole.MEMBER
+    )
+
     @Transactional
     override fun createFirefighter(
         emailAddress: String,
         firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse {
-
-//        val userModerator = userRepository.findByEmailOrThrow(emailAddress)
-//
-//        firefighterRepository.findByIdOrThrow(userModerator.userId!!)
-
 
         val userCreated = userRepository.findByIdOrThrow(firefighterDto.userId)
 
@@ -171,6 +172,35 @@ class FirefighterServiceImplementation(
             .findAllByFiredepartmentFiredepartmentIdAndStatus(firedepartmentId, FirefighterStatus.PENDING, pageable)
             .map(firefighterMapper::toFirefighterDto)
             .toPageResponse()
+    }
+
+    @Transactional
+    override fun deleteFirefighter(
+        emailAddress: String,
+        firefighterId: Int
+    ) {
+        val userModerator = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighterModerator = firefighterRepository.findByIdOrThrow(userModerator.userId!!)
+
+        val userDeleted = userRepository.findByIdOrThrow(firefighterId)
+
+        val firefighterDeleted = firefighterRepository.findByIdOrThrow(userDeleted.userId!!)
+
+        val firedepartmentId = firefighterModerator.requireFiredepartmentId()
+
+        firefighterDeleted.requireSameFiredepartment(firedepartmentId)
+
+        if (PROTECTED_ROLES.contains(firefighterDeleted.role)) {
+            throw InvalidStatusException("Cannot delete firefighter with role ${firefighterDeleted.role}")
+        }
+
+        userDeleted.firefighter = null
+        userRepository.saveAndFlush(userDeleted)
+        firefighterDeleted.user = null
+        firefighterRepository.save(firefighterDeleted)
+
+        firefighterRepository.delete(firefighterDeleted)
     }
 
     private val FIREFIGHTER_ALLOWED_SORTS = setOf(

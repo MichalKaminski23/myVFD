@@ -275,4 +275,33 @@ class FirefighterViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteFirefighter(firefighterId: Int) {
+        viewModelScope.launch {
+            when (val result = firefighterRepository.deleteFirefighter(firefighterId)) {
+                is ApiResult.Success -> {
+                    _pendingFirefightersUiState.value = _pendingFirefightersUiState.value.copy(
+                        pendingFirefighters = _pendingFirefightersUiState.value.pendingFirefighters
+                            .filterNot { it.firefighterId == firefighterId },
+                        isLoading = false
+                    )
+                    _uiEvent.send(UiEvent.Success("Firefighter deleted successfully"))
+                }
+
+                is ApiResult.Error -> {
+                    _pendingFirefightersUiState.value =
+                        _pendingFirefightersUiState.value.copy(
+                            isLoading = false,
+                            errorMessage = result.message ?: "Failed to delete firefighter"
+                        )
+                    _uiEvent.send(UiEvent.Success("Failed to delete firefighter"))
+                }
+
+                is ApiResult.Loading -> {
+                    _pendingFirefightersUiState.value =
+                        _pendingFirefightersUiState.value.copy(isLoading = true)
+                }
+            }
+        }
+    }
 }

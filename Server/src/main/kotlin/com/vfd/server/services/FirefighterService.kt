@@ -31,7 +31,12 @@ interface FirefighterService {
         sort: String = "firstName,asc",
         emailAddress: String
     ): PageResponse<FirefighterDtos.FirefighterResponse>
-    
+
+    fun deleteFirefighter(
+        emailAddress: String,
+        firefighterId: Int
+    )
+
     fun createFirefighterDev(firefighterDto: FirefighterDtos.FirefighterCreate): FirefighterDtos.FirefighterResponse
 
     fun getAllFirefightersDev(

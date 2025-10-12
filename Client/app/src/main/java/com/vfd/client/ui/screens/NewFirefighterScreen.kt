@@ -103,12 +103,8 @@ fun NewFirefighterScreen(
                         icon = Icons.Default.Delete,
                         label = "Reject",
                         onClick = {
-                            firefighterViewModel.changeFirefighterRoleOrStatus(
-                                firefighterId = firefighter.firefighterId,
-                                firefighterDto = FirefighterDtos.FirefighterPatch(
-                                    role = FirefighterRole.USER.toString(),
-                                    status = FirefighterStatus.REJECTED.toString(),
-                                )
+                            firefighterViewModel.deleteFirefighter(
+                                firefighterId = firefighter.firefighterId
                             )
                         },
                         modifier = Modifier.weight(1f)

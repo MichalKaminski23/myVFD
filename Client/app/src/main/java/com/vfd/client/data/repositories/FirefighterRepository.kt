@@ -39,4 +39,7 @@ class FirefighterRepository @Inject constructor(
         sort: String = "user.firstName,asc"
     ): ApiResult<PageResponse<FirefighterDtos.FirefighterResponse>> =
         safeApiCall { firefighterApi.getPendingFirefighters(page, size, sort) }
+
+    suspend fun deleteFirefighter(firefighterId: Int): ApiResult<Unit> =
+        safeApiCall { firefighterApi.deleteFirefighter(firefighterId) }
 }

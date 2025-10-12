@@ -160,4 +160,28 @@ class FirefighterController(
     ): PageResponse<FirefighterDtos.FirefighterResponse> {
         return firefighterService.getPendingFirefighters(page, size, sort, principal.username)
     }
+
+    @Operation(
+        summary = "Delete firefighter from my firedepartment",
+        description = "Deletes a firefighter identified by `firefighterId` from the firedepartment of the currently authenticated user."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204", description = "Firefighter deleted successfully",
+            ),
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
+        ]
+    )
+    @PreAuthorize("hasRole('PRESIDENT')")
+    @DeleteMapping("/my/{firefighterId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteFirefighter(
+        @AuthenticationPrincipal principal: UserDetails,
+        @PathVariable firefighterId: Int
+    ) {
+        firefighterService.deleteFirefighter(principal.username, firefighterId)
+    }
 }

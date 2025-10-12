@@ -3,6 +3,7 @@ package com.vfd.client.data.remote.api
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.utils.PageResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -38,4 +39,9 @@ interface FirefighterApi {
         @Query("size") size: Int = 20,
         @Query("sort") sort: String = "user.firstName,asc"
     ): PageResponse<FirefighterDtos.FirefighterResponse>
+
+    @DELETE("api/firefighters/my/{firefighterId}")
+    suspend fun deleteFirefighter(
+        @Path("firefighterId") firefighterId: Int
+    ): Unit
 }
