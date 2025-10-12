@@ -1,5 +1,6 @@
 package com.vfd.client.ui.components.globals
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Left
@@ -13,18 +14,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.vfd.client.ui.components.dialogs.AssetCreateDialog
 import com.vfd.client.ui.components.dialogs.EventCreateDialog
+import com.vfd.client.ui.components.dialogs.InspectionCreateDialog
 import com.vfd.client.ui.components.dialogs.InvestmentProposalCreateDialog
 import com.vfd.client.ui.components.dialogs.OperationCreateDialog
 import com.vfd.client.ui.screens.AssetScreen
 import com.vfd.client.ui.screens.EventScreen
 import com.vfd.client.ui.screens.FirefighterScreen
 import com.vfd.client.ui.screens.InfoScreen
+import com.vfd.client.ui.screens.InspectionScreen
 import com.vfd.client.ui.screens.InvestmentProposalScreen
 import com.vfd.client.ui.screens.LoginScreen
 import com.vfd.client.ui.screens.MeScreen
@@ -35,6 +40,7 @@ import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
 import com.vfd.client.ui.viewmodels.AssetViewModel
 import com.vfd.client.ui.viewmodels.EventViewModel
+import com.vfd.client.ui.viewmodels.InspectionViewModel
 import com.vfd.client.ui.viewmodels.InvestmentProposalViewModel
 import com.vfd.client.ui.viewmodels.OperationViewModel
 
@@ -108,6 +114,72 @@ fun AppNavGraph(
                     showDialog = true,
                     onDismiss = { navController.popBackStack() },
                     snackbarHostState = snackbarHostState
+                )
+            }
+        }
+
+        navigation(
+            startDestination = "inspections/list",
+            route = "inspections_graph"
+        ) {
+
+            composable(
+                route = "inspections/list?assetId={assetId}&assetName={assetName}",
+                arguments = listOf(
+                    navArgument("assetId") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    },
+                    navArgument("assetName") {
+                        type = NavType.StringType
+                        nullable = true
+                    }
+                )
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("inspections_graph")
+                }
+                val inspectionViewModel: InspectionViewModel = hiltViewModel(parentEntry)
+
+                val assetIdArg = backStackEntry.arguments?.getInt("assetId")
+                val assetId = assetIdArg?.takeIf { it != -1 }
+
+                val assetNameArg = backStackEntry.arguments?.getString("assetName")
+                val assetName = assetNameArg?.let { Uri.decode(it) }
+
+                InspectionScreen(
+                    navController = navController,
+                    snackbarHostState = snackbarHostState,
+                    inspectionViewModel = inspectionViewModel,
+                    assetId = assetId,
+                    assetName = assetName
+                )
+            }
+
+            dialog(
+                route = "inspections/create?assetId={assetId}",
+                arguments = listOf(
+                    navArgument("assetId") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+                )
+            ) { backStackEntry ->
+
+                val assetIdArg = backStackEntry.arguments?.getInt("assetId")
+                val assetId = assetIdArg?.takeIf { it != -1 }
+
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("inspections_graph")
+                }
+                val inspectionViewModel: InspectionViewModel = hiltViewModel(parentEntry)
+
+                InspectionCreateDialog(
+                    inspectionViewModel = inspectionViewModel,
+                    showDialog = true,
+                    onDismiss = { navController.popBackStack() },
+                    snackbarHostState = snackbarHostState,
+                    assetId = assetId
                 )
             }
         }

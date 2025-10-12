@@ -121,7 +121,8 @@ fun EventScreen(
                                 eventViewModel.onEventUpdateValueChange {
                                     it.copy(eventDate = newDateTime, eventDateTouched = true)
                                 }
-                            }
+                            },
+                            label = "Event date"
                         )
                         AppTextField(
                             value = eventUpdateUiState.description,

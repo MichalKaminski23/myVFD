@@ -61,7 +61,7 @@ fun AppFormDialog(
 
                 content()
 
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(12.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AppButton(

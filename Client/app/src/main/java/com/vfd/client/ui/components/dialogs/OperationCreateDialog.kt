@@ -104,7 +104,8 @@ fun OperationCreateDialog(
                         operationDate = newDateTime
                     )
                 }
-            }
+            },
+            label = "Operation date"
         )
         AppMultiDropdown(
             items = firefighterUiState.activeFirefighters,

@@ -1,5 +1,8 @@
 package com.vfd.client.ui.screens
 
+import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -7,11 +10,16 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,14 +38,19 @@ import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.AssetTypeViewModel
 import com.vfd.client.ui.viewmodels.AssetViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
+import com.vfd.client.ui.viewmodels.InspectionViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
+import com.vfd.client.utils.daysUntilSomething
+import kotlinx.datetime.toLocalDateTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AssetScreen(
     assetViewModel: AssetViewModel,
     assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
+    inspectionViewModel: InspectionViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
@@ -48,6 +61,27 @@ fun AssetScreen(
 
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
     val hasMore = assetUiState.page + 1 < assetUiState.totalPages
+
+    val inspectionUiState by inspectionViewModel.inspectionUiState.collectAsState()
+    val expiringCounts = remember { mutableStateMapOf<Int, Int>() }
+
+    LaunchedEffect(Unit) {
+        inspectionViewModel.getInspections(page = 0, refresh = true)
+    }
+
+    LaunchedEffect(inspectionUiState.inspections) {
+        val map = inspectionUiState.inspections
+            .groupBy { it.assetId }
+            .mapValues { (_, list) ->
+                list.count { dto ->
+                    val days = dto.expirationDate?.toString()
+                        ?.let { daysUntilSomething(it.toLocalDateTime()) } ?: -1
+                    days in 0..30
+                }
+            }
+        expiringCounts.clear()
+        expiringCounts.putAll(map)
+    }
 
     var searchQuery by remember { mutableStateOf("") }
 
@@ -227,6 +261,23 @@ fun AssetScreen(
                                 }
                             }
                         )
+                        val count = expiringCounts[asset.assetId] ?: 0
+                        BadgedBox(
+                            badge = {
+                                if (count > 0) {
+                                    Badge { Text("$count") }
+                                }
+                            }
+                        ) {
+                            AppButton(
+                                icon = Icons.Default.Warning,
+                                label = "Inspections",
+                                onClick = {
+                                    val encodedName = Uri.encode(asset.name)
+                                    navController.navigate("inspections/list?assetId=${asset.assetId}&assetName=$encodedName")
+                                }
+                            )
+                        }
                     }
                 }
             )

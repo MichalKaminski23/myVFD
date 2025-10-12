@@ -33,6 +33,8 @@ class FirefighterActivityServiceImplementation(
         val firefighterActivityType =
             firefighterActivityTypeRepository.findByIdOrThrow(firefighterActivityDto.firefighterActivityType)
 
+        validateDates(firefighterActivityDto.activityDate, firefighterActivityDto.expirationDate, "Activity")
+
         val firefighterActivity = firefighterActivityMapper.toFirefighterActivityEntity(firefighterActivityDto).apply {
             this.firefighter = firefighter
             this.firefighterActivityType = firefighterActivityType
@@ -95,11 +97,15 @@ class FirefighterActivityServiceImplementation(
                 firefighterActivity.firefighterActivityType = firefighterActivityType
             }
 
+        val effectiveInspectionDate = firefighterActivityDto.activityDate ?: firefighterActivity.activityDate
+        val effectiveExpirationDate = firefighterActivityDto.expirationDate ?: firefighterActivity.expirationDate
+
+        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Activity")
+
         return firefighterActivityMapper.toFirefighterActivityDto(
             firefighterActivityRepository.save(firefighterActivity)
         )
     }
-
 
     private val FIREFIGHTER_ACTIVITY_ALLOWED_SORTS = setOf(
         "firefighterActivityId",
@@ -122,6 +128,8 @@ class FirefighterActivityServiceImplementation(
         val firefighterActivityType =
             firefighterActivityTypeRepository.findByIdOrThrow(firefighterActivityDto.firefighterActivityType)
         firefighterActivity.firefighterActivityType = firefighterActivityType
+
+        validateDates(firefighterActivityDto.activityDate, firefighterActivityDto.expirationDate, "Activity")
 
         return firefighterActivityMapper.toFirefighterActivityDto(
             firefighterActivityRepository.save(firefighterActivity)
@@ -176,6 +184,11 @@ class FirefighterActivityServiceImplementation(
                     firefighterActivity.firefighterActivityType = firefighterActivityType
                 }
             }
+
+        val effectiveInspectionDate = firefighterActivityDto.activityDate ?: firefighterActivity.activityDate
+        val effectiveExpirationDate = firefighterActivityDto.expirationDate ?: firefighterActivity.expirationDate
+
+        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Activity")
 
         return firefighterActivityMapper.toFirefighterActivityDto(
             firefighterActivityRepository.save(firefighterActivity)

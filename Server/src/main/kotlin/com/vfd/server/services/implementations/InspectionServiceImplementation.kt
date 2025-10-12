@@ -34,6 +34,8 @@ class InspectionServiceImplementation(
 
         val inspectionType = inspectionTypeRepository.findByIdOrThrow(inspectionDto.inspectionType)
 
+        validateDates(inspectionDto.inspectionDate, inspectionDto.expirationDate, "Inspection")
+
         val inspection = inspectionMapper.toInspectionEntity(inspectionDto).apply {
             this.asset = asset
             this.inspectionType = inspectionType
@@ -89,6 +91,11 @@ class InspectionServiceImplementation(
 
         inspection.requireSameFiredepartment(firedepartmentId)
 
+        val effectiveInspectionDate = inspectionDto.inspectionDate ?: inspection.inspectionDate
+        val effectiveExpirationDate = inspectionDto.expirationDate ?: inspection.expirationDate
+
+        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Inspection")
+
         inspectionMapper.patchInspection(inspectionDto, inspection)
 
         inspectionDto.inspectionType
@@ -99,7 +106,6 @@ class InspectionServiceImplementation(
             }
 
         return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
-
     }
 
     private val INSPECTION_ALLOWED_SORTS = setOf(
@@ -120,6 +126,8 @@ class InspectionServiceImplementation(
 
         val inspectionType = inspectionTypeRepository.findByIdOrThrow(inspectionDto.inspectionType)
         inspection.inspectionType = inspectionType
+
+        validateDates(inspectionDto.inspectionDate, inspectionDto.expirationDate, "Inspection")
 
         return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
     }
@@ -159,6 +167,11 @@ class InspectionServiceImplementation(
     ): InspectionDtos.InspectionResponse {
 
         val inspection = inspectionRepository.findByIdOrThrow(inspectionId)
+
+        val effectiveInspectionDate = inspectionDto.inspectionDate ?: inspection.inspectionDate
+        val effectiveExpirationDate = inspectionDto.expirationDate ?: inspection.expirationDate
+
+        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Inspection")
 
         inspectionMapper.patchInspection(inspectionDto, inspection)
 

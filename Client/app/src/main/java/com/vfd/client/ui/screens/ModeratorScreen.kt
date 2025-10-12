@@ -1,8 +1,6 @@
 package com.vfd.client.ui.screens
 
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -14,7 +12,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.ui.components.buttons.AppButton
@@ -45,7 +42,7 @@ fun ModeratorScreen(
     LaunchedEffect(currentFirefighterUiState.currentFirefighter?.role) {
         mainViewModel.setUserRole(currentFirefighterUiState.currentFirefighter?.role)
     }
-    
+
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
         firefighterViewModel.getFirefighterByEmailAddress()
@@ -73,9 +70,6 @@ fun ModeratorScreen(
                 style = MaterialTheme.typography.headlineLarge
             )
         }
-        AppLoadingBar(currentUserUiState.isLoading)
-        AppLoadingBar(currentFirefighterUiState.isLoading)
-
         currentUserUiState.currentUser?.let { user ->
             AppUserCard(user)
         }
@@ -84,7 +78,9 @@ fun ModeratorScreen(
             AppFirefighterCard(firefighter)
         }
 
-        Spacer(Modifier.height(24.dp))
+        AppLoadingBar(currentUserUiState.isLoading)
+        AppLoadingBar(currentFirefighterUiState.isLoading)
+
         AppButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
             label = "Logout",

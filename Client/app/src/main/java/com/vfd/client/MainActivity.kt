@@ -1,6 +1,7 @@
 package com.vfd.client
 
 import android.app.Activity
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -65,6 +66,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
+                val baseRoute = currentRoute?.substringBefore("?")
                 val mainViewModel: MainViewModel = hiltViewModel()
                 val pending by mainViewModel.pendingFirefighters.collectAsState()
                 val active by mainViewModel.activeFirefighters.collectAsState()
@@ -73,6 +75,9 @@ class MainActivity : ComponentActivity() {
                 val operations by mainViewModel.totalOperations.collectAsState()
                 val investments by mainViewModel.pendingInvestments.collectAsState()
                 val canCreateThings by mainViewModel.canCreateThings.collectAsState()
+                val assetName: String? = navBackStackEntry?.arguments
+                    ?.getString("assetName")
+                    ?.let { Uri.decode(it) }
                 val hasRole by mainViewModel.hasRole.collectAsState()
                 val snackbarHostState = remember { SnackbarHostState() }
                 val snackbarShape = RoundedCornerShape(12.dp)
@@ -113,7 +118,7 @@ class MainActivity : ComponentActivity() {
                         TopAppBar(
                             title = {
                                 Text(
-                                    when (currentRoute) {
+                                    when (baseRoute) {
                                         "meScreen" -> "My Profile"
                                         "registerScreen" -> "Register"
                                         "loginScreen" -> "Login"
@@ -122,50 +127,35 @@ class MainActivity : ComponentActivity() {
                                         "newFirefighterScreen" -> "New Firefighters"
                                         "welcomeScreen" -> "My VFD"
                                         "firefighterScreen" -> "Firefighters"
-                                        "assets/list" -> "Assets"
-                                        "events/list" -> "Events"
-                                        "operations/list" -> "Operations"
-                                        "investments/list" -> "Investments"
+                                        "assets/list", "assets/create" -> "Assets"
+                                        "events/list", "events/create" -> "Events"
+                                        "operations/list", "operations/create" -> "Operations"
+                                        "investments/list", "investments/create" -> "Investments"
+                                        "inspections/list" ->
+                                            "${assetName}"
+
+                                        "inspections/create" ->
+                                            "Inspections"
+
                                         else -> "My VFD"
                                     }
                                 )
                             },
                             actions = {
-                                when (currentRoute) {
-                                    "meScreen" -> {
+                                when (baseRoute) {
+                                    "meScreen",
+                                    "moderatorScreen",
+                                    "newFirefighterScreen",
+                                    "firefighterScreen",
+                                    "assets/list",
+                                    "events/list",
+                                    "operations/list",
+                                    "investments/list",
+                                    "inspections/list" -> {
                                         RefreshButton(currentRoute)
                                     }
 
-                                    "moderatorScreen" -> {
-                                        RefreshButton(currentRoute)
-                                    }
-
-                                    "newFirefighterScreen" -> {
-                                        RefreshButton(currentRoute)
-                                    }
-
-                                    "firefighterScreen" -> {
-                                        RefreshButton(currentRoute)
-                                    }
-
-                                    "assets/list" -> {
-                                        RefreshButton(currentRoute)
-                                    }
-
-                                    "events/list" -> {
-                                        RefreshButton(currentRoute)
-                                    }
-
-                                    "operations/list" -> {
-                                        RefreshButton(currentRoute)
-                                    }
-
-                                    "investments/list" -> {
-                                        RefreshButton(currentRoute)
-                                    }
-
-                                    else -> {
-                                        // No action
+                                    else -> { /* no-op */
                                     }
                                 }
                             }
@@ -173,7 +163,7 @@ class MainActivity : ComponentActivity() {
 
                     },
                     bottomBar = {
-                        when (currentRoute) {
+                        when (baseRoute) {
                             "meScreen" -> {
                                 if (hasRole) {
                                     val actions = listOf(
@@ -346,6 +336,41 @@ class MainActivity : ComponentActivity() {
                                 NavBarAction(actions)
                             }
 
+                            "inspections/list",
+                            "inspections/list?assetId={assetId}" -> {
+                                val actions = mutableListOf<NavBarButton>()
+                                actions.add(
+                                    NavBarButton(
+                                        "Back",
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        { navController.popBackStack() }),
+                                )
+                                if (canCreateThings) {
+                                    actions.add(
+                                        NavBarButton(
+                                            "Create inspection",
+                                            Icons.Default.DateRange,
+                                            onClick = {
+                                                val currentAssetId =
+                                                    navController.currentBackStackEntry?.arguments
+                                                        ?.getInt("assetId")
+                                                        ?.takeIf { it > 0 }
+
+                                                val target = if (currentAssetId != null)
+                                                    "inspections/create?assetId=$currentAssetId"
+                                                else
+                                                    "inspections/create"
+
+                                                navController.navigate(target) {
+                                                    launchSingleTop = true
+                                                }
+                                            }
+                                        )
+                                    )
+                                }
+                                NavBarAction(actions)
+                            }
+
                             "events/list" -> {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
@@ -451,8 +476,9 @@ private fun GoBackButton(navController: NavHostController) {
 @Composable
 fun RefreshButton(currentRoute: String?) {
     val scope = rememberCoroutineScope()
+    val base = currentRoute?.substringBefore("?")
 
-    val refreshEvent = when (currentRoute) {
+    val refreshEvent = when (base) {
         "meScreen" -> RefreshEvent.MeScreen
         "moderatorScreen" -> RefreshEvent.ModeratorScreen
         "newFirefighterScreen" -> RefreshEvent.NewFirefighterScreen
@@ -461,6 +487,7 @@ fun RefreshButton(currentRoute: String?) {
         "events/list" -> RefreshEvent.EventScreen
         "operations/list" -> RefreshEvent.OperationScreen
         "investments/list" -> RefreshEvent.InvestmentProposalScreen
+        "inspections/list" -> RefreshEvent.InspectionScreen
         else -> null
     }
 

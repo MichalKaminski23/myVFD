@@ -59,7 +59,8 @@ fun EventCreateDialog(
                 eventViewModel.onEventCreateValueChange {
                     it.copy(eventDate = newDateTime)
                 }
-            }
+            },
+            label = "Event date"
         )
 
         AppTextField(

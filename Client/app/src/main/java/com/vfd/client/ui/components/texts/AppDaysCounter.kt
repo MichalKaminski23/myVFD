@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.vfd.client.utils.daysUntilSomething
 import kotlinx.datetime.LocalDateTime
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -16,12 +17,20 @@ fun AppDaysCounter(
     modifier: Modifier = Modifier
 ) {
     val daysLeft = daysUntilSomething(ourDate)
+    val today = LocalDate.now()
 
     if (daysLeft > 0) {
         AppText(
-            text = "$daysLeft days left",
+            text = "$daysLeft days left from $today",
             color = if (daysLeft <= 7) Color.Red else Color.LightGray,
             style = if (daysLeft <= 7) MaterialTheme.typography.displayMedium else MaterialTheme.typography.bodyMedium,
+            modifier = modifier
+        )
+    } else if (daysLeft == -1L) {
+        AppText(
+            text = "Expiration date is not specified",
+            color = Color.White,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = modifier
         )
     } else {
@@ -32,5 +41,4 @@ fun AppDaysCounter(
             modifier = modifier
         )
     }
-
 }

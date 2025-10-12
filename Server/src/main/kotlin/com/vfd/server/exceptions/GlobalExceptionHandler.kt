@@ -54,6 +54,17 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(InvalidDatesException::class)
+    fun handleInvalidDates(exception: InvalidDatesException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = "Bad Request",
+            message = exception.message ?: "Invalid date range",
+            path = request.getDescription(false).replace("uri=", "")
+        )
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    }
+
     @ExceptionHandler(BadCredentialsException::class)
     fun handleBadCredentials(exception: BadCredentialsException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(

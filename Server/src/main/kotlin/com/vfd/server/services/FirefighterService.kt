@@ -31,9 +31,7 @@ interface FirefighterService {
         sort: String = "firstName,asc",
         emailAddress: String
     ): PageResponse<FirefighterDtos.FirefighterResponse>
-
-    //fun getFirefightersFromLoggedUser(emailAddress: String): List<FirefighterDtos.FirefighterResponse>
-
+    
     fun createFirefighterDev(firefighterDto: FirefighterDtos.FirefighterCreate): FirefighterDtos.FirefighterResponse
 
     fun getAllFirefightersDev(

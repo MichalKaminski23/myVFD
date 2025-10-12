@@ -103,9 +103,6 @@ fun MeScreen(
             )
         }
 
-        AppLoadingBar(currentUserUiState.isLoading)
-        AppLoadingBar(currentFirefighterUiState.isLoading)
-
         currentUserUiState.currentUser?.let { AppUserCard(it) }
 
         currentUserUiState.errorMessage?.let { AppErrorText(it) }
@@ -138,6 +135,9 @@ fun MeScreen(
             )
         }
 
+        AppLoadingBar(currentUserUiState.isLoading)
+        AppLoadingBar(currentFirefighterUiState.isLoading)
+        
         AppButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
             label = "Logout",

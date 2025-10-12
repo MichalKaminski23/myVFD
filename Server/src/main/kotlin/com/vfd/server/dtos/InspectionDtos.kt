@@ -29,7 +29,6 @@ object InspectionDtos {
 
     @Schema(description = "DTO used for partially updating an inspection")
     data class InspectionPatch(
-        @field:NotBlank(message = "Inspection type must not be blank.")
         @field:Size(max = 16, message = "Inspection type must be at most 16 characters.")
         @field:Schema(description = "Code of the inspection type", example = "Technical")
         val inspectionType: String? = null,

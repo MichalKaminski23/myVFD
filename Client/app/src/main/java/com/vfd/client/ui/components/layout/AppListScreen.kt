@@ -71,7 +71,6 @@ fun <T> AppListScreen(
                 }
             }
 
-
             item {
                 Spacer(Modifier.height(12.dp))
                 AppLoadMoreButton(
@@ -82,13 +81,6 @@ fun <T> AppListScreen(
                     }
                 )
             }
-
-//        if (errorMessage != null && data.isEmpty()) {
-//            item {
-//                AppErrorText(errorMessage)
-//            }
-//            return@LazyColumn
-//        }
         }
     }
 }
