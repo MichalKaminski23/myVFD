@@ -54,7 +54,10 @@ object FirefighterDtos {
         val role: String,
 
         @field:Schema(description = "Status assigned to the firefighter", example = "PENDING")
-        val status: String
+        val status: String,
+
+        @field:Schema(description = "Total time on operations in hours", example = "12.5")
+        val hours: Double
     )
 
     @Schema(description = "DTO used for returning firefighter information without personal details")

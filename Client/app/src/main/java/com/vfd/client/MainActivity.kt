@@ -324,7 +324,7 @@ class MainActivity : ComponentActivity() {
                                     actions.add(
                                         NavBarButton(
                                             "Create asset",
-                                            Icons.Default.DateRange,
+                                            Icons.Default.Build,
                                             {
                                                 navController.navigate("assets/create") {
                                                     launchSingleTop = true

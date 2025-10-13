@@ -128,9 +128,9 @@ INSERT INTO Inspections (asset_id, inspection_type, inspection_date, expiration_
 VALUES (1, 'SecCheck', '2025-06-15 11:00:00', '2026-06-15 11:00:00'),
        (2, 'Insu', '2025-07-05 14:00:00', '2026-07-05 14:00:00');
 
-INSERT INTO Operations (firedepartment_id, operation_type, address_id, operation_date, description)
-VALUES (1, 'ResOpe', 3, '2025-07-15 13:00:00', 'Rescue operation in Katowice'),
-       (2, 'Exerc', 2, '2025-07-18 09:00:00', 'Monthly exercises in Bedzin');
+INSERT INTO Operations (firedepartment_id, operation_type, address_id, operation_date, operation_end, description)
+VALUES (1, 'ResOpe', 3, '2025-07-15 13:00:00', '2025-07-15 18:00:00', 'Rescue operation in Katowice'),
+       (2, 'Exerc', 2, '2025-07-18 09:00:00', '2025-07-18 17:00:00', 'Monthly exercises in Bedzin');
 
 INSERT INTO Participations (operation_id, firefighter_id)
 VALUES (1, 1),

@@ -24,6 +24,10 @@ object OperationDtos {
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-03T13:30:00")
         val operationDate: LocalDateTime,
 
+        @field:NotNull(message = "Operation end date must not be null.")
+        @field:Schema(description = "Date and time when the operation ended", example = "2025-08-03T15:05:00")
+        val operationEnd: LocalDateTime,
+
         @field:Size(max = 512, message = "Description must be at most 512 characters.")
         @field:Schema(
             description = "Description of the operation",
@@ -46,6 +50,9 @@ object OperationDtos {
 
         @field:Schema(description = "Date and time of the operation", example = "2025-09-01T19:00:00")
         val operationDate: LocalDateTime? = null,
+
+        @field:Schema(description = "Date and time when the operation ended", example = "2025-08-03T15:05:00")
+        val operationEnd: LocalDateTime? = null,
 
         @field:Size(max = 512, message = "Description must be at most 512 characters.")
         @field:Schema(
@@ -75,6 +82,9 @@ object OperationDtos {
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-03T13:30:00")
         val operationDate: LocalDateTime,
 
+        @field:Schema(description = "Date and time when the operation ended", example = "2025-08-03T15:05:00")
+        val operationEnd: LocalDateTime,
+
         @field:Schema(
             description = "Description of the operation",
             example = "Extinguishing residential building fire."
@@ -103,6 +113,10 @@ object OperationDtos {
         @field:NotNull(message = "Operation date must not be null.")
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-03T13:30:00")
         val operationDate: LocalDateTime,
+        
+        @field:NotNull(message = "Operation end date must not be null.")
+        @field:Schema(description = "Date and time when the operation ended", example = "2025-08-03T15:05:00")
+        val operationEnd: LocalDateTime,
 
         @field:Size(max = 512, message = "Description must be at most 512 characters.")
         @field:Schema(

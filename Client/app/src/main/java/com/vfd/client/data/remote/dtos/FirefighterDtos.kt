@@ -36,7 +36,9 @@ object FirefighterDtos {
 
         val role: String,
 
-        val status: String
+        val status: String,
+
+        val hours: Double
     )
 
     @Serializable
@@ -47,6 +49,6 @@ object FirefighterDtos {
 
         val lastName: String,
 
-        val emailAddress: String
+        val emailAddress: String,
     )
 }

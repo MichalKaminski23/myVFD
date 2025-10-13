@@ -27,6 +27,9 @@ class Operation {
     @Column(name = "operation_date")
     var operationDate: LocalDateTime? = null
 
+    @Column(name = "operation_end")
+    var operationEnd: LocalDateTime? = null
+
     @Column(name = "description", length = 512)
     var description: String? = null
 

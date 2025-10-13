@@ -11,7 +11,8 @@ fun AppOperationCard(
     AppCard(
         listOf(
             "\uD83E\uDD1D ${operation?.operationTypeName}",
-            "\uD83D\uDCC6 Date: ${operation?.operationDate}",
+            "\uD83D\uDCC6 Operation date: ${operation?.operationDate}",
+            "\uD83D\uDCC6 Operation end: ${operation?.operationEnd}",
             "✏\uFE0F Description: ${operation?.description}",
             "🏠 ${operation?.address?.country}, ${operation?.address?.voivodeship}, " +
                     "${operation?.address?.street} ${operation?.address?.houseNumber}/${operation?.address?.apartNumber ?: ""} " +

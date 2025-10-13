@@ -13,6 +13,8 @@ object OperationDtos {
 
         val operationDate: LocalDateTime,
 
+        val operationEnd: LocalDateTime,
+
         val description: String,
 
         val participantsIds: Set<Int>? = null
@@ -25,6 +27,8 @@ object OperationDtos {
         val address: AddressDtos.AddressCreate? = null,
 
         val operationDate: LocalDateTime? = null,
+
+        val operationEnd: LocalDateTime? = null,
 
         val description: String? = null,
 
@@ -42,6 +46,8 @@ object OperationDtos {
         val operationTypeName: String,
 
         val operationDate: LocalDateTime,
+
+        val operationEnd: LocalDateTime,
 
         val description: String,
 

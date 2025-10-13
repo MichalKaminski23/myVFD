@@ -164,6 +164,18 @@ fun OperationScreen(
                             },
                             label = "Operation date"
                         )
+                        AppDateTimePicker(
+                            selectedDateTime = operationUpdateUiState.operationEnd,
+                            onDateTimeSelected = { newDateTime ->
+                                operationViewModel.onOperationUpdateValueChange {
+                                    it.copy(
+                                        operationEnd = newDateTime,
+                                        operationDateTouched = true
+                                    )
+                                }
+                            },
+                            label = "Operation end"
+                        )
                         AppMultiDropdown(
                             items = firefighterUiState.activeFirefighters,
                             selectedIds = operationUpdateUiState.participantsIds,
@@ -229,6 +241,10 @@ fun OperationScreen(
                                                 operationUpdateUiState.operationDate
                                             else null,
 
+                                            operationEnd = if (operationUpdateUiState.operationDateTouched)
+                                                operationUpdateUiState.operationEnd
+                                            else null,
+
                                             description = if (operationUpdateUiState.descriptionTouched)
                                                 operationUpdateUiState.description.takeIf { it.isNotBlank() }
                                             else null,
@@ -246,6 +262,7 @@ fun OperationScreen(
                                 },
                                 modifier = Modifier.weight(1f),
                                 enabled = operationUpdateUiState.operationDate != null &&
+                                        operationUpdateUiState.operationEnd != null &&
                                         effectiveSelectedCode.isNotBlank() &&
                                         operationUpdateUiState.address?.country?.isNotBlank() == true &&
                                         operationUpdateUiState.address?.voivodeship?.isNotBlank() == true &&
@@ -286,6 +303,7 @@ fun OperationScreen(
                                     it.copy(
                                         operationType = preselectedCode,
                                         operationDate = operation.operationDate,
+                                        operationEnd = operation.operationEnd,
                                         description = operation.description,
                                         address =
                                             AddressDtos.AddressCreate(

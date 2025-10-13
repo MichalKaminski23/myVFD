@@ -51,6 +51,7 @@ fun OperationCreateDialog(
                 operationCreateUiState.address?.houseNumber?.isNotBlank() == true &&
                 operationCreateUiState.description.isNotBlank() &&
                 operationCreateUiState.operationDate != null &&
+                operationCreateUiState.operationEnd != null &&
                 operationCreateUiState.description.isNotBlank() &&
                 operationCreateUiState.participantsIds != null
                 && !operationCreateUiState.isLoading,
@@ -62,6 +63,7 @@ fun OperationCreateDialog(
                     operationType = operationCreateUiState.operationType,
                     address = operationCreateUiState.address!!,
                     operationDate = operationCreateUiState.operationDate!!,
+                    operationEnd = operationCreateUiState.operationEnd!!,
                     description = operationCreateUiState.description,
                     participantsIds = operationCreateUiState.participantsIds!!
                 )
@@ -106,6 +108,17 @@ fun OperationCreateDialog(
                 }
             },
             label = "Operation date"
+        )
+        AppDateTimePicker(
+            selectedDateTime = operationCreateUiState.operationEnd,
+            onDateTimeSelected = { newDateTime ->
+                operationViewModel.onOperationCreateValueChange {
+                    it.copy(
+                        operationEnd = newDateTime
+                    )
+                }
+            },
+            label = "Operation end"
         )
         AppMultiDropdown(
             items = firefighterUiState.activeFirefighters,

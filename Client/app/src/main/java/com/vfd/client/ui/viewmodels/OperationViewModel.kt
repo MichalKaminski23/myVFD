@@ -29,10 +29,12 @@ data class OperationUpdateUiState(
     val operationType: String = "",
     val address: AddressDtos.AddressCreate? = null,
     val operationDate: LocalDateTime? = null,
+    val operationEnd: LocalDateTime? = null,
     val description: String = "",
     val participantsIds: MutableSet<Int> = linkedSetOf(),
     val operationTypeTouched: Boolean = false,
     val operationDateTouched: Boolean = false,
+    val operationEndTouched: Boolean = false,
     val descriptionTouched: Boolean = false,
     val addressTouched: Boolean = false,
     val participantsTouched: Boolean = false,
@@ -46,6 +48,7 @@ data class OperationCreateUiState(
     val operationType: String = "",
     val address: AddressDtos.AddressCreate? = null,
     val operationDate: LocalDateTime? = null,
+    val operationEnd: LocalDateTime? = null,
     val description: String = "",
     val participantsIds: MutableSet<Int> = linkedSetOf(),
     val isLoading: Boolean = false,
@@ -98,6 +101,7 @@ class OperationViewModel @Inject constructor(
                         operationType = "",
                         address = null,
                         operationDate = null,
+                        operationEnd = null,
                         description = "",
                         participantsIds = linkedSetOf(),
                         isLoading = false,
@@ -205,6 +209,7 @@ class OperationViewModel @Inject constructor(
                             operationTypeName = result.data?.operationTypeName
                                 ?: operation.operationTypeName,
                             operationDate = result.data?.operationDate ?: operation.operationDate,
+                            operationEnd = result.data?.operationEnd ?: operation.operationEnd,
                             address = AddressDtos.AddressResponse(
                                 addressId = result.data?.address?.addressId
                                     ?: operation.address.addressId,

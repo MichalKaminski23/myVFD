@@ -13,6 +13,7 @@ fun AppFirefightersCard(
             "👤 ${firefighter.firstName} ${firefighter.lastName}",
             "🚒 Firedepartment: ${firefighter.firedepartmentName}",
             "📧 Email address: ${firefighter.emailAddress}",
+            "⌚ Hours on actions: ${firefighter.hours}",
             "\uD83E\uDDD1\u200D\uD83D\uDE92 Role: ${firefighter.role}"
         ),
         actions

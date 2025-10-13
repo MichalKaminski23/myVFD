@@ -43,6 +43,8 @@ class OperationServiceImplementation(
 
         participants.forEach { it.requireSameFiredepartment(firedepartment.firedepartmentId!!) }
 
+        validateDates(operationDto.operationDate, operationDto.operationEnd, "Operation")
+
         val operation = operationMapper.toOperationEntity(operationDto).apply {
             this.firedepartment = firedepartment
             this.operationType = operationType
@@ -99,6 +101,11 @@ class OperationServiceImplementation(
 
         operation.requireSameFiredepartment(firedepartmentId)
 
+        val effectiveInspectionDate = operationDto.operationDate ?: operationDto.operationDate
+        val effectiveExpirationDate = operationDto.operationEnd ?: operationDto.operationEnd
+
+        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Operation")
+
         operationDto.participantsIds?.let { ids ->
             val participants = firefighterRepository.findAllById(ids)
             operation.participants = participants.toMutableSet()
@@ -149,6 +156,8 @@ class OperationServiceImplementation(
         operation.operationType = operationType
 
         operation.participants = firefighterRepository.findAllById(operationDto.participantIds).toMutableSet()
+
+        validateDates(operationDto.operationDate, operationDto.operationEnd, "Operation")
 
         return operationMapper.toOperationDto(
             operationRepository.save(operation)
@@ -202,6 +211,11 @@ class OperationServiceImplementation(
             val address = addressService.findOrCreateAddress(addressDto)
             operation.address = address
         }
+
+        val effectiveInspectionDate = operationDto.operationDate ?: operationDto.operationDate
+        val effectiveExpirationDate = operationDto.operationEnd ?: operationDto.operationEnd
+
+        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Operation")
 
         operationMapper.patchOperation(operationDto, operation)
 
