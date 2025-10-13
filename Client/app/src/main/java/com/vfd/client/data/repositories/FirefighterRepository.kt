@@ -2,6 +2,7 @@ package com.vfd.client.data.repositories
 
 import com.vfd.client.data.remote.api.FirefighterApi
 import com.vfd.client.data.remote.dtos.FirefighterDtos
+import com.vfd.client.data.remote.dtos.HoursResponseDto
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.PageResponse
 import kotlinx.serialization.json.Json
@@ -42,4 +43,7 @@ class FirefighterRepository @Inject constructor(
 
     suspend fun deleteFirefighter(firefighterId: Int): ApiResult<Unit> =
         safeApiCall { firefighterApi.deleteFirefighter(firefighterId) }
+
+    suspend fun getHoursForQuarter(year: Int, quarter: Int): ApiResult<HoursResponseDto> =
+        safeApiCall { firefighterApi.getHoursForQuarter(year, quarter) }
 }

@@ -186,7 +186,6 @@ fun AssetScreen(
                             },
                             icon = Icons.Default.Build
                         )
-
                         AppTextField(
                             value = assetUpdateUiState.description,
                             onValueChange = { new ->

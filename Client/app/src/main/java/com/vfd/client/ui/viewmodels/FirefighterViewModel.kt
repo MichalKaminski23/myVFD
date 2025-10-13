@@ -3,6 +3,7 @@ package com.vfd.client.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.remote.dtos.FirefighterDtos
+import com.vfd.client.data.remote.dtos.HoursResponseDto
 import com.vfd.client.data.repositories.FirefighterRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
@@ -17,6 +18,7 @@ import javax.inject.Inject
 
 data class CurrentFirefighterUiState(
     var currentFirefighter: FirefighterDtos.FirefighterResponse? = null,
+    var hours: HoursResponseDto? = null,
     val isLoading: Boolean = false,
     val notFound: Boolean = false,
     val success: Boolean = false,
@@ -80,7 +82,7 @@ class FirefighterViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = result.message ?: "Failed to create firefighter"
                         )
-                    _uiEvent.send(UiEvent.Success("Failed to create firefighter"))
+                    _uiEvent.send(UiEvent.Success(result.message!!))
                 }
 
                 is ApiResult.Loading -> {
@@ -175,7 +177,7 @@ class FirefighterViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = result.message ?: "Failed to change role or status"
                         )
-                    _uiEvent.send(UiEvent.Success("Failed to update firefighter"))
+                    _uiEvent.send(UiEvent.Success(result.message!!))
                 }
 
                 is ApiResult.Loading -> {
@@ -222,6 +224,7 @@ class FirefighterViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = result.message ?: "Failed to load pending firefighters"
                         )
+                    _uiEvent.send(UiEvent.Success(result.message!!))
                 }
 
                 is ApiResult.Loading -> {
@@ -266,6 +269,7 @@ class FirefighterViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = result.message ?: "Failed to load active firefighters"
                         )
+                    _uiEvent.send(UiEvent.Success(result.message!!))
                 }
 
                 is ApiResult.Loading -> {
@@ -294,12 +298,64 @@ class FirefighterViewModel @Inject constructor(
                             isLoading = false,
                             errorMessage = result.message ?: "Failed to delete firefighter"
                         )
-                    _uiEvent.send(UiEvent.Success("Failed to delete firefighter"))
+                    _uiEvent.send(UiEvent.Success(result.message!!))
                 }
 
                 is ApiResult.Loading -> {
                     _pendingFirefightersUiState.value =
                         _pendingFirefightersUiState.value.copy(isLoading = true)
+                }
+            }
+        }
+    }
+
+    fun getHoursForQuarter(year: Int, quarter: Int) {
+        viewModelScope.launch {
+            _currentFirefighterUiState.value =
+                _currentFirefighterUiState.value.copy(
+                    hours = null,
+                    isLoading = true,
+                    errorMessage = null
+                )
+
+            when (val result = firefighterRepository.getHoursForQuarter(year, quarter)) {
+
+                is ApiResult.Success -> {
+                    _currentFirefighterUiState.value.hours = result.data
+                    delay(400)
+                    _currentFirefighterUiState.value = _currentFirefighterUiState.value.copy(
+                        hours = result.data,
+                        isLoading = false,
+                        errorMessage = null,
+                        notFound = false,
+                        success = true
+                    )
+                }
+
+                is ApiResult.Error -> {
+                    if (result.code == 404) {
+                        _currentFirefighterUiState.value = _currentFirefighterUiState.value.copy(
+                            hours = null,
+                            isLoading = false,
+                            errorMessage = null,
+                            notFound = true,
+                            success = true
+                        )
+                    } else {
+                        _currentFirefighterUiState.value = _currentFirefighterUiState.value.copy(
+                            hours = null,
+                            isLoading = false,
+                            errorMessage = result.message ?: "Failed to load hours"
+                        )
+                        _uiEvent.send(UiEvent.Success(result.message!!))
+                    }
+                }
+
+                is ApiResult.Loading -> {
+                    _currentFirefighterUiState.value =
+                        _currentFirefighterUiState.value.copy(
+                            isLoading = true
+                        )
                 }
             }
         }

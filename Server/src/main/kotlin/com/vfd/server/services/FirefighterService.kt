@@ -37,6 +37,12 @@ interface FirefighterService {
         firefighterId: Int
     )
 
+    fun getHoursForQuarter(
+        emailAddress: String,
+        year: Int,
+        quarter: Int
+    ): Double
+
     fun createFirefighterDev(firefighterDto: FirefighterDtos.FirefighterCreate): FirefighterDtos.FirefighterResponse
 
     fun getAllFirefightersDev(

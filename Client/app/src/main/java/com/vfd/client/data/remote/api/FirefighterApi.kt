@@ -1,6 +1,7 @@
 package com.vfd.client.data.remote.api
 
 import com.vfd.client.data.remote.dtos.FirefighterDtos
+import com.vfd.client.data.remote.dtos.HoursResponseDto
 import com.vfd.client.utils.PageResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -44,4 +45,10 @@ interface FirefighterApi {
     suspend fun deleteFirefighter(
         @Path("firefighterId") firefighterId: Int
     ): Unit
+
+    @GET("api/firefighters/my/hours")
+    suspend fun getHoursForQuarter(
+        @Query("year") year: Int,
+        @Query("quarter") quarter: Int
+    ): HoursResponseDto
 }

@@ -1,6 +1,7 @@
 package com.vfd.server.controllers
 
 import com.vfd.server.dtos.FirefighterDtos
+import com.vfd.server.dtos.HoursResponseDto
 import com.vfd.server.services.FirefighterService
 import com.vfd.server.shared.PageResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -184,4 +185,31 @@ class FirefighterController(
     ) {
         firefighterService.deleteFirefighter(principal.username, firefighterId)
     }
+
+    @Operation(
+        summary = "Get firefighter hours for a specific quarter",
+        description = "Retrieves the total hours a firefighter has participated in operations for a given year and quarter."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Hours retrieved successfully",
+                content = [Content(schema = Schema(implementation = Map::class))]
+            ),
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "404", ref = "NotFound"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
+        ]
+    )
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/my/hours")
+    fun getHoursForQuarter(
+        @RequestParam("year") year: Int,
+        @RequestParam("quarter") quarter: Int,
+        @AuthenticationPrincipal principal: UserDetails,
+    ): HoursResponseDto {
+        val hours = firefighterService.getHoursForQuarter(principal.username, year, quarter)
+        return HoursResponseDto(year, quarter, hours)
+    }
+
 }

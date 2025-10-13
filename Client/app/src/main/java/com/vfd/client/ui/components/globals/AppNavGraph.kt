@@ -77,7 +77,7 @@ fun AppNavGraph(
             InfoScreen(navController = navController)
         }
         composable("moderatorScreen") {
-            ModeratorScreen(navController = navController)
+            ModeratorScreen(navController = navController, snackbarHostState = snackbarHostState)
         }
         composable("newFirefighterScreen") {
             NewFirefighterScreen(

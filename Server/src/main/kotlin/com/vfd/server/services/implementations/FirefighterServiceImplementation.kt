@@ -3,6 +3,7 @@ package com.vfd.server.services.implementations
 import com.vfd.server.dtos.FirefighterDtos
 import com.vfd.server.entities.FirefighterRole
 import com.vfd.server.entities.FirefighterStatus
+import com.vfd.server.exceptions.InvalidNumberException
 import com.vfd.server.exceptions.InvalidStatusException
 import com.vfd.server.mappers.FirefighterMapper
 import com.vfd.server.repositories.FiredepartmentRepository
@@ -12,6 +13,8 @@ import com.vfd.server.services.FirefighterService
 import com.vfd.server.shared.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Service
 class FirefighterServiceImplementation(
@@ -201,6 +204,25 @@ class FirefighterServiceImplementation(
         firefighterRepository.save(firefighterDeleted)
 
         firefighterRepository.delete(firefighterDeleted)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getHoursForQuarter(emailAddress: String, year: Int, quarter: Int): Double {
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        if (quarter !in 1..4) {
+            throw InvalidNumberException("Quarter must be between 1 and 4")
+        }
+
+        val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+
+        if (year !in 0..now.year) {
+            throw InvalidNumberException("Year must be between 0 and can't be grater than today")
+        }
+
+        return firefighterRepository.getHoursForQuarter(firefighter.firefighterId!!, year, quarter)
     }
 
     private val FIREFIGHTER_ALLOWED_SORTS = setOf(
