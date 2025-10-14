@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.FirefighterStatus
+import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppFirefighterCard
 import com.vfd.client.ui.components.cards.AppUserCard
@@ -70,6 +71,8 @@ fun MeScreen(
     var selectedFiredepartmentId by rememberSaveable { mutableStateOf<Int?>(null) }
 
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
+
+    val userUpdateUiState by userViewModel.userUpdateUiState.collectAsState()
 
     val mainViewModel: MainViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
 
@@ -156,6 +159,21 @@ fun MeScreen(
                 navController.navigate("welcomeScreen") {
                     popUpTo("meScreen") { inclusive = true }
                 }
+            },
+            fullWidth = true,
+        )
+        AppButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            label = "Edit",
+            onClick = {
+                userViewModel.updateUser(
+                    UserDtos.UserPatch(
+                        firstName = userUpdateUiState.firstName,
+                        lastName = userUpdateUiState.lastName,
+                        phoneNumber = userUpdateUiState.phoneNumber,
+                        address = userUpdateUiState.address
+                    )
+                )
             },
             fullWidth = true,
         )
