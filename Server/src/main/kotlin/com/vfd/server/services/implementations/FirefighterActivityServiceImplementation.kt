@@ -23,11 +23,12 @@ class FirefighterActivityServiceImplementation(
 ) : FirefighterActivityService {
 
     fun validateStatus(status: String?) {
+        if (status == null) return
         try {
-            FirefighterStatus.valueOf(status!!)
+            FirefighterStatus.valueOf(status)
         } catch (exception: IllegalArgumentException) {
             throw InvalidStatusException(
-                "Invalid status: ${status!!}. Allowed: ${
+                "Invalid status: ${status}. Allowed: ${
                     FirefighterStatus.entries.joinToString()
                 }"
             )
@@ -133,9 +134,8 @@ class FirefighterActivityServiceImplementation(
 
         val firefighterActivity = firefighterActivityRepository.findByIdOrThrow(firefighterActivityId)
 
-        firefighterActivity.requireSameFirefighter(firefighter.firefighterId!!)
+        //firefighterActivity.requireSameFirefighter(firefighter.firefighterId!!)
 
-        validateStatus(firefighterActivityDto.status)
 
         firefighterActivityMapper.patchFirefighterActivity(firefighterActivityDto, firefighterActivity)
 
@@ -150,6 +150,11 @@ class FirefighterActivityServiceImplementation(
         val effectiveExpirationDate = firefighterActivityDto.expirationDate ?: firefighterActivity.expirationDate
 
         validateDates(effectiveInspectionDate, effectiveExpirationDate, "Activity")
+
+        firefighterActivity.status = firefighterActivityDto.status?.let { FirefighterStatus.valueOf(it) }
+            ?: firefighterActivity.status
+
+        validateStatus(firefighterActivityDto.status)
 
         return firefighterActivityMapper.toFirefighterActivityDto(
             firefighterActivityRepository.save(firefighterActivity)
@@ -180,9 +185,8 @@ class FirefighterActivityServiceImplementation(
         )
 
         return firefighterActivityRepository
-            .findAllByFirefighterFiredepartmentFiredepartmentIdAndStatus(
+            .findAllByFirefighterFiredepartmentFiredepartmentId(
                 firedepartmentId,
-                FirefighterStatus.ACTIVE,
                 pageable
             )
             .map(firefighterActivityMapper::toFirefighterActivityDto)
@@ -258,8 +262,6 @@ class FirefighterActivityServiceImplementation(
 
         val firefighterActivity = firefighterActivityRepository.findByIdOrThrow(firefighterActivityId)
 
-        validateStatus(firefighterActivityDto.status)
-
         firefighterActivityMapper.patchFirefighterActivity(firefighterActivityDto, firefighterActivity)
 
         firefighterActivityDto.firefighterActivityType
@@ -275,6 +277,9 @@ class FirefighterActivityServiceImplementation(
         val effectiveExpirationDate = firefighterActivityDto.expirationDate ?: firefighterActivity.expirationDate
 
         validateDates(effectiveInspectionDate, effectiveExpirationDate, "Activity")
+
+        firefighterActivity.status = firefighterActivityDto.status?.let { FirefighterStatus.valueOf(it) }
+            ?: firefighterActivity.status
 
         return firefighterActivityMapper.toFirefighterActivityDto(
             firefighterActivityRepository.save(firefighterActivity)

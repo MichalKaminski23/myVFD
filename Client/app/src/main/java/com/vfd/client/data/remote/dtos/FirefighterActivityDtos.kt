@@ -24,7 +24,9 @@ object FirefighterActivityDtos {
 
         val expirationDate: LocalDateTime? = null,
 
-        val description: String? = null
+        val description: String? = null,
+
+        val status: String? = null
     )
 
     @Serializable
@@ -39,6 +41,8 @@ object FirefighterActivityDtos {
 
         val expirationDate: LocalDateTime?,
 
-        val description: String?
+        val description: String?,
+
+        val status: String
     )
 }

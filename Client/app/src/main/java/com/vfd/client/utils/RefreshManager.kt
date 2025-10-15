@@ -13,6 +13,8 @@ sealed class RefreshEvent {
     object OperationScreen : RefreshEvent()
     object InvestmentProposalScreen : RefreshEvent()
     object InspectionScreen : RefreshEvent()
+
+    object FirefighterActivityScreen : RefreshEvent()
 }
 
 object RefreshManager {

@@ -17,4 +17,9 @@ interface FirefighterActivityRepository : JpaRepository<FirefighterActivity, Int
         status: FirefighterStatus,
         pageable: Pageable
     ): Page<FirefighterActivity>
+
+    fun findAllByFirefighterFiredepartmentFiredepartmentId(
+        firedepartmentId: Int,
+        pageable: Pageable
+    ): Page<FirefighterActivity>
 }

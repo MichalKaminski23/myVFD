@@ -22,6 +22,13 @@ class FirefighterActivityRepository @Inject constructor(
     ): ApiResult<PageResponse<FirefighterActivityDtos.FirefighterActivityResponse>> =
         safeApiCall { firefighterActivityApi.getFirefighterActivities(page, size, sort) }
 
+    suspend fun getFirefightersActivities(
+        page: Int = 0,
+        size: Int = 20,
+        sort: String = "activityDate,asc"
+    ): ApiResult<PageResponse<FirefighterActivityDtos.FirefighterActivityResponse>> =
+        safeApiCall { firefighterActivityApi.getFirefightersActivities(page, size, sort) }
+    
     suspend fun updateFirefighterActivity(
         firefighterActivityId: Int,
         firefighterActivityDto: FirefighterActivityDtos.FirefighterActivityPatch

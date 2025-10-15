@@ -137,6 +137,9 @@ class MainActivity : ComponentActivity() {
                                         "inspections/create" ->
                                             "Inspections"
 
+                                        "activities/list" -> "Activities"
+                                        "activities/create" -> "Activities"
+
                                         else -> "My VFD"
                                     }
                                 )
@@ -151,7 +154,8 @@ class MainActivity : ComponentActivity() {
                                     "events/list",
                                     "operations/list",
                                     "investments/list",
-                                    "inspections/list" -> {
+                                    "inspections/list",
+                                    "activities/list" -> {
                                         RefreshButton(currentRoute)
                                     }
 
@@ -371,6 +375,41 @@ class MainActivity : ComponentActivity() {
                                 NavBarAction(actions)
                             }
 
+                            "activities/list",
+                            "activities/list?firefighterId={firefighterId}" -> {
+                                val actions = mutableListOf<NavBarButton>()
+                                actions.add(
+                                    NavBarButton(
+                                        "Back",
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        { navController.popBackStack() }),
+                                )
+                                if (canCreateThings) {
+                                    actions.add(
+                                        NavBarButton(
+                                            "Create activity",
+                                            Icons.Default.DateRange,
+                                            onClick = {
+                                                val currentFirefighterId =
+                                                    navController.currentBackStackEntry?.arguments
+                                                        ?.getInt("firefighterId")
+                                                        ?.takeIf { it > 0 }
+
+                                                val target = if (currentFirefighterId != null)
+                                                    "activities/create?firefighterId=$currentFirefighterId"
+                                                else
+                                                    "activities/create"
+
+                                                navController.navigate(target) {
+                                                    launchSingleTop = true
+                                                }
+                                            }
+                                        )
+                                    )
+                                }
+                                NavBarAction(actions)
+                            }
+
                             "events/list" -> {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
@@ -488,6 +527,7 @@ fun RefreshButton(currentRoute: String?) {
         "operations/list" -> RefreshEvent.OperationScreen
         "investments/list" -> RefreshEvent.InvestmentProposalScreen
         "inspections/list" -> RefreshEvent.InspectionScreen
+        "activities/list" -> RefreshEvent.FirefighterActivityScreen
         else -> null
     }
 

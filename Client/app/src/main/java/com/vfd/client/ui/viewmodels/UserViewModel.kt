@@ -128,37 +128,34 @@ class UserViewModel @Inject constructor(
 
                     val updatedUser = _currentUserUiState.value.currentUser
                     if (updatedUser != null) {
-                        {
-                            _currentUserUiState.value.currentUser?.copy(
-                                firstName = userDto.firstName
-                                    ?: _currentUserUiState.value.currentUser!!.firstName,
-                                lastName = userDto.lastName
-                                    ?: _currentUserUiState.value.currentUser!!.lastName,
-                                address = AddressDtos.AddressResponse(
-                                    addressId = result.data?.address?.addressId
-                                        ?: _currentUserUiState.value.currentUser!!.address.addressId,
-                                    country = result.data?.address?.country
-                                        ?: _currentUserUiState.value.currentUser!!.address.country,
-                                    voivodeship = result.data?.address?.voivodeship
-                                        ?: _currentUserUiState.value.currentUser!!.address.voivodeship,
-                                    city = result.data?.address?.city
-                                        ?: _currentUserUiState.value.currentUser!!.address.city,
-                                    postalCode = result.data?.address?.postalCode
-                                        ?: _currentUserUiState.value.currentUser!!.address.postalCode,
-                                    street = result.data?.address?.street
-                                        ?: _currentUserUiState.value.currentUser!!.address.street,
-                                    houseNumber = result.data?.address?.houseNumber
-                                        ?: _currentUserUiState.value.currentUser!!.address.houseNumber,
-                                    apartNumber = result.data?.address?.apartNumber
-                                        ?: _currentUserUiState.value.currentUser!!.address.apartNumber
-                                ),
-                                emailAddress = userDto.emailAddress
-                                    ?: _currentUserUiState.value.currentUser!!.emailAddress,
-                                phoneNumber = userDto.phoneNumber
-                                    ?: _currentUserUiState.value.currentUser!!.phoneNumber
-                            )
-                        }
-
+                        _currentUserUiState.value.currentUser?.copy(
+                            firstName = userDto.firstName
+                                ?: _currentUserUiState.value.currentUser!!.firstName,
+                            lastName = userDto.lastName
+                                ?: _currentUserUiState.value.currentUser!!.lastName,
+                            address = AddressDtos.AddressResponse(
+                                addressId = result.data?.address?.addressId
+                                    ?: _currentUserUiState.value.currentUser!!.address.addressId,
+                                country = result.data?.address?.country
+                                    ?: _currentUserUiState.value.currentUser!!.address.country,
+                                voivodeship = result.data?.address?.voivodeship
+                                    ?: _currentUserUiState.value.currentUser!!.address.voivodeship,
+                                city = result.data?.address?.city
+                                    ?: _currentUserUiState.value.currentUser!!.address.city,
+                                postalCode = result.data?.address?.postalCode
+                                    ?: _currentUserUiState.value.currentUser!!.address.postalCode,
+                                street = result.data?.address?.street
+                                    ?: _currentUserUiState.value.currentUser!!.address.street,
+                                houseNumber = result.data?.address?.houseNumber
+                                    ?: _currentUserUiState.value.currentUser!!.address.houseNumber,
+                                apartNumber = result.data?.address?.apartNumber
+                                    ?: _currentUserUiState.value.currentUser!!.address.apartNumber
+                            ),
+                            emailAddress = userDto.emailAddress
+                                ?: _currentUserUiState.value.currentUser!!.emailAddress,
+                            phoneNumber = userDto.phoneNumber
+                                ?: _currentUserUiState.value.currentUser!!.phoneNumber
+                        )
                     } else
                         null
                     _currentUserUiState.value =

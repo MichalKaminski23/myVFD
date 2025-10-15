@@ -27,6 +27,7 @@ import com.vfd.client.ui.components.dialogs.InvestmentProposalCreateDialog
 import com.vfd.client.ui.components.dialogs.OperationCreateDialog
 import com.vfd.client.ui.screens.AssetScreen
 import com.vfd.client.ui.screens.EventScreen
+import com.vfd.client.ui.screens.FirefighterActivityScreen
 import com.vfd.client.ui.screens.FirefighterScreen
 import com.vfd.client.ui.screens.InfoScreen
 import com.vfd.client.ui.screens.InspectionScreen
@@ -40,6 +41,7 @@ import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
 import com.vfd.client.ui.viewmodels.AssetViewModel
 import com.vfd.client.ui.viewmodels.EventViewModel
+import com.vfd.client.ui.viewmodels.FirefighterActivityViewModel
 import com.vfd.client.ui.viewmodels.InspectionViewModel
 import com.vfd.client.ui.viewmodels.InvestmentProposalViewModel
 import com.vfd.client.ui.viewmodels.OperationViewModel
@@ -182,6 +184,74 @@ fun AppNavGraph(
                     assetId = assetId
                 )
             }
+        }
+
+        navigation(
+            startDestination = "activities/list",
+            route = "activities_graph"
+        ) {
+
+            composable(
+                //route = "activities/list?firefighterId={firefighterId}&assetName={assetName}",
+                route = "activities/list?firefighterId={firefighterId}",
+                arguments = listOf(
+                    navArgument("firefighterId") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+//                    navArgument("assetName") {
+//                        type = NavType.StringType
+//                        nullable = true
+//                    }
+                )
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("activities_graph")
+                }
+                val firefighterActivityViewModel: FirefighterActivityViewModel =
+                    hiltViewModel(parentEntry)
+
+                val firefighterIdArg = backStackEntry.arguments?.getInt("firefighterId")
+                val firefighterId = firefighterIdArg?.takeIf { it != -1 }
+
+//                val assetNameArg = backStackEntry.arguments?.getString("assetName")
+//                val assetName = assetNameArg?.let { Uri.decode(it) }
+
+                FirefighterActivityScreen(
+                    navController = navController,
+                    snackbarHostState = snackbarHostState,
+                    firefighterActivityViewModel = firefighterActivityViewModel,
+                    firefighterId = firefighterId
+                    //assetName = assetName
+                )
+            }
+
+//            dialog(
+//                route = "inspections/create?assetId={assetId}",
+//                arguments = listOf(
+//                    navArgument("assetId") {
+//                        type = NavType.IntType
+//                        defaultValue = -1
+//                    }
+//                )
+//            ) { backStackEntry ->
+//
+//                val assetIdArg = backStackEntry.arguments?.getInt("assetId")
+//                val assetId = assetIdArg?.takeIf { it != -1 }
+//
+//                val parentEntry = remember(backStackEntry) {
+//                    navController.getBackStackEntry("inspections_graph")
+//                }
+//                val inspectionViewModel: InspectionViewModel = hiltViewModel(parentEntry)
+//
+//                InspectionCreateDialog(
+//                    inspectionViewModel = inspectionViewModel,
+//                    showDialog = true,
+//                    onDismiss = { navController.popBackStack() },
+//                    snackbarHostState = snackbarHostState,
+//                    assetId = assetId
+//                )
+//            }
         }
 
         navigation(startDestination = "events/list", route = "events_graph") {

@@ -23,6 +23,13 @@ interface FirefighterActivityApi {
         @Query("sort") sort: String = "activityDate,asc"
     ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse>
 
+    @GET("api/firefighter-activities/my/firefighters")
+    suspend fun getFirefightersActivities(
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 20,
+        @Query("sort") sort: String = "activityDate,asc"
+    ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse>
+
     @PATCH("api/firefighter-activities/my/{firefighterActivityId}")
     suspend fun updateFirefighterActivity(
         @Path("firefighterActivityId") firefighterActivityId: Int,
