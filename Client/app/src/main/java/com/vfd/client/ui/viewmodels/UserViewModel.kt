@@ -3,7 +3,9 @@ package com.vfd.client.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.remote.dtos.AddressDtos
+import com.vfd.client.data.remote.dtos.PasswordDtos
 import com.vfd.client.data.remote.dtos.UserDtos
+import com.vfd.client.data.repositories.AuthRepository
 import com.vfd.client.data.repositories.UserRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
@@ -52,7 +54,8 @@ data class UserUpdateUiState(
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -183,6 +186,53 @@ class UserViewModel @Inject constructor(
                         fieldErrors = fieldErrors
                     )
                     _uiEvent.send(UiEvent.Error("Failed to update user"))
+                }
+
+                is ApiResult.Loading -> {
+                    _userUpdateUiState.value = _userUpdateUiState.value.copy(isLoading = true)
+                }
+            }
+        }
+    }
+
+    fun changePassword(passwordDto: PasswordDtos.PasswordChange) {
+        viewModelScope.launch {
+            _userUpdateUiState.value = _userUpdateUiState.value.copy(
+                isLoading = true,
+                errorMessage = null,
+                success = false,
+                fieldErrors = emptyMap()
+            )
+
+            when (val result = authRepository.changePassword(passwordDto)) {
+                is ApiResult.Success -> {
+                    _userUpdateUiState.value = _userUpdateUiState.value.copy(
+                        isLoading = false,
+                        success = true,
+                        errorMessage = null
+                    )
+                    _uiEvent.send(UiEvent.Success("Password changed successfully"))
+                }
+
+                is ApiResult.Error -> {
+                    val message = result.message ?: "Unknown error"
+
+                    val fieldErrors = when {
+                        message.contains("current password", ignoreCase = true) ->
+                            mapOf("currentPassword" to message)
+
+                        message.contains("new password", ignoreCase = true) ->
+                            mapOf("newPassword" to message)
+
+                        else -> result.fieldErrors
+                    }
+                    _userUpdateUiState.value = _userUpdateUiState.value.copy(
+                        isLoading = false,
+                        success = false,
+                        errorMessage = if (fieldErrors.isEmpty()) message else null,
+                        fieldErrors = fieldErrors
+                    )
+                    _uiEvent.send(UiEvent.Error("Failed to change password"))
                 }
 
                 is ApiResult.Loading -> {

@@ -1,6 +1,7 @@
 package com.vfd.client.data.remote.api
 
 import com.vfd.client.data.remote.dtos.AuthResponseDto
+import com.vfd.client.data.remote.dtos.PasswordDtos
 import com.vfd.client.data.remote.dtos.UserDtos
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -12,4 +13,7 @@ interface AuthApi {
 
     @POST("/api/auth/login")
     suspend fun login(@Body userDto: UserDtos.UserLogin): AuthResponseDto
+
+    @POST("/api/auth/change-password")
+    suspend fun changePassword(@Body passwordDto: PasswordDtos.PasswordChange)
 }

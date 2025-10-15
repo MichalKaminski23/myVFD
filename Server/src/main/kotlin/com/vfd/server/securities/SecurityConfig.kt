@@ -35,14 +35,15 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it
                     .requestMatchers(
-                        "/api/auth/**",
+                        "/api/auth/register",
+                        "/api/auth/login",
                         "/api/dev/**",
-                        "/swagger-ui/**", "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
                         "/h2-console/**",
                         "/error"
                     ).permitAll()
                     .anyRequest().authenticated()
-                //.anyRequest().permitAll()
             }
             .exceptionHandling {
                 it.authenticationEntryPoint(authenticationEntryPoint)

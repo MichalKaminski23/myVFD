@@ -1,7 +1,9 @@
 package com.vfd.server.services
 
 import com.vfd.server.dtos.AuthResponseDto
+import com.vfd.server.dtos.PasswordDtos
 import com.vfd.server.dtos.UserDtos
+import com.vfd.server.exceptions.InvalidPasswordException
 import com.vfd.server.mappers.UserMapper
 import com.vfd.server.repositories.UserRepository
 import com.vfd.server.securities.JwtTokenProvider
@@ -70,5 +72,21 @@ class AuthServiceImplementation(
         val jwt = generateJwt(userDto.emailAddress, userDto.password)
 
         return AuthResponseDto(jwt)
+    }
+
+    @Transactional
+    override fun changePassword(emailAddress: String, passwordDto: PasswordDtos.PasswordChange) {
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        if (!passwordEncoder.matches(passwordDto.currentPassword, user.passwordHash)) {
+            throw InvalidPasswordException("Current password is invalid.")
+        }
+
+        if (passwordDto.currentPassword == passwordDto.newPassword) {
+            throw InvalidPasswordException("New password must be different than current password.")
+        }
+
+        user.passwordHash = passwordEncoder.encode(passwordDto.newPassword)
+        userRepository.save(user)
     }
 }

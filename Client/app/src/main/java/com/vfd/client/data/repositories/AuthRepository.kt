@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.vfd.client.data.remote.api.AuthApi
 import com.vfd.client.data.remote.dtos.AuthResponseDto
+import com.vfd.client.data.remote.dtos.PasswordDtos
 import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.utils.ApiResult
 import kotlinx.coroutines.flow.Flow
@@ -38,4 +39,7 @@ class AuthRepository @Inject constructor(
     suspend fun clearToken() {
         dataStore.edit { it.remove(TOKEN_KEY) }
     }
+
+    suspend fun changePassword(passwordDto: PasswordDtos.PasswordChange): ApiResult<Unit> =
+        safeApiCall { authApi.changePassword(passwordDto) }
 }

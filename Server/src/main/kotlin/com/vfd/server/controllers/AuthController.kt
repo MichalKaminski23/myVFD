@@ -1,6 +1,7 @@
 package com.vfd.server.controllers
 
 import com.vfd.server.dtos.AuthResponseDto
+import com.vfd.server.dtos.PasswordDtos
 import com.vfd.server.dtos.UserDtos
 import com.vfd.server.services.AuthService
 import io.swagger.v3.oas.annotations.Operation
@@ -11,6 +12,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -62,4 +66,26 @@ class AuthController(
     fun login(
         @Valid @RequestBody userDto: UserDtos.UserLogin
     ): AuthResponseDto = authService.login(userDto)
+
+    @Operation(
+        summary = "Change password",
+        description = "Allows an authenticated user to change their password."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "204", description = "Password changed"),
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "401", ref = "Unauthorized"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
+        ]
+    )
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/change-password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun changePassword(
+        @AuthenticationPrincipal principal: UserDetails,
+        @Valid @RequestBody passwordDto: PasswordDtos.PasswordChange
+    ) {
+        authService.changePassword(principal.username, passwordDto)
+    }
 }

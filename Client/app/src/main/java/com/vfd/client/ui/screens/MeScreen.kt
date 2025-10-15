@@ -3,11 +3,11 @@ package com.vfd.client.ui.screens
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +23,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,11 +36,13 @@ import com.vfd.client.ui.components.cards.AppFirefighterCard
 import com.vfd.client.ui.components.cards.AppUserCard
 import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.elements.AppDropdown
+import com.vfd.client.ui.components.elements.AppPasswordChangeForm
+import com.vfd.client.ui.components.elements.AppSearchHoursForm
+import com.vfd.client.ui.components.elements.AppUserEditForm
 import com.vfd.client.ui.components.globals.AppLoadingBar
 import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppErrorText
 import com.vfd.client.ui.components.texts.AppText
-import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.CurrentFirefighterUiState
 import com.vfd.client.ui.viewmodels.FiredepartmentUiState
@@ -65,7 +66,7 @@ fun MeScreen(
 
     val currentUserUiState by userViewModel.currentUserUiState.collectAsState()
 
-    AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
+    AppUiEvents(userViewModel.uiEvents, snackbarHostState)
 
     val firedepartmentUiState by firedepartmentViewModel.firedepartmentUiState.collectAsState()
     var selectedFiredepartmentId by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -73,6 +74,13 @@ fun MeScreen(
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
 
     val userUpdateUiState by userViewModel.userUpdateUiState.collectAsState()
+
+    var showHourInputs by remember { mutableStateOf(false) }
+    var showUpdateInputs by remember { mutableStateOf(false) }
+    var showPasswordInputs by remember { mutableStateOf(false) }
+
+    val hasPermission =
+        currentFirefighterUiState.currentFirefighter?.role.toString()
 
     val mainViewModel: MainViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
 
@@ -86,6 +94,14 @@ fun MeScreen(
         if (!token.isNullOrBlank()) {
             userViewModel.getUserByEmailAddress()
             firefighterViewModel.getFirefighterByEmailAddress()
+        }
+    }
+
+    LaunchedEffect(userUpdateUiState.success) {
+        if (userUpdateUiState.success) {
+            showUpdateInputs = false
+            showPasswordInputs = false
+            userViewModel.getUserByEmailAddress()
         }
     }
 
@@ -114,9 +130,106 @@ fun MeScreen(
             )
         }
 
-        currentUserUiState.currentUser?.let { AppUserCard(it) }
+        currentUserUiState.currentUser?.let { user ->
+            AppUserCard(user, actions = {
+                if (hasPermission != "null" && hasPermission != FirefighterRole.USER.toString()) {
+                    AppUserEditForm(
+                        state = userUpdateUiState,
+                        visible = showUpdateInputs,
+                        onFirstNameChange = { new ->
+                            userViewModel.onUserUpdateValueChange {
+                                it.copy(firstName = new, firstNameTouched = true)
+                            }
+                        },
+                        onLastNameChange = { new ->
+                            userViewModel.onUserUpdateValueChange {
+                                it.copy(lastName = new, lastNameTouched = true)
+                            }
+                        },
+                        onEmailAddressChange = { new ->
+                            userViewModel.onUserUpdateValueChange {
+                                it.copy(emailAddress = new, emailAddressTouched = true)
+                            }
+                        },
+                        onPhoneNumberChange = { new ->
+                            userViewModel.onUserUpdateValueChange {
+                                it.copy(phoneNumber = new, phoneNumberTouched = true)
+                            }
+                        },
+                        onAddressChange = { address ->
+                            userViewModel.onUserUpdateValueChange { it.copy(address = address) }
+                        },
+                        onAddressTouched = {
+                            userViewModel.onUserUpdateValueChange { it.copy(addressTouched = true) }
+                        },
+                        onSave = {
+                            val userDto = UserDtos.UserPatch(
+                                firstName = if (userUpdateUiState.firstNameTouched) userUpdateUiState.firstName else null,
+                                lastName = if (userUpdateUiState.lastNameTouched) userUpdateUiState.lastName else null,
+                                emailAddress = if (userUpdateUiState.emailAddressTouched) userUpdateUiState.emailAddress else null,
+                                phoneNumber = if (userUpdateUiState.phoneNumberTouched) userUpdateUiState.phoneNumber else null,
+                                address = if (userUpdateUiState.addressTouched) userUpdateUiState.address else null
+                            )
+                            userViewModel.updateUser(userDto)
+                        },
+                        onCancel = { showUpdateInputs = false }
+                    )
+                    if (!showUpdateInputs) {
+                        AppButton(
+                            icon = Icons.Filled.Edit,
+                            label = "Edit",
+                            onClick = {
+                                userViewModel.onUserUpdateValueChange {
+                                    it.copy(
+                                        firstName = currentUserUiState.currentUser?.firstName.orEmpty(),
+                                        lastName = currentUserUiState.currentUser?.lastName.orEmpty(),
+                                        address = com.vfd.client.data.remote.dtos.AddressDtos.AddressCreate(
+                                            country = currentUserUiState.currentUser?.address?.country.orEmpty(),
+                                            voivodeship = currentUserUiState.currentUser?.address?.voivodeship.orEmpty(),
+                                            city = currentUserUiState.currentUser?.address?.city.orEmpty(),
+                                            postalCode = currentUserUiState.currentUser?.address?.postalCode.orEmpty(),
+                                            street = currentUserUiState.currentUser?.address?.street.orEmpty(),
+                                            houseNumber = currentUserUiState.currentUser?.address?.houseNumber.orEmpty(),
+                                            apartNumber = currentUserUiState.currentUser?.address?.apartNumber.orEmpty()
+                                        ),
+                                        emailAddress = currentUserUiState.currentUser?.emailAddress.orEmpty(),
+                                        phoneNumber = currentUserUiState.currentUser?.phoneNumber.orEmpty(),
+                                        firstNameTouched = false,
+                                        lastNameTouched = false,
+                                        emailAddressTouched = false,
+                                        phoneNumberTouched = false,
+                                        passwordTouched = false,
+                                        addressTouched = false,
+                                        fieldErrors = emptyMap(),
+                                        errorMessage = null,
+                                        success = false,
+                                        isLoading = false
+                                    )
+                                }
+                                showUpdateInputs = true
+                            }
+                        )
+                    }
+                    AppPasswordChangeForm(
+                        visible = showPasswordInputs,
+                        isLoading = userUpdateUiState.isLoading,
+                        fieldErrors = userUpdateUiState.fieldErrors,
+                        onSubmit = { passwordDto -> userViewModel.changePassword(passwordDto) },
+                        onCancel = { showPasswordInputs = false }
+                    )
+                    if (!showPasswordInputs) {
+                        AppButton(
+                            icon = Icons.Filled.Edit,
+                            label = "Change password",
+                            onClick = { showPasswordInputs = true }
+                        )
+                    }
+                }
+            })
+        }
 
         currentUserUiState.errorMessage?.let { AppErrorText(it) }
+
         if (!currentFirefighterUiState.isLoading) {
             FirefighterSection(
                 firefighter = currentFirefighterUiState.currentFirefighter,
@@ -144,7 +257,8 @@ fun MeScreen(
                     }
                 },
                 currentUserId = currentUserUiState.currentUser?.userId,
-                firedepartmentViewModel = firedepartmentViewModel
+                firedepartmentViewModel = firedepartmentViewModel,
+                showHourInputsInitial = showHourInputs
             )
         }
 
@@ -162,21 +276,6 @@ fun MeScreen(
             },
             fullWidth = true,
         )
-        AppButton(
-            icon = Icons.AutoMirrored.Filled.ArrowBack,
-            label = "Edit",
-            onClick = {
-                userViewModel.updateUser(
-                    UserDtos.UserPatch(
-                        firstName = userUpdateUiState.firstName,
-                        lastName = userUpdateUiState.lastName,
-                        phoneNumber = userUpdateUiState.phoneNumber,
-                        address = userUpdateUiState.address
-                    )
-                )
-            },
-            fullWidth = true,
-        )
     }
 }
 
@@ -190,8 +289,11 @@ private fun FirefighterSection(
     selectedFiredepartmentId: Int?,
     onSelected: (Int) -> Unit,
     onApply: (userId: Int, deptId: Int) -> Unit,
-    currentUserId: Int?
+    currentUserId: Int?,
+    showHourInputsInitial: Boolean = false,
 ) {
+
+    var showHourInputsInitial by remember { mutableStateOf(showHourInputsInitial) }
 
     when (firefighter?.status) {
         FirefighterStatus.PENDING.toString() -> {
@@ -203,53 +305,25 @@ private fun FirefighterSection(
         }
 
         FirefighterStatus.ACTIVE.toString() -> {
-            var showInputs by remember { mutableStateOf(false) }
-            var quarterInput by remember { mutableStateOf("") }
-            var yearInput by remember { mutableStateOf("") }
 
             AppFirefighterCard(
                 firefighter,
                 quarterHours = currentFirefighterUiState.currentFirefighter?.hours,
                 actions = {
-                    if (showInputs) {
-                        AppTextField(
-                            value = quarterInput,
-                            onValueChange = { raw ->
-                                val digits = raw.filter(Char::isDigit).take(1)
-                                if (digits.isEmpty() || digits in listOf("1", "2", "3", "4")) {
-                                    quarterInput = digits
-                                }
-                            },
-                            label = "Quarter (1-4)",
+                    if (showHourInputsInitial) {
+                        AppSearchHoursForm(
+                            visible = showHourInputsInitial,
                             errorMessage = currentFirefighterUiState.errorMessage,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                        )
-                        AppTextField(
-                            value = yearInput,
-                            onValueChange = { raw ->
-                                yearInput = raw.filter(Char::isDigit).take(4)
-                            },
-                            label = "Year (YYYY)",
-                            errorMessage = currentFirefighterUiState.errorMessage,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                        )
-                        AppButton(
-                            icon = Icons.Default.ThumbUp,
-                            label = "Show hours from quarter",
-                            onClick = {
-                                val quarter = quarterInput.toIntOrNull() ?: 0
-                                val year = yearInput.toIntOrNull() ?: 0
+                            onSubmit = { year, quarter ->
                                 firefighterViewModel.getHoursForQuarter(year, quarter)
-                                showInputs = false
-                            },
-                            enabled = quarterInput.isNotEmpty() && yearInput.isNotEmpty()
+                            }
                         )
                     }
-                    if (!showInputs) {
+                    if (!showHourInputsInitial) {
                         AppButton(
                             icon = Icons.Default.ThumbUp,
                             label = "Show hours from quarter",
-                            onClick = { showInputs = true }
+                            onClick = { showHourInputsInitial = true }
                         )
                     }
                 }
