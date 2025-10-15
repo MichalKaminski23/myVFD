@@ -28,4 +28,8 @@ class FirefighterActivity {
 
     @Column(name = "description", length = 512)
     var description: String? = null
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 16)
+    var status: FirefighterStatus = FirefighterStatus.PENDING
 }

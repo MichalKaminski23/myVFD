@@ -1,6 +1,8 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.FirefighterActivityDtos
+import com.vfd.server.entities.FirefighterStatus
+import com.vfd.server.exceptions.InvalidStatusException
 import com.vfd.server.mappers.FirefighterActivityMapper
 import com.vfd.server.repositories.FirefighterActivityRepository
 import com.vfd.server.repositories.FirefighterActivityTypeRepository
@@ -20,6 +22,18 @@ class FirefighterActivityServiceImplementation(
     private val userRepository: UserRepository
 ) : FirefighterActivityService {
 
+    fun validateStatus(status: String?) {
+        try {
+            FirefighterStatus.valueOf(status!!)
+        } catch (exception: IllegalArgumentException) {
+            throw InvalidStatusException(
+                "Invalid status: ${status!!}. Allowed: ${
+                    FirefighterStatus.entries.joinToString()
+                }"
+            )
+        }
+    }
+
     @Transactional
     override fun createFirefighterActivity(
         emailAddress: String,
@@ -38,6 +52,7 @@ class FirefighterActivityServiceImplementation(
         val firefighterActivity = firefighterActivityMapper.toFirefighterActivityEntity(firefighterActivityDto).apply {
             this.firefighter = firefighter
             this.firefighterActivityType = firefighterActivityType
+            this.status = FirefighterStatus.PENDING
         }
 
         return firefighterActivityMapper.toFirefighterActivityDto(firefighterActivityRepository.save(firefighterActivity))
@@ -69,8 +84,40 @@ class FirefighterActivityServiceImplementation(
         return firefighterActivityRepository.findAllByFirefighterFirefighterId(
             firefighterId,
             pageable
+        ).map(firefighterActivityMapper::toFirefighterActivityDto).toPageResponse()
+    }
+
+    @Transactional(readOnly = true)
+    override fun getPendingFirefightersActivities(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse> {
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val pageable = PaginationUtils.toPageRequest(
+            page,
+            size,
+            sort,
+            FIREFIGHTER_ACTIVITY_ALLOWED_SORTS,
+            "name,asc",
+            200
         )
-            .map(firefighterActivityMapper::toFirefighterActivityDto).toPageResponse()
+
+        return firefighterActivityRepository
+            .findAllByFirefighterFiredepartmentFiredepartmentIdAndStatus(
+                firedepartmentId,
+                FirefighterStatus.PENDING,
+                pageable
+            )
+            .map(firefighterActivityMapper::toFirefighterActivityDto)
+            .toPageResponse()
     }
 
     @Transactional
@@ -87,6 +134,8 @@ class FirefighterActivityServiceImplementation(
         val firefighterActivity = firefighterActivityRepository.findByIdOrThrow(firefighterActivityId)
 
         firefighterActivity.requireSameFirefighter(firefighter.firefighterId!!)
+
+        validateStatus(firefighterActivityDto.status)
 
         firefighterActivityMapper.patchFirefighterActivity(firefighterActivityDto, firefighterActivity)
 
@@ -105,6 +154,39 @@ class FirefighterActivityServiceImplementation(
         return firefighterActivityMapper.toFirefighterActivityDto(
             firefighterActivityRepository.save(firefighterActivity)
         )
+    }
+
+    @Transactional(readOnly = true)
+    override fun getFirefightersActivities(
+        page: Int,
+        size: Int,
+        sort: String,
+        emailAddress: String
+    ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse> {
+
+        val user = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
+
+        val firedepartmentId = firefighter.requireFiredepartmentId()
+
+        val pageable = PaginationUtils.toPageRequest(
+            page,
+            size,
+            sort,
+            FIREFIGHTER_ACTIVITY_ALLOWED_SORTS,
+            "name,asc",
+            200
+        )
+
+        return firefighterActivityRepository
+            .findAllByFirefighterFiredepartmentFiredepartmentIdAndStatus(
+                firedepartmentId,
+                FirefighterStatus.ACTIVE,
+                pageable
+            )
+            .map(firefighterActivityMapper::toFirefighterActivityDto)
+            .toPageResponse()
     }
 
     private val FIREFIGHTER_ACTIVITY_ALLOWED_SORTS = setOf(
@@ -128,6 +210,8 @@ class FirefighterActivityServiceImplementation(
         val firefighterActivityType =
             firefighterActivityTypeRepository.findByIdOrThrow(firefighterActivityDto.firefighterActivityType)
         firefighterActivity.firefighterActivityType = firefighterActivityType
+
+        firefighterActivity.status = FirefighterStatus.PENDING
 
         validateDates(firefighterActivityDto.activityDate, firefighterActivityDto.expirationDate, "Activity")
 
@@ -173,6 +257,8 @@ class FirefighterActivityServiceImplementation(
     ): FirefighterActivityDtos.FirefighterActivityResponse {
 
         val firefighterActivity = firefighterActivityRepository.findByIdOrThrow(firefighterActivityId)
+
+        validateStatus(firefighterActivityDto.status)
 
         firefighterActivityMapper.patchFirefighterActivity(firefighterActivityDto, firefighterActivity)
 

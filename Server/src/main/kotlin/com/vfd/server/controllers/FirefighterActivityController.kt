@@ -62,7 +62,7 @@ class FirefighterActivityController(
     @ApiResponses(
         value = [
             ApiResponse(
-                responseCode = "200", description = "Assets retrieved successfully",
+                responseCode = "200", description = "Activities retrieved successfully",
                 content = [Content(schema = Schema(implementation = FirefighterActivityDtos.FirefighterActivityResponse::class))]
             ),
             ApiResponse(responseCode = "403", ref = "Forbidden")
@@ -77,6 +77,65 @@ class FirefighterActivityController(
         @AuthenticationPrincipal principal: UserDetails
     ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse> =
         firefighterActivityService.getFirefighterActivities(page, size, sort, principal.username)
+
+    @Operation(
+        summary = "Get my firedepartment's firefighters activities",
+        description = """
+            Retrieves all firefighters activities associated with the firedepartment of the currently authenticated user.  
+            Query params:
+            - `page` (default: 0)
+            - `size` (default: 20)
+            - `sort` (default: activityDate,asc) e.g. `activityDate,asc`
+        """
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Activities retrieved successfully",
+                content = [Content(schema = Schema(implementation = FirefighterActivityDtos.FirefighterActivityResponse::class))]
+            ),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
+        ]
+    )
+    @PreAuthorize("hasRole('PRESIDENT')")
+    @GetMapping("/my/firefighters")
+    fun getFirefightersActivities(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(defaultValue = "activityDate,asc") sort: String,
+        @AuthenticationPrincipal principal: UserDetails
+    ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse> =
+        firefighterActivityService.getFirefightersActivities(page, size, sort, principal.username)
+
+    @Operation(
+        summary = "List pending activities from my firedepartment's firefighters",
+        description = """
+            Retrieves all pending activities associated with the firedepartment of the currently authenticated user.
+            Query params:
+            - `page` (default: 0)
+            - `size` (default: 20)
+            - `sort` (default: activityDate,asc) e.g. `activityDate,asc`
+        """
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Pending activities retrieved successfully",
+                content = [Content(schema = Schema(implementation = FirefighterActivityDtos.FirefighterActivityResponse::class))]
+            ),
+            ApiResponse(responseCode = "400", ref = "Unauthorized"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
+        ]
+    )
+    @PreAuthorize("hasRole('PRESIDENT')")
+    @GetMapping("/my/firefighters/pending")
+    fun getPendingFirefightersActivities(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(defaultValue = "activityDate,asc") sort: String,
+        @AuthenticationPrincipal principal: UserDetails
+    ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse> =
+        firefighterActivityService.getPendingFirefightersActivities(page, size, sort, principal.username)
 
     @Operation(
         summary = "Update my firefighter's activity",

@@ -114,10 +114,14 @@ VALUES (1, 1, 'PRESIDENT', 'ACTIVE'),
        (27, 1, 'ADMIN', 'ACTIVE');
 
 INSERT INTO Firefighter_Activities (firefighter_id, firefighter_activity_type, activity_date, expiration_date,
-                                    description)
-VALUES (1, 'TRAIN', '2025-07-01 09:00:00', '2026-07-01 09:00:00', 'Basic firefighter training'),
-       (2, 'FAC', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'First aid course'),
-       (3, 'CERT', '2025-05-15 08:00:00', '2027-05-15 08:00:00', 'Advanced Certification');
+                                    description, status)
+VALUES (1, 'TRAIN', '2025-07-01 09:00:00', '2026-07-01 09:00:00', 'Basic firefighter training', 'PENDING'),
+       (1, 'TRAIN', '2025-04-10 11:00:00', '2026-04-10 11:00:00', 'Firefighter refresher course', 'ACTIVE'),
+       (1, 'CERT', '2025-05-10 11:00:00', '2026-05-10 11:00:00', 'Firefighter heli cert', 'REJECTED'),
+       (2, 'FAC', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'First aid course', 'PENDING'),
+       (2, 'FAC', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'First aid course', 'ACTIVE'),
+       (2, 'FAC', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'First aid course', 'REJECTED'),
+       (3, 'CERT', '2025-05-15 08:00:00', '2027-05-15 08:00:00', 'Advanced Certification', 'ACTIVE');
 
 INSERT INTO Assets (firedepartment_id, name, asset_type, description)
 VALUES (1, 'Mutant', 'WaterPump', 'Mega pump'),

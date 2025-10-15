@@ -17,6 +17,20 @@ interface FirefighterActivityService {
         emailAddress: String
     ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse>
 
+    fun getFirefightersActivities(
+        page: Int = 0,
+        size: Int = 20,
+        sort: String = "activityDate,asc",
+        emailAddress: String
+    ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse>
+
+    fun getPendingFirefightersActivities(
+        page: Int = 0,
+        size: Int = 20,
+        sort: String = "activityDate,asc",
+        emailAddress: String
+    ): PageResponse<FirefighterActivityDtos.FirefighterActivityResponse>
+
     fun updateFirefighterActivity(
         emailAddress: String,
         firefighterActivityId: Int,

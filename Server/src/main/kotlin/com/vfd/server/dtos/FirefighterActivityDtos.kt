@@ -47,7 +47,12 @@ object FirefighterActivityDtos {
             description = "Description or notes related to the activity",
             example = "Completed trauma response training"
         )
-        val description: String? = null
+        val description: String? = null,
+
+        @Schema(allowableValues = ["PENDING", "ACTIVE", "REJECTED"])
+        @field:Schema(description = "Status assigned to the activity", example = "PENDING")
+        val status: String? = null
+
     )
 
     @Schema(description = "DTO used for returning firefighter activity information")
@@ -71,7 +76,10 @@ object FirefighterActivityDtos {
             description = "Description or notes related to the activity",
             example = "Completed trauma response training."
         )
-        val description: String?
+        val description: String?,
+
+        @field:Schema(description = "Status assigned to the activity", example = "PENDING")
+        val status: String
     )
 
     @Schema(description = "DTO used for creating a new firefighter activity record for development purposes")
