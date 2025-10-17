@@ -192,17 +192,21 @@ fun AppNavGraph(
         ) {
 
             composable(
-                //route = "activities/list?firefighterId={firefighterId}&assetName={assetName}",
-                route = "activities/list?firefighterId={firefighterId}",
+                route = "activities/list?firefighterId={firefighterId}&firstName={firstName}&lastName={lastName}",
+                //route = "activities/list?firefighterId={firefighterId}",
                 arguments = listOf(
                     navArgument("firefighterId") {
                         type = NavType.IntType
                         defaultValue = -1
+                    },
+                    navArgument("firstName") {
+                        type = NavType.StringType
+                        nullable = true
+                    },
+                    navArgument("lastName") {
+                        type = NavType.StringType
+                        nullable = true
                     }
-//                    navArgument("assetName") {
-//                        type = NavType.StringType
-//                        nullable = true
-//                    }
                 )
             ) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
@@ -214,15 +218,19 @@ fun AppNavGraph(
                 val firefighterIdArg = backStackEntry.arguments?.getInt("firefighterId")
                 val firefighterId = firefighterIdArg?.takeIf { it != -1 }
 
-//                val assetNameArg = backStackEntry.arguments?.getString("assetName")
-//                val assetName = assetNameArg?.let { Uri.decode(it) }
+                val firefighterNameArg = backStackEntry.arguments?.getString("firstName")
+                val firefighterName = firefighterNameArg?.let { Uri.decode(it) }
+
+                val lastNameArg = backStackEntry.arguments?.getString("lastName")
+                val lastName = lastNameArg?.let { Uri.decode(it) }
 
                 FirefighterActivityScreen(
                     navController = navController,
                     snackbarHostState = snackbarHostState,
                     firefighterActivityViewModel = firefighterActivityViewModel,
-                    firefighterId = firefighterId
-                    //assetName = assetName
+                    firefighterId = firefighterId,
+                    firefighterName = firefighterName,
+                    firefighterLastName = lastName
                 )
             }
 

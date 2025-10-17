@@ -1,5 +1,6 @@
 package com.vfd.client.ui.screens
 
+import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -7,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -209,7 +211,8 @@ fun ModeratorScreen(
                             errorMessage = currentFirefighterUiState.errorMessage,
                             onSubmit = { year, quarter ->
                                 firefighterViewModel.getHoursForQuarter(year, quarter)
-                            }
+                            },
+                            onCancel = { showHourInputs = false }
                         )
                     }
                     if (!showHourInputs) {
@@ -219,6 +222,15 @@ fun ModeratorScreen(
                             onClick = { showHourInputs = true }
                         )
                     }
+                    AppButton(
+                        icon = Icons.Default.Warning,
+                        label = "Activities",
+                        onClick = {
+                            val encodedName = Uri.encode(firefighter.firstName)
+                            val encodedLastName = Uri.encode(firefighter.lastName)
+                            navController.navigate("activities/list?firefighterId=${firefighter.firefighterId}&firstName=$encodedName&lastName=$encodedLastName")
+                        }
+                    )
                 }
             )
         }

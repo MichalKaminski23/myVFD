@@ -1,5 +1,6 @@
 package com.vfd.client.ui.screens
 
+import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -258,7 +260,8 @@ fun MeScreen(
                 },
                 currentUserId = currentUserUiState.currentUser?.userId,
                 firedepartmentViewModel = firedepartmentViewModel,
-                showHourInputsInitial = showHourInputs
+                showHourInputsInitial = showHourInputs,
+                navController = navController
             )
         }
 
@@ -291,6 +294,7 @@ private fun FirefighterSection(
     onApply: (userId: Int, deptId: Int) -> Unit,
     currentUserId: Int?,
     showHourInputsInitial: Boolean = false,
+    navController: NavController
 ) {
 
     var showHourInputsInitial by remember { mutableStateOf(showHourInputsInitial) }
@@ -316,7 +320,8 @@ private fun FirefighterSection(
                             errorMessage = currentFirefighterUiState.errorMessage,
                             onSubmit = { year, quarter ->
                                 firefighterViewModel.getHoursForQuarter(year, quarter)
-                            }
+                            },
+                            onCancel = { showHourInputsInitial = false }
                         )
                     }
                     if (!showHourInputsInitial) {
@@ -326,6 +331,15 @@ private fun FirefighterSection(
                             onClick = { showHourInputsInitial = true }
                         )
                     }
+                    AppButton(
+                        icon = Icons.Default.Warning,
+                        label = "Activities",
+                        onClick = {
+                            val encodedName = Uri.encode(firefighter.firstName)
+                            val encodedLastName = Uri.encode(firefighter.lastName)
+                            navController.navigate("activities/list?firefighterId=${firefighter.firefighterId}&firstName=$encodedName&lastName=$encodedLastName")
+                        }
+                    )
                 }
             )
         }

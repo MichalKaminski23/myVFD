@@ -97,7 +97,7 @@ class FirefighterActivityController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PreAuthorize("hasRole('PRESIDENT')")
+    @PreAuthorize("hasAnyRole('MEMBER', 'PRESIDENT')")
     @GetMapping("/my/firefighters")
     fun getFirefightersActivities(
         @RequestParam(defaultValue = "0") page: Int,

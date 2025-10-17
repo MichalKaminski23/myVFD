@@ -1,5 +1,6 @@
 package com.vfd.client.ui.screens
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
@@ -115,9 +116,9 @@ fun FirefighterScreen(
                         icon = Icons.Default.Warning,
                         label = "Activities",
                         onClick = {
-                            //val encodedName = Uri.encode(firefighter.name)
-                            //navController.navigate("activities/list?firefighterId=${firefighter.firefighterId}&assetName=$encodedName")
-                            navController.navigate("activities/list?firefighterId=${firefighter.firefighterId}")
+                            val encodedName = Uri.encode(firefighter.firstName)
+                            val encodedLastName = Uri.encode(firefighter.lastName)
+                            navController.navigate("activities/list?firefighterId=${firefighter.firefighterId}&firstName=$encodedName&lastName=$encodedLastName")
                         }
                     )
                 }

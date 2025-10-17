@@ -78,6 +78,12 @@ class MainActivity : ComponentActivity() {
                 val assetName: String? = navBackStackEntry?.arguments
                     ?.getString("assetName")
                     ?.let { Uri.decode(it) }
+                val firefighterName: String? = navBackStackEntry?.arguments
+                    ?.getString("firstName")
+                    ?.let { Uri.decode(it) }
+                val firefighterLastName: String? = navBackStackEntry?.arguments
+                    ?.getString("lastName")
+                    ?.let { Uri.decode(it) }
                 val hasRole by mainViewModel.hasRole.collectAsState()
                 val snackbarHostState = remember { SnackbarHostState() }
                 val snackbarShape = RoundedCornerShape(12.dp)
@@ -137,8 +143,11 @@ class MainActivity : ComponentActivity() {
                                         "inspections/create" ->
                                             "Inspections"
 
-                                        "activities/list" -> "Activities"
-                                        "activities/create" -> "Activities"
+                                        "activities/list" ->
+                                            "${firefighterName} ${firefighterLastName}"
+
+                                        "activities/create" ->
+                                            "Activities"
 
                                         else -> "My VFD"
                                     }

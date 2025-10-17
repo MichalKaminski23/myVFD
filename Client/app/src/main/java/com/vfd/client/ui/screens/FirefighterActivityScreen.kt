@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.data.remote.dtos.FirefighterActivityDtos
+import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.FirefighterStatus
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppFirefighterActivityCard
@@ -49,11 +50,14 @@ fun FirefighterActivityScreen(
     navController: NavController,
     firefighterId: Int? = null,
     snackbarHostState: SnackbarHostState,
+    firefighterName: String? = null,
+    firefighterLastName: String? = null
 ) {
 
     val firefighterActivityUiState by firefighterActivityViewModel.firefighterActivityUiState.collectAsState()
     val firefighterActivityTypeUiState by firefighterActivityTypeViewModel.firefighterActivityTypeUiState.collectAsState()
     val firefighterActivityUpdateUiState by firefighterActivityViewModel.firefighterActivityUpdateUiState.collectAsState()
+    val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
     var editingFirefighterActivityId by remember { mutableStateOf<Int?>(null) }
 
     val hasMore = firefighterActivityUiState.page < firefighterActivityUiState.totalPages - 1
@@ -63,6 +67,12 @@ fun FirefighterActivityScreen(
             firefighterActivityUiState.activities.filter { it.firefighterId == firefighterId }
         } else firefighterActivityUiState.activities
     }
+
+    val currentRole = currentFirefighterUiState.currentFirefighter?.role
+    val currentFirefighterId = currentFirefighterUiState.currentFirefighter?.firefighterId
+    val isOwner = firefighterId == currentFirefighterId
+    val canEditStatusAsPresident = currentRole == FirefighterRole.PRESIDENT.toString()
+    var editStatusOnly by remember { mutableStateOf(false) }
 
     var searchQuery by remember { mutableStateOf("") }
 
@@ -120,180 +130,264 @@ fun FirefighterActivityScreen(
                     ?.firefighterActivityType ?: ""
             }
         if (editingFirefighterActivityId == activity.firefighterActivityId) {
-            AppFirefighterActivityCard(
-                activity,
-                actions = {
-                    AppDropdown(
-                        items = firefighterActivityTypeUiState.firefighterActivityTypes,
-                        selectedCode = effectiveSelectedCode,
-                        codeSelector = { it.firefighterActivityType },
-                        labelSelector = { it.name },
-                        label = "Choose activity type",
-                        onSelected = { firefighterActivityType ->
-                            firefighterActivityViewModel.onActivityUpdateValueChange {
-                                it.copy(
-                                    activityType = firefighterActivityType.firefighterActivityType,
-                                    activityTypeTouched = true
-                                )
-                            }
-                        },
-                        onLoadMore = {
-                            if (firefighterActivityTypeUiState.page + 1 < firefighterActivityTypeUiState.totalPages) {
-                                firefighterActivityTypeViewModel.getAllFirefighterActivityTypes(
-                                    page = firefighterActivityTypeUiState.page + 1
-                                )
-                            }
-                        },
-                        hasMore = firefighterActivityTypeUiState.page + 1 < firefighterActivityTypeUiState.totalPages,
-                        onExpand = {
-                            if (firefighterActivityTypeUiState.firefighterActivityTypes.isEmpty())
-                                firefighterActivityTypeViewModel.getAllFirefighterActivityTypes(page = 0)
-                        },
-                        icon = Icons.Default.Build
-                    )
-                    AppDateTimePicker(
-                        selectedDateTime = firefighterActivityUpdateUiState.activityDate,
-                        onDateTimeSelected = { newDateTime ->
-                            firefighterActivityViewModel.onActivityUpdateValueChange {
-                                it.copy(
-                                    activityDate = newDateTime,
-                                    activityDateTouched = true
-                                )
-                            }
-                        },
-                        label = "Activity date"
-                    )
-                    AppDateTimePicker(
-                        selectedDateTime = firefighterActivityUpdateUiState.expirationDate,
-                        onDateTimeSelected = { newDateTime ->
-                            firefighterActivityViewModel.onActivityUpdateValueChange {
-                                it.copy(
-                                    expirationDate = newDateTime,
-                                    expirationDateTouched = true
-                                )
-                            }
-                        },
-                        label = "Expiration date"
-                    )
-                    AppTextField(
-                        value = firefighterActivityUpdateUiState.description,
-                        onValueChange = { new ->
-                            firefighterActivityViewModel.onActivityUpdateValueChange() {
-                                it.copy(description = new, descriptionTouched = true)
-                            }
-                        },
-                        label = "Description",
-                        errorMessage = firefighterActivityUpdateUiState.errorMessage,
-                        singleLine = false
-                    )
-                    AppStringDropdown(
-                        label = "Status",
-                        items = FirefighterStatus.entries.map { it.name },
-                        selected = firefighterActivityUpdateUiState.status,
-                        onSelected = { selected ->
-                            firefighterActivityViewModel.onActivityUpdateValueChange {
-                                it.copy(status = selected, statusTouched = true)
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        leadingIcon = Icons.Default.Check,
-                        enabled = !firefighterActivityUpdateUiState.isLoading
-                    )
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        AppButton(
-                            icon = Icons.Default.Check,
-                            label = "Save",
-                            onClick = {
-                                activity.firefighterActivityId.let { id ->
-                                    val firefighterActivityDto =
-                                        FirefighterActivityDtos.FirefighterActivityPatch(
-                                            firefighterActivityType = if (firefighterActivityUpdateUiState.activityTypeTouched)
-                                                firefighterActivityUpdateUiState.activityType
-                                            else null,
-
-                                            activityDate = if (firefighterActivityUpdateUiState.activityDateTouched)
-                                                firefighterActivityUpdateUiState.activityDate
-                                            else null,
-
-                                            expirationDate = if (firefighterActivityUpdateUiState.expirationDateTouched)
-                                                firefighterActivityUpdateUiState.expirationDate
-                                            else null,
-
-                                            description = if (firefighterActivityUpdateUiState.descriptionTouched)
-                                                firefighterActivityUpdateUiState.description
-                                            else null,
-
-                                            status = if (firefighterActivityUpdateUiState.statusTouched)
-                                                firefighterActivityUpdateUiState.status
-                                            else null,
-                                        )
-                                    firefighterActivityViewModel.updateFirefighterActivity(
-                                        id,
-                                        firefighterActivityDto
-                                    )
+            if (editStatusOnly) {
+                AppFirefighterActivityCard(
+                    activity,
+                    actions = {
+                        AppStringDropdown(
+                            label = "Status",
+                            items = FirefighterStatus.entries.map { it.name },
+                            selected = firefighterActivityUpdateUiState.status,
+                            onSelected = { selected ->
+                                firefighterActivityViewModel.onActivityUpdateValueChange {
+                                    it.copy(status = selected, statusTouched = true)
                                 }
                             },
-                            modifier = Modifier.weight(1f),
-                            enabled = firefighterActivityUpdateUiState.activityDate != null &&
-                                    effectiveSelectedCode.isNotBlank() &&
-                                    firefighterActivityUpdateUiState.expirationDate != null &&
-                                    firefighterActivityUpdateUiState.description.isNotBlank() &&
-                                    firefighterActivityUpdateUiState.status.isNotBlank() &&
-                                    !firefighterActivityUpdateUiState.isLoading,
-                            loading = firefighterActivityUpdateUiState.isLoading
+                            modifier = Modifier.fillMaxWidth(),
+                            leadingIcon = Icons.Default.Check,
+                            enabled = !firefighterActivityUpdateUiState.isLoading
                         )
-                        AppButton(
-                            icon = Icons.Default.Close,
-                            label = "Cancel",
-                            onClick = { editingFirefighterActivityId = null },
-                            modifier = Modifier.weight(1f)
-                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            AppButton(
+                                icon = Icons.Default.Check,
+                                label = "Save",
+                                onClick = {
+                                    val patch = FirefighterActivityDtos.FirefighterActivityPatch(
+                                        status = if (firefighterActivityUpdateUiState.statusTouched) firefighterActivityUpdateUiState.status else null
+                                    )
+                                    firefighterActivityViewModel.updateFirefighterActivity(
+                                        activity.firefighterActivityId,
+                                        patch
+                                    )
+                                },
+                                loading = firefighterActivityUpdateUiState.isLoading,
+                                modifier = Modifier.weight(1f),
+                            )
+                            AppButton(
+                                icon = Icons.Default.Close,
+                                label = "Cancel",
+                                onClick = {
+                                    editingFirefighterActivityId = null
+                                    editStatusOnly = false
+                                },
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
                     }
-                }
-            )
-            AppErrorText(
-                message = firefighterActivityUpdateUiState.errorMessage ?: ""
-            )
+                )
+            } else {
+                AppFirefighterActivityCard(
+                    activity,
+                    actions = {
+                        if (activity.status == "REJECTED") {
+                            AppDropdown(
+                                items = firefighterActivityTypeUiState.firefighterActivityTypes,
+                                selectedCode = effectiveSelectedCode,
+                                codeSelector = { it.firefighterActivityType },
+                                labelSelector = { it.name },
+                                label = "Choose activity type",
+                                onSelected = { firefighterActivityType ->
+                                    firefighterActivityViewModel.onActivityUpdateValueChange {
+                                        it.copy(
+                                            activityType = firefighterActivityType.firefighterActivityType,
+                                            activityTypeTouched = true
+                                        )
+                                    }
+                                },
+                                onLoadMore = {
+                                    if (firefighterActivityTypeUiState.page + 1 < firefighterActivityTypeUiState.totalPages) {
+                                        firefighterActivityTypeViewModel.getAllFirefighterActivityTypes(
+                                            page = firefighterActivityTypeUiState.page + 1
+                                        )
+                                    }
+                                },
+                                hasMore = firefighterActivityTypeUiState.page + 1 < firefighterActivityTypeUiState.totalPages,
+                                onExpand = {
+                                    if (firefighterActivityTypeUiState.firefighterActivityTypes.isEmpty())
+                                        firefighterActivityTypeViewModel.getAllFirefighterActivityTypes(
+                                            page = 0
+                                        )
+                                },
+                                icon = Icons.Default.Build
+                            )
+                            AppDateTimePicker(
+                                selectedDateTime = firefighterActivityUpdateUiState.activityDate,
+                                onDateTimeSelected = { newDateTime ->
+                                    firefighterActivityViewModel.onActivityUpdateValueChange {
+                                        it.copy(
+                                            activityDate = newDateTime,
+                                            activityDateTouched = true
+                                        )
+                                    }
+                                },
+                                label = "Activity date"
+                            )
+                            AppDateTimePicker(
+                                selectedDateTime = firefighterActivityUpdateUiState.expirationDate,
+                                onDateTimeSelected = { newDateTime ->
+                                    firefighterActivityViewModel.onActivityUpdateValueChange {
+                                        it.copy(
+                                            expirationDate = newDateTime,
+                                            expirationDateTouched = true
+                                        )
+                                    }
+                                },
+                                label = "Expiration date"
+                            )
+                            AppTextField(
+                                value = firefighterActivityUpdateUiState.description,
+                                onValueChange = { new ->
+                                    firefighterActivityViewModel.onActivityUpdateValueChange() {
+                                        it.copy(description = new, descriptionTouched = true)
+                                    }
+                                },
+                                label = "Description",
+                                errorMessage = firefighterActivityUpdateUiState.errorMessage,
+                                singleLine = false
+                            )
+                            if (currentRole == "PRESIDENT") {
+                                AppStringDropdown(
+                                    label = "Status",
+                                    items = FirefighterStatus.entries.map { it.name },
+                                    selected = firefighterActivityUpdateUiState.status,
+                                    onSelected = { selected ->
+                                        firefighterActivityViewModel.onActivityUpdateValueChange {
+                                            it.copy(status = selected, statusTouched = true)
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    leadingIcon = Icons.Default.Check,
+                                    enabled = !firefighterActivityUpdateUiState.isLoading
+                                )
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+
+                                val commonValid =
+                                    firefighterActivityUpdateUiState.activityDate != null &&
+                                            effectiveSelectedCode.isNotBlank() &&
+                                            firefighterActivityUpdateUiState.expirationDate != null &&
+                                            firefighterActivityUpdateUiState.description.isNotBlank()
+
+                                val presidentValid =
+                                    firefighterActivityUpdateUiState.status.isNotBlank()
+
+                                val saveEnabled = if (currentRole == "PRESIDENT") {
+                                    !firefighterActivityUpdateUiState.isLoading && (commonValid || presidentValid)
+                                } else {
+                                    !firefighterActivityUpdateUiState.isLoading && commonValid
+                                }
+                                AppButton(
+                                    icon = Icons.Default.Check,
+                                    label = "Save",
+                                    onClick = {
+                                        activity.firefighterActivityId.let { id ->
+                                            val firefighterActivityDto =
+                                                FirefighterActivityDtos.FirefighterActivityPatch(
+                                                    firefighterActivityType = if (firefighterActivityUpdateUiState.activityTypeTouched)
+                                                        firefighterActivityUpdateUiState.activityType
+                                                    else null,
+
+                                                    activityDate = if (firefighterActivityUpdateUiState.activityDateTouched)
+                                                        firefighterActivityUpdateUiState.activityDate
+                                                    else null,
+
+                                                    expirationDate = if (firefighterActivityUpdateUiState.expirationDateTouched)
+                                                        firefighterActivityUpdateUiState.expirationDate
+                                                    else null,
+
+                                                    description = if (firefighterActivityUpdateUiState.descriptionTouched)
+                                                        firefighterActivityUpdateUiState.description
+                                                    else null,
+
+                                                    status = if (currentRole == "PRESIDENT" && firefighterActivityUpdateUiState.statusTouched)
+                                                        firefighterActivityUpdateUiState.status
+                                                    else null,
+                                                )
+                                            firefighterActivityViewModel.updateFirefighterActivity(
+                                                id,
+                                                firefighterActivityDto
+                                            )
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    enabled = saveEnabled,
+                                    loading = firefighterActivityUpdateUiState.isLoading
+                                )
+                                AppButton(
+                                    icon = Icons.Default.Close,
+                                    label = "Cancel",
+                                    onClick = { editingFirefighterActivityId = null },
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                        }
+                    }
+                )
+                AppErrorText(
+                    message = firefighterActivityUpdateUiState.errorMessage ?: ""
+                )
+            }
         } else {
             AppFirefighterActivityCard(
                 activity,
                 actions = {
-                    AppButton(
-                        icon = Icons.Default.Edit,
-                        label = "Edit",
-                        onClick = {
-                            editingFirefighterActivityId = activity.firefighterActivityId
-                            val preselectedCode =
-                                firefighterActivityTypeUiState.firefighterActivityTypes
-                                    .firstOrNull { it.name == activity.firefighterActivityTypeName }
-                                    ?.firefighterActivityType ?: ""
-                            firefighterActivityViewModel.onActivityUpdateValueChange() {
-                                it.copy(
-                                    activityType = preselectedCode,
-                                    activityDate = activity.activityDate,
-                                    expirationDate = activity.expirationDate,
-                                    description = activity.description ?: "",
-                                    status = activity.status,
-                                    activityTypeTouched = false,
-                                    activityDateTouched = false,
-                                    expirationDateTouched = false,
-                                    descriptionTouched = false,
-                                    statusTouched = false,
-                                    errorMessage = null,
-                                    isLoading = false,
-                                    success = false
+                    if (isOwner) {
+                        if (activity.status == "REJECTED") {
+                            AppButton(
+                                icon = Icons.Default.Edit,
+                                label = "Edit",
+                                onClick = {
+                                    editingFirefighterActivityId = activity.firefighterActivityId
+                                    val preselectedCode =
+                                        firefighterActivityTypeUiState.firefighterActivityTypes
+                                            .firstOrNull { it.name == activity.firefighterActivityTypeName }
+                                            ?.firefighterActivityType ?: ""
+                                    firefighterActivityViewModel.onActivityUpdateValueChange() {
+                                        it.copy(
+                                            activityType = preselectedCode,
+                                            activityDate = activity.activityDate,
+                                            expirationDate = activity.expirationDate,
+                                            description = activity.description ?: "",
+                                            status = activity.status,
+                                            activityTypeTouched = false,
+                                            activityDateTouched = false,
+                                            expirationDateTouched = false,
+                                            descriptionTouched = false,
+                                            statusTouched = false,
+                                            errorMessage = null,
+                                            isLoading = false,
+                                            success = false
 
-                                )
-                            }
+                                        )
+                                    }
+                                    editStatusOnly = false
+                                }
+                            )
                         }
-                    )
+                    } else if (canEditStatusAsPresident) {
+                        AppButton(
+                            icon = Icons.Default.Edit,
+                            label = "Edit status",
+                            onClick = {
+                                editingFirefighterActivityId = activity.firefighterActivityId
+                                firefighterActivityViewModel.onActivityUpdateValueChange() {
+                                    it.copy(
+                                        status = activity.status,
+                                        statusTouched = false,
+                                        errorMessage = null,
+                                        isLoading = false,
+                                        success = false
+                                    )
+                                }
+                                editStatusOnly = true
+                            }
+                        )
+                    }
                     AppDaysCounter(
                         ourDate = activity.expirationDate
                     )
                 }
             )
         }
-
     }
-
 }
