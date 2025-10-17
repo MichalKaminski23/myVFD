@@ -22,6 +22,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.vfd.client.ui.components.dialogs.AssetCreateDialog
 import com.vfd.client.ui.components.dialogs.EventCreateDialog
+import com.vfd.client.ui.components.dialogs.FirefighterActivityCreateDialog
 import com.vfd.client.ui.components.dialogs.InspectionCreateDialog
 import com.vfd.client.ui.components.dialogs.InvestmentProposalCreateDialog
 import com.vfd.client.ui.components.dialogs.OperationCreateDialog
@@ -192,8 +193,7 @@ fun AppNavGraph(
         ) {
 
             composable(
-                route = "activities/list?firefighterId={firefighterId}&firstName={firstName}&lastName={lastName}",
-                //route = "activities/list?firefighterId={firefighterId}",
+                route = "activities/list?firefighterId={firefighterId}&firstName={firstName}&lastName={lastName}&from={from}",
                 arguments = listOf(
                     navArgument("firefighterId") {
                         type = NavType.IntType
@@ -205,6 +205,11 @@ fun AppNavGraph(
                     },
                     navArgument("lastName") {
                         type = NavType.StringType
+                        nullable = true
+                    },
+                    navArgument("from") {
+                        type = NavType.StringType
+                        defaultValue = ""
                         nullable = true
                     }
                 )
@@ -224,6 +229,9 @@ fun AppNavGraph(
                 val lastNameArg = backStackEntry.arguments?.getString("lastName")
                 val lastName = lastNameArg?.let { Uri.decode(it) }
 
+                val from =
+                    backStackEntry.arguments?.getString("from")?.takeIf { it?.isNotBlank() == true }
+
                 FirefighterActivityScreen(
                     navController = navController,
                     snackbarHostState = snackbarHostState,
@@ -234,32 +242,33 @@ fun AppNavGraph(
                 )
             }
 
-//            dialog(
-//                route = "inspections/create?assetId={assetId}",
-//                arguments = listOf(
-//                    navArgument("assetId") {
-//                        type = NavType.IntType
-//                        defaultValue = -1
-//                    }
-//                )
-//            ) { backStackEntry ->
-//
-//                val assetIdArg = backStackEntry.arguments?.getInt("assetId")
-//                val assetId = assetIdArg?.takeIf { it != -1 }
-//
-//                val parentEntry = remember(backStackEntry) {
-//                    navController.getBackStackEntry("inspections_graph")
-//                }
-//                val inspectionViewModel: InspectionViewModel = hiltViewModel(parentEntry)
-//
-//                InspectionCreateDialog(
-//                    inspectionViewModel = inspectionViewModel,
-//                    showDialog = true,
-//                    onDismiss = { navController.popBackStack() },
-//                    snackbarHostState = snackbarHostState,
-//                    assetId = assetId
-//                )
-//            }
+            dialog(
+                route = "activities/create?firefighterId={firefighterId}",
+                arguments = listOf(
+                    navArgument("firefighterId") {
+                        type = NavType.IntType
+                        defaultValue = -1
+                    }
+                )
+            ) { backStackEntry ->
+
+                val firefighterIdArg = backStackEntry.arguments?.getInt("firefighterId")
+                val firefighterId = firefighterIdArg?.takeIf { it != -1 }
+
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("activities_graph")
+                }
+                val firefighterActivityViewModel: FirefighterActivityViewModel =
+                    hiltViewModel(parentEntry)
+
+                FirefighterActivityCreateDialog(
+                    firefighterActivityViewModel = firefighterActivityViewModel,
+                    showDialog = true,
+                    onDismiss = { navController.popBackStack() },
+                    snackbarHostState = snackbarHostState,
+                    firefighterId = firefighterId
+                )
+            }
         }
 
         navigation(startDestination = "events/list", route = "events_graph") {

@@ -393,29 +393,24 @@ class MainActivity : ComponentActivity() {
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() }),
                                 )
-                                if (canCreateThings) {
+                                val from = navBackStackEntry?.arguments?.getString("from")
+                                val firefighterIdArg =
+                                    navBackStackEntry?.arguments?.getString("firefighterId")
+
+                                if (from == "moderator" || from == "member") {
                                     actions.add(
                                         NavBarButton(
                                             "Create activity",
                                             Icons.Default.DateRange,
                                             onClick = {
-                                                val currentFirefighterId =
-                                                    navController.currentBackStackEntry?.arguments
-                                                        ?.getInt("firefighterId")
-                                                        ?.takeIf { it > 0 }
-
-                                                val target = if (currentFirefighterId != null)
-                                                    "activities/create?firefighterId=$currentFirefighterId"
-                                                else
-                                                    "activities/create"
-
-                                                navController.navigate(target) {
+                                                navController.navigate("activities/create${firefighterIdArg?.let { "?firefighterId=$it" } ?: ""}") {
                                                     launchSingleTop = true
                                                 }
                                             }
                                         )
                                     )
                                 }
+
                                 NavBarAction(actions)
                             }
 

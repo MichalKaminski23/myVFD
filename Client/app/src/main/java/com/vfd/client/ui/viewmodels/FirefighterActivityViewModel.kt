@@ -42,6 +42,7 @@ data class FirefighterActivityUpdateUiState(
 )
 
 data class FirefighterActivityCreateUiState(
+    val firefighterId: Int = -1,
     val activityType: String = "",
     val activityDate: LocalDateTime? = null,
     val expirationDate: LocalDateTime? = null,

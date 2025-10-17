@@ -11,6 +11,5 @@ fun main(args: Array<String>) {
 
     println("Server is running...")
 }
-// TODO -> FirefighterActivity (i type), Admin Panel (symulacja mejlowa -> User prosi Admina "stwórz OSP Strzyżowice i zrób mnie moderatorem",
-//  admin to robi i mamy to),
-//  tworzenie/edycja typów i chyba tyle (poprawki w kodzie, ujednolicenie kodu, refektoryzacja)
+// TODO -> AdminPanel -> Symulacja mejlowa dotycząca tworzenia nowych OSP np. Grzesiu Firanka pisze mejla do admina, on tworzy OSP i przypisuje mu PRESIDENTA
+// TODO -> AdminPanel -> Tworzenie i edycja typów

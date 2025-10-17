@@ -1,7 +1,9 @@
 package com.vfd.client.ui.screens
 
 import android.net.Uri
+import android.os.Build
 import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -9,12 +11,16 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,17 +41,22 @@ import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppErrorText
 import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.AuthViewModel
+import com.vfd.client.ui.viewmodels.FirefighterActivityViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.MainViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
+import com.vfd.client.utils.daysUntilSomething
+import kotlinx.datetime.toLocalDateTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ModeratorScreen(
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel(),
+    firefighterActivityViewModel: FirefighterActivityViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
 ) {
@@ -74,15 +85,34 @@ fun ModeratorScreen(
         }
     }
 
+    val firefighterActivityUiState by firefighterActivityViewModel.firefighterActivityUiState.collectAsState()
+    val expiringCounts = remember { mutableStateMapOf<Int, Int>() }
+
+    LaunchedEffect(firefighterActivityUiState.activities) {
+        val map = firefighterActivityUiState.activities
+            .groupBy { it.firefighterId }
+            .mapValues { (_, list) ->
+                list.count { dto ->
+                    val days = dto.expirationDate?.toString()
+                        ?.let { daysUntilSomething(it.toLocalDateTime()) } ?: -1
+                    days in 0..30
+                }
+            }
+        expiringCounts.clear()
+        expiringCounts.putAll(map)
+    }
+
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
         firefighterViewModel.getFirefighterByEmailAddress()
+        firefighterActivityViewModel.getFirefighterActivities(page = 0, refresh = true)
 
         RefreshManager.events.collect { event ->
             when (event) {
                 is RefreshEvent.ModeratorScreen -> {
                     userViewModel.getUserByEmailAddress()
                     firefighterViewModel.getFirefighterByEmailAddress()
+                    firefighterActivityViewModel.getFirefightersActivities(page = 0, refresh = true)
                 }
 
                 else -> {}
@@ -222,15 +252,24 @@ fun ModeratorScreen(
                             onClick = { showHourInputs = true }
                         )
                     }
-                    AppButton(
-                        icon = Icons.Default.Warning,
-                        label = "Activities",
-                        onClick = {
-                            val encodedName = Uri.encode(firefighter.firstName)
-                            val encodedLastName = Uri.encode(firefighter.lastName)
-                            navController.navigate("activities/list?firefighterId=${firefighter.firefighterId}&firstName=$encodedName&lastName=$encodedLastName")
+                    val count = expiringCounts[firefighter.firefighterId] ?: 0
+                    BadgedBox(
+                        badge = {
+                            if (count > 0) {
+                                Badge { Text("$count") }
+                            }
                         }
-                    )
+                    ) {
+                        AppButton(
+                            icon = Icons.Default.Warning,
+                            label = "Activities",
+                            onClick = {
+                                val encodedName = Uri.encode(firefighter.firstName)
+                                val encodedLastName = Uri.encode(firefighter.lastName)
+                                navController.navigate("activities/list?firefighterId=${firefighter.firefighterId}&firstName=$encodedName&lastName=$encodedLastName&from=moderator")
+                            }
+                        )
+                    }
                 }
             )
         }

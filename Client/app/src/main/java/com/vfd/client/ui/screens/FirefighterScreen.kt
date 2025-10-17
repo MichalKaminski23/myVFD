@@ -48,12 +48,14 @@ fun FirefighterScreen(
 
     LaunchedEffect(firefighterActivityUiState.activities) {
         val map = firefighterActivityUiState.activities
-            .groupBy { it.firefighterActivityId }
+            .groupBy { it.firefighterId }
             .mapValues { (_, list) ->
                 list.count { dto ->
                     val days = dto.expirationDate?.toString()
                         ?.let { daysUntilSomething(it.toLocalDateTime()) } ?: -1
-                    days in 0..30
+                    val expiring = days in 0..30
+                    val pending = dto.status.equals("PENDING", ignoreCase = true)
+                    expiring || pending
                 }
             }
         expiringCounts.clear()
@@ -64,13 +66,15 @@ fun FirefighterScreen(
 
     LaunchedEffect(Unit) {
         firefighterViewModel.getFirefighters(page = 0, refresh = true)
+        firefighterActivityViewModel.getFirefightersActivities(page = 0, refresh = true)
 
         RefreshManager.events.collect { event ->
             when (event) {
-                is RefreshEvent.FirefighterScreen -> firefighterViewModel.getFirefighters(
-                    page = 0,
-                    refresh = true
-                )
+                is RefreshEvent.FirefighterScreen -> {
+                    firefighterViewModel.getFirefighters(page = 0, refresh = true)
+                    firefighterActivityViewModel.getFirefightersActivities(page = 0, refresh = true)
+                }
+
 
                 else -> {}
             }
