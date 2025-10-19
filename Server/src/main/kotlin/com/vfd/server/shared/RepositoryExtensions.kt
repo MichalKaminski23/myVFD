@@ -68,6 +68,13 @@ fun FiredepartmentRepository.assertNotExistsByName(name: String) {
     }
 }
 
+fun FiredepartmentRepository.assertNameNotUsedByOther(name: String, firedepartmentId: Int) {
+    val existing = findByNameIgnoreCase(name)
+    if (existing != null && existing.firedepartmentId != firedepartmentId) {
+        throw ResourceConflictException("Firedepartment", "name", name)
+    }
+}
+
 fun AssetRepository.findByIdOrThrow(assetId: Int): Asset =
     findById(assetId).orElseThrow {
         ResourceNotFoundException("Asset", "id", assetId)

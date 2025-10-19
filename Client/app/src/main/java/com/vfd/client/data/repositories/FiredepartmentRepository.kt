@@ -22,6 +22,13 @@ class FiredepartmentRepository @Inject constructor(
     ): ApiResult<PageResponse<FiredepartmentDtos.FiredepartmentResponseShort>> =
         safeApiCall { firedepartmentApi.getFiredepartmentsShort(page, size, sort) }
 
+    suspend fun getFiredepartments(
+        page: Int = 0,
+        size: Int = 20,
+        sort: String = "name,asc"
+    ): ApiResult<PageResponse<FiredepartmentDtos.FiredepartmentResponse>> =
+        safeApiCall { firedepartmentApi.getFiredepartments(page, size, sort) }
+
     suspend fun getFiredepartment(): ApiResult<FiredepartmentDtos.FiredepartmentResponse> =
         safeApiCall { firedepartmentApi.getFiredepartment() }
 

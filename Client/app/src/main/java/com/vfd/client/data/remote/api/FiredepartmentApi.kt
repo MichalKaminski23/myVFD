@@ -23,6 +23,13 @@ interface FiredepartmentApi {
         @Query("sort") sort: String = "name,asc"
     ): PageResponse<FiredepartmentDtos.FiredepartmentResponseShort>
 
+    @GET("api/firedepartments/all")
+    suspend fun getFiredepartments(
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 20,
+        @Query("sort") sort: String = "name,asc"
+    ): PageResponse<FiredepartmentDtos.FiredepartmentResponse>
+
     @GET("api/firedepartments/my")
     suspend fun getFiredepartment(): FiredepartmentDtos.FiredepartmentResponse
 

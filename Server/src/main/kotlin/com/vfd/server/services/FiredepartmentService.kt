@@ -26,10 +26,10 @@ interface FiredepartmentService {
 
     fun createFiredepartmentDev(firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate): FiredepartmentDtos.FiredepartmentResponse
 
-    fun getAllFiredepartmentsDev(
+    fun getAllFiredepartments(
         page: Int = 0,
         size: Int = 20,
-        sort: String = "firedepartmentId,asc"
+        sort: String = "name,asc"
     ): PageResponse<FiredepartmentDtos.FiredepartmentResponse>
 
     fun getFiredepartmentByIdDev(firedepartmentId: Int): FiredepartmentDtos.FiredepartmentResponse

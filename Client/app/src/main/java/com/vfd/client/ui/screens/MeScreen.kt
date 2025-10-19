@@ -54,8 +54,8 @@ import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.CurrentFirefighterUiState
 import com.vfd.client.ui.viewmodels.FiredepartmentDetailUiState
-import com.vfd.client.ui.viewmodels.FiredepartmentUiState
 import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
+import com.vfd.client.ui.viewmodels.FiredepartmentsShortUiState
 import com.vfd.client.ui.viewmodels.FirefighterActivityViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.MainViewModel
@@ -82,7 +82,7 @@ fun MeScreen(
 
     AppUiEvents(userViewModel.uiEvents, snackbarHostState)
 
-    val firedepartmentUiState by firedepartmentViewModel.firedepartmentUiState.collectAsState()
+    val firedepartmentsShortUiState by firedepartmentViewModel.firedepartmentsShortUiState.collectAsState()
     var selectedFiredepartmentId by rememberSaveable { mutableStateOf<Int?>(null) }
 
     val firedepartmentDetailUiState by firedepartmentViewModel.firedepartmentDetailUiState.collectAsState()
@@ -270,7 +270,7 @@ fun MeScreen(
         if (!currentFirefighterUiState.isLoading) {
             FirefighterSection(
                 firefighter = currentFirefighterUiState.currentFirefighter,
-                firedepartmentUiState = firedepartmentUiState,
+                firedepartmentsShortUiState = firedepartmentsShortUiState,
                 currentFirefighterUiState = currentFirefighterUiState,
                 firedepartmentDetailUiState = firedepartmentDetailUiState,
                 firefighterViewModel = firefighterViewModel,
@@ -324,7 +324,7 @@ private fun FirefighterSection(
     firefighter: FirefighterDtos.FirefighterResponse?,
     currentFirefighterUiState: CurrentFirefighterUiState,
     firefighterViewModel: FirefighterViewModel,
-    firedepartmentUiState: FiredepartmentUiState,
+    firedepartmentsShortUiState: FiredepartmentsShortUiState,
     firedepartmentDetailUiState: FiredepartmentDetailUiState,
     firedepartmentViewModel: FiredepartmentViewModel,
     selectedFiredepartmentId: Int?,
@@ -403,26 +403,26 @@ private fun FirefighterSection(
                 )
             }
             AppDropdown(
-                items = firedepartmentUiState.firedepartments,
+                items = firedepartmentsShortUiState.firedepartmentsShort,
                 selectedId = selectedFiredepartmentId,
                 idSelector = { it.firedepartmentId },
                 labelSelector = { it.name },
                 label = "Choose firedepartment",
                 onSelected = { onSelected(it.firedepartmentId) },
                 onLoadMore = {
-                    if (firedepartmentUiState.page + 1 < firedepartmentUiState.totalPages) {
+                    if (firedepartmentsShortUiState.page + 1 < firedepartmentsShortUiState.totalPages) {
                         firedepartmentViewModel.getFiredepartmentsShort(
-                            page = firedepartmentUiState.page + 1
+                            page = firedepartmentsShortUiState.page + 1
                         )
                     }
                 },
-                hasMore = firedepartmentUiState.page + 1 < firedepartmentUiState.totalPages,
+                hasMore = firedepartmentsShortUiState.page + 1 < firedepartmentsShortUiState.totalPages,
                 onExpand = {
-                    if (firedepartmentUiState.firedepartments.isEmpty())
+                    if (firedepartmentsShortUiState.firedepartmentsShort.isEmpty())
                         firedepartmentViewModel.getFiredepartmentsShort(page = 0)
                 },
                 icon = Icons.Default.Home,
-                isLoading = firedepartmentUiState.isLoading
+                isLoading = firedepartmentsShortUiState.isLoading
             )
             AppButton(
                 icon = Icons.AutoMirrored.Filled.Send,

@@ -56,6 +56,14 @@ fun LoginScreen(
                 }
             }
 
+            currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.ADMIN.toString() -> {
+                routed = true
+                navController.navigate("adminScreen") {
+                    popUpTo("welcomeScreen") { inclusive = false }
+                    launchSingleTop = true
+                }
+            }
+
             currentFirefighterUiState.currentFirefighter != null -> {
                 routed = true
                 navController.navigate("meScreen") {

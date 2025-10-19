@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppFirefighterCard
@@ -192,7 +193,7 @@ fun ModeratorScreen(
                                 it.copy(
                                     firstName = currentUserUiState.currentUser?.firstName.orEmpty(),
                                     lastName = currentUserUiState.currentUser?.lastName.orEmpty(),
-                                    address = com.vfd.client.data.remote.dtos.AddressDtos.AddressCreate(
+                                    address = AddressDtos.AddressCreate(
                                         country = currentUserUiState.currentUser?.address?.country.orEmpty(),
                                         voivodeship = currentUserUiState.currentUser?.address?.voivodeship.orEmpty(),
                                         city = currentUserUiState.currentUser?.address?.city.orEmpty(),

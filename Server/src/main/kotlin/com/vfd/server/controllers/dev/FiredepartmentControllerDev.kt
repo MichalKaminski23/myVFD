@@ -2,7 +2,6 @@ package com.vfd.server.controllers.dev
 
 import com.vfd.server.dtos.FiredepartmentDtos
 import com.vfd.server.services.FiredepartmentService
-import com.vfd.server.shared.PageResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.context.annotation.Profile
@@ -25,14 +24,6 @@ class FiredepartmentControllerDev(
         @Valid @RequestBody firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate
     ): FiredepartmentDtos.FiredepartmentResponse =
         firedepartmentService.createFiredepartmentDev(firedepartmentDto)
-
-    @GetMapping
-    fun getAllFiredepartmentsDev(
-        @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(defaultValue = "firedepartmentId,asc") sort: String
-    ): PageResponse<FiredepartmentDtos.FiredepartmentResponse> =
-        firedepartmentService.getAllFiredepartmentsDev(page, size, sort)
 
     @GetMapping("/{firedepartmentId}")
     fun getFiredepartmentByIdDev(

@@ -78,6 +78,33 @@ class FiredepartmentController(
         firedepartmentService.getFiredepartmentsShort(page, size, sort)
 
     @Operation(
+        summary = "Get all firedepartments",
+        description = """
+            Retrieves all firedepartments.   
+            Query params:
+            - `page` (default: 0)
+            - `size` (default: 20)
+            - `sort` (default: name,asc) e.g. `name,asc`
+        """
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200", description = "Firedepartments retrieved successfully",
+                content = [Content(schema = Schema(implementation = FiredepartmentDtos.FiredepartmentResponse::class))]
+            )
+        ]
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    fun getAllFiredepartments(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(defaultValue = "name,asc") sort: String
+    ): PageResponse<FiredepartmentDtos.FiredepartmentResponse> =
+        firedepartmentService.getAllFiredepartments(page, size, sort)
+
+    @Operation(
         summary = "Get my firedepartment",
         description =
             "Retrieves firedepartment of the currently authenticated user."
@@ -114,7 +141,7 @@ class FiredepartmentController(
             ApiResponse(responseCode = "403", ref = "Forbidden")
         ]
     )
-    @PreAuthorize("hasRole('PRESIDENT')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{firedepartmentId}")
     fun updateFiredepartment(
         @AuthenticationPrincipal principal: UserDetails,

@@ -26,6 +26,7 @@ import com.vfd.client.ui.components.dialogs.FirefighterActivityCreateDialog
 import com.vfd.client.ui.components.dialogs.InspectionCreateDialog
 import com.vfd.client.ui.components.dialogs.InvestmentProposalCreateDialog
 import com.vfd.client.ui.components.dialogs.OperationCreateDialog
+import com.vfd.client.ui.screens.AdminScreen
 import com.vfd.client.ui.screens.AssetScreen
 import com.vfd.client.ui.screens.EventScreen
 import com.vfd.client.ui.screens.FirefighterActivityScreen
@@ -89,6 +90,9 @@ fun AppNavGraph(
         }
         composable("firefighterScreen") {
             FirefighterScreen(navController = navController, snackbarHostState = snackbarHostState)
+        }
+        composable("adminScreen") {
+            AdminScreen(navController = navController, snackbarHostState = snackbarHostState)
         }
 
         navigation(startDestination = "assets/list", route = "assets_graph") {

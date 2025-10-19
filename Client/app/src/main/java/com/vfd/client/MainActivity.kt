@@ -149,6 +149,8 @@ class MainActivity : ComponentActivity() {
                                         "activities/create" ->
                                             "Activities"
 
+                                        "adminScreen" -> "Admin panel"
+
                                         else -> "My VFD"
                                     }
                                 )
@@ -164,9 +166,11 @@ class MainActivity : ComponentActivity() {
                                     "operations/list",
                                     "investments/list",
                                     "inspections/list",
-                                    "activities/list" -> {
+                                    "activities/list",
+                                    "adminScreen" -> {
                                         RefreshButton(currentRoute)
                                     }
+
 
                                     else -> { /* no-op */
                                     }
@@ -247,6 +251,21 @@ class MainActivity : ComponentActivity() {
 
                             "registerScreen" -> {
                                 GoBackButton(navController)
+                            }
+
+                            "adminScreen" -> {
+                                val actions = listOf(
+                                    NavBarButton(
+                                        "Back",
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        onClick = {
+                                            navController.currentBackStackEntry
+                                                ?.savedStateHandle
+                                                ?.set("admin_back", true)
+                                        }
+                                    )
+                                )
+                                NavBarAction(actions)
                             }
 
                             "moderatorScreen" -> {
@@ -532,6 +551,7 @@ fun RefreshButton(currentRoute: String?) {
         "investments/list" -> RefreshEvent.InvestmentProposalScreen
         "inspections/list" -> RefreshEvent.InspectionScreen
         "activities/list" -> RefreshEvent.FirefighterActivityScreen
+        "adminScreen" -> RefreshEvent.AdminScreen
         else -> null
     }
 

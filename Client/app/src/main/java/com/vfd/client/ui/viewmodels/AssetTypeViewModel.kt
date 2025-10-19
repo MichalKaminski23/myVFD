@@ -5,10 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.remote.dtos.AssetTypeDtos
 import com.vfd.client.data.repositories.AssetTypeRepository
 import com.vfd.client.utils.ApiResult
+import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,13 +23,86 @@ data class AssetTypeUiState(
     val errorMessage: String? = null
 )
 
+data class AssetTypeCreateUiState(
+    val assetType: String = "",
+    val name: String = "",
+    val isLoading: Boolean = false,
+    val success: Boolean = false,
+    val errorMessage: String? = null,
+    val fieldErrors: Map<String, String> = emptyMap(),
+)
+
+data class AssetTypeUpdateUiState(
+    val name: String = "",
+    val nameTouched: Boolean = false,
+    val isLoading: Boolean = false,
+    val success: Boolean = false,
+    val errorMessage: String? = null,
+    val fieldErrors: Map<String, String> = emptyMap(),
+)
+
 @HiltViewModel
 class AssetTypeViewModel @Inject constructor(
     private val assetTypeRepository: AssetTypeRepository
 ) : ViewModel() {
 
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvents = _uiEvent.receiveAsFlow()
+
     private val _assetTypeUiState = MutableStateFlow(AssetTypeUiState())
     val assetTypeUiState = _assetTypeUiState.asStateFlow()
+
+    private val _assetTypeCreateUiState = MutableStateFlow(AssetTypeCreateUiState())
+    val assetTypeCreateUiState = _assetTypeCreateUiState.asStateFlow()
+
+    private val _assetTypeUpdateUiState = MutableStateFlow(AssetTypeUpdateUiState())
+    val assetTypeUpdateUiState = _assetTypeUpdateUiState.asStateFlow()
+
+    fun createAssetType(assetTypeDto: AssetTypeDtos.AssetTypeCreate) {
+        viewModelScope.launch {
+            _assetTypeCreateUiState.value =
+                _assetTypeCreateUiState.value.copy(isLoading = true, errorMessage = null)
+
+            when (val result = assetTypeRepository.createAssetType(assetTypeDto)) {
+
+                is ApiResult.Success -> {
+                    _assetTypeCreateUiState.value = _assetTypeCreateUiState.value.copy(
+                        assetType = "",
+                        name = "",
+                        isLoading = false,
+                        success = true,
+                        errorMessage = null
+                    )
+
+                    _assetTypeUiState.value = _assetTypeUiState.value.copy(
+                        assetTypes = listOf(result.data!!) + _assetTypeUiState.value.assetTypes
+                    )
+                    _uiEvent.send(UiEvent.Success("Asset type created successfully"))
+                }
+
+                is ApiResult.Error -> {
+                    val message = result.message ?: "Unknown error"
+
+                    val fieldErrors = result.fieldErrors
+
+                    _assetTypeCreateUiState.value = _assetTypeCreateUiState.value.copy(
+                        isLoading = false,
+                        success = false,
+                        errorMessage = if (fieldErrors.isEmpty()) message else null,
+                        fieldErrors = fieldErrors
+                    )
+                    _uiEvent.send(UiEvent.Error("Failed to create asset type"))
+                }
+
+                is ApiResult.Loading -> {
+                    _assetTypeCreateUiState.value =
+                        _assetTypeCreateUiState.value.copy(
+                            isLoading = true
+                        )
+                }
+            }
+        }
+    }
 
     fun getAllAssetTypes(page: Int = 0, size: Int = 20) {
         viewModelScope.launch {
@@ -57,6 +133,64 @@ class AssetTypeViewModel @Inject constructor(
                 is ApiResult.Loading -> {
                     _assetTypeUiState.value =
                         _assetTypeUiState.value.copy(isLoading = true)
+                }
+            }
+        }
+    }
+
+    fun updateAssetType(
+        assetTypeCode: String,
+        assetTypeDto: AssetTypeDtos.AssetTypePatch,
+    ) {
+        viewModelScope.launch {
+            _assetTypeUpdateUiState.value =
+                _assetTypeUpdateUiState.value.copy(
+                    isLoading = true,
+                    errorMessage = null,
+                    success = false
+                )
+
+            when (val result = assetTypeRepository.updateAssetType(assetTypeCode, assetTypeDto)) {
+
+                is ApiResult.Success -> {
+                    _assetTypeUpdateUiState.value =
+                        _assetTypeUpdateUiState.value.copy(
+                            isLoading = false,
+                            success = true,
+                            errorMessage = null,
+                            fieldErrors = emptyMap()
+                        )
+
+                    val updatedAssetTypes = _assetTypeUiState.value.assetTypes.map { assetType ->
+                        if (assetType.assetType == assetTypeCode) assetType.copy(
+                            name = assetTypeDto.name ?: assetType.name
+                        ) else assetType
+                    }
+
+                    _assetTypeUiState.value =
+                        _assetTypeUiState.value.copy(assetTypes = updatedAssetTypes)
+                    _uiEvent.send(UiEvent.Success("Asset type updated successfully"))
+                }
+
+                is ApiResult.Error -> {
+                    val message = result.message ?: "Unknown error"
+
+                    val fieldErrors = result.fieldErrors
+
+                    _assetTypeUpdateUiState.value = _assetTypeUpdateUiState.value.copy(
+                        isLoading = false,
+                        success = false,
+                        errorMessage = if (fieldErrors.isEmpty()) message else null,
+                        fieldErrors = fieldErrors
+                    )
+                    _uiEvent.send(UiEvent.Error("Failed to update asset type"))
+                }
+
+                is ApiResult.Loading -> {
+                    _assetTypeUpdateUiState.value =
+                        _assetTypeUpdateUiState.value.copy(
+                            isLoading = true
+                        )
                 }
             }
         }

@@ -79,7 +79,9 @@ class FiredepartmentServiceImplementation(
         firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch
     ): FiredepartmentDtos.FiredepartmentResponse {
 
-        firedepartmentRepository.assertNotExistsByName(firedepartmentDto.name!!)
+        firedepartmentDto.name?.let { newName ->
+            firedepartmentRepository.assertNameNotUsedByOther(newName, firedepartmentId)
+        }
 
         userRepository.findByEmailOrThrow(emailAddress)
 
@@ -118,7 +120,7 @@ class FiredepartmentServiceImplementation(
     }
 
     @Transactional(readOnly = true)
-    override fun getAllFiredepartmentsDev(
+    override fun getAllFiredepartments(
         page: Int,
         size: Int,
         sort: String
@@ -129,7 +131,7 @@ class FiredepartmentServiceImplementation(
             size = size,
             sort = sort,
             allowedFields = FIREDEPARTMENT_ALLOWED_SORTS,
-            defaultSort = "firedepartmentId,asc",
+            defaultSort = "name,asc",
             maxSize = 200
         )
 
@@ -153,6 +155,10 @@ class FiredepartmentServiceImplementation(
         firedepartmentDto: FiredepartmentDtos.FiredepartmentPatch
     ): FiredepartmentDtos.FiredepartmentResponse {
 
+        firedepartmentDto.name?.let { newName ->
+            firedepartmentRepository.assertNameNotUsedByOther(newName, firedepartmentId)
+        }
+        
         val firedepartment = firedepartmentRepository.findByIdOrThrow(firedepartmentId)
 
         firedepartmentDto.address?.let { addressDto ->
