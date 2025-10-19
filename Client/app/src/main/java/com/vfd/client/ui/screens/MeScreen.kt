@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.FirefighterStatus
@@ -52,6 +53,7 @@ import com.vfd.client.ui.components.texts.AppErrorText
 import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.CurrentFirefighterUiState
+import com.vfd.client.ui.viewmodels.FiredepartmentDetailUiState
 import com.vfd.client.ui.viewmodels.FiredepartmentUiState
 import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
 import com.vfd.client.ui.viewmodels.FirefighterActivityViewModel
@@ -82,6 +84,8 @@ fun MeScreen(
 
     val firedepartmentUiState by firedepartmentViewModel.firedepartmentUiState.collectAsState()
     var selectedFiredepartmentId by rememberSaveable { mutableStateOf<Int?>(null) }
+
+    val firedepartmentDetailUiState by firedepartmentViewModel.firedepartmentDetailUiState.collectAsState()
 
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
 
@@ -123,6 +127,7 @@ fun MeScreen(
         if (!token.isNullOrBlank()) {
             userViewModel.getUserByEmailAddress()
             firefighterViewModel.getFirefighterByEmailAddress()
+            firedepartmentViewModel.getFiredepartment()
             firefighterActivityViewModel.getFirefighterActivities(page = 0, refresh = true)
         }
     }
@@ -141,6 +146,7 @@ fun MeScreen(
                 is RefreshEvent.MeScreen -> {
                     userViewModel.getUserByEmailAddress()
                     firefighterViewModel.getFirefighterByEmailAddress()
+                    firedepartmentViewModel.getFiredepartment()
                     firefighterActivityViewModel.getFirefighterActivities(page = 0, refresh = true)
                 }
 
@@ -214,7 +220,7 @@ fun MeScreen(
                                     it.copy(
                                         firstName = currentUserUiState.currentUser?.firstName.orEmpty(),
                                         lastName = currentUserUiState.currentUser?.lastName.orEmpty(),
-                                        address = com.vfd.client.data.remote.dtos.AddressDtos.AddressCreate(
+                                        address = AddressDtos.AddressCreate(
                                             country = currentUserUiState.currentUser?.address?.country.orEmpty(),
                                             voivodeship = currentUserUiState.currentUser?.address?.voivodeship.orEmpty(),
                                             city = currentUserUiState.currentUser?.address?.city.orEmpty(),
@@ -266,6 +272,7 @@ fun MeScreen(
                 firefighter = currentFirefighterUiState.currentFirefighter,
                 firedepartmentUiState = firedepartmentUiState,
                 currentFirefighterUiState = currentFirefighterUiState,
+                firedepartmentDetailUiState = firedepartmentDetailUiState,
                 firefighterViewModel = firefighterViewModel,
                 selectedFiredepartmentId = selectedFiredepartmentId,
                 onSelected = { selectedFiredepartmentId = it },
@@ -318,6 +325,7 @@ private fun FirefighterSection(
     currentFirefighterUiState: CurrentFirefighterUiState,
     firefighterViewModel: FirefighterViewModel,
     firedepartmentUiState: FiredepartmentUiState,
+    firedepartmentDetailUiState: FiredepartmentDetailUiState,
     firedepartmentViewModel: FiredepartmentViewModel,
     selectedFiredepartmentId: Int?,
     onSelected: (Int) -> Unit,
@@ -344,6 +352,7 @@ private fun FirefighterSection(
             AppFirefighterCard(
                 firefighter,
                 quarterHours = currentFirefighterUiState.currentFirefighter?.hours,
+                firedepartment = firedepartmentDetailUiState.firedepartment!!,
                 actions = {
                     if (showHourInputsInitial) {
                         AppSearchHoursForm(

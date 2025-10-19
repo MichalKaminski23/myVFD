@@ -41,6 +41,7 @@ import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppErrorText
 import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.AuthViewModel
+import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
 import com.vfd.client.ui.viewmodels.FirefighterActivityViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.MainViewModel
@@ -56,6 +57,7 @@ fun ModeratorScreen(
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel(),
+    firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(),
     firefighterActivityViewModel: FirefighterActivityViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
@@ -72,6 +74,8 @@ fun ModeratorScreen(
     var showPasswordInputs by remember { mutableStateOf(false) }
 
     val mainViewModel: MainViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+
+    val firedepartmentDetailUiState by firedepartmentViewModel.firedepartmentDetailUiState.collectAsState()
 
     LaunchedEffect(currentFirefighterUiState.currentFirefighter?.role) {
         mainViewModel.setUserRole(currentFirefighterUiState.currentFirefighter?.role)
@@ -105,6 +109,7 @@ fun ModeratorScreen(
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
         firefighterViewModel.getFirefighterByEmailAddress()
+        firedepartmentViewModel.getFiredepartment()
         firefighterActivityViewModel.getFirefighterActivities(page = 0, refresh = true)
 
         RefreshManager.events.collect { event ->
@@ -112,6 +117,7 @@ fun ModeratorScreen(
                 is RefreshEvent.ModeratorScreen -> {
                     userViewModel.getUserByEmailAddress()
                     firefighterViewModel.getFirefighterByEmailAddress()
+                    firedepartmentViewModel.getFiredepartment()
                     firefighterActivityViewModel.getFirefightersActivities(page = 0, refresh = true)
                 }
 
@@ -233,6 +239,7 @@ fun ModeratorScreen(
         currentFirefighterUiState.currentFirefighter?.let { firefighter ->
             AppFirefighterCard(
                 firefighter,
+                firedepartment = firedepartmentDetailUiState.firedepartment!!,
                 quarterHours = currentFirefighterUiState.hours?.hours,
                 actions = {
                     if (showHourInputs) {
