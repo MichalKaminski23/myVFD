@@ -16,6 +16,19 @@ object FirefighterDtos {
         val firedepartmentId: Int,
     )
 
+    data class FirefighterCreateByEmailAddress(
+        @field:NotNull(message = "User email address must not be null.")
+        @field:Schema(
+            description = "Email address of the user to assign as a firefighter",
+            example = "presidentStr@test.com"
+        )
+        val userEmailAddress: String,
+
+        @field:NotNull(message = "Firedepartment ID must not be null.")
+        @field:Schema(description = "ID of the fire department to assign the firefighter to")
+        val firedepartmentId: Int
+    )
+
     @Schema(description = "DTO used for partially updating a firefighter record")
     data class FirefighterPatch(
         @Schema(allowableValues = ["ADMIN", "PRESIDENT", "MEMBER", "USER"])

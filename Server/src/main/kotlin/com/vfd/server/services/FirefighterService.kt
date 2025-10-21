@@ -23,6 +23,11 @@ interface FirefighterService {
         firefighterDto: FirefighterDtos.FirefighterPatch
     ): FirefighterDtos.FirefighterResponse
 
+    fun createFirefighterByEmailAddress(
+        emailAddress: String,
+        firefighterDto: FirefighterDtos.FirefighterCreateByEmailAddress
+    ): FirefighterDtos.FirefighterResponse
+
     fun getFirefighterByEmailAddress(emailAddress: String): FirefighterDtos.FirefighterResponse
 
     fun getPendingFirefighters(

@@ -5,6 +5,7 @@ import com.vfd.server.entities.FirefighterRole
 import com.vfd.server.entities.FirefighterStatus
 import com.vfd.server.exceptions.InvalidNumberException
 import com.vfd.server.exceptions.InvalidStatusException
+import com.vfd.server.exceptions.PresidentAlreadyExistsException
 import com.vfd.server.mappers.FirefighterMapper
 import com.vfd.server.repositories.FiredepartmentRepository
 import com.vfd.server.repositories.FirefighterRepository
@@ -79,6 +80,43 @@ class FirefighterServiceImplementation(
         )
     }
 
+    override fun createFirefighterByEmailAddress(
+        emailAddress: String,
+        firefighterDto: FirefighterDtos.FirefighterCreateByEmailAddress
+    ): FirefighterDtos.FirefighterResponse {
+
+        val userAdmin = userRepository.findByEmailOrThrow(emailAddress)
+
+        val firefighterAdmin = firefighterRepository.findByIdOrThrow(userAdmin.userId!!)
+
+
+        val userCreated = userRepository.findByEmailOrThrow(firefighterDto.userEmailAddress)
+
+        firefighterRepository.assertNotExistsByUserId(userCreated.userId!!)
+
+        val firedepartment = firedepartmentRepository.findByIdOrThrow(firefighterDto.firedepartmentId)
+
+        if (firefighterRepository.existsByFiredepartmentFiredepartmentIdAndRole(
+                firedepartment.firedepartmentId!!,
+                FirefighterRole.PRESIDENT
+            )
+        ) {
+            throw PresidentAlreadyExistsException()
+        }
+
+        val firefighter = firefighterMapper.toFirefighterEntityByEmailAddress(firefighterDto)
+
+
+        firefighter.user = userCreated
+        firefighter.firedepartment = firedepartment
+        firefighter.role = FirefighterRole.PRESIDENT
+        firefighter.status = FirefighterStatus.ACTIVE
+
+        return firefighterMapper.toFirefighterDto(
+            firefighterRepository.save(firefighter)
+        )
+    }
+
     @Transactional(readOnly = true)
     override fun getFirefighters(
         page: Int,
@@ -131,6 +169,18 @@ class FirefighterServiceImplementation(
 
         validateStatus(firefighterDto.status)
         validateRole(firefighterDto.role)
+
+        val newRole = FirefighterRole.valueOf(firefighterDto.role!!)
+        if (newRole == FirefighterRole.PRESIDENT) {
+            if (firefighterRepository.existsByFiredepartmentFiredepartmentIdAndRoleAndFirefighterIdNot(
+                    firedepartmentId,
+                    FirefighterRole.PRESIDENT,
+                    firefighterUpdated.firefighterId!!
+                )
+            ) {
+                throw PresidentAlreadyExistsException()
+            }
+        }
 
         firefighterMapper.patchFirefighter(firefighterDto, firefighterUpdated)
 
@@ -294,6 +344,20 @@ class FirefighterServiceImplementation(
     ): FirefighterDtos.FirefighterResponse {
 
         val firefighter = firefighterRepository.findByIdOrThrow(firefighterId)
+
+        val newRole = firefighterDto.role?.let { FirefighterRole.valueOf(it) }
+        if (newRole == FirefighterRole.PRESIDENT) {
+            val fdId = firefighter.firedepartment?.firedepartmentId
+                ?: throw InvalidStatusException("Firefighter is not assigned to any firedepartment")
+            if (firefighterRepository.existsByFiredepartmentFiredepartmentIdAndRoleAndFirefighterIdNot(
+                    fdId,
+                    FirefighterRole.PRESIDENT,
+                    firefighter.firefighterId!!
+                )
+            ) {
+                throw PresidentAlreadyExistsException()
+            }
+        }
 
         firefighterMapper.patchFirefighter(firefighterDto, firefighter)
 

@@ -50,6 +50,29 @@ class FirefighterController(
         firefighterService.createFirefighter(principal.username, firefighterDto)
 
     @Operation(
+        summary = "Create a new firefighter by email address",
+        description = "Creates a new firefighter associated with the firedepartment and user identified by email address, and returns the created firefighter details."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201", description = "Firefighter successfully created",
+                content = [Content(schema = Schema(implementation = FirefighterDtos.FirefighterResponse::class))]
+            ),
+            ApiResponse(responseCode = "400", ref = "BadRequest"),
+            ApiResponse(responseCode = "403", ref = "Forbidden")
+        ]
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createFirefighterByEmailAddress(
+        @AuthenticationPrincipal principal: UserDetails,
+        @Valid @RequestBody firefighterDto: FirefighterDtos.FirefighterCreateByEmailAddress
+    ): FirefighterDtos.FirefighterResponse =
+        firefighterService.createFirefighterByEmailAddress(principal.username, firefighterDto)
+
+    @Operation(
         summary = "List firefighters from my firedepartment",
         description = """
             Retrieves all firefighters associated with the firedepartment of the currently authenticated user.

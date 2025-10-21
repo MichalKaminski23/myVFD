@@ -96,7 +96,7 @@ class FiredepartmentController(
         ]
     )
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/all")
+    @GetMapping("/admin")
     fun getAllFiredepartments(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,

@@ -31,6 +31,11 @@ interface FirefighterMapper {
     @Mapping(target = "firedepartment", ignore = true)
     fun toFirefighterEntity(firefighterDto: FirefighterDtos.FirefighterCreate): Firefighter
 
+    @Mapping(target = "firefighterId", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "firedepartment", ignore = true)
+    fun toFirefighterEntityByEmailAddress(firefighterDto: FirefighterDtos.FirefighterCreateByEmailAddress): Firefighter
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "firedepartment", ignore = true)

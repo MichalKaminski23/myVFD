@@ -1,6 +1,7 @@
 package com.vfd.server.repositories
 
 import com.vfd.server.entities.Firefighter
+import com.vfd.server.entities.FirefighterRole
 import com.vfd.server.entities.FirefighterStatus
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -38,4 +39,15 @@ interface FirefighterRepository : JpaRepository<Firefighter, Int> {
         status: FirefighterStatus,
         pageable: Pageable
     ): Page<Firefighter>
+
+    fun existsByFiredepartmentFiredepartmentIdAndRole(
+        firedepartmentId: Int,
+        role: FirefighterRole
+    ): Boolean
+
+    fun existsByFiredepartmentFiredepartmentIdAndRoleAndFirefighterIdNot(
+        firedepartmentId: Int,
+        role: FirefighterRole,
+        firefighterId: Int
+    ): Boolean
 }

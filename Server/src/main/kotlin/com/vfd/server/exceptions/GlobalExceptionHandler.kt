@@ -87,6 +87,20 @@ class GlobalExceptionHandler {
         return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(PresidentAlreadyExistsException::class)
+    fun handlePresidentAlreadyExists(
+        exception: PresidentAlreadyExistsException,
+        request: WebRequest
+    ): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            error = "Bad Request",
+            message = exception.message ?: "A president already exists for this firedepartment.",
+            path = request.getDescription(false).replace("uri=", "")
+        )
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
+    }
+
     @ExceptionHandler(BadCredentialsException::class)
     fun handleBadCredentials(exception: BadCredentialsException, request: WebRequest): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
