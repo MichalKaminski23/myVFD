@@ -12,6 +12,13 @@ object FirefighterDtos {
     )
 
     @Serializable
+    data class FirefighterCreateByEmailAddress(
+        val userEmailAddress: String,
+        
+        val firedepartmentId: Int
+    )
+
+    @Serializable
     data class FirefighterPatch(
         val role: String? = null,
 

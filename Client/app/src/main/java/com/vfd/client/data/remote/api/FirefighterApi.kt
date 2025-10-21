@@ -18,6 +18,11 @@ interface FirefighterApi {
         @Body firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse
 
+    @POST("api/firefighters/admin")
+    suspend fun createFirefighterByEmailAddress(
+        @Body firefighterDto: FirefighterDtos.FirefighterCreateByEmailAddress
+    ): FirefighterDtos.FirefighterResponse
+
     @GET("api/firefighters/my")
     suspend fun getFirefighters(
         @Query("page") page: Int = 0,

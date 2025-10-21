@@ -41,6 +41,14 @@ data class PendingFirefightersUiState(
     val errorMessage: String? = null
 )
 
+data class FirefighterCreateUiState(
+    val emailAddress: String = "",
+    val firedepartmentId: Int? = null,
+    val isLoading: Boolean = false,
+    val success: Boolean = false,
+    val errorMessage: String? = null
+)
+
 @HiltViewModel
 class FirefighterViewModel @Inject constructor(
     private val firefighterRepository: FirefighterRepository
@@ -57,6 +65,13 @@ class FirefighterViewModel @Inject constructor(
 
     private val _pendingFirefightersUiState = MutableStateFlow(PendingFirefightersUiState())
     val pendingFirefightersUiState = _pendingFirefightersUiState.asStateFlow()
+
+    private val _firefighterCreateUiState = MutableStateFlow(FirefighterCreateUiState())
+    val firefighterCreateUiState = _firefighterCreateUiState.asStateFlow()
+
+    fun onFirefighterCreateValueChange(field: (FirefighterCreateUiState) -> FirefighterCreateUiState) {
+        _firefighterCreateUiState.value = field(_firefighterCreateUiState.value)
+    }
 
     fun createFirefighter(firefighterDto: FirefighterDtos.FirefighterCreate) {
         viewModelScope.launch {
@@ -88,6 +103,50 @@ class FirefighterViewModel @Inject constructor(
                 is ApiResult.Loading -> {
                     _currentFirefighterUiState.value =
                         _currentFirefighterUiState.value.copy(
+                            isLoading = true
+                        )
+                }
+            }
+        }
+    }
+
+    fun createFirefighterByEmailAddress(firefighterDto: FirefighterDtos.FirefighterCreateByEmailAddress) {
+        viewModelScope.launch {
+            _firefighterCreateUiState.value =
+                _firefighterCreateUiState.value.copy(
+                    isLoading = true,
+                    errorMessage = null,
+                    success = false
+                )
+
+            when (val result =
+                firefighterRepository.createFirefighterByEmailAddress(firefighterDto)) {
+
+                is ApiResult.Success -> {
+                    _firefighterCreateUiState.value =
+                        _firefighterCreateUiState.value.copy(
+                            emailAddress = "",
+                            firedepartmentId = null,
+                            isLoading = false,
+                            errorMessage = null,
+                            success = true
+                        )
+                    _uiEvent.send(UiEvent.Success("Firefighter created successfully"))
+                }
+
+                is ApiResult.Error -> {
+                    _firefighterCreateUiState.value =
+                        _firefighterCreateUiState.value.copy(
+                            isLoading = false,
+                            success = false,
+                            errorMessage = result.message ?: "Failed to create firefighter"
+                        )
+                    _uiEvent.send(UiEvent.Success(result.message!!))
+                }
+
+                is ApiResult.Loading -> {
+                    _firefighterCreateUiState.value =
+                        _firefighterCreateUiState.value.copy(
                             isLoading = true
                         )
                 }

@@ -18,6 +18,11 @@ class FirefighterRepository @Inject constructor(
     ): ApiResult<FirefighterDtos.FirefighterResponse> =
         safeApiCall { firefighterApi.createFirefighter(firefighterDto) }
 
+    suspend fun createFirefighterByEmailAddress(
+        firefighterDto: FirefighterDtos.FirefighterCreateByEmailAddress
+    ): ApiResult<FirefighterDtos.FirefighterResponse> =
+        safeApiCall { firefighterApi.createFirefighterByEmailAddress(firefighterDto) }
+
     suspend fun getFirefighters(
         page: Int = 0,
         size: Int = 20,

@@ -40,7 +40,8 @@ import com.vfd.client.utils.RefreshManager
 
 enum class AdminSection {
     Dashboard,
-    Firedepartments
+    Firedepartments,
+    Presidents,
 }
 
 @Composable
@@ -66,6 +67,7 @@ fun AdminScreen(
     }
 
     AppUiEvents(firedepartmentViewModel.uiEvents, snackbarHostState)
+    AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
@@ -117,6 +119,7 @@ fun AdminScreen(
                     )
                     DashboardGrid(
                         onOpenFiredepartments = { section = AdminSection.Firedepartments },
+                        onOpenPresidents = { section = AdminSection.Presidents },
                         onLogout = {
                             authViewModel.logout()
                             navController.navigate("welcomeScreen") {
@@ -132,6 +135,13 @@ fun AdminScreen(
                         firedepartmentViewModel = firedepartmentViewModel
                     )
                 }
+
+                AdminSection.Presidents -> {
+                    PresidentsHub(
+                        firefighterViewModel = firefighterViewModel,
+                        firedepartmentViewModel = firedepartmentViewModel
+                    )
+                }
             }
         }
     }
@@ -140,12 +150,13 @@ fun AdminScreen(
 @Composable
 private fun DashboardGrid(
     onOpenFiredepartments: () -> Unit,
+    onOpenPresidents: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val tiles = listOf(
         Triple("Firedepartments", Icons.Filled.Home, onOpenFiredepartments),
-        Triple("Presidents", Icons.Filled.Person, { /* TODO: later */ }),
+        Triple("Presidents", Icons.Filled.Person, onOpenPresidents),
         Triple("Asset types", Icons.Filled.Edit, { /* TODO: later */ }),
         Triple("Logout", Icons.Filled.ArrowBack, onLogout),
     )

@@ -23,7 +23,7 @@ interface FiredepartmentApi {
         @Query("sort") sort: String = "name,asc"
     ): PageResponse<FiredepartmentDtos.FiredepartmentResponseShort>
 
-    @GET("api/firedepartments/all")
+    @GET("api/firedepartments/admin")
     suspend fun getFiredepartments(
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20,
