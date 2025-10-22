@@ -2,6 +2,7 @@ package com.vfd.client.ui.screens
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -35,6 +36,7 @@ import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
 import com.vfd.client.ui.viewmodels.FirefighterActivityTypeViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
+import com.vfd.client.ui.viewmodels.InspectionTypeViewModel
 import com.vfd.client.ui.viewmodels.MainViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
 import com.vfd.client.utils.RefreshEvent
@@ -45,7 +47,8 @@ enum class AdminSection {
     Firedepartments,
     Presidents,
     AssetTypes,
-    FirefighterActivityTypes
+    FirefighterActivityTypes,
+    InspectionTypes
 }
 
 @Composable
@@ -56,6 +59,7 @@ fun AdminScreen(
     firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(),
     assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
     firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel = hiltViewModel(),
+    inspectionTypeViewModel: InspectionTypeViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
 ) {
@@ -76,6 +80,7 @@ fun AdminScreen(
     AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
     AppUiEvents(assetTypeViewModel.uiEvents, snackbarHostState)
     AppUiEvents(firefighterActivityTypeViewModel.uiEvents, snackbarHostState)
+    AppUiEvents(inspectionTypeViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
@@ -129,6 +134,7 @@ fun AdminScreen(
                         onOpenFiredepartments = { section = AdminSection.Firedepartments },
                         onOpenPresidents = { section = AdminSection.Presidents },
                         onOpenAssetTypes = { section = AdminSection.AssetTypes },
+                        onOpenInspectionsTypes = { section = AdminSection.InspectionTypes },
                         onOpenFirefighterActivityTypes = {
                             section = AdminSection.FirefighterActivityTypes
                         },
@@ -162,6 +168,10 @@ fun AdminScreen(
                 AdminSection.FirefighterActivityTypes -> {
                     FirefighterActivityTypesHub(firefighterActivityTypeViewModel)
                 }
+
+                AdminSection.InspectionTypes -> {
+                    InspectionTypesHub(inspectionTypeViewModel)
+                }
             }
         }
     }
@@ -173,6 +183,7 @@ private fun DashboardGrid(
     onOpenPresidents: () -> Unit,
     onOpenAssetTypes: () -> Unit,
     onOpenFirefighterActivityTypes: () -> Unit,
+    onOpenInspectionsTypes: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -181,13 +192,14 @@ private fun DashboardGrid(
         Triple("Presidents", Icons.Filled.Person, onOpenPresidents),
         Triple("Asset types", Icons.Filled.Edit, onOpenAssetTypes),
         Triple("Activity types", Icons.Filled.Edit, onOpenFirefighterActivityTypes),
+        Triple("Inspection types", Icons.Filled.Edit, onOpenInspectionsTypes),
         Triple("Logout", Icons.AutoMirrored.Filled.ArrowBack, onLogout),
     )
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 180.dp),
         modifier = modifier,
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(8.dp),
+        contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {

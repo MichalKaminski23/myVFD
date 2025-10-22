@@ -4,19 +4,19 @@ VALUES ('Poland', 'Silesia', 'Strzyzowice', '00-001', 'Belna', '1A', '10'),
        ('Poland', 'Silesia', 'Psary', '40-001', 'Kolejowa', '2', '20');
 
 INSERT INTO Asset_Types (asset_type, name)
-VALUES ('WaterPump', 'Heavy water pump'),
+VALUES ('WATERPUMP', 'Heavy water pump'),
        ('FH52', 'Firehose'),
        ('RPA', 'Respiratory Protective Apparatus');
 
 INSERT INTO Inspection_types (inspection_type, name)
-VALUES ('SecCheck', 'Security check'),
-       ('MainTen', 'Maintenance'),
-       ('Insu', 'Insurance');
+VALUES ('SECCHECK', 'Security check'),
+       ('MAINTEN', 'Maintenance'),
+       ('INSU', 'Insurance');
 
 INSERT INTO Operation_Types (operation_type, name)
-VALUES ('ResOpe', 'Rescue operation'),
-       ('Exerc', 'Exercises'),
-       ('MainWor', 'Maintenance work');
+VALUES ('RESOPE', 'Rescue operation'),
+       ('EXERC', 'Exercises'),
+       ('MAINWORK', 'Maintenance work');
 
 INSERT INTO Firefighter_Activity_Types (firefighter_activity_type, name)
 VALUES ('TRAIN', 'Training'),
@@ -124,17 +124,17 @@ VALUES (1, 'TRAIN', '2025-07-01 09:00:00', '2026-07-01 09:00:00', 'Basic firefig
        (3, 'CERT', '2025-05-15 08:00:00', '2027-05-15 08:00:00', 'Advanced Certification', 'ACTIVE');
 
 INSERT INTO Assets (firedepartment_id, name, asset_type, description)
-VALUES (1, 'Mutant', 'WaterPump', 'Mega pump'),
+VALUES (1, 'Mutant', 'WATERPUMP', 'Mega pump'),
        (1, 'Firehose green 52', 'FH52', 'Firehose FH52 Kadimex'),
        (2, 'Respiratory protection', 'RPA', 'Respiratory protection');
 
 INSERT INTO Inspections (asset_id, inspection_type, inspection_date, expiration_date)
-VALUES (1, 'SecCheck', '2025-06-15 11:00:00', '2026-06-15 11:00:00'),
-       (2, 'Insu', '2025-07-05 14:00:00', '2026-07-05 14:00:00');
+VALUES (1, 'SECCHECK', '2025-06-15 11:00:00', '2026-06-15 11:00:00'),
+       (2, 'INSU', '2025-07-05 14:00:00', '2026-07-05 14:00:00');
 
 INSERT INTO Operations (firedepartment_id, operation_type, address_id, operation_date, operation_end, description)
-VALUES (1, 'ResOpe', 3, '2025-07-15 13:00:00', '2025-07-15 18:00:00', 'Rescue operation in Katowice'),
-       (2, 'Exerc', 2, '2025-07-18 09:00:00', '2025-07-18 17:00:00', 'Monthly exercises in Bedzin');
+VALUES (1, 'RESOPE', 3, '2025-07-15 13:00:00', '2025-07-15 18:00:00', 'Rescue operation in Katowice'),
+       (2, 'EXERC', 2, '2025-07-18 09:00:00', '2025-07-18 17:00:00', 'Monthly exercises in Bedzin');
 
 INSERT INTO Participations (operation_id, firefighter_id)
 VALUES (1, 1),
