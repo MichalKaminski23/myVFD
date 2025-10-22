@@ -33,12 +33,12 @@ fun AppButton(
         shape = MaterialTheme.shapes.medium,
         modifier = if (fullWidth) modifier.fillMaxWidth() else modifier,
         colors = appButtonColors(),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimary)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         if (loading) {
             CircularProgressIndicator(
                 modifier = Modifier.size(20.dp),
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
         } else {
             Icon(

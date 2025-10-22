@@ -7,10 +7,11 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun appButtonColors(): ButtonColors {
+    val colors = MaterialTheme.colorScheme
     return ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-        disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+        containerColor = colors.primary,
+        contentColor = colors.onPrimary,
+        disabledContainerColor = colors.primary.copy(alpha = 0.5f),
+        disabledContentColor = colors.onPrimary.copy(alpha = 0.5f)
     )
 }

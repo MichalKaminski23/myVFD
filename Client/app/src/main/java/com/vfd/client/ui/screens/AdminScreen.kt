@@ -38,6 +38,7 @@ import com.vfd.client.ui.viewmodels.FirefighterActivityTypeViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.InspectionTypeViewModel
 import com.vfd.client.ui.viewmodels.MainViewModel
+import com.vfd.client.ui.viewmodels.OperationTypeViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
@@ -48,7 +49,8 @@ enum class AdminSection {
     Presidents,
     AssetTypes,
     FirefighterActivityTypes,
-    InspectionTypes
+    InspectionTypes,
+    OperationTypes
 }
 
 @Composable
@@ -60,6 +62,7 @@ fun AdminScreen(
     assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
     firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel = hiltViewModel(),
     inspectionTypeViewModel: InspectionTypeViewModel = hiltViewModel(),
+    operationTypeViewModel: OperationTypeViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
 ) {
@@ -81,11 +84,16 @@ fun AdminScreen(
     AppUiEvents(assetTypeViewModel.uiEvents, snackbarHostState)
     AppUiEvents(firefighterActivityTypeViewModel.uiEvents, snackbarHostState)
     AppUiEvents(inspectionTypeViewModel.uiEvents, snackbarHostState)
+    AppUiEvents(operationTypeViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
         firefighterViewModel.getFirefighterByEmailAddress()
         firedepartmentViewModel.getFiredepartments()
+        assetTypeViewModel.getAllAssetTypes()
+        firefighterActivityTypeViewModel.getAllFirefighterActivityTypes()
+        inspectionTypeViewModel.getAllInspectionTypes()
+        operationTypeViewModel.getAllOperationTypes()
 
         RefreshManager.events.collect { event ->
             when (event) {
@@ -93,6 +101,10 @@ fun AdminScreen(
                     userViewModel.getUserByEmailAddress()
                     firefighterViewModel.getFirefighterByEmailAddress()
                     firedepartmentViewModel.getFiredepartments()
+                    assetTypeViewModel.getAllAssetTypes()
+                    firefighterActivityTypeViewModel.getAllFirefighterActivityTypes()
+                    inspectionTypeViewModel.getAllInspectionTypes()
+                    operationTypeViewModel.getAllOperationTypes()
                 }
 
                 else -> {}
@@ -134,7 +146,8 @@ fun AdminScreen(
                         onOpenFiredepartments = { section = AdminSection.Firedepartments },
                         onOpenPresidents = { section = AdminSection.Presidents },
                         onOpenAssetTypes = { section = AdminSection.AssetTypes },
-                        onOpenInspectionsTypes = { section = AdminSection.InspectionTypes },
+                        onOpenInspectionTypes = { section = AdminSection.InspectionTypes },
+                        onOpenOperationTypes = { section = AdminSection.OperationTypes },
                         onOpenFirefighterActivityTypes = {
                             section = AdminSection.FirefighterActivityTypes
                         },
@@ -172,6 +185,10 @@ fun AdminScreen(
                 AdminSection.InspectionTypes -> {
                     InspectionTypesHub(inspectionTypeViewModel)
                 }
+
+                AdminSection.OperationTypes -> {
+                    OperationTypesHub(operationTypeViewModel)
+                }
             }
         }
     }
@@ -183,7 +200,8 @@ private fun DashboardGrid(
     onOpenPresidents: () -> Unit,
     onOpenAssetTypes: () -> Unit,
     onOpenFirefighterActivityTypes: () -> Unit,
-    onOpenInspectionsTypes: () -> Unit,
+    onOpenInspectionTypes: () -> Unit,
+    onOpenOperationTypes: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -192,7 +210,8 @@ private fun DashboardGrid(
         Triple("Presidents", Icons.Filled.Person, onOpenPresidents),
         Triple("Asset types", Icons.Filled.Edit, onOpenAssetTypes),
         Triple("Activity types", Icons.Filled.Edit, onOpenFirefighterActivityTypes),
-        Triple("Inspection types", Icons.Filled.Edit, onOpenInspectionsTypes),
+        Triple("Inspection types", Icons.Filled.Edit, onOpenInspectionTypes),
+        Triple("Operation types", Icons.Filled.Edit, onOpenOperationTypes),
         Triple("Logout", Icons.AutoMirrored.Filled.ArrowBack, onLogout),
     )
 

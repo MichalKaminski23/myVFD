@@ -4,27 +4,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun appTextFieldColors(): TextFieldColors {
+    val colors = MaterialTheme.colorScheme
     return TextFieldDefaults.colors(
-        focusedContainerColor = MaterialTheme.colorScheme.primary,
-        unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-        disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        disabledContainerColor = colors.surface.copy(alpha = 0.5f),
 
-        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-        unfocusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-        errorIndicatorColor = MaterialTheme.colorScheme.error,
+        focusedIndicatorColor = colors.primary,
+        unfocusedIndicatorColor = colors.outline,
+        errorIndicatorColor = colors.error,
 
-        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
-        errorLabelColor = MaterialTheme.colorScheme.error,
+        focusedLabelColor = colors.onSurface,
+        unfocusedLabelColor = colors.onSurface.copy(alpha = 0.7f),
+        errorLabelColor = colors.error,
 
-        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-        disabledTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+        focusedTextColor = colors.onSurface,
+        unfocusedTextColor = colors.onSurface,
+        disabledTextColor = colors.onSurface.copy(alpha = 0.5f),
 
-        cursorColor = MaterialTheme.colorScheme.onPrimary,
-        errorCursorColor = MaterialTheme.colorScheme.error
+        cursorColor = colors.primary,
+        errorCursorColor = colors.error
     )
 }

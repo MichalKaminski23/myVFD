@@ -11,4 +11,4 @@ fun main(args: Array<String>) {
 
     println("Server is running...")
 }
-// TODO -> AdminPanel -> Tworzenie i edycja typów
+// TODO -> !!!zmiana języka na polski oraz zmiana motywu (przyciski)!!!; poprawki w kodzie, uzupełnienia, refektoryzacja itp.
