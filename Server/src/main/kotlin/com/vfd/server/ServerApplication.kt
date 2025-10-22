@@ -11,5 +11,4 @@ fun main(args: Array<String>) {
 
     println("Server is running...")
 }
-// TODO -> AdminPanel -> Symulacja mejlowa dotycząca tworzenia nowych OSP np. Grzesiu Firanka pisze mejla do admina, on tworzy OSP i przypisuje mu PRESIDENTA
 // TODO -> AdminPanel -> Tworzenie i edycja typów

@@ -58,6 +58,14 @@ class AssetTypeViewModel @Inject constructor(
     private val _assetTypeUpdateUiState = MutableStateFlow(AssetTypeUpdateUiState())
     val assetTypeUpdateUiState = _assetTypeUpdateUiState.asStateFlow()
 
+    fun onAssetTypeUpdateValueChange(field: (AssetTypeUpdateUiState) -> AssetTypeUpdateUiState) {
+        _assetTypeUpdateUiState.value = field(_assetTypeUpdateUiState.value)
+    }
+
+    fun onAssetTypeCreateValueChange(field: (AssetTypeCreateUiState) -> AssetTypeCreateUiState) {
+        _assetTypeCreateUiState.value = field(_assetTypeCreateUiState.value)
+    }
+
     fun createAssetType(assetTypeDto: AssetTypeDtos.AssetTypeCreate) {
         viewModelScope.launch {
             _assetTypeCreateUiState.value =
@@ -104,10 +112,14 @@ class AssetTypeViewModel @Inject constructor(
         }
     }
 
-    fun getAllAssetTypes(page: Int = 0, size: Int = 20) {
+    fun getAllAssetTypes(page: Int = 0, size: Int = 20, refresh: Boolean = false) {
         viewModelScope.launch {
             _assetTypeUiState.value =
-                _assetTypeUiState.value.copy(isLoading = true, errorMessage = null)
+                _assetTypeUiState.value.copy(
+                    assetTypes = if (refresh || page == 0) emptyList() else _assetTypeUiState.value.assetTypes,
+                    isLoading = true,
+                    errorMessage = null
+                )
 
             when (val result = assetTypeRepository.getAllAssetTypes(page, size)) {
 
@@ -115,7 +127,11 @@ class AssetTypeViewModel @Inject constructor(
                     val response = result.data!!
                     delay(400)
                     _assetTypeUiState.value = _assetTypeUiState.value.copy(
-                        assetTypes = _assetTypeUiState.value.assetTypes + response.items,
+                        assetTypes = if (refresh || page == 0) {
+                            response.items
+                        } else {
+                            _assetTypeUiState.value.assetTypes + response.items
+                        },
                         page = response.page,
                         totalPages = response.totalPages,
                         isLoading = false,

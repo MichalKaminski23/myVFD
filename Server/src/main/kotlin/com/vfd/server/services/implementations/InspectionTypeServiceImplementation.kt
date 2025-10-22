@@ -23,7 +23,7 @@ class InspectionTypeServiceImplementation(
 
         val inspectionType = inspectionTypeMapper.toInspectionTypeEntity(inspectionTypeDto)
 
-        inspectionTypeRepository.assertNotExistsByInspectionType(inspectionTypeDto.inspectionType)
+        inspectionTypeRepository.assertNotExistsByInspectionType(inspectionTypeDto.inspectionType.uppercase())
 
         return inspectionTypeMapper.toInspectionTypeDto(
             inspectionTypeRepository.save(inspectionType)

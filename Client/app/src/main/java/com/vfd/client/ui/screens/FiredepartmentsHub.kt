@@ -35,23 +35,24 @@ import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
 fun FiredepartmentsHub(
     firedepartmentViewModel: FiredepartmentViewModel
 ) {
-    val createState by firedepartmentViewModel.firedepartmentCreateUiState.collectAsState()
-    val listState by firedepartmentViewModel.firedepartmentsUiState.collectAsState()
-    val firedepartmentUpdate by firedepartmentViewModel.firedepartmentUpdateUiState.collectAsState()
+
+    val firedepartmentsUiState by firedepartmentViewModel.firedepartmentsUiState.collectAsState()
+    val firedepartmentCreateUiState by firedepartmentViewModel.firedepartmentCreateUiState.collectAsState()
+    val firedepartmentUpdateUiState by firedepartmentViewModel.firedepartmentUpdateUiState.collectAsState()
 
     var editingFiredepartmentId by remember { mutableStateOf<Int?>(null) }
 
     var mode by remember { mutableStateOf("create") }
 
-    LaunchedEffect(firedepartmentUpdate.success) {
-        if (firedepartmentUpdate.success) {
+    LaunchedEffect(firedepartmentUpdateUiState.success) {
+        if (firedepartmentUpdateUiState.success) {
             editingFiredepartmentId = null
             firedepartmentViewModel.onFiredepartmentUpdateValueChange { it.copy(success = false) }
         }
     }
 
     LaunchedEffect(Unit) {
-        !listState.isLoading
+        !firedepartmentsUiState.isLoading
     }
 
     LaunchedEffect(mode) {
@@ -88,17 +89,17 @@ fun FiredepartmentsHub(
                 AppText("New firedepartment", style = MaterialTheme.typography.headlineSmall)
 
                 AppTextField(
-                    value = createState.name,
+                    value = firedepartmentCreateUiState.name,
                     onValueChange = { new ->
                         firedepartmentViewModel.onFiredepartmentCreateValueChange { it.copy(name = new) }
                     },
                     label = "Name",
-                    errorMessage = createState.errorMessage
+                    errorMessage = firedepartmentCreateUiState.errorMessage
                 )
 
                 AppAddressActions(
-                    address = createState.address,
-                    errors = createState.fieldErrors,
+                    address = firedepartmentCreateUiState.address,
+                    errors = firedepartmentCreateUiState.fieldErrors,
                     onAddressChange = { newAddress ->
                         firedepartmentViewModel.onFiredepartmentCreateValueChange { it.copy(address = newAddress) }
                     },
@@ -114,7 +115,7 @@ fun FiredepartmentsHub(
                 AppStringDropdown(
                     label = "NRFS",
                     items = listOf(true, false).map { it.toString() },
-                    selected = createState.nrfs.toString(),
+                    selected = firedepartmentCreateUiState.nrfs.toString(),
                     onSelected = { new ->
                         firedepartmentViewModel.onFiredepartmentCreateValueChange { it.copy(nrfs = new == "true") }
                     },
@@ -127,28 +128,28 @@ fun FiredepartmentsHub(
                     onClick = {
                         firedepartmentViewModel.createFiredepartment(
                             FiredepartmentDtos.FiredepartmentCreate(
-                                name = createState.name,
+                                name = firedepartmentCreateUiState.name,
                                 address = AddressDtos.AddressCreate(
-                                    country = createState.address.country,
-                                    voivodeship = createState.address.voivodeship,
-                                    city = createState.address.city,
-                                    postalCode = createState.address.postalCode,
-                                    street = createState.address.street,
-                                    houseNumber = createState.address.houseNumber,
-                                    apartNumber = createState.address.apartNumber
+                                    country = firedepartmentCreateUiState.address.country,
+                                    voivodeship = firedepartmentCreateUiState.address.voivodeship,
+                                    city = firedepartmentCreateUiState.address.city,
+                                    postalCode = firedepartmentCreateUiState.address.postalCode,
+                                    street = firedepartmentCreateUiState.address.street,
+                                    houseNumber = firedepartmentCreateUiState.address.houseNumber,
+                                    apartNumber = firedepartmentCreateUiState.address.apartNumber
                                 ),
-                                nrfs = createState.nrfs
+                                nrfs = firedepartmentCreateUiState.nrfs
                             )
                         )
                     },
                     fullWidth = true,
-                    enabled = !createState.isLoading && createState.name.isNotBlank()
-                            && createState.address.street.isNotBlank()
-                            && createState.address.city.isNotBlank()
-                            && createState.address.postalCode.isNotBlank()
-                            && createState.address.country.isNotBlank()
-                            && createState.address.voivodeship.isNotBlank()
-                            && createState.address.houseNumber.isNotBlank()
+                    enabled = !firedepartmentCreateUiState.isLoading && firedepartmentCreateUiState.name.isNotBlank()
+                            && firedepartmentCreateUiState.address.street.isNotBlank()
+                            && firedepartmentCreateUiState.address.city.isNotBlank()
+                            && firedepartmentCreateUiState.address.postalCode.isNotBlank()
+                            && firedepartmentCreateUiState.address.country.isNotBlank()
+                            && firedepartmentCreateUiState.address.voivodeship.isNotBlank()
+                            && firedepartmentCreateUiState.address.houseNumber.isNotBlank()
                 )
             }
         } else {
@@ -176,22 +177,22 @@ fun FiredepartmentsHub(
                     AppText("Edit firedepartment", style = MaterialTheme.typography.headlineSmall)
                 }
 
-                items(listState.firedepartments) { fd ->
-                    if (editingFiredepartmentId == fd.firedepartmentId) {
-                        AppFiredepartmentCard(fd, actions = {
+                items(firedepartmentsUiState.firedepartments) { firedepartment ->
+                    if (editingFiredepartmentId == firedepartment.firedepartmentId) {
+                        AppFiredepartmentCard(firedepartment, actions = {
                             AppTextField(
-                                value = firedepartmentUpdate.name,
+                                value = firedepartmentUpdateUiState.name,
                                 onValueChange = { new ->
                                     firedepartmentViewModel.onFiredepartmentUpdateValueChange {
                                         it.copy(name = new, nameTouched = true)
                                     }
                                 },
                                 label = "Name",
-                                errorMessage = firedepartmentUpdate.errorMessage
+                                errorMessage = firedepartmentUpdateUiState.errorMessage
                             )
                             AppAddressActions(
-                                address = firedepartmentUpdate.address,
-                                errors = firedepartmentUpdate.fieldErrors,
+                                address = firedepartmentUpdateUiState.address,
+                                errors = firedepartmentUpdateUiState.fieldErrors,
                                 onAddressChange = { newAddress ->
                                     firedepartmentViewModel.onFiredepartmentUpdateValueChange {
                                         it.copy(address = newAddress)
@@ -208,7 +209,7 @@ fun FiredepartmentsHub(
                             AppStringDropdown(
                                 label = "NRFS",
                                 items = listOf(true, false).map { it.toString() },
-                                selected = firedepartmentUpdate.nrfs.toString(),
+                                selected = firedepartmentUpdateUiState.nrfs.toString(),
                                 onSelected = { new ->
                                     firedepartmentViewModel.onFiredepartmentUpdateValueChange {
                                         it.copy(nrfs = new == "true", nrfsTouched = true)
@@ -223,22 +224,22 @@ fun FiredepartmentsHub(
                                     onClick = {
                                         val firedepartmentDto =
                                             FiredepartmentDtos.FiredepartmentPatch(
-                                                name = if (firedepartmentUpdate.nameTouched) firedepartmentUpdate.name else null,
-                                                address = if (firedepartmentUpdate.addressTouched) firedepartmentUpdate.address else null,
-                                                nrfs = if (firedepartmentUpdate.nrfsTouched) firedepartmentUpdate.nrfs else null
+                                                name = if (firedepartmentUpdateUiState.nameTouched) firedepartmentUpdateUiState.name else null,
+                                                address = if (firedepartmentUpdateUiState.addressTouched) firedepartmentUpdateUiState.address else null,
+                                                nrfs = if (firedepartmentUpdateUiState.nrfsTouched) firedepartmentUpdateUiState.nrfs else null
                                             )
                                         firedepartmentViewModel.updateFiredepartment(
-                                            fd.firedepartmentId, firedepartmentDto
+                                            firedepartment.firedepartmentId, firedepartmentDto
                                         )
                                     },
-                                    enabled = !firedepartmentUpdate.isLoading && firedepartmentUpdate.name.isNotBlank()
-                                            && firedepartmentUpdate.address?.street?.isNotBlank() == true
-                                            && firedepartmentUpdate.address?.city?.isNotBlank() == true
-                                            && firedepartmentUpdate.address?.postalCode?.isNotBlank() == true
-                                            && firedepartmentUpdate.address?.country?.isNotBlank() == true
-                                            && firedepartmentUpdate.address?.voivodeship?.isNotBlank() == true
-                                            && firedepartmentUpdate.address?.houseNumber?.isNotBlank() == true,
-                                    loading = firedepartmentUpdate.isLoading,
+                                    enabled = !firedepartmentUpdateUiState.isLoading && firedepartmentUpdateUiState.name.isNotBlank()
+                                            && firedepartmentUpdateUiState.address?.street?.isNotBlank() == true
+                                            && firedepartmentUpdateUiState.address?.city?.isNotBlank() == true
+                                            && firedepartmentUpdateUiState.address?.postalCode?.isNotBlank() == true
+                                            && firedepartmentUpdateUiState.address?.country?.isNotBlank() == true
+                                            && firedepartmentUpdateUiState.address?.voivodeship?.isNotBlank() == true
+                                            && firedepartmentUpdateUiState.address?.houseNumber?.isNotBlank() == true,
+                                    loading = firedepartmentUpdateUiState.isLoading,
                                     modifier = Modifier.weight(1f),
                                 )
                                 AppButton(
@@ -257,25 +258,25 @@ fun FiredepartmentsHub(
                             }
                         })
                     } else {
-                        AppFiredepartmentCard(fd, actions = {
+                        AppFiredepartmentCard(firedepartment, actions = {
                             AppButton(
                                 icon = Icons.Filled.Edit,
                                 label = "Edit",
                                 onClick = {
-                                    editingFiredepartmentId = fd.firedepartmentId
+                                    editingFiredepartmentId = firedepartment.firedepartmentId
                                     firedepartmentViewModel.onFiredepartmentUpdateValueChange {
                                         it.copy(
-                                            name = fd.name,
+                                            name = firedepartment.name,
                                             address = AddressDtos.AddressCreate(
-                                                country = fd.address.country,
-                                                voivodeship = fd.address.voivodeship,
-                                                city = fd.address.city,
-                                                postalCode = fd.address.postalCode,
-                                                street = fd.address.street,
-                                                houseNumber = fd.address.houseNumber,
-                                                apartNumber = fd.address.apartNumber
+                                                country = firedepartment.address.country,
+                                                voivodeship = firedepartment.address.voivodeship,
+                                                city = firedepartment.address.city,
+                                                postalCode = firedepartment.address.postalCode,
+                                                street = firedepartment.address.street,
+                                                houseNumber = firedepartment.address.houseNumber,
+                                                apartNumber = firedepartment.address.apartNumber
                                             ),
-                                            nrfs = fd.nrfs,
+                                            nrfs = firedepartment.nrfs,
                                             nameTouched = false,
                                             nrfsTouched = false,
                                             addressTouched = false,
@@ -295,15 +296,15 @@ fun FiredepartmentsHub(
                         icon = Icons.Filled.Edit,
                         label = "Load more",
                         onClick = {
-                            if (!listState.isLoading && listState.page + 1 < listState.totalPages) {
+                            if (!firedepartmentsUiState.isLoading && firedepartmentsUiState.page + 1 < firedepartmentsUiState.totalPages) {
                                 firedepartmentViewModel.getFiredepartmentsShort(
-                                    page = listState.page + 1,
+                                    page = firedepartmentsUiState.page + 1,
                                     size = 20
                                 )
                             }
                         },
                         fullWidth = true,
-                        enabled = !listState.isLoading && listState.page + 1 < listState.totalPages
+                        enabled = !firedepartmentsUiState.isLoading && firedepartmentsUiState.page + 1 < firedepartmentsUiState.totalPages
                     )
                 }
             }

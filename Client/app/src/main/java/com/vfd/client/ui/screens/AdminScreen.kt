@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -30,6 +30,7 @@ import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.globals.AppLoadingBar
 import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppText
+import com.vfd.client.ui.viewmodels.AssetTypeViewModel
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
@@ -42,6 +43,7 @@ enum class AdminSection {
     Dashboard,
     Firedepartments,
     Presidents,
+    AssetTypes
 }
 
 @Composable
@@ -50,6 +52,7 @@ fun AdminScreen(
     userViewModel: UserViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel(),
     firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(),
+    assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
 ) {
@@ -68,6 +71,7 @@ fun AdminScreen(
 
     AppUiEvents(firedepartmentViewModel.uiEvents, snackbarHostState)
     AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
+    AppUiEvents(assetTypeViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
@@ -120,6 +124,7 @@ fun AdminScreen(
                     DashboardGrid(
                         onOpenFiredepartments = { section = AdminSection.Firedepartments },
                         onOpenPresidents = { section = AdminSection.Presidents },
+                        onOpenAssetTypes = { section = AdminSection.AssetTypes },
                         onLogout = {
                             authViewModel.logout()
                             navController.navigate("welcomeScreen") {
@@ -142,6 +147,10 @@ fun AdminScreen(
                         firedepartmentViewModel = firedepartmentViewModel
                     )
                 }
+
+                AdminSection.AssetTypes -> {
+                    AssetTypesHub(assetTypeViewModel)
+                }
             }
         }
     }
@@ -151,14 +160,15 @@ fun AdminScreen(
 private fun DashboardGrid(
     onOpenFiredepartments: () -> Unit,
     onOpenPresidents: () -> Unit,
+    onOpenAssetTypes: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val tiles = listOf(
         Triple("Firedepartments", Icons.Filled.Home, onOpenFiredepartments),
         Triple("Presidents", Icons.Filled.Person, onOpenPresidents),
-        Triple("Asset types", Icons.Filled.Edit, { /* TODO: later */ }),
-        Triple("Logout", Icons.Filled.ArrowBack, onLogout),
+        Triple("Asset types", Icons.Filled.Edit, onOpenAssetTypes),
+        Triple("Logout", Icons.AutoMirrored.Filled.ArrowBack, onLogout),
     )
 
     LazyVerticalGrid(

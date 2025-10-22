@@ -23,7 +23,7 @@ class OperationTypeServiceImplementation(
 
         val operationType = operationTypeMapper.toOperationTypeEntity(operationTypeDto)
 
-        operationTypeRepository.assertNotExistsByOperationType(operationTypeDto.operationType)
+        operationTypeRepository.assertNotExistsByOperationType(operationTypeDto.operationType.uppercase())
 
         return operationTypeMapper.toOperationTypeDto(
             operationTypeRepository.save(operationType)

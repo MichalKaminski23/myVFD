@@ -21,7 +21,7 @@ class AssetTypeServiceImplementation(
 
         val assetType = assetTypeMapper.toAssetTypeEntity(assetTypeDto)
 
-        assetTypeRepository.assertNotExistsByAssetType(assetTypeDto.assetType)
+        assetTypeRepository.assertNotExistsByAssetType(assetTypeDto.assetType.uppercase())
 
         return assetTypeMapper.toAssetTypeDto(assetTypeRepository.save(assetType))
     }

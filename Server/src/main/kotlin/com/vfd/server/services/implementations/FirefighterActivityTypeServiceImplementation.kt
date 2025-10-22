@@ -25,7 +25,7 @@ class FirefighterActivityTypeServiceImplementation(
         val firefighterActivityType: FirefighterActivityType =
             firefighterActivityTypeMapper.toFirefighterActivityTypeEntity(firefighterActivityTypeDto)
 
-        firefighterActivityTypeRepository.assertNotExistsByActivityType(firefighterActivityTypeDto.firefighterActivityType)
+        firefighterActivityTypeRepository.assertNotExistsByActivityType(firefighterActivityTypeDto.firefighterActivityType.uppercase())
 
         return firefighterActivityTypeMapper.toFirefighterActivityTypeDto(
             firefighterActivityTypeRepository.save(firefighterActivityType)
