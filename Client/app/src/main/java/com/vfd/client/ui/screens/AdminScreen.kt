@@ -33,6 +33,7 @@ import com.vfd.client.ui.components.texts.AppText
 import com.vfd.client.ui.viewmodels.AssetTypeViewModel
 import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
+import com.vfd.client.ui.viewmodels.FirefighterActivityTypeViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.MainViewModel
 import com.vfd.client.ui.viewmodels.UserViewModel
@@ -43,7 +44,8 @@ enum class AdminSection {
     Dashboard,
     Firedepartments,
     Presidents,
-    AssetTypes
+    AssetTypes,
+    FirefighterActivityTypes
 }
 
 @Composable
@@ -53,6 +55,7 @@ fun AdminScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(),
     assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
+    firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
 ) {
@@ -72,6 +75,7 @@ fun AdminScreen(
     AppUiEvents(firedepartmentViewModel.uiEvents, snackbarHostState)
     AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
     AppUiEvents(assetTypeViewModel.uiEvents, snackbarHostState)
+    AppUiEvents(firefighterActivityTypeViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
@@ -125,6 +129,9 @@ fun AdminScreen(
                         onOpenFiredepartments = { section = AdminSection.Firedepartments },
                         onOpenPresidents = { section = AdminSection.Presidents },
                         onOpenAssetTypes = { section = AdminSection.AssetTypes },
+                        onOpenFirefighterActivityTypes = {
+                            section = AdminSection.FirefighterActivityTypes
+                        },
                         onLogout = {
                             authViewModel.logout()
                             navController.navigate("welcomeScreen") {
@@ -151,6 +158,10 @@ fun AdminScreen(
                 AdminSection.AssetTypes -> {
                     AssetTypesHub(assetTypeViewModel)
                 }
+
+                AdminSection.FirefighterActivityTypes -> {
+                    FirefighterActivityTypesHub(firefighterActivityTypeViewModel)
+                }
             }
         }
     }
@@ -161,6 +172,7 @@ private fun DashboardGrid(
     onOpenFiredepartments: () -> Unit,
     onOpenPresidents: () -> Unit,
     onOpenAssetTypes: () -> Unit,
+    onOpenFirefighterActivityTypes: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -168,6 +180,7 @@ private fun DashboardGrid(
         Triple("Firedepartments", Icons.Filled.Home, onOpenFiredepartments),
         Triple("Presidents", Icons.Filled.Person, onOpenPresidents),
         Triple("Asset types", Icons.Filled.Edit, onOpenAssetTypes),
+        Triple("Activity types", Icons.Filled.Edit, onOpenFirefighterActivityTypes),
         Triple("Logout", Icons.AutoMirrored.Filled.ArrowBack, onLogout),
     )
 
