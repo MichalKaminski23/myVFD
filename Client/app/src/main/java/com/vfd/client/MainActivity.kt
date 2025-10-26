@@ -2,11 +2,9 @@ package com.vfd.client
 
 import android.app.Activity
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
@@ -40,6 +38,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,8 +56,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
+class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,7 +127,7 @@ class MainActivity : ComponentActivity() {
                                     when (baseRoute) {
                                         "meScreen" -> "My Profile"
                                         "registerScreen" -> "Register"
-                                        "loginScreen" -> "Login"
+                                        "loginScreen" -> stringResource(id = R.string.login)
                                         "infoScreen" -> "Information"
                                         "moderatorScreen" -> "Moderate"
                                         "newFirefighterScreen" -> "New Firefighters"

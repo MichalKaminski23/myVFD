@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name_long">Moja Ochotnicza Straż Pożarna</string>
+    <string name="welcome_subtitle">Zaloguj się lub utwórz nowe konto.</string>
+    <string name="login">Zaloguj</string>
+    <string name="register">Rejestracja</string>
+    <string name="information">Informacje</string>
+</resources>

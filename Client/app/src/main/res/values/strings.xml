@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MyVFDMobile</string>
+    <string name="app_name_short" translatable="false">MyVFD</string>
+    <string name="app_name_long">My Volunteer Fire Department</string>
+    <string name="welcome_subtitle">Login or create a new account.</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="information">Information</string>
 </resources>

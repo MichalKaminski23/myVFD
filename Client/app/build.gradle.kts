@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.vfd.client"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -79,6 +79,8 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     ksp(libs.hilt.compiler)
     implementation(libs.hiltNavigationCompose)
+
+    implementation(libs.androidx.appcompat)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
