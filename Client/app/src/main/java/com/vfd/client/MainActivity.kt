@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -68,12 +69,13 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = navBackStackEntry?.destination?.route
                 val baseRoute = currentRoute?.substringBefore("?")
                 val mainViewModel: MainViewModel = hiltViewModel()
-                val pending by mainViewModel.pendingFirefighters.collectAsState()
-                val active by mainViewModel.activeFirefighters.collectAsState()
-                val assets by mainViewModel.totalAssets.collectAsState()
-                val events by mainViewModel.upcomingEvents.collectAsState()
-                val operations by mainViewModel.totalOperations.collectAsState()
-                val investments by mainViewModel.pendingInvestments.collectAsState()
+                val badges by mainViewModel.badgesState.collectAsStateWithLifecycle()
+                val pending = badges.pendingFirefighters
+                val active = badges.activeFirefighters
+                val assets = badges.totalAssets
+                val events = badges.upcomingEvents
+                val operations = badges.totalOperations
+                val investments = badges.pendingInvestments
                 val canCreateThings by mainViewModel.canCreateThings.collectAsState()
                 val assetName: String? = navBackStackEntry?.arguments
                     ?.getString("assetName")

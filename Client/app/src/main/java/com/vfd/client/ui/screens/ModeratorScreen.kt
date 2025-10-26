@@ -74,12 +74,13 @@ fun ModeratorScreen(
     var showUpdateInputs by remember { mutableStateOf(false) }
     var showPasswordInputs by remember { mutableStateOf(false) }
 
-    val mainViewModel: MainViewModel = hiltViewModel(LocalContext.current as ComponentActivity)
+    val activity = LocalContext.current as? ComponentActivity
+    val mainViewModel: MainViewModel? = activity?.let { hiltViewModel(it) }
 
     val firedepartmentDetailUiState by firedepartmentViewModel.firedepartmentDetailUiState.collectAsState()
 
     LaunchedEffect(currentFirefighterUiState.currentFirefighter?.role) {
-        mainViewModel.setUserRole(currentFirefighterUiState.currentFirefighter?.role)
+        mainViewModel?.setUserRole(currentFirefighterUiState.currentFirefighter?.role)
     }
 
     LaunchedEffect(userUpdateUiState.success) {

@@ -89,22 +89,22 @@ fun AdminScreen(
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
         firefighterViewModel.getFirefighterByEmailAddress()
-        firedepartmentViewModel.getFiredepartments()
-        assetTypeViewModel.getAllAssetTypes()
-        firefighterActivityTypeViewModel.getAllFirefighterActivityTypes()
-        inspectionTypeViewModel.getAllInspectionTypes()
-        operationTypeViewModel.getAllOperationTypes()
+//        firedepartmentViewModel.getFiredepartments()
+//        assetTypeViewModel.getAllAssetTypes()
+//        firefighterActivityTypeViewModel.getAllFirefighterActivityTypes()
+//        inspectionTypeViewModel.getAllInspectionTypes()
+//        operationTypeViewModel.getAllOperationTypes()
 
         RefreshManager.events.collect { event ->
             when (event) {
                 is RefreshEvent.AdminScreen -> {
                     userViewModel.getUserByEmailAddress()
                     firefighterViewModel.getFirefighterByEmailAddress()
-                    firedepartmentViewModel.getFiredepartments()
-                    assetTypeViewModel.getAllAssetTypes()
-                    firefighterActivityTypeViewModel.getAllFirefighterActivityTypes()
-                    inspectionTypeViewModel.getAllInspectionTypes()
-                    operationTypeViewModel.getAllOperationTypes()
+//                    firedepartmentViewModel.getFiredepartments()
+//                    assetTypeViewModel.getAllAssetTypes()
+//                    firefighterActivityTypeViewModel.getAllFirefighterActivityTypes()
+//                    inspectionTypeViewModel.getAllInspectionTypes()
+//                    operationTypeViewModel.getAllOperationTypes()
                 }
 
                 else -> {}

@@ -1,6 +1,7 @@
 package com.vfd.client.ui.viewmodels
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,11 +13,22 @@ import com.vfd.client.data.repositories.OperationRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.daysUntilSomething
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
+
+data class BadgesState(
+    val pendingFirefighters: Int = 0,
+    val activeFirefighters: Int = 0,
+    val totalAssets: Int = 0,
+    val upcomingEvents: Int = 0,
+    val totalOperations: Int = 0,
+    val pendingInvestments: Int = 0
+)
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -27,23 +39,8 @@ class MainViewModel @Inject constructor(
     private val investmentProposalRepository: InvestmentProposalRepository
 ) : ViewModel() {
 
-    private val _pendingFirefighters = MutableStateFlow(0)
-    val pendingFirefighters: StateFlow<Int> = _pendingFirefighters
-
-    private val _activeFirefighters = MutableStateFlow(0)
-    val activeFirefighters: StateFlow<Int> = _activeFirefighters
-
-    private val _totalAssets = MutableStateFlow(0)
-    val totalAssets: StateFlow<Int> = _totalAssets
-
-    private val _upcomingEvents = MutableStateFlow(0)
-    val upcomingEvents: StateFlow<Int> = _upcomingEvents
-
-    private val _totalOperations = MutableStateFlow(0)
-    val totalOperations: StateFlow<Int> = _totalOperations
-
-    private val _pendingInvestments = MutableStateFlow(0)
-    val pendingInvestments: StateFlow<Int> = _pendingInvestments
+    private val _badgesState = MutableStateFlow(BadgesState())
+    val badgesState: StateFlow<BadgesState> = _badgesState.asStateFlow()
 
     private val _canCreateThings = MutableStateFlow(false)
     val canCreateThings: StateFlow<Boolean> = _canCreateThings.asStateFlow()
@@ -66,67 +63,107 @@ class MainViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            val pendingFirefighters =
-                when (val result =
-                    firefighterRepository.getPendingFirefighters(page = 0, size = 1)) {
-                    is ApiResult.Success -> result.data?.totalElements ?: result.data?.items?.size
-                    ?: 0
+            try {
+                supervisorScope {
+                    // uruchamiamy zapytania równolegle i zabezpieczamy każde osobno
+                    val pendingDeferred = async { safeGetPendingFirefighters() }
+                    val activeDeferred = async { safeGetActiveFirefighters() }
+                    val assetsDeferred = async { safeGetAssets() }
+                    val eventsDeferred = async { safeGetUpcomingEventsCount() }
+                    val operationsDeferred = async { safeGetOperations() }
+                    val investmentsDeferred = async { safeGetPendingInvestments() }
 
-                    else -> 0
+                    val newState = BadgesState(
+                        pendingFirefighters = pendingDeferred.await(),
+                        activeFirefighters = activeDeferred.await(),
+                        totalAssets = assetsDeferred.await(),
+                        upcomingEvents = eventsDeferred.await(),
+                        totalOperations = operationsDeferred.await(),
+                        pendingInvestments = investmentsDeferred.await()
+                    )
+                    _badgesState.value = newState
                 }
-            _pendingFirefighters.value = pendingFirefighters
+            } catch (t: Throwable) {
+                Log.e("MainViewModel", "refreshBadges failed", t)
+            }
+        }
+    }
 
-            val active =
-                when (val result =
-                    firefighterRepository.getFirefighters(page = 0, size = 1)) {
-                    is ApiResult.Success -> result.data?.totalElements ?: result.data?.items?.size
-                    ?: 0
+    private suspend fun safeGetPendingFirefighters(): Int {
+        return try {
+            when (val r = firefighterRepository.getPendingFirefighters(page = 0, size = 1)) {
+                is ApiResult.Success -> r.data?.totalElements ?: r.data?.items?.size ?: 0
+                else -> 0
+            }
+        } catch (_: Throwable) {
+            0
+        }
+    }
 
-                    else -> 0
-                }
-            _activeFirefighters.value = active
+    private suspend fun safeGetActiveFirefighters(): Int {
+        return try {
+            when (val r = firefighterRepository.getFirefighters(page = 0, size = 1)) {
+                is ApiResult.Success -> r.data?.totalElements ?: r.data?.items?.size ?: 0
+                else -> 0
+            }
+        } catch (_: Throwable) {
+            0
+        }
+    }
 
-            val assets =
-                when (val result = assetRepository.getAssets(page = 0, size = 1)) {
-                    is ApiResult.Success -> result.data?.totalElements ?: result.data?.items?.size
-                    ?: 0
+    private suspend fun safeGetAssets(): Int {
+        return try {
+            when (val r = assetRepository.getAssets(page = 0, size = 1)) {
+                is ApiResult.Success -> r.data?.totalElements ?: r.data?.items?.size ?: 0
+                else -> 0
+            }
+        } catch (_: Throwable) {
+            0
+        }
+    }
 
-                    else -> 0
-                }
-            _totalAssets.value = assets
+    @RequiresApi(Build.VERSION_CODES.O)
+    private suspend fun safeGetUpcomingEventsCount(): Int {
+        return try {
+            when (val r = eventRepository.getEvents(page = 0, size = 20)) {
+                is ApiResult.Success -> r.data?.items?.count { dto ->
+                    val daysLeft = daysUntilSomething(dto.eventDate)
+                    daysLeft in 0..30
+                } ?: 0
 
-            val eventsCount =
-                when (val result = eventRepository.getEvents(page = 0, size = 20)) {
-                    is ApiResult.Success -> {
-                        result.data?.items?.count { dto ->
-                            val daysLeft = daysUntilSomething(dto.eventDate)
-                            daysLeft in 0..30
-                        } ?: 0
-                    }
+                else -> 0
+            }
+        } catch (_: Throwable) {
+            0
+        }
+    }
 
-                    else -> 0
-                }
-            _upcomingEvents.value = eventsCount
+    private suspend fun safeGetOperations(): Int {
+        return try {
+            when (val r = operationRepository.getOperations(page = 0, size = 1)) {
+                is ApiResult.Success -> r.data?.totalElements ?: r.data?.items?.size ?: 0
+                else -> 0
+            }
+        } catch (_: Throwable) {
+            0
+        }
+    }
 
-            val operations =
-                when (val result = operationRepository.getOperations(page = 0, size = 1)) {
-                    is ApiResult.Success -> result.data?.totalElements ?: result.data?.items?.size
-                    ?: 0
+    private suspend fun safeGetPendingInvestments(): Int {
+        return try {
+            when (val r =
+                investmentProposalRepository.getInvestmentProposals(page = 0, size = 20)) {
+                is ApiResult.Success -> r.data?.items?.count { dto ->
+                    dto.status.equals(
+                        "PENDING",
+                        ignoreCase = true
+                    )
+                } ?: 0
 
-                    else -> 0
-                }
-            _totalOperations.value = operations
-
-            val pendingInvestments: Int =
-                when (val result =
-                    investmentProposalRepository.getInvestmentProposals(page = 0, size = 20)) {
-                    is ApiResult.Success -> result.data?.items?.count { dto ->
-                        dto.status.equals("PENDING", ignoreCase = true)
-                    } ?: 0
-
-                    else -> 0
-                }
-            _pendingInvestments.value = pendingInvestments
+                else -> 0
+            }
+        } catch (_: Throwable) {
+            0
         }
     }
 }

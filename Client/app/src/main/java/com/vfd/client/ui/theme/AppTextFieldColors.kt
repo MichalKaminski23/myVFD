@@ -10,23 +10,23 @@ import androidx.compose.ui.graphics.Color
 fun appTextFieldColors(): TextFieldColors {
     val colors = MaterialTheme.colorScheme
     return TextFieldDefaults.colors(
-        focusedContainerColor = Color.Transparent,
+        focusedContainerColor = colors.primary.copy(alpha = 0.06f),
         unfocusedContainerColor = Color.Transparent,
         disabledContainerColor = colors.surface.copy(alpha = 0.5f),
 
-        focusedIndicatorColor = colors.primary,
-        unfocusedIndicatorColor = colors.outline,
+        focusedIndicatorColor = colors.onPrimary,
+        unfocusedIndicatorColor = colors.onPrimary.copy(alpha = 0.7f),
         errorIndicatorColor = colors.error,
 
-        focusedLabelColor = colors.onSurface,
-        unfocusedLabelColor = colors.onSurface.copy(alpha = 0.7f),
+        focusedLabelColor = colors.onPrimary,
+        unfocusedLabelColor = colors.onPrimary.copy(alpha = 0.8f),
         errorLabelColor = colors.error,
 
-        focusedTextColor = colors.onSurface,
-        unfocusedTextColor = colors.onSurface,
+        focusedTextColor = colors.onPrimary,
+        unfocusedTextColor = colors.onPrimary,
         disabledTextColor = colors.onSurface.copy(alpha = 0.5f),
 
-        cursorColor = colors.primary,
+        cursorColor = colors.onPrimary,
         errorCursorColor = colors.error
     )
 }
