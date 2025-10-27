@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                                         "activities/create" ->
                                             stringResource(id = R.string.activities)
 
-                                        "adminScreen" -> stringResource(id = R.string.admin)
+                                        "adminScreen" -> stringResource(id = R.string.admin_panel)
 
                                         else -> stringResource(id = R.string.app_name_short)
                                     }

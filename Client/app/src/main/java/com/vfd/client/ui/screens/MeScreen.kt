@@ -1,9 +1,7 @@
 package com.vfd.client.ui.screens
 
 import android.net.Uri
-import android.os.Build
 import androidx.activity.ComponentActivity
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -30,10 +28,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
@@ -65,7 +65,6 @@ import com.vfd.client.utils.RefreshManager
 import com.vfd.client.utils.daysUntilSomething
 import kotlinx.datetime.toLocalDateTime
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MeScreen(
     userViewModel: UserViewModel = hiltViewModel(),
@@ -162,7 +161,7 @@ fun MeScreen(
     {
         if (currentUserUiState.isLoading) {
             AppText(
-                "The data is loading...",
+                stringResource(id = R.string.loading),
                 style = MaterialTheme.typography.headlineLarge
             )
         }
@@ -214,7 +213,7 @@ fun MeScreen(
                     if (!showUpdateInputs) {
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = {
                                 userViewModel.onUserUpdateValueChange {
                                     it.copy(
@@ -257,7 +256,7 @@ fun MeScreen(
                     if (!showPasswordInputs) {
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Change password",
+                            label = stringResource(id = R.string.change_password),
                             onClick = { showPasswordInputs = true }
                         )
                     }
@@ -307,7 +306,7 @@ fun MeScreen(
 
         AppButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
-            label = "Logout",
+            label = stringResource(id = R.string.logout),
             onClick = {
                 authViewModel.logout()
                 navController.navigate("welcomeScreen") {
@@ -341,7 +340,7 @@ private fun FirefighterSection(
     when (firefighter?.status) {
         FirefighterStatus.PENDING.toString() -> {
             Text(
-                "Your request has been sent. Wait for moderator approval.",
+                stringResource(id = R.string.f_req_sent),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(8.dp)
             )
@@ -367,7 +366,7 @@ private fun FirefighterSection(
                     if (!showHourInputsInitial) {
                         AppButton(
                             icon = Icons.Default.ThumbUp,
-                            label = "Show hours from quarter",
+                            label = stringResource(id = R.string.show_hours),
                             onClick = { showHourInputsInitial = true }
                         )
                     }
@@ -381,7 +380,7 @@ private fun FirefighterSection(
                     ) {
                         AppButton(
                             icon = Icons.Default.Warning,
-                            label = "Activities",
+                            label = stringResource(id = R.string.activities),
                             onClick = {
                                 val encodedName = Uri.encode(firefighter.firstName)
                                 val encodedLastName = Uri.encode(firefighter.lastName)
@@ -397,7 +396,7 @@ private fun FirefighterSection(
         null -> {
             if (firefighter?.status == FirefighterStatus.REJECTED.toString()) {
                 Text(
-                    "Your previous application was rejected. You can try again.",
+                    stringResource(id = R.string.f_req_rejected),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(8.dp)
                 )
@@ -407,7 +406,7 @@ private fun FirefighterSection(
                 selectedId = selectedFiredepartmentId,
                 idSelector = { it.firedepartmentId },
                 labelSelector = { it.name },
-                label = "Choose firedepartment",
+                label = stringResource(id = R.string.firedepartments),
                 onSelected = { onSelected(it.firedepartmentId) },
                 onLoadMore = {
                     if (firedepartmentsShortUiState.page + 1 < firedepartmentsShortUiState.totalPages) {
@@ -426,7 +425,7 @@ private fun FirefighterSection(
             )
             AppButton(
                 icon = Icons.AutoMirrored.Filled.Send,
-                label = "Send application to VFD's moderator.",
+                label = stringResource(R.string.f_req_create),
                 onClick = {
                     val deptId = selectedFiredepartmentId
                     if (currentUserId != null && deptId != null) {

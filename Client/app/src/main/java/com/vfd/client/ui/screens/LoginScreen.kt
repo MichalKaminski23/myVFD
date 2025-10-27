@@ -12,9 +12,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.elements.AppColumn
@@ -98,13 +100,13 @@ fun LoginScreen(
         AppTextField(
             value = loginUiState.emailAddress,
             onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(emailAddress = new) } },
-            label = "Email address",
+            label = stringResource(id = R.string.email_address),
             errorMessage = loginUiState.fieldErrors["emailAddress"]
         )
         AppTextField(
             value = loginUiState.password,
             onValueChange = { new -> authViewModel.onLoginValueChange { it.copy(password = new) } },
-            label = "Password",
+            label = stringResource(id = R.string.password),
             errorMessage = loginUiState.fieldErrors["password"],
             visualTransformation = PasswordVisualTransformation()
         )
@@ -115,7 +117,7 @@ fun LoginScreen(
 
         AppButton(
             icon = Icons.Filled.Lock,
-            label = "Login",
+            label = stringResource(id = R.string.login),
             onClick = { authViewModel.login() },
             fullWidth = true,
             enabled = loginUiState.emailAddress.isNotBlank() && loginUiState.password.isNotBlank() && !loginUiState.isLoading,

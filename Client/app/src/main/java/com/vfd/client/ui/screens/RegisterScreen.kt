@@ -10,9 +10,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.elements.AppAddressActions
 import com.vfd.client.ui.components.elements.AppColumn
@@ -42,21 +44,21 @@ fun RegisterScreen(
             .verticalScroll(rememberScrollState())
     )
     {
-        AppSectionHeader("Personal data")
+        AppSectionHeader(stringResource(id = R.string.personal_data))
         AppTextField(
             value = registerUiState.firstName,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(firstName = new) } },
-            label = "First name",
+            label = stringResource(id = R.string.first_name),
             errorMessage = registerUiState.fieldErrors["firstName"]
         )
         AppTextField(
             value = registerUiState.lastName,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(lastName = new) } },
-            label = "Last name",
+            label = stringResource(id = R.string.last_name),
             errorMessage = registerUiState.fieldErrors["lastName"]
         )
 
-        AppSectionHeader("Address")
+        AppSectionHeader(stringResource(id = R.string.address))
         AppAddressActions(
             address = registerUiState.address,
             errors = registerUiState.fieldErrors,
@@ -74,26 +76,26 @@ fun RegisterScreen(
             }
         )
 
-        AppSectionHeader("Contact")
+        AppSectionHeader(stringResource(id = R.string.contact))
         AppTextField(
             value = registerUiState.emailAddress,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(emailAddress = new) } },
-            label = "Email address",
+            label = stringResource(id = R.string.email_address),
             errorMessage = registerUiState.fieldErrors["emailAddress"]
         )
 
         AppTextField(
             value = registerUiState.phoneNumber,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(phoneNumber = new) } },
-            label = "Phone number",
+            label = stringResource(id = R.string.phone_number),
             errorMessage = registerUiState.fieldErrors["phoneNumber"]
         )
 
-        AppSectionHeader("Security")
+        AppSectionHeader(stringResource(id = R.string.security))
         AppTextField(
             value = registerUiState.password,
             onValueChange = { new -> authViewModel.onRegisterValueChange { it.copy(password = new) } },
-            label = "Password",
+            label = stringResource(id = R.string.password),
             errorMessage = registerUiState.fieldErrors["password"],
             visualTransformation = PasswordVisualTransformation()
         )
@@ -104,7 +106,7 @@ fun RegisterScreen(
 
         AppButton(
             icon = Icons.Filled.Add,
-            label = "Register",
+            label = stringResource(id = R.string.register),
             onClick = { authViewModel.register() },
             fullWidth = true,
             enabled =

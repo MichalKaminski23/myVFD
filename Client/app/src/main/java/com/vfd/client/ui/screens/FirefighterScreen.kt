@@ -1,8 +1,6 @@
 package com.vfd.client.ui.screens
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Badge
@@ -17,8 +15,10 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppFirefightersCard
 import com.vfd.client.ui.components.globals.AppUiEvents
@@ -30,7 +30,6 @@ import com.vfd.client.utils.RefreshManager
 import com.vfd.client.utils.daysUntilSomething
 import kotlinx.datetime.toLocalDateTime
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FirefighterScreen(
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
@@ -86,7 +85,6 @@ fun FirefighterScreen(
         isLoading = activeFirefightersUiState.isLoading,
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
-        searchPlaceholder = "Search firefighters...",
         filter = { firefighter, query ->
             val fullName = "${firefighter.firstName} ${firefighter.lastName}"
             query.isBlank() ||
@@ -95,8 +93,6 @@ fun FirefighterScreen(
                     fullName.contains(query, ignoreCase = true) ||
                     firefighter.emailAddress.contains(query, ignoreCase = true)
         },
-        emptyText = "There aren't any firefighters in your VFD or the firefighters are still loading",
-        emptyFilteredText = "No firefighters match your search",
         hasMore = hasMore,
         onLoadMore = {
             if (hasMore && !activeFirefightersUiState.isLoading)
@@ -118,7 +114,7 @@ fun FirefighterScreen(
                 ) {
                     AppButton(
                         icon = Icons.Default.Warning,
-                        label = "Activities",
+                        label = stringResource(id = R.string.activities),
                         onClick = {
                             val encodedName = Uri.encode(firefighter.firstName)
                             val encodedLastName = Uri.encode(firefighter.lastName)

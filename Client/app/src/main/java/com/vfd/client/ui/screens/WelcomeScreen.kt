@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,6 +28,12 @@ import com.vfd.client.ui.components.texts.AppText
 
 fun setAppLanguage(tag: String) {
     AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
+}
+
+fun setAppTheme(isDark: Boolean) {
+    AppCompatDelegate.setDefaultNightMode(
+        if (isDark) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+    )
 }
 
 @Composable
@@ -85,6 +92,22 @@ fun WelcomeScreen(navController: NavController) {
                 icon = Icons.Filled.LocationOn,
                 label = "EN",
                 onClick = { setAppLanguage("en") },
+                modifier = Modifier.weight(1f),
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            AppButton(
+                icon = Icons.Filled.Settings,
+                label = stringResource(id = R.string.dark),
+                onClick = { setAppTheme(true) },
+                modifier = Modifier.weight(1f),
+            )
+            AppButton(
+                icon = Icons.Filled.Settings,
+                label = stringResource(id = R.string.light),
+                onClick = { setAppTheme(false) },
                 modifier = Modifier.weight(1f),
             )
         }

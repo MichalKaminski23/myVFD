@@ -13,10 +13,21 @@ fun AppFirefightersCard(
     AppCard(
         listOf(
             "👤 ${firefighter.firstName} ${firefighter.lastName}",
-            "🚒 ${stringResource(id = R.string.firedepartments)}: ${firefighter.firedepartmentName}",
+            "🚒 ${firefighter.firedepartmentName}",
             "📧 ${stringResource(id = R.string.email_address)}: ${firefighter.emailAddress}",
             "⌚ ${stringResource(id = R.string.hours)}: ${firefighter.hours}",
-            "\uD83E\uDDD1\u200D\uD83D\uDE92 ${stringResource(id = R.string.item_role)}: ${firefighter.role}"
+            "\uD83E\uDDD1\u200D\uD83D\uDE92 ${
+                when (firefighter.role) {
+                    "PRESIDENT" -> stringResource(id = R.string.item_role) + ": " + stringResource(
+                        id = R.string.president
+                    )
+
+                    "MEMBER" -> stringResource(id = R.string.item_role) + ": " + stringResource(id = R.string.member)
+                    "ADMIN" -> stringResource(id = R.string.item_role) + ": " + stringResource(id = R.string.admin)
+                    "USER" -> stringResource(id = R.string.item_role) + ": " + stringResource(id = R.string.user)
+                    else -> firefighter.role
+                }
+            }",
         ),
         actions
     )

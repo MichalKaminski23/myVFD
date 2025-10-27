@@ -1,7 +1,5 @@
 package com.vfd.client.ui.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -19,9 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.OperationDtos
@@ -40,7 +40,6 @@ import com.vfd.client.ui.viewmodels.OperationViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun OperationScreen(
     operationViewModel: OperationViewModel,
@@ -95,7 +94,6 @@ fun OperationScreen(
         isLoading = operationUiState.isLoading,
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
-        searchPlaceholder = "Search operations...",
         filter = { operation, query ->
             query.isBlank() ||
                     operation.operationTypeName.contains(
@@ -103,8 +101,6 @@ fun OperationScreen(
                         ignoreCase = true
                     ) || operation.description.contains(query, ignoreCase = true)
         },
-        emptyText = "There aren't any operations in your VFD or the operations are still loading",
-        emptyFilteredText = "No operations match your search",
         hasMore = hasMore,
         onLoadMore = {
             if (hasMore && !operationUiState.isLoading)
@@ -129,7 +125,7 @@ fun OperationScreen(
                             selectedCode = effectiveSelectedCode,
                             codeSelector = { it.operationType },
                             labelSelector = { it.name },
-                            label = "Choose operation type",
+                            label = stringResource(id = R.string.item_type),
                             onSelected = { operationType ->
                                 operationViewModel.onOperationUpdateValueChange {
                                     it.copy(
@@ -162,7 +158,7 @@ fun OperationScreen(
                                     )
                                 }
                             },
-                            label = "Operation date"
+                            label = stringResource(id = R.string.item_date),
                         )
                         AppDateTimePicker(
                             selectedDateTime = operationUpdateUiState.operationEnd,
@@ -174,14 +170,14 @@ fun OperationScreen(
                                     )
                                 }
                             },
-                            label = "Operation end"
+                            label = stringResource(id = R.string.item_end_date),
                         )
                         AppMultiDropdown(
                             items = firefighterUiState.activeFirefighters,
                             selectedIds = operationUpdateUiState.participantsIds,
                             idSelector = { it.firefighterId },
                             labelSelector = { it.firstName + " " + it.lastName },
-                            label = "Participants",
+                            label = stringResource(id = R.string.firefighters),
                             onToggle = { id ->
                                 operationViewModel.onOperationUpdateValueChange { s ->
                                     val set = s.participantsIds.toMutableSet()
@@ -222,14 +218,14 @@ fun OperationScreen(
                                     it.copy(description = new, descriptionTouched = true)
                                 }
                             },
-                            label = "Description",
+                            label = stringResource(id = R.string.item_description),
                             errorMessage = operationUpdateUiState.errorMessage,
                             singleLine = false
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             AppButton(
                                 icon = Icons.Default.Check,
-                                label = "Save",
+                                label = stringResource(id = R.string.save),
                                 onClick = {
                                     operation.operationId.let { id ->
                                         val operationDto = OperationDtos.OperationPatch(
@@ -276,7 +272,7 @@ fun OperationScreen(
                             )
                             AppButton(
                                 icon = Icons.Default.Close,
-                                label = "Cancel",
+                                label = stringResource(id = R.string.cancel),
                                 onClick = { editingOperationId = null },
                                 modifier = Modifier.weight(1f)
                             )
@@ -293,7 +289,7 @@ fun OperationScreen(
                     if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
                         AppButton(
                             icon = Icons.Default.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = {
                                 editingOperationId = operation.operationId
                                 val preselectedCode = operationTypeUiState.operationTypes

@@ -1,9 +1,7 @@
 package com.vfd.client.ui.screens
 
 import android.net.Uri
-import android.os.Build
 import androidx.activity.ComponentActivity
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,8 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.ui.components.buttons.AppButton
@@ -52,7 +52,6 @@ import com.vfd.client.utils.RefreshManager
 import com.vfd.client.utils.daysUntilSomething
 import kotlinx.datetime.toLocalDateTime
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ModeratorScreen(
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
@@ -135,7 +134,7 @@ fun ModeratorScreen(
     {
         if (currentUserUiState.isLoading) {
             AppText(
-                "The data is loading...",
+                stringResource(id = R.string.loading),
                 style = MaterialTheme.typography.headlineLarge
             )
         }
@@ -188,7 +187,7 @@ fun ModeratorScreen(
                 if (!showUpdateInputs) {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Edit",
+                        label = stringResource(id = R.string.edit),
                         onClick = {
                             userViewModel.onUserUpdateValueChange {
                                 it.copy(
@@ -231,7 +230,7 @@ fun ModeratorScreen(
                 if (!showPasswordInputs) {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Change password",
+                        label = stringResource(id = R.string.change_password),
                         onClick = { showPasswordInputs = true }
                     )
                 }
@@ -257,7 +256,7 @@ fun ModeratorScreen(
                     if (!showHourInputs) {
                         AppButton(
                             icon = Icons.Default.ThumbUp,
-                            label = "Show hours from quarter",
+                            label = stringResource(id = R.string.show_hours),
                             onClick = { showHourInputs = true }
                         )
                     }
@@ -271,7 +270,7 @@ fun ModeratorScreen(
                     ) {
                         AppButton(
                             icon = Icons.Default.Warning,
-                            label = "Activities",
+                            label = stringResource(id = R.string.activities),
                             onClick = {
                                 val encodedName = Uri.encode(firefighter.firstName)
                                 val encodedLastName = Uri.encode(firefighter.lastName)
@@ -288,7 +287,7 @@ fun ModeratorScreen(
 
         AppButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
-            label = "Logout",
+            label = stringResource(id = R.string.logout),
             onClick = {
                 authViewModel.logout()
                 navController.navigate("welcomeScreen") {

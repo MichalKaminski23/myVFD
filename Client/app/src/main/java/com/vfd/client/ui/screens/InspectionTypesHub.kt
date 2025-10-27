@@ -18,7 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.InspectionTypeDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppInspectionTypeCard
@@ -71,18 +73,21 @@ fun InspectionTypesHub(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Create",
+                        label = stringResource(id = R.string.create),
                         onClick = { mode = "create" },
                         modifier = Modifier.weight(1f)
                     )
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Edit",
+                        label = stringResource(id = R.string.edit),
                         onClick = { mode = "edit" },
                         modifier = Modifier.weight(1f)
                     )
                 }
-                AppText("New inspection type", style = MaterialTheme.typography.headlineSmall)
+                AppText(
+                    stringResource(id = R.string.new_inspection_type),
+                    style = MaterialTheme.typography.headlineSmall
+                )
 
                 AppTextField(
                     value = inspectionTypeCreateUiState.inspectionType,
@@ -93,7 +98,7 @@ fun InspectionTypesHub(
                             )
                         }
                     },
-                    label = "Type",
+                    label = stringResource(id = R.string.type_code),
                     errorMessage = inspectionTypeCreateUiState.errorMessage
                 )
 
@@ -102,13 +107,13 @@ fun InspectionTypesHub(
                     onValueChange = { new ->
                         inspectionTypeViewModel.onInspectionTypeCreateValueChange { it.copy(name = new) }
                     },
-                    label = "Name",
+                    label = stringResource(id = R.string.item_name),
                     errorMessage = inspectionTypeCreateUiState.errorMessage
                 )
 
                 AppButton(
                     icon = Icons.Filled.Edit,
-                    label = "Save",
+                    label = stringResource(id = R.string.save),
                     onClick = {
                         inspectionTypeViewModel.createInspectionType(
                             inspectionTypeDto = InspectionTypeDtos.InspectionTypeCreate(
@@ -132,20 +137,23 @@ fun InspectionTypesHub(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Create",
+                            label = stringResource(id = R.string.create),
                             onClick = { mode = "create" },
                             modifier = Modifier.weight(1f)
                         )
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = { mode = "edit" },
                             modifier = Modifier.weight(1f)
                         )
                     }
                 }
                 item {
-                    AppText("Edit inspection type", style = MaterialTheme.typography.headlineSmall)
+                    AppText(
+                        stringResource(id = R.string.edit_inspection_type),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
                 }
 
                 items(inspectionTypesUiState.inspectionTypes) { inspectionType ->
@@ -158,13 +166,13 @@ fun InspectionTypesHub(
                                         it.copy(name = new, nameTouched = true)
                                     }
                                 },
-                                label = "Name",
+                                label = stringResource(id = R.string.item_name),
                                 errorMessage = inspectionTypeUpdateUiState.errorMessage
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Save",
+                                    label = stringResource(id = R.string.save),
                                     onClick = {
                                         val inspectionTypeDto =
                                             InspectionTypeDtos.InspectionTypePatch(
@@ -180,7 +188,7 @@ fun InspectionTypesHub(
                                 )
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Cancel",
+                                    label = stringResource(id = R.string.cancel),
                                     onClick = {
                                         editingInspectionTypeCode = null
                                         inspectionTypeViewModel.onInspectionTypeUpdateValueChange {
@@ -197,7 +205,7 @@ fun InspectionTypesHub(
                         AppInspectionTypeCard(inspectionType, actions = {
                             AppButton(
                                 icon = Icons.Filled.Edit,
-                                label = "Edit",
+                                label = stringResource(id = R.string.edit),
                                 onClick = {
                                     editingInspectionTypeCode = inspectionType.inspectionType
                                     inspectionTypeViewModel.onInspectionTypeUpdateValueChange {
@@ -218,7 +226,7 @@ fun InspectionTypesHub(
                 item {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Load more",
+                        label = stringResource(id = R.string.load_more),
                         onClick = {
                             if (!inspectionTypesUiState.isLoading && inspectionTypesUiState.page + 1 < inspectionTypesUiState.totalPages) {
                                 inspectionTypeViewModel.getAllInspectionTypes(

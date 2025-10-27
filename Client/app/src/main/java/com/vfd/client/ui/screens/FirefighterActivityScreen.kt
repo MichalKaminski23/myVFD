@@ -1,7 +1,5 @@
 package com.vfd.client.ui.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,9 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterActivityDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.FirefighterStatus
@@ -41,7 +41,6 @@ import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FirefighterActivityScreen(
     firefighterActivityViewModel: FirefighterActivityViewModel,
@@ -76,6 +75,19 @@ fun FirefighterActivityScreen(
 
     var searchQuery by remember { mutableStateOf("") }
 
+    val statusPairs = FirefighterStatus.entries.map { status ->
+        status.name to when (status) {
+            FirefighterStatus.REJECTED -> stringResource(id = R.string.rejected)
+            FirefighterStatus.PENDING -> stringResource(id = R.string.pending)
+            FirefighterStatus.ACTIVE -> stringResource(id = R.string.active)
+        }
+    }
+
+    val statusItems = statusPairs.map { it.second }
+    val selectedStatusLabel =
+        statusPairs.firstOrNull { it.first == firefighterActivityUpdateUiState.status }?.second
+            ?: ""
+
     AppUiEvents(firefighterActivityViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(firefighterActivityUpdateUiState.success) {
@@ -105,7 +117,6 @@ fun FirefighterActivityScreen(
         isLoading = firefighterActivityUiState.isLoading,
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
-        searchPlaceholder = "Search activities...",
         filter = { activity, query ->
             query.isBlank() ||
                     activity.firefighterActivityTypeName.contains(
@@ -113,8 +124,6 @@ fun FirefighterActivityScreen(
                         ignoreCase = true
                     )
         },
-        emptyText = "There aren't any activities for this firefighter or the activities for this firefighter are still loading",
-        emptyFilteredText = "No activities match your search",
         hasMore = hasMore,
         onLoadMore = {
             if (hasMore && !firefighterActivityUiState.isLoading)
@@ -135,12 +144,14 @@ fun FirefighterActivityScreen(
                     activity,
                     actions = {
                         AppStringDropdown(
-                            label = "Status",
-                            items = FirefighterStatus.entries.map { it.name },
-                            selected = firefighterActivityUpdateUiState.status,
-                            onSelected = { selected ->
+                            label = stringResource(id = R.string.item_status),
+                            items = statusItems,
+                            selected = selectedStatusLabel,
+                            onSelected = { newLabel ->
+                                val code = statusPairs.firstOrNull { it.second == newLabel }?.first
+                                    ?: newLabel
                                 firefighterActivityViewModel.onActivityUpdateValueChange {
-                                    it.copy(status = selected, statusTouched = true)
+                                    it.copy(status = code, statusTouched = true)
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(),
@@ -150,7 +161,7 @@ fun FirefighterActivityScreen(
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             AppButton(
                                 icon = Icons.Default.Check,
-                                label = "Save",
+                                label = stringResource(id = R.string.save),
                                 onClick = {
                                     val patch = FirefighterActivityDtos.FirefighterActivityPatch(
                                         status = if (firefighterActivityUpdateUiState.statusTouched) firefighterActivityUpdateUiState.status else null
@@ -165,7 +176,7 @@ fun FirefighterActivityScreen(
                             )
                             AppButton(
                                 icon = Icons.Default.Close,
-                                label = "Cancel",
+                                label = stringResource(id = R.string.cancel),
                                 onClick = {
                                     editingFirefighterActivityId = null
                                     editStatusOnly = false
@@ -179,13 +190,13 @@ fun FirefighterActivityScreen(
                 AppFirefighterActivityCard(
                     activity,
                     actions = {
-                        if (activity.status == "REJECTED") {
+                        if (activity.status == "REJECTED" || activity.status == "PENDING") {
                             AppDropdown(
                                 items = firefighterActivityTypeUiState.firefighterActivityTypes,
                                 selectedCode = effectiveSelectedCode,
                                 codeSelector = { it.firefighterActivityType },
                                 labelSelector = { it.name },
-                                label = "Choose activity type",
+                                label = stringResource(id = R.string.item_type),
                                 onSelected = { firefighterActivityType ->
                                     firefighterActivityViewModel.onActivityUpdateValueChange {
                                         it.copy(
@@ -220,7 +231,7 @@ fun FirefighterActivityScreen(
                                         )
                                     }
                                 },
-                                label = "Activity date"
+                                label = stringResource(id = R.string.item_date),
                             )
                             AppDateTimePicker(
                                 selectedDateTime = firefighterActivityUpdateUiState.expirationDate,
@@ -232,7 +243,7 @@ fun FirefighterActivityScreen(
                                         )
                                     }
                                 },
-                                label = "Expiration date"
+                                label = stringResource(id = R.string.item_end_date),
                             )
                             AppTextField(
                                 value = firefighterActivityUpdateUiState.description,
@@ -241,18 +252,21 @@ fun FirefighterActivityScreen(
                                         it.copy(description = new, descriptionTouched = true)
                                     }
                                 },
-                                label = "Description",
+                                label = stringResource(id = R.string.item_description),
                                 errorMessage = firefighterActivityUpdateUiState.errorMessage,
                                 singleLine = false
                             )
                             if (currentRole == "PRESIDENT") {
                                 AppStringDropdown(
-                                    label = "Status",
-                                    items = FirefighterStatus.entries.map { it.name },
-                                    selected = firefighterActivityUpdateUiState.status,
-                                    onSelected = { selected ->
+                                    label = stringResource(id = R.string.item_status),
+                                    items = statusItems,
+                                    selected = selectedStatusLabel,
+                                    onSelected = { newLabel ->
+                                        val code =
+                                            statusPairs.firstOrNull { it.second == newLabel }?.first
+                                                ?: newLabel
                                         firefighterActivityViewModel.onActivityUpdateValueChange {
-                                            it.copy(status = selected, statusTouched = true)
+                                            it.copy(status = code, statusTouched = true)
                                         }
                                     },
                                     modifier = Modifier.fillMaxWidth(),
@@ -278,7 +292,7 @@ fun FirefighterActivityScreen(
                                 }
                                 AppButton(
                                     icon = Icons.Default.Check,
-                                    label = "Save",
+                                    label = stringResource(id = R.string.save),
                                     onClick = {
                                         activity.firefighterActivityId.let { id ->
                                             val firefighterActivityDto =
@@ -315,7 +329,7 @@ fun FirefighterActivityScreen(
                                 )
                                 AppButton(
                                     icon = Icons.Default.Close,
-                                    label = "Cancel",
+                                    label = stringResource(id = R.string.cancel),
                                     onClick = { editingFirefighterActivityId = null },
                                     modifier = Modifier.weight(1f)
                                 )
@@ -332,10 +346,10 @@ fun FirefighterActivityScreen(
                 activity,
                 actions = {
                     if (isOwner) {
-                        if (activity.status == "REJECTED") {
+                        if (activity.status == "REJECTED" || activity.status == "PENDING") {
                             AppButton(
                                 icon = Icons.Default.Edit,
-                                label = "Edit",
+                                label = stringResource(id = R.string.edit),
                                 onClick = {
                                     editingFirefighterActivityId = activity.firefighterActivityId
                                     val preselectedCode =
@@ -367,7 +381,7 @@ fun FirefighterActivityScreen(
                     } else if (canEditStatusAsPresident) {
                         AppButton(
                             icon = Icons.Default.Edit,
-                            label = "Edit status",
+                            label = stringResource(id = R.string.edit),
                             onClick = {
                                 editingFirefighterActivityId = activity.firefighterActivityId
                                 firefighterActivityViewModel.onActivityUpdateValueChange() {

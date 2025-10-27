@@ -22,13 +22,15 @@ fun AppFirefighterActivityCard(
                         id = R.string.item_status
                     ) + ": " + stringResource(id = R.string.rejected)
 
-                    "APPROVED" -> stringResource(
+                    "ACTIVE" -> stringResource(
                         id = R.string.item_status
-                    ) + ": " + stringResource(id = R.string.approved)
+                    ) + ": " + stringResource(id = R.string.active)
 
-                    else -> stringResource(id = R.string.item_status) + ": " + stringResource(
-                        id = R.string.pending
-                    )
+                    "PENDING" -> stringResource(
+                        id = R.string.item_status
+                    ) + ": " + stringResource(id = R.string.pending)
+
+                    else -> activity?.status
                 }
             }"
         ),

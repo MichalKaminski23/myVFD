@@ -14,9 +14,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.FirefighterStatus
@@ -59,7 +61,6 @@ fun NewFirefighterScreen(
         isLoading = pendingFirefightersUiState.isLoading,
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
-        searchPlaceholder = "Search firefighters...",
         filter = { firefighter, query ->
             val fullName = "${firefighter.firstName} ${firefighter.lastName}"
             query.isBlank() ||
@@ -68,8 +69,6 @@ fun NewFirefighterScreen(
                     fullName.contains(query, ignoreCase = true) ||
                     firefighter.emailAddress.contains(query, ignoreCase = true)
         },
-        emptyText = "There aren't any firefighters in your VFD or the firefighters are still loading",
-        emptyFilteredText = "No firefighters match your search",
         hasMore = hasMore,
         onLoadMore = {
             if (hasMore && !pendingFirefightersUiState.isLoading) {
@@ -87,7 +86,7 @@ fun NewFirefighterScreen(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AppButton(
                         icon = Icons.Default.Add,
-                        label = "Approve",
+                        label = stringResource(id = R.string.accept),
                         onClick = {
                             firefighterViewModel.changeFirefighterRoleOrStatus(
                                 firefighterId = firefighter.firefighterId,
@@ -101,7 +100,7 @@ fun NewFirefighterScreen(
                     )
                     AppButton(
                         icon = Icons.Default.Delete,
-                        label = "Reject",
+                        label = stringResource(id = R.string.reject),
                         onClick = {
                             firefighterViewModel.deleteFirefighter(
                                 firefighterId = firefighter.firefighterId

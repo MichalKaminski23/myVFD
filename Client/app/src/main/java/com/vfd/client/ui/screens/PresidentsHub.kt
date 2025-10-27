@@ -12,6 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.elements.AppColumn
@@ -37,14 +39,17 @@ fun PresidentsHub(
             .fillMaxWidth()
     )
     {
-        AppText("Create president", style = MaterialTheme.typography.headlineSmall)
+        AppText(
+            stringResource(id = R.string.president_create),
+            style = MaterialTheme.typography.headlineSmall
+        )
 
         AppTextField(
             value = firefighterCreateUiState.emailAddress,
             onValueChange = { new ->
                 firefighterViewModel.onFirefighterCreateValueChange { it.copy(emailAddress = new) }
             },
-            label = "Email address",
+            label = stringResource(id = R.string.email_address),
             errorMessage = firefighterCreateUiState.errorMessage
         )
         AppDropdown(
@@ -52,7 +57,7 @@ fun PresidentsHub(
             selectedId = selectedFiredepartmentId,
             idSelector = { it.firedepartmentId },
             labelSelector = { it.name },
-            label = "Choose firedepartment",
+            label = stringResource(id = R.string.firedepartments),
             onSelected = { selectedFiredepartmentId = it.firedepartmentId },
             onLoadMore = {
                 if (firedepartmentsShortUiState.page + 1 < firedepartmentsShortUiState.totalPages) {
@@ -71,7 +76,7 @@ fun PresidentsHub(
         )
         AppButton(
             icon = Icons.AutoMirrored.Filled.Send,
-            label = "Create president",
+            label = stringResource(id = R.string.president_create),
             onClick = {
                 val firefighterDto: FirefighterDtos.FirefighterCreateByEmailAddress =
                     FirefighterDtos.FirefighterCreateByEmailAddress(

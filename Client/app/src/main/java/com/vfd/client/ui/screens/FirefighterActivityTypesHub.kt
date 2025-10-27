@@ -18,7 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterActivityTypeDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppFirefighterActivityTypeCard
@@ -75,19 +77,19 @@ fun FirefighterActivityTypesHub(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Create",
+                        label = stringResource(id = R.string.create),
                         onClick = { mode = "create" },
                         modifier = Modifier.weight(1f)
                     )
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Edit",
+                        label = stringResource(id = R.string.edit),
                         onClick = { mode = "edit" },
                         modifier = Modifier.weight(1f)
                     )
                 }
                 AppText(
-                    "New firefighter activity type",
+                    stringResource(id = R.string.activity_create),
                     style = MaterialTheme.typography.headlineSmall
                 )
 
@@ -100,7 +102,7 @@ fun FirefighterActivityTypesHub(
                             )
                         }
                     },
-                    label = "Type",
+                    label = stringResource(id = R.string.type_code),
                     errorMessage = firefighterActivityTypeCreateUiState.errorMessage
                 )
 
@@ -113,13 +115,13 @@ fun FirefighterActivityTypesHub(
                             )
                         }
                     },
-                    label = "Name",
+                    label = stringResource(id = R.string.item_name),
                     errorMessage = firefighterActivityTypeCreateUiState.errorMessage
                 )
 
                 AppButton(
                     icon = Icons.Filled.Edit,
-                    label = "Save",
+                    label = stringResource(id = R.string.save),
                     onClick = {
                         firefighterActivityTypeViewModel.createFirefighterActivityType(
                             firefighterActivityTypeDto = FirefighterActivityTypeDtos.FirefighterActivityTypeCreate(
@@ -144,13 +146,13 @@ fun FirefighterActivityTypesHub(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Create",
+                            label = stringResource(id = R.string.create),
                             onClick = { mode = "create" },
                             modifier = Modifier.weight(1f)
                         )
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = { mode = "edit" },
                             modifier = Modifier.weight(1f)
                         )
@@ -158,7 +160,7 @@ fun FirefighterActivityTypesHub(
                 }
                 item {
                     AppText(
-                        "Edit firefighter activity type",
+                        stringResource(id = R.string.edit_activity_type),
                         style = MaterialTheme.typography.headlineSmall
                     )
                 }
@@ -173,13 +175,13 @@ fun FirefighterActivityTypesHub(
                                         it.copy(name = new, nameTouched = true)
                                     }
                                 },
-                                label = "Name",
+                                label = stringResource(id = R.string.item_name),
                                 errorMessage = firefighterActivityTypeUpdateUiState.errorMessage
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Save",
+                                    label = stringResource(id = R.string.save),
                                     onClick = {
                                         val firefighterActivityTypeDto =
                                             FirefighterActivityTypeDtos.FirefighterActivityTypePatch(
@@ -196,7 +198,7 @@ fun FirefighterActivityTypesHub(
                                 )
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Cancel",
+                                    label = stringResource(id = R.string.cancel),
                                     onClick = {
                                         editingFirefighterActivityTypeCode = null
                                         firefighterActivityTypeViewModel.onFirefighterActivityTypeUpdateValueChange {
@@ -213,7 +215,7 @@ fun FirefighterActivityTypesHub(
                         AppFirefighterActivityTypeCard(firefighterActivityType, actions = {
                             AppButton(
                                 icon = Icons.Filled.Edit,
-                                label = "Edit",
+                                label = stringResource(id = R.string.edit),
                                 onClick = {
                                     editingFirefighterActivityTypeCode =
                                         firefighterActivityType.firefighterActivityType
@@ -235,7 +237,7 @@ fun FirefighterActivityTypesHub(
                 item {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Load more",
+                        label = stringResource(id = R.string.load_more),
                         onClick = {
                             if (!firefighterActivityTypesUiState.isLoading && firefighterActivityTypesUiState.page + 1 < firefighterActivityTypesUiState.totalPages) {
                                 firefighterActivityTypeViewModel.getAllFirefighterActivityTypes(

@@ -14,19 +14,19 @@ fun appTextFieldColors(): TextFieldColors {
         unfocusedContainerColor = Color.Transparent,
         disabledContainerColor = colors.surface.copy(alpha = 0.5f),
 
-        focusedIndicatorColor = colors.onPrimary,
-        unfocusedIndicatorColor = colors.onPrimary.copy(alpha = 0.7f),
+        focusedIndicatorColor = colors.onSurface,
+        unfocusedIndicatorColor = colors.onSurface.copy(alpha = 0.6f),
         errorIndicatorColor = colors.error,
 
-        focusedLabelColor = colors.onPrimary,
-        unfocusedLabelColor = colors.onPrimary.copy(alpha = 0.8f),
+        focusedLabelColor = colors.onSurface,
+        unfocusedLabelColor = colors.onSurface.copy(alpha = 0.8f),
         errorLabelColor = colors.error,
 
-        focusedTextColor = colors.onPrimary,
-        unfocusedTextColor = colors.onPrimary,
+        focusedTextColor = colors.onSurface,
+        unfocusedTextColor = colors.onSurface,
         disabledTextColor = colors.onSurface.copy(alpha = 0.5f),
 
-        cursorColor = colors.onPrimary,
+        cursorColor = colors.onSurface,
         errorCursorColor = colors.error
     )
 }

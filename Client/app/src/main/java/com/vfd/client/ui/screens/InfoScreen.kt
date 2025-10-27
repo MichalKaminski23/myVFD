@@ -5,7 +5,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.elements.AppHorizontalDivider
 import com.vfd.client.ui.components.texts.AppText
@@ -18,24 +20,30 @@ fun InfoScreen(navController: NavController) {
             .verticalScroll(rememberScrollState())
     )
     {
-        AppText(text = "About application", style = MaterialTheme.typography.headlineLarge)
         AppText(
-            text = "This app was created to support the operations of Volunteer Fire Departments. " +
-                    "You can view your Volunteer Fire Department resources, members (and their research/training), create events, and monitor your rescue and firefighting operations. " +
-                    "There's also a voting system for purchasing new equipment for your Volunteer Fire Department.",
+            text = stringResource(id = R.string.about_app),
+            style = MaterialTheme.typography.headlineLarge
+        )
+        AppText(
+            text = stringResource(id = R.string.about_app_description),
             style = MaterialTheme.typography.bodyMedium
         )
         AppHorizontalDivider()
 
-        AppText("About author", style = MaterialTheme.typography.headlineLarge)
         AppText(
-            text = "Michal Kaminski – student of the Silesian University of Technology at the Faculty of Automatic Control, Electronics and Computer Science " +
-                    "- majoring in Computer Science. This app is the engineering project.",
+            stringResource(id = R.string.about_author),
+            style = MaterialTheme.typography.headlineLarge
+        )
+        AppText(
+            text = stringResource(id = R.string.about_author_description),
             style = MaterialTheme.typography.bodyMedium
         )
         AppHorizontalDivider()
 
-        AppText("Contact", style = MaterialTheme.typography.headlineLarge)
-        AppText("admin@vfd_name@example.pl", style = MaterialTheme.typography.bodyMedium)
+        AppText(
+            stringResource(id = R.string.contact),
+            style = MaterialTheme.typography.headlineLarge
+        )
+        AppText("adminMyVFD@example.pl", style = MaterialTheme.typography.bodyMedium)
     }
 }

@@ -79,7 +79,7 @@ fun <T> AppMultiDropdown(
 
     Box(modifier = modifier) {
         OutlinedTextField(
-            value = if (selectedIds.isNotEmpty()) "${selectedIds.size} selected" else "",
+            value = if (selectedIds.isNotEmpty()) "${selectedIds.size} ${stringResource(id = R.string.selected)}" else "",
             onValueChange = {},
             readOnly = true,
             label = {

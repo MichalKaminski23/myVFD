@@ -17,9 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.InvestmentProposalDtos
 import com.vfd.client.data.remote.dtos.InvestmentProposalStatus
@@ -102,6 +104,20 @@ fun InvestmentProposalScreen(
 
     var pendingVote by remember { mutableStateOf<Pair<Int, Boolean>?>(null) }
 
+    val statusPairs = InvestmentProposalStatus.entries.map { status ->
+        status.name to when (status) {
+            InvestmentProposalStatus.REJECTED -> stringResource(id = R.string.rejected)
+            InvestmentProposalStatus.PENDING -> stringResource(id = R.string.pending)
+            InvestmentProposalStatus.APPROVED -> stringResource(id = R.string.approved)
+            InvestmentProposalStatus.CANCELLED -> stringResource(id = R.string.cancelled)
+        }
+    }
+
+    val statusItems = statusPairs.map { it.second }
+    val selectedStatusLabel =
+        statusPairs.firstOrNull { it.first == investmentProposalUpdatelUiState.status }?.second
+            ?: ""
+
     LaunchedEffect(
         voteUiState.isLoading,
         pendingVote,
@@ -145,7 +161,6 @@ fun InvestmentProposalScreen(
         isLoading = investmentProposalUiState.isLoading,
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
-        searchPlaceholder = "Search investments...",
         filter = { investmentProposal, query ->
             query.isBlank() ||
                     investmentProposal.description.contains(
@@ -153,8 +168,6 @@ fun InvestmentProposalScreen(
                         ignoreCase = true
                     ) || investmentProposal.status.contains(query, ignoreCase = true)
         },
-        emptyText = "There aren't any investments in your VFD or the investments are still loading",
-        emptyFilteredText = "No investments match your search",
         hasMore = hasMore,
         onLoadMore = {
             if (hasMore && !investmentProposalUiState.isLoading)
@@ -175,7 +188,7 @@ fun InvestmentProposalScreen(
                                     it.copy(description = new, descriptionTouched = true)
                                 }
                             },
-                            label = "Description",
+                            label = stringResource(id = R.string.item_description),
                             errorMessage = investmentProposalUpdatelUiState.errorMessage,
                             singleLine = false
                         )
@@ -186,15 +199,17 @@ fun InvestmentProposalScreen(
                                     it.copy(amount = new, amountTouched = true)
                                 }
                             },
-                            label = "Amount"
+                            label = stringResource(id = R.string.amount),
                         )
                         AppStringDropdown(
-                            label = "Status",
-                            items = InvestmentProposalStatus.entries.map { it.name },
-                            selected = investmentProposalUpdatelUiState.status,
-                            onSelected = { selected ->
+                            label = stringResource(id = R.string.item_status),
+                            items = statusItems,
+                            selected = selectedStatusLabel,
+                            onSelected = { newLabel ->
+                                val code = statusPairs.firstOrNull { it.second == newLabel }?.first
+                                    ?: newLabel
                                 investmentProposalViewModel.onInvestmentProposalUpdateValueChange {
-                                    it.copy(status = selected, statusTouched = true)
+                                    it.copy(status = code, statusTouched = true)
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(),
@@ -204,7 +219,7 @@ fun InvestmentProposalScreen(
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             AppButton(
                                 icon = Icons.Default.Check,
-                                label = "Save",
+                                label = stringResource(id = R.string.save),
                                 onClick = {
                                     investmentProposal.investmentProposalId.let { id ->
                                         val investmentProposalDto =
@@ -234,7 +249,7 @@ fun InvestmentProposalScreen(
                             )
                             AppButton(
                                 icon = Icons.Default.Close,
-                                label = "Cancel",
+                                label = stringResource(id = R.string.cancel),
                                 onClick = { editingInvestmentProposalId = null },
                                 modifier = Modifier.weight(1f)
                             )
@@ -251,7 +266,7 @@ fun InvestmentProposalScreen(
                     if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
                         AppButton(
                             icon = Icons.Default.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = {
                                 editingInvestmentProposalId =
                                     investmentProposal.investmentProposalId
@@ -282,7 +297,7 @@ fun InvestmentProposalScreen(
                         ) {
                             AppButton(
                                 icon = Icons.Default.Check,
-                                label = "Vote YES",
+                                label = stringResource(id = R.string.yes),
                                 onClick = {
                                     val id = investmentProposal.investmentProposalId
                                     if (myVote == null) {
@@ -308,7 +323,7 @@ fun InvestmentProposalScreen(
                             )
                             AppButton(
                                 icon = Icons.Default.Close,
-                                label = "Vote NO",
+                                label = stringResource(id = R.string.no),
                                 onClick = {
                                     val id = investmentProposal.investmentProposalId
                                     if (myVote == null) {

@@ -1,7 +1,5 @@
 package com.vfd.client.ui.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -18,9 +16,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.InspectionDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppInspectionCard
@@ -36,7 +36,6 @@ import com.vfd.client.ui.viewmodels.InspectionViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InspectionScreen(
     inspectionViewModel: InspectionViewModel,
@@ -90,7 +89,6 @@ fun InspectionScreen(
         isLoading = inspectionUiState.isLoading,
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
-        searchPlaceholder = "Search inspections...",
         filter = { inspection, query ->
             query.isBlank() ||
                     inspection.inspectionTypeName.contains(
@@ -98,8 +96,6 @@ fun InspectionScreen(
                         ignoreCase = true
                     )
         },
-        emptyText = "There aren't any inspections for this asset or the inspections for this asset are still loading",
-        emptyFilteredText = "No inspections match your search",
         hasMore = hasMore,
         onLoadMore = {
             if (hasMore && !inspectionUiState.isLoading)
@@ -123,7 +119,7 @@ fun InspectionScreen(
                         selectedCode = effectiveSelectedCode,
                         codeSelector = { it.inspectionType },
                         labelSelector = { it.name },
-                        label = "Choose inspection type",
+                        label = stringResource(id = R.string.item_type),
                         onSelected = { inspectionType ->
                             inspectionViewModel.onInspectionUpdateValueChange {
                                 it.copy(
@@ -156,7 +152,7 @@ fun InspectionScreen(
                                 )
                             }
                         },
-                        label = "Inspection date"
+                        label = stringResource(id = R.string.item_date),
                     )
                     AppDateTimePicker(
                         selectedDateTime = inspectionUpdateUiState.expirationDate,
@@ -168,12 +164,12 @@ fun InspectionScreen(
                                 )
                             }
                         },
-                        label = "Expiration date"
+                        label = stringResource(id = R.string.item_end_date),
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         AppButton(
                             icon = Icons.Default.Check,
-                            label = "Save",
+                            label = stringResource(id = R.string.save),
                             onClick = {
                                 inspection.inspectionId.let { id ->
                                     val inspectionDto = InspectionDtos.InspectionPatch(
@@ -201,7 +197,7 @@ fun InspectionScreen(
                         )
                         AppButton(
                             icon = Icons.Default.Close,
-                            label = "Cancel",
+                            label = stringResource(id = R.string.cancel),
                             onClick = { editingInspectionId = null },
                             modifier = Modifier.weight(1f)
                         )
@@ -217,7 +213,7 @@ fun InspectionScreen(
                 actions = {
                     AppButton(
                         icon = Icons.Default.Edit,
-                        label = "Edit",
+                        label = stringResource(id = R.string.edit),
                         onClick = {
                             editingInspectionId = inspection.inspectionId
                             val preselectedCode = inspectionTypeUiState.inspectionTypes

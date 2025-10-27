@@ -27,9 +27,11 @@ fun AppFirefighterCard(
         }",
         "\uD83E\uDDD1\u200D\uD83D\uDE92 ${
             when (firefighter.role) {
-                "PRESIDENT" -> stringResource(id = R.string.item_status) + ": " + stringResource(id = R.string.president)
-                "MEMBER" -> stringResource(id = R.string.item_status) + ": " + stringResource(id = R.string.member)
-                else -> stringResource(id = R.string.item_status) + ": " + stringResource(id = R.string.user)
+                "PRESIDENT" -> stringResource(id = R.string.item_role) + ": " + stringResource(id = R.string.president)
+                "MEMBER" -> stringResource(id = R.string.item_role) + ": " + stringResource(id = R.string.member)
+                "ADMIN" -> stringResource(id = R.string.item_role) + ": " + stringResource(id = R.string.admin)
+                "USER" -> stringResource(id = R.string.item_role) + ": " + stringResource(id = R.string.user)
+                else -> firefighter.role
             }
         }",
         "⌚ ${stringResource(id = R.string.hours)}: ${firefighter.hours}"

@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,7 +19,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.FiredepartmentDtos
 import com.vfd.client.ui.components.buttons.AppButton
@@ -43,6 +45,9 @@ fun FiredepartmentsHub(
     var editingFiredepartmentId by remember { mutableStateOf<Int?>(null) }
 
     var mode by remember { mutableStateOf("create") }
+
+    val yesLabel = stringResource(id = R.string.yes)
+    val noLabel = stringResource(id = R.string.no)
 
     LaunchedEffect(firedepartmentUpdateUiState.success) {
         if (firedepartmentUpdateUiState.success) {
@@ -75,25 +80,28 @@ fun FiredepartmentsHub(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Create",
+                        label = stringResource(id = R.string.create),
                         onClick = { mode = "create" },
                         modifier = Modifier.weight(1f)
                     )
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Edit",
+                        label = stringResource(id = R.string.edit),
                         onClick = { mode = "edit" },
                         modifier = Modifier.weight(1f)
                     )
                 }
-                AppText("New firedepartment", style = MaterialTheme.typography.headlineSmall)
+                AppText(
+                    stringResource(id = R.string.firedepartment_create),
+                    style = MaterialTheme.typography.headlineSmall
+                )
 
                 AppTextField(
                     value = firedepartmentCreateUiState.name,
                     onValueChange = { new ->
                         firedepartmentViewModel.onFiredepartmentCreateValueChange { it.copy(name = new) }
                     },
-                    label = "Name",
+                    label = stringResource(id = R.string.item_name),
                     errorMessage = firedepartmentCreateUiState.errorMessage
                 )
 
@@ -111,20 +119,19 @@ fun FiredepartmentsHub(
                         }
                     }
                 )
-
                 AppStringDropdown(
-                    label = "NRFS",
-                    items = listOf(true, false).map { it.toString() },
-                    selected = firedepartmentCreateUiState.nrfs.toString(),
+                    label = stringResource(id = R.string.item_nrfs),
+                    items = listOf(yesLabel, noLabel),
+                    selected = if (firedepartmentCreateUiState.nrfs) yesLabel else noLabel,
                     onSelected = { new ->
-                        firedepartmentViewModel.onFiredepartmentCreateValueChange { it.copy(nrfs = new == "true") }
+                        firedepartmentViewModel.onFiredepartmentCreateValueChange { it.copy(nrfs = new == yesLabel) }
                     },
-                    leadingIcon = Icons.AutoMirrored.Filled.ArrowBack
+                    leadingIcon = Icons.Default.Check
                 )
 
                 AppButton(
                     icon = Icons.Filled.Edit,
-                    label = "Save",
+                    label = stringResource(id = R.string.save),
                     onClick = {
                         firedepartmentViewModel.createFiredepartment(
                             FiredepartmentDtos.FiredepartmentCreate(
@@ -161,20 +168,23 @@ fun FiredepartmentsHub(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Create",
+                            label = stringResource(id = R.string.create),
                             onClick = { mode = "create" },
                             modifier = Modifier.weight(1f)
                         )
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = { mode = "edit" },
                             modifier = Modifier.weight(1f)
                         )
                     }
                 }
                 item {
-                    AppText("Edit firedepartment", style = MaterialTheme.typography.headlineSmall)
+                    AppText(
+                        stringResource(id = R.string.edit_firedepartment),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
                 }
 
                 items(firedepartmentsUiState.firedepartments) { firedepartment ->
@@ -187,7 +197,7 @@ fun FiredepartmentsHub(
                                         it.copy(name = new, nameTouched = true)
                                     }
                                 },
-                                label = "Name",
+                                label = stringResource(id = R.string.item_name),
                                 errorMessage = firedepartmentUpdateUiState.errorMessage
                             )
                             AppAddressActions(
@@ -207,20 +217,20 @@ fun FiredepartmentsHub(
                                 }
                             )
                             AppStringDropdown(
-                                label = "NRFS",
-                                items = listOf(true, false).map { it.toString() },
-                                selected = firedepartmentUpdateUiState.nrfs.toString(),
+                                label = stringResource(id = R.string.item_nrfs),
+                                items = listOf(yesLabel, noLabel),
+                                selected = if (firedepartmentUpdateUiState.nrfs) yesLabel else noLabel,
                                 onSelected = { new ->
                                     firedepartmentViewModel.onFiredepartmentUpdateValueChange {
-                                        it.copy(nrfs = new == "true", nrfsTouched = true)
+                                        it.copy(nrfs = new == yesLabel, nrfsTouched = true)
                                     }
                                 },
-                                leadingIcon = Icons.AutoMirrored.Filled.ArrowBack
+                                leadingIcon = Icons.Default.Check
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Save",
+                                    label = stringResource(id = R.string.save),
                                     onClick = {
                                         val firedepartmentDto =
                                             FiredepartmentDtos.FiredepartmentPatch(
@@ -244,7 +254,7 @@ fun FiredepartmentsHub(
                                 )
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Cancel",
+                                    label = stringResource(id = R.string.cancel),
                                     onClick = {
                                         editingFiredepartmentId = null
                                         firedepartmentViewModel.onFiredepartmentUpdateValueChange {
@@ -261,7 +271,7 @@ fun FiredepartmentsHub(
                         AppFiredepartmentCard(firedepartment, actions = {
                             AppButton(
                                 icon = Icons.Filled.Edit,
-                                label = "Edit",
+                                label = stringResource(id = R.string.edit),
                                 onClick = {
                                     editingFiredepartmentId = firedepartment.firedepartmentId
                                     firedepartmentViewModel.onFiredepartmentUpdateValueChange {
@@ -294,7 +304,7 @@ fun FiredepartmentsHub(
                 item {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Load more",
+                        label = stringResource(id = R.string.load_more),
                         onClick = {
                             if (!firedepartmentsUiState.isLoading && firedepartmentsUiState.page + 1 < firedepartmentsUiState.totalPages) {
                                 firedepartmentViewModel.getFiredepartmentsShort(

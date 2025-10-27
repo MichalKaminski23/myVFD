@@ -18,7 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.OperationTypeDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppOperationTypeCard
@@ -71,18 +73,21 @@ fun OperationTypesHub(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Create",
+                        label = stringResource(id = R.string.create),
                         onClick = { mode = "create" },
                         modifier = Modifier.weight(1f)
                     )
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Edit",
+                        label = stringResource(id = R.string.edit),
                         onClick = { mode = "edit" },
                         modifier = Modifier.weight(1f)
                     )
                 }
-                AppText("New operation type", style = MaterialTheme.typography.headlineSmall)
+                AppText(
+                    stringResource(id = R.string.new_operation_type),
+                    style = MaterialTheme.typography.headlineSmall
+                )
 
                 AppTextField(
                     value = operationTypeCreateUiState.operationType,
@@ -93,7 +98,7 @@ fun OperationTypesHub(
                             )
                         }
                     },
-                    label = "Type",
+                    label = stringResource(id = R.string.type_code),
                     errorMessage = operationTypeCreateUiState.errorMessage
                 )
 
@@ -102,13 +107,13 @@ fun OperationTypesHub(
                     onValueChange = { new ->
                         operationTypeViewModel.onOperationTypeCreateValueChange { it.copy(name = new) }
                     },
-                    label = "Name",
+                    label = stringResource(id = R.string.item_name),
                     errorMessage = operationTypeCreateUiState.errorMessage
                 )
 
                 AppButton(
                     icon = Icons.Filled.Edit,
-                    label = "Save",
+                    label = stringResource(id = R.string.save),
                     onClick = {
                         operationTypeViewModel.createOperationType(
                             operationTypeDto = OperationTypeDtos.OperationTypeCreate(
@@ -133,20 +138,23 @@ fun OperationTypesHub(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Create",
+                            label = stringResource(id = R.string.create),
                             onClick = { mode = "create" },
                             modifier = Modifier.weight(1f)
                         )
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = { mode = "edit" },
                             modifier = Modifier.weight(1f)
                         )
                     }
                 }
                 item {
-                    AppText("Edit operation type", style = MaterialTheme.typography.headlineSmall)
+                    AppText(
+                        stringResource(id = R.string.edit_operation_type),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
                 }
 
                 items(operationTypesUiState.operationTypes) { operationType ->
@@ -159,13 +167,13 @@ fun OperationTypesHub(
                                         it.copy(name = new, nameTouched = true)
                                     }
                                 },
-                                label = "Name",
+                                label = stringResource(id = R.string.item_name),
                                 errorMessage = operationTypeUpdateUiState.errorMessage
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Save",
+                                    label = stringResource(id = R.string.save),
                                     onClick = {
                                         val operationTypeDto =
                                             OperationTypeDtos.OperationTypePatch(
@@ -181,7 +189,7 @@ fun OperationTypesHub(
                                 )
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Cancel",
+                                    label = stringResource(id = R.string.cancel),
                                     onClick = {
                                         editingOperationTypeCode = null
                                         operationTypeViewModel.onOperationTypeUpdateValueChange {
@@ -198,7 +206,7 @@ fun OperationTypesHub(
                         AppOperationTypeCard(operationType, actions = {
                             AppButton(
                                 icon = Icons.Filled.Edit,
-                                label = "Edit",
+                                label = stringResource(id = R.string.edit),
                                 onClick = {
                                     editingOperationTypeCode = operationType.operationType
                                     operationTypeViewModel.onOperationTypeUpdateValueChange() {
@@ -219,7 +227,7 @@ fun OperationTypesHub(
                 item {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Load more",
+                        label = stringResource(id = R.string.load_more),
                         onClick = {
                             if (!operationTypesUiState.isLoading && operationTypesUiState.page + 1 < operationTypesUiState.totalPages) {
                                 operationTypeViewModel.getAllOperationTypes(

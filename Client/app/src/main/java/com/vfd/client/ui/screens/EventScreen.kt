@@ -1,7 +1,5 @@
 package com.vfd.client.ui.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -17,9 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.EventDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.ui.components.buttons.AppButton
@@ -34,7 +34,6 @@ import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.utils.RefreshEvent
 import com.vfd.client.utils.RefreshManager
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EventScreen(
     eventViewModel: EventViewModel,
@@ -86,12 +85,9 @@ fun EventScreen(
         isLoading = eventUiState.isLoading,
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
-        searchPlaceholder = "Search events...",
         filter = { event, query ->
             query.isBlank() || event.header.contains(query, ignoreCase = true)
         },
-        emptyText = "There aren't any events in your VFD or the events are still loading",
-        emptyFilteredText = "No events match your search",
         hasMore = hasMore,
         onLoadMore = {
             if (hasMore && !eventUiState.isLoading)
@@ -112,7 +108,7 @@ fun EventScreen(
                                     it.copy(header = new, headerTouched = true)
                                 }
                             },
-                            label = "Header",
+                            label = stringResource(id = R.string.item_header),
                             errorMessage = eventUpdateUiState.errorMessage
                         )
                         AppDateTimePicker(
@@ -122,7 +118,7 @@ fun EventScreen(
                                     it.copy(eventDate = newDateTime, eventDateTouched = true)
                                 }
                             },
-                            label = "Event date"
+                            label = stringResource(id = R.string.item_date),
                         )
                         AppTextField(
                             value = eventUpdateUiState.description,
@@ -131,14 +127,14 @@ fun EventScreen(
                                     it.copy(description = new, descriptionTouched = true)
                                 }
                             },
-                            label = "Description",
+                            label = stringResource(id = R.string.item_description),
                             errorMessage = eventUpdateUiState.errorMessage,
                             singleLine = false
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             AppButton(
                                 icon = Icons.Default.Check,
-                                label = "Save",
+                                label = stringResource(id = R.string.save),
                                 onClick = {
                                     event.eventId.let { id ->
                                         val eventDto = EventDtos.EventPatch(
@@ -165,7 +161,7 @@ fun EventScreen(
                             )
                             AppButton(
                                 icon = Icons.Default.Close,
-                                label = "Cancel",
+                                label = stringResource(id = R.string.cancel),
                                 onClick = { editingEventId = null },
                                 modifier = Modifier.weight(1f)
                             )
@@ -182,7 +178,7 @@ fun EventScreen(
                     if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
                         AppButton(
                             icon = Icons.Default.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = {
                                 editingEventId = event.eventId
                                 eventViewModel.onEventUpdateValueChange {

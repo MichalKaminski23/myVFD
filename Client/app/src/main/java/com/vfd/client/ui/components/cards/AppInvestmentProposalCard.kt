@@ -33,7 +33,7 @@ fun AppInvestmentProposalCard(
                         id = R.string.cancelled
                     )
 
-                    else -> stringResource(id = R.string.item_status) + ": " + stringResource(id = R.string.rejected)
+                    else -> investmentProposal.status
                 }
             }",
             "\uD83D\uDD22 ${stringResource(id = R.string.counter)}: ${investmentProposal.votesCount}",
