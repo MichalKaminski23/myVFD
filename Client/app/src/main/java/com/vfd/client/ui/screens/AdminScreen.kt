@@ -81,6 +81,7 @@ fun AdminScreen(
         !currentUserUiState.isLoading
     }
 
+    AppUiEvents(authViewModel.uiEvents, snackbarHostState)
     AppUiEvents(firedepartmentViewModel.uiEvents, snackbarHostState)
     AppUiEvents(firefighterViewModel.uiEvents, snackbarHostState)
     AppUiEvents(assetTypeViewModel.uiEvents, snackbarHostState)

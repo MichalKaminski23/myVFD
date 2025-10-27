@@ -1,8 +1,6 @@
 package com.vfd.client.ui.components.globals
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Left
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Right
 import androidx.compose.animation.core.tween
@@ -49,7 +47,6 @@ import com.vfd.client.ui.viewmodels.InvestmentProposalViewModel
 import com.vfd.client.ui.viewmodels.OperationViewModel
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
@@ -69,10 +66,10 @@ fun AppNavGraph(
             WelcomeScreen(navController = navController)
         }
         composable("loginScreen") {
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, snackbarHostState = snackbarHostState)
         }
         composable("registerScreen") {
-            RegisterScreen(navController = navController)
+            RegisterScreen(navController = navController, snackbarHostState = snackbarHostState)
         }
         composable("meScreen") {
             MeScreen(navController = navController, snackbarHostState = snackbarHostState)

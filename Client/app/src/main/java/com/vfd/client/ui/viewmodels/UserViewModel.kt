@@ -1,7 +1,9 @@
 package com.vfd.client.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.PasswordDtos
 import com.vfd.client.data.remote.dtos.UserDtos
@@ -10,6 +12,7 @@ import com.vfd.client.data.repositories.UserRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,7 +58,8 @@ data class UserUpdateUiState(
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -96,7 +100,7 @@ class UserViewModel @Inject constructor(
                     _currentUserUiState.value = _currentUserUiState.value.copy(
                         currentUser = null,
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to load current user"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
                 }
 
@@ -160,11 +164,11 @@ class UserViewModel @Inject constructor(
                         null
                     _currentUserUiState.value =
                         _currentUserUiState.value.copy(currentUser = updatedUser)
-                    _uiEvent.send(UiEvent.Success("User updated successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = when {
                         message.contains("phone number", ignoreCase = true) ->
@@ -182,7 +186,7 @@ class UserViewModel @Inject constructor(
                         errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to update user"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -208,11 +212,11 @@ class UserViewModel @Inject constructor(
                         success = true,
                         errorMessage = null
                     )
-                    _uiEvent.send(UiEvent.Success("Password changed successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = when {
                         message.contains("current password", ignoreCase = true) ->
@@ -229,7 +233,7 @@ class UserViewModel @Inject constructor(
                         errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to change password"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {

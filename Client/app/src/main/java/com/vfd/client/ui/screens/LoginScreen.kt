@@ -4,6 +4,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,6 +21,7 @@ import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppErrorText
 import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.AuthViewModel
@@ -31,10 +33,13 @@ fun LoginScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
     firefighterViewModel: FirefighterViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    snackbarHostState: SnackbarHostState,
 ) {
     val loginUiState by authViewModel.loginUiState.collectAsState()
     val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
+
+    AppUiEvents(authViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(loginUiState.success) {
         if (loginUiState.success) {

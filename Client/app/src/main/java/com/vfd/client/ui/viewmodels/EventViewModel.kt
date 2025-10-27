@@ -1,12 +1,15 @@
 package com.vfd.client.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.EventDtos
 import com.vfd.client.data.repositories.EventRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +50,8 @@ data class EventCreateUiState(
 
 @HiltViewModel
 class EventViewModel @Inject constructor(
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -93,16 +97,16 @@ class EventViewModel @Inject constructor(
                     _eventUiState.value = _eventUiState.value.copy(
                         events = listOf(result.data!!) + _eventUiState.value.events
                     )
-                    _uiEvent.send(UiEvent.Success("Event created successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
                     _eventCreateUiState.value = _eventCreateUiState.value.copy(
                         isLoading = false,
                         success = false,
-                        errorMessage = result.message ?: "Failed to create event"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to create event"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -140,7 +144,7 @@ class EventViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     _eventUiState.value = _eventUiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to load events"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
                 }
 
@@ -183,18 +187,18 @@ class EventViewModel @Inject constructor(
                     }
 
                     _eventUiState.value = _eventUiState.value.copy(events = updatedEvents)
-                    _uiEvent.send(UiEvent.Success("Event updated successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     _eventUpdateUiState.value = _eventUpdateUiState.value.copy(
                         isLoading = false,
                         success = false,
                         errorMessage = message
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to update event"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {

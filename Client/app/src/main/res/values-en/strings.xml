@@ -5,11 +5,10 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="information">Information</string>
-    <string name="app_name_short">MyVFD</string>
     <string name="me">My profile</string>
     <string name="moderator">President\'s panel</string>
     <string name="new_firefighters">New firefighters</string>
-    <string name="welcome">Hello!</string>
+    <string name="welcome">Good morning!</string>
     <string name="firefighters">Firefighters</string>
     <string name="assets">Assets</string>
     <string name="events">Events</string>
@@ -121,4 +120,6 @@
     <string name="dark">Dark</string>
     <string name="light">Light</string>
     <string name="selected">Selected</string>
+    <string name="success">Success!</string>
+    <string name="error">Error!</string>
 </resources>

@@ -1,13 +1,15 @@
 package com.vfd.client.ui.viewmodels
 
-import android.util.Log
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.InvestmentProposalDtos
 import com.vfd.client.data.repositories.InvestmentProposalRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +51,8 @@ data class InvestmentProposalCreateUiState(
 
 @HiltViewModel
 class InvestmentProposalViewModel @Inject constructor(
-    private val investmentProposalRepository: InvestmentProposalRepository
+    private val investmentProposalRepository: InvestmentProposalRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -97,7 +100,7 @@ class InvestmentProposalViewModel @Inject constructor(
                     _investmentProposalUiState.value = _investmentProposalUiState.value.copy(
                         investmentProposals = listOf(result.data!!) + _investmentProposalUiState.value.investmentProposals
                     )
-                    _uiEvent.send(UiEvent.Success("Investment proposal created successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
@@ -105,9 +108,9 @@ class InvestmentProposalViewModel @Inject constructor(
                         _investmentProposalCreateUiState.value.copy(
                             isLoading = false,
                             success = false,
-                            errorMessage = result.message ?: "Failed to create investment proposal"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
-                    _uiEvent.send(UiEvent.Error("Failed to create investment proposal"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -146,7 +149,7 @@ class InvestmentProposalViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     _investmentProposalUiState.value = _investmentProposalUiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to load investment proposals"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
                 }
 
@@ -195,11 +198,11 @@ class InvestmentProposalViewModel @Inject constructor(
 
                     _investmentProposalUiState.value =
                         _investmentProposalUiState.value.copy(investmentProposals = updatedInvestmentProposals)
-                    _uiEvent.send(UiEvent.Success("Investment proposal updated successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     _investmentProposalUpdateUiState.value =
                         _investmentProposalUpdateUiState.value.copy(
@@ -207,12 +210,7 @@ class InvestmentProposalViewModel @Inject constructor(
                             success = false,
                             errorMessage = message
                         )
-                    Log.w(
-                        "InvestmentProposalViewModel",
-                        "Updated investment proposal: ${result.data}"
-                    )
-
-                    _uiEvent.send(UiEvent.Error("Failed to update investment proposal"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {

@@ -1,8 +1,5 @@
 package com.vfd.client.ui.viewmodels
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vfd.client.data.repositories.AssetRepository
@@ -57,7 +54,6 @@ class MainViewModel @Inject constructor(
         _role.value = role?.uppercase() ?: ""
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun refreshBadges() {
         if (_role.value == "USER") {
             return
@@ -65,7 +61,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 supervisorScope {
-                    // uruchamiamy zapytania równolegle i zabezpieczamy każde osobno
                     val pendingDeferred = async { safeGetPendingFirefighters() }
                     val activeDeferred = async { safeGetActiveFirefighters() }
                     val assetsDeferred = async { safeGetAssets() }
@@ -83,8 +78,7 @@ class MainViewModel @Inject constructor(
                     )
                     _badgesState.value = newState
                 }
-            } catch (t: Throwable) {
-                Log.e("MainViewModel", "refreshBadges failed", t)
+            } catch (_: Throwable) {
             }
         }
     }
@@ -122,7 +116,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun safeGetUpcomingEventsCount(): Int {
         return try {
             when (val r = eventRepository.getEvents(page = 0, size = 20)) {

@@ -1,16 +1,22 @@
 package com.vfd.client.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.AuthResponseDto
 import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.data.repositories.AuthRepository
 import com.vfd.client.utils.ApiResult
+import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -49,8 +55,12 @@ data class LoginUiState(
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
+
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvents = _uiEvent.receiveAsFlow()
 
     private val _registerUiState = MutableStateFlow(RegisterUiState())
     val registerUiState = _registerUiState.asStateFlow()
@@ -85,7 +95,7 @@ class AuthViewModel @Inject constructor(
         )
 
         _loginUiState.value = LoginUiState(
-            emailAddress = "michal.kozak@test.com",
+            emailAddress = "jan.kowalski@test.com",
             password = "Dupa12345!"
         )
     }
@@ -117,10 +127,11 @@ class AuthViewModel @Inject constructor(
 
                     _registerUiState.value =
                         _registerUiState.value.copy(isLoading = false, success = true)
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = when {
                         message.contains("phone number", ignoreCase = true) ->
@@ -137,6 +148,7 @@ class AuthViewModel @Inject constructor(
                         errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -166,10 +178,11 @@ class AuthViewModel @Inject constructor(
 
                     _loginUiState.value =
                         _loginUiState.value.copy(isLoading = false, success = true)
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = when {
                         message.contains("phone number", ignoreCase = true) ->
@@ -186,6 +199,7 @@ class AuthViewModel @Inject constructor(
                         errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {

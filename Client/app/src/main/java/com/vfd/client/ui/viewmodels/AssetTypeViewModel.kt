@@ -1,12 +1,15 @@
 package com.vfd.client.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AssetTypeDtos
 import com.vfd.client.data.repositories.AssetTypeRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +46,8 @@ data class AssetTypeUpdateUiState(
 
 @HiltViewModel
 class AssetTypeViewModel @Inject constructor(
-    private val assetTypeRepository: AssetTypeRepository
+    private val assetTypeRepository: AssetTypeRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -85,11 +89,11 @@ class AssetTypeViewModel @Inject constructor(
                     _assetTypeUiState.value = _assetTypeUiState.value.copy(
                         assetTypes = listOf(result.data!!) + _assetTypeUiState.value.assetTypes
                     )
-                    _uiEvent.send(UiEvent.Success("Asset type created successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = result.fieldErrors
 
@@ -99,7 +103,7 @@ class AssetTypeViewModel @Inject constructor(
                         errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to create asset type"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -142,7 +146,7 @@ class AssetTypeViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     _assetTypeUiState.value = _assetTypeUiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to load asset types"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
                 }
 
@@ -185,11 +189,11 @@ class AssetTypeViewModel @Inject constructor(
 
                     _assetTypeUiState.value =
                         _assetTypeUiState.value.copy(assetTypes = updatedAssetTypes)
-                    _uiEvent.send(UiEvent.Success("Asset type updated successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = result.fieldErrors
 
@@ -199,7 +203,7 @@ class AssetTypeViewModel @Inject constructor(
                         errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to update asset type"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {

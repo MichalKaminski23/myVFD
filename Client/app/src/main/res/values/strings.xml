@@ -5,11 +5,11 @@
     <string name="login">Logowanie</string>
     <string name="register">Rejestracja</string>
     <string name="information">Informacje</string>
-    <string name="app_name_short">MyVFD</string>
+    <string name="app_name_short" translatable="false">MojeOSP</string>
     <string name="me">Moje konto</string>
     <string name="moderator">Panel prezesa</string>
     <string name="new_firefighters">Nowi strażacy</string>
-    <string name="welcome">Witaj!</string>
+    <string name="welcome">Dzień dobry!</string>
     <string name="firefighters">Strażacy</string>
     <string name="assets">Sprzęt</string>
     <string name="events">Wydarzenia</string>
@@ -121,4 +121,6 @@
     <string name="dark">Ciemny</string>
     <string name="light">Jasny</string>
     <string name="selected">Wybrani</string>
+    <string name="success">Sukces!</string>
+    <string name="error">Błąd!</string>
 </resources>

@@ -1,12 +1,15 @@
 package com.vfd.client.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.VoteDtos
 import com.vfd.client.data.repositories.VoteRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +44,8 @@ data class VoteCreateUiState(
 
 @HiltViewModel
 class VoteViewModel @Inject constructor(
-    private val voteRepository: VoteRepository
+    private val voteRepository: VoteRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -82,15 +86,15 @@ class VoteViewModel @Inject constructor(
                     _voteUiState.value = _voteUiState.value.copy(
                         votes = listOf(result.data!!) + _voteUiState.value.votes
                     )
-                    _uiEvent.send(UiEvent.Success("Vote created successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
                     _voteCreateUiState.value = _voteCreateUiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to create vote"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to create vote"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -136,7 +140,7 @@ class VoteViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     _voteUiState.value = _voteUiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to load votes"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
                 }
 
@@ -177,18 +181,18 @@ class VoteViewModel @Inject constructor(
                     }
 
                     _voteUiState.value = _voteUiState.value.copy(votes = updatedVotes)
-                    _uiEvent.send(UiEvent.Success("Vote updated successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     _voteUpdateUiState.value = _voteUpdateUiState.value.copy(
                         isLoading = false,
                         success = false,
                         errorMessage = message
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to update vote"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {

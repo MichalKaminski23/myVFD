@@ -1,12 +1,15 @@
 package com.vfd.client.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.InspectionTypeDtos
 import com.vfd.client.data.repositories.InspectionTypeRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +46,8 @@ data class InspectionTypeUpdateUiState(
 
 @HiltViewModel
 class InspectionTypeViewModel @Inject constructor(
-    private val inspectionTypeRepository: InspectionTypeRepository
+    private val inspectionTypeRepository: InspectionTypeRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -85,11 +89,11 @@ class InspectionTypeViewModel @Inject constructor(
                     _inspectionTypeUiState.value = _inspectionTypeUiState.value.copy(
                         inspectionTypes = listOf(result.data!!) + _inspectionTypeUiState.value.inspectionTypes
                     )
-                    _uiEvent.send(UiEvent.Success("Inspection type created successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = result.fieldErrors
 
@@ -99,7 +103,7 @@ class InspectionTypeViewModel @Inject constructor(
                         errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to create inspection type"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -145,7 +149,7 @@ class InspectionTypeViewModel @Inject constructor(
                     _inspectionTypeUiState.value =
                         _inspectionTypeUiState.value.copy(
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to load inspection types"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
                 }
 
@@ -192,11 +196,11 @@ class InspectionTypeViewModel @Inject constructor(
 
                     _inspectionTypeUiState.value =
                         _inspectionTypeUiState.value.copy(inspectionTypes = updatedInspectionTypes)
-                    _uiEvent.send(UiEvent.Success("Inspection type updated successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = result.fieldErrors
 
@@ -206,7 +210,7 @@ class InspectionTypeViewModel @Inject constructor(
                         errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to update inspection type"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {

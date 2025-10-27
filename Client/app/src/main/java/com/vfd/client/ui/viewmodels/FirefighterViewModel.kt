@@ -1,13 +1,16 @@
 package com.vfd.client.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.HoursResponseDto
 import com.vfd.client.data.repositories.FirefighterRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,7 +54,8 @@ data class FirefighterCreateUiState(
 
 @HiltViewModel
 class FirefighterViewModel @Inject constructor(
-    private val firefighterRepository: FirefighterRepository
+    private val firefighterRepository: FirefighterRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -88,16 +92,16 @@ class FirefighterViewModel @Inject constructor(
                             errorMessage = null,
                             success = true
                         )
-                    _uiEvent.send(UiEvent.Success("Firefighter created successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
                     _currentFirefighterUiState.value =
                         _currentFirefighterUiState.value.copy(
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to create firefighter"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
-                    _uiEvent.send(UiEvent.Success(result.message!!))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -131,7 +135,7 @@ class FirefighterViewModel @Inject constructor(
                             errorMessage = null,
                             success = true
                         )
-                    _uiEvent.send(UiEvent.Success("Firefighter created successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
@@ -139,9 +143,9 @@ class FirefighterViewModel @Inject constructor(
                         _firefighterCreateUiState.value.copy(
                             isLoading = false,
                             success = false,
-                            errorMessage = result.message ?: "Failed to create firefighter"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
-                    _uiEvent.send(UiEvent.Success(result.message!!))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -190,7 +194,7 @@ class FirefighterViewModel @Inject constructor(
                         _currentFirefighterUiState.value = _currentFirefighterUiState.value.copy(
                             currentFirefighter = null,
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to load current firefighter"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
                     }
                 }
@@ -227,14 +231,14 @@ class FirefighterViewModel @Inject constructor(
                             .filterNot { it.firefighterId == firefighterId },
                         isLoading = false
                     )
-                    _uiEvent.send(UiEvent.Success("Firefighter updated successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
                     _currentFirefighterUiState.value =
                         _currentFirefighterUiState.value.copy(
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to change role or status"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
                     _uiEvent.send(UiEvent.Success(result.message!!))
                 }
@@ -281,9 +285,8 @@ class FirefighterViewModel @Inject constructor(
                     _pendingFirefightersUiState.value =
                         _pendingFirefightersUiState.value.copy(
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to load pending firefighters"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
-                    _uiEvent.send(UiEvent.Success(result.message!!))
                 }
 
                 is ApiResult.Loading -> {
@@ -326,9 +329,8 @@ class FirefighterViewModel @Inject constructor(
                     _activeFirefightersUiState.value =
                         _activeFirefightersUiState.value.copy(
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to load active firefighters"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
-                    _uiEvent.send(UiEvent.Success(result.message!!))
                 }
 
                 is ApiResult.Loading -> {
@@ -348,16 +350,16 @@ class FirefighterViewModel @Inject constructor(
                             .filterNot { it.firefighterId == firefighterId },
                         isLoading = false
                     )
-                    _uiEvent.send(UiEvent.Success("Firefighter deleted successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
                     _pendingFirefightersUiState.value =
                         _pendingFirefightersUiState.value.copy(
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to delete firefighter"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
-                    _uiEvent.send(UiEvent.Success(result.message!!))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -404,9 +406,8 @@ class FirefighterViewModel @Inject constructor(
                         _currentFirefighterUiState.value = _currentFirefighterUiState.value.copy(
                             hours = null,
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to load hours"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
-                        _uiEvent.send(UiEvent.Success(result.message!!))
                     }
                 }
 

@@ -1,13 +1,16 @@
 package com.vfd.client.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.data.remote.dtos.FiredepartmentDtos
 import com.vfd.client.data.repositories.FiredepartmentRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -73,7 +76,8 @@ data class FiredepartmentUpdateUiState(
 
 @HiltViewModel
 class FiredepartmentViewModel @Inject constructor(
-    private val firedepartmentRepository: FiredepartmentRepository
+    private val firedepartmentRepository: FiredepartmentRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -117,15 +121,15 @@ class FiredepartmentViewModel @Inject constructor(
                         errorMessage = null,
                         fieldErrors = emptyMap()
                     )
-                    _uiEvent.send(UiEvent.Success("Firedepartment created successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
                     _firedepartmentCreateUiState.value = _firedepartmentCreateUiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to create firedepartment"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to create firedepartment"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -188,11 +192,11 @@ class FiredepartmentViewModel @Inject constructor(
                         }
                     _firedepartmentsUiState.value =
                         _firedepartmentsUiState.value.copy(firedepartments = updatedFiredepartments)
-                    _uiEvent.send(UiEvent.Success("Firedepartment updated successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = result.fieldErrors
 
@@ -202,7 +206,7 @@ class FiredepartmentViewModel @Inject constructor(
                         errorMessage = if (fieldErrors.isEmpty()) message else null,
                         fieldErrors = fieldErrors
                     )
-                    _uiEvent.send(UiEvent.Error("Failed to update firedepartment"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -243,7 +247,7 @@ class FiredepartmentViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     _firedepartmentsShortUiState.value = _firedepartmentsShortUiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to load firedepartments"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
                 }
 
@@ -285,7 +289,7 @@ class FiredepartmentViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     _firedepartmentsUiState.value = _firedepartmentsUiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to load firedepartments"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
                 }
 
@@ -317,7 +321,7 @@ class FiredepartmentViewModel @Inject constructor(
                 is ApiResult.Error -> {
                     _firedepartmentDetailUiState.value = _firedepartmentDetailUiState.value.copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Failed to load firedepartment"
+                        errorMessage = result.message ?: context.getString(R.string.error)
                     )
                 }
 

@@ -5,6 +5,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,6 +19,7 @@ import com.vfd.client.R
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.elements.AppAddressActions
 import com.vfd.client.ui.components.elements.AppColumn
+import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppErrorText
 import com.vfd.client.ui.components.texts.AppSectionHeader
 import com.vfd.client.ui.components.texts.AppTextField
@@ -27,9 +29,12 @@ import com.vfd.client.ui.viewmodels.AuthViewModel
 @Composable
 fun RegisterScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
 ) {
     val registerUiState by authViewModel.registerUiState.collectAsState()
+
+    AppUiEvents(authViewModel.uiEvents, snackbarHostState)
 
     LaunchedEffect(registerUiState.success) {
         if (registerUiState.success) {

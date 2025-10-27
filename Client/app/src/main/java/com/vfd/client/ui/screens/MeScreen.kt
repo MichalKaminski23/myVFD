@@ -80,6 +80,7 @@ fun MeScreen(
     val currentUserUiState by userViewModel.currentUserUiState.collectAsState()
 
     AppUiEvents(userViewModel.uiEvents, snackbarHostState)
+    AppUiEvents(authViewModel.uiEvents, snackbarHostState)
 
     val firedepartmentsShortUiState by firedepartmentViewModel.firedepartmentsShortUiState.collectAsState()
     var selectedFiredepartmentId by rememberSaveable { mutableStateOf<Int?>(null) }

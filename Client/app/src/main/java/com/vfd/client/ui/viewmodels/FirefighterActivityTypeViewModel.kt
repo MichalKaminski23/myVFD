@@ -1,12 +1,15 @@
 package com.vfd.client.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterActivityTypeDtos
 import com.vfd.client.data.repositories.FirefighterActivityTypeRepository
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +46,8 @@ data class FirefighterActivityTypeUpdateUiState(
 
 @HiltViewModel
 class FirefighterActivityTypeViewModel @Inject constructor(
-    private val firefighterActivityTypeRepository: FirefighterActivityTypeRepository
+    private val firefighterActivityTypeRepository: FirefighterActivityTypeRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -98,11 +102,11 @@ class FirefighterActivityTypeViewModel @Inject constructor(
                         _firefighterActivityTypeUiState.value.copy(
                             firefighterActivityTypes = listOf(result.data!!) + _firefighterActivityTypeUiState.value.firefighterActivityTypes
                         )
-                    _uiEvent.send(UiEvent.Success("Firefighter activity type created successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = result.fieldErrors
 
@@ -113,7 +117,7 @@ class FirefighterActivityTypeViewModel @Inject constructor(
                             errorMessage = if (fieldErrors.isEmpty()) message else null,
                             fieldErrors = fieldErrors
                         )
-                    _uiEvent.send(UiEvent.Error("Failed to create firefighter activity type type"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -162,11 +166,11 @@ class FirefighterActivityTypeViewModel @Inject constructor(
 
                     _firefighterActivityTypeUiState.value =
                         _firefighterActivityTypeUiState.value.copy(firefighterActivityTypes = updatedFirefighterActivitiesTypes)
-                    _uiEvent.send(UiEvent.Success("Firefighter activity type updated successfully"))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {
-                    val message = result.message ?: "Unknown error"
+                    val message = result.message ?: context.getString(R.string.error)
 
                     val fieldErrors = result.fieldErrors
 
@@ -177,7 +181,7 @@ class FirefighterActivityTypeViewModel @Inject constructor(
                             errorMessage = if (fieldErrors.isEmpty()) message else null,
                             fieldErrors = fieldErrors
                         )
-                    _uiEvent.send(UiEvent.Error("Failed to update firefighter activity type"))
+                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
                 }
 
                 is ApiResult.Loading -> {
@@ -223,7 +227,7 @@ class FirefighterActivityTypeViewModel @Inject constructor(
                     _firefighterActivityTypeUiState.value =
                         _firefighterActivityTypeUiState.value.copy(
                             isLoading = false,
-                            errorMessage = result.message ?: "Failed to load activity types"
+                            errorMessage = result.message ?: context.getString(R.string.error)
                         )
                 }
 

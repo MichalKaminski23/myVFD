@@ -68,6 +68,7 @@ fun ModeratorScreen(
     val userUpdateUiState by userViewModel.userUpdateUiState.collectAsState()
 
     AppUiEvents(userViewModel.uiEvents, snackbarHostState)
+    AppUiEvents(authViewModel.uiEvents, snackbarHostState)
 
     var showHourInputs by remember { mutableStateOf(false) }
     var showUpdateInputs by remember { mutableStateOf(false) }
