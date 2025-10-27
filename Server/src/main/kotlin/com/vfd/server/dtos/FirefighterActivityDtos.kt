@@ -10,30 +10,30 @@ object FirefighterActivityDtos {
 
     @Schema(description = "DTO used for creating a new firefighter activity record")
     data class FirefighterActivityCreate(
-        @field:NotBlank(message = "Activity type must not be blank.")
-        @field:Size(max = 16, message = "Activity type must be at most 16 characters.")
-        @field:Schema(description = "Code of the activity type", example = "CERT")
+        @field:NotBlank(message = "{firefighterActivity.type.not_blank}")
+        @field:Size(max = 16, message = "{firefighterActivity.type.size}")
+        @field:Schema(description = "Code of the activity type", example = "KPP")
         val firefighterActivityType: String,
 
-        @field:NotNull(message = "Activity date must not be null.")
+        @field:NotNull(message = "{firefighterActivity.activityDate.not_null}")
         @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
         val activityDate: LocalDateTime,
 
         @field:Schema(description = "Expiration date of the activity", example = "2025-08-03T15:00:00")
         val expirationDate: LocalDateTime? = null,
 
-        @field:Size(max = 512)
+        @field:Size(max = 512, message = "{firefighterActivity.description.size}")
         @field:Schema(
             description = "Description or notes related to the activity",
-            example = "Completed trauma response training."
+            example = "Skonczony kurs pierwszej pomocy"
         )
         val description: String? = null
     )
 
     @Schema(description = "DTO used for partially updating a firefighter activity")
     data class FirefighterActivityPatch(
-        @field:Size(max = 16, message = "Activity type must be at most 16 characters.")
-        @field:Schema(description = "Code of the activity type", example = "CERT")
+        @field:Size(max = 16, message = "{firefighterActivity.type.size}")
+        @field:Schema(description = "Code of the activity type", example = "KPP")
         val firefighterActivityType: String? = null,
 
         @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
@@ -42,10 +42,10 @@ object FirefighterActivityDtos {
         @field:Schema(description = "Expiration date of the activity", example = "2025-08-03T15:00:00")
         val expirationDate: LocalDateTime? = null,
 
-        @field:Size(max = 512, message = "Description must be at most 512 characters.")
+        @field:Size(max = 512, message = "{firefighterActivity.description.size}")
         @field:Schema(
             description = "Description or notes related to the activity",
-            example = "Completed trauma response training"
+            example = "Skonczony kurs pierwszej pomocy"
         )
         val description: String? = null,
 
@@ -60,10 +60,10 @@ object FirefighterActivityDtos {
         @field:Schema(description = "Unique identifier of the firefighter activity", example = "7")
         val firefighterActivityId: Int,
 
-        @field:Schema(description = "Firefighter who performed the activity")
+        @field:Schema(description = "Firefighter who performed the activity", example = "3")
         val firefighterId: Int,
 
-        @field:Schema(description = "Type of the activity")
+        @field:Schema(description = "Type of the activity", example = "KPP")
         val firefighterActivityTypeName: String,
 
         @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
@@ -74,7 +74,7 @@ object FirefighterActivityDtos {
 
         @field:Schema(
             description = "Description or notes related to the activity",
-            example = "Completed trauma response training."
+            example = "Skonczony kurs pierwszej pomocy."
         )
         val description: String?,
 
@@ -84,26 +84,26 @@ object FirefighterActivityDtos {
 
     @Schema(description = "DTO used for creating a new firefighter activity record for development purposes")
     data class FirefighterActivityCreateDev(
-        @field:NotNull(message = "Firefighter ID must not be null.")
+        @field:NotNull(message = "{firefighterActivity.firefighterId.not_null}")
         @field:Schema(description = "ID of the firefighter performing the activity", example = "7")
         val firefighterId: Int,
 
-        @field:NotBlank(message = "Activity type must not be blank.")
-        @field:Size(max = 16, message = "Activity type must be at most 16 characters.")
-        @field:Schema(description = "Code of the activity type", example = "CERT")
+        @field:NotBlank(message = "{firefighterActivity.type.not_blank}")
+        @field:Size(max = 16, message = "{firefighterActivity.type.size}")
+        @field:Schema(description = "Code of the activity type", example = "KPP")
         val firefighterActivityType: String,
 
-        @field:NotNull(message = "Activity date must not be null.")
+        @field:NotNull(message = "{firefighterActivity.activityDate.not_null}")
         @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
         val activityDate: LocalDateTime,
 
         @field:Schema(description = "Expiration date of the activity", example = "2025-08-03T15:00:00")
         val expirationDate: LocalDateTime? = null,
 
-        @field:Size(max = 512)
+        @field:Size(max = 512, message = "{firefighterActivity.description.size}")
         @field:Schema(
             description = "Description or notes related to the activity",
-            example = "Completed trauma response training."
+            example = "Skonczony kurs pierwszej pomocy"
         )
         val description: String? = null
     )

@@ -8,30 +8,30 @@ object AssetTypeDtos {
 
     @Schema(description = "DTO used for creating a new asset type")
     data class AssetTypeCreate(
-        @field:NotBlank(message = "Asset type key must not be blank.")
-        @field:Size(max = 16, message = "Asset type key must be at most 16 characters.")
-        @field:Schema(description = "Unique key representing the asset type", example = "WaterPump")
+        @field:NotBlank(message = "{assetType.key.not_blank}")
+        @field:Size(max = 16, message = "{assetType.key.size}")
+        @field:Schema(description = "Unique key representing the asset type", example = "GLM")
         val assetType: String,
 
-        @field:NotBlank(message = "Asset type name must not be blank.")
-        @field:Size(max = 64, message = "Asset type name must be at most 64 characters.")
-        @field:Schema(description = "Human-readable name of the asset type", example = "Heavy water pump")
+        @field:NotBlank(message = "{assetType.name.not_blank}")
+        @field:Size(max = 64, message = "{assetType.name.size}")
+        @field:Schema(description = "Human-readable name of the asset type", example = "Gasniczy Lekki Motopompa")
         val name: String
     )
 
     @Schema(description = "DTO used for partially updating an existing asset type")
     data class AssetTypePatch(
-        @field:Size(max = 64, message = "Asset type name must be at most 64 characters.")
-        @field:Schema(description = "Human-readable name of the asset type", example = "Heavy water pump")
+        @field:Size(max = 64, message = "{assetType.name.size}")
+        @field:Schema(description = "Human-readable name of the asset type", example = "GLM")
         val name: String? = null
     )
 
     @Schema(description = "DTO used for returning asset type information")
     data class AssetTypeResponse(
-        @field:Schema(description = "Unique key representing the asset type", example = "WaterPump")
+        @field:Schema(description = "Unique key representing the asset type", example = "GLM")
         val assetType: String,
 
-        @field:Schema(description = "Human-readable name of the asset type", example = "Heavy water pump")
+        @field:Schema(description = "Human-readable name of the asset type", example = "Gasniczy Lekki Motopompa")
         val name: String
     )
 }

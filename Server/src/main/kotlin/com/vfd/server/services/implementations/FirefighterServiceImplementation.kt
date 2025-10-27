@@ -87,12 +87,10 @@ class FirefighterServiceImplementation(
 
         val userAdmin = userRepository.findByEmailOrThrow(emailAddress)
 
-        val firefighterAdmin = firefighterRepository.findByIdOrThrow(userAdmin.userId!!)
+        firefighterRepository.findByIdOrThrow(userAdmin.userId!!)
 
 
         val userCreated = userRepository.findByEmailOrThrow(firefighterDto.userEmailAddress)
-
-        firefighterRepository.assertNotExistsByUserId(userCreated.userId!!)
 
         val firedepartment = firedepartmentRepository.findByIdOrThrow(firefighterDto.firedepartmentId)
 
@@ -101,7 +99,7 @@ class FirefighterServiceImplementation(
                 FirefighterRole.PRESIDENT
             )
         ) {
-            throw PresidentAlreadyExistsException()
+            throw PresidentAlreadyExistsException(firefighterDto.userEmailAddress)
         }
 
         val firefighter = firefighterMapper.toFirefighterEntityByEmailAddress(firefighterDto)
@@ -178,7 +176,7 @@ class FirefighterServiceImplementation(
                     firefighterUpdated.firefighterId!!
                 )
             ) {
-                throw PresidentAlreadyExistsException()
+                throw PresidentAlreadyExistsException(userUpdated.emailAddress!!)
             }
         }
 
@@ -355,7 +353,7 @@ class FirefighterServiceImplementation(
                     firefighter.firefighterId!!
                 )
             ) {
-                throw PresidentAlreadyExistsException()
+                throw PresidentAlreadyExistsException(firefighter.user?.emailAddress!!)
             }
         }
 

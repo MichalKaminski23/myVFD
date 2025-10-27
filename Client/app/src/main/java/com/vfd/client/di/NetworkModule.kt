@@ -17,6 +17,7 @@ import com.vfd.client.data.remote.api.OperationTypeApi
 import com.vfd.client.data.remote.api.UserApi
 import com.vfd.client.data.remote.api.VoteApi
 import com.vfd.client.network.AuthInterceptor
+import com.vfd.client.network.LanguageInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,12 +47,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor,
+        languageInterceptor: LanguageInterceptor
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
+            .addInterceptor(languageInterceptor)
             .addInterceptor(logging)
             .build()
     }

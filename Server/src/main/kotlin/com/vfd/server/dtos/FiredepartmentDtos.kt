@@ -9,9 +9,9 @@ object FiredepartmentDtos {
 
     @Schema(description = "DTO used for creating a new fire department")
     data class FiredepartmentCreate(
-        @field:NotBlank(message = "Name must not be blank.")
-        @field:Size(max = 128, message = "Name must be at most 128 characters.")
-        @field:Schema(description = "Name of the fire department", example = "OSP Strzyzowice")
+        @field:NotBlank(message = "{firedepartment.name.not_blank}")
+        @field:Size(max = 128, message = "{firedepartment.name.size}")
+        @field:Schema(description = "Name of the fire department", example = "OSP Gora-Siewierska")
         val name: String,
 
         @field:Valid
@@ -27,8 +27,8 @@ object FiredepartmentDtos {
 
     @Schema(description = "DTO used for partially updating a fire department")
     data class FiredepartmentPatch(
-        @field:Size(max = 128, message = "Name must be at most 128 characters.")
-        @field:Schema(description = "Name of the fire department", example = "OSP Strzyzowice")
+        @field:Size(max = 128, message = "{firedepartment.name.size}")
+        @field:Schema(description = "Name of the fire department", example = "OSP Gora-Siewierska")
         val name: String? = null,
 
         @field:Valid
@@ -47,7 +47,7 @@ object FiredepartmentDtos {
         @field:Schema(description = "Unique identifier of the fire department", example = "7")
         val firedepartmentId: Int,
 
-        @field:Schema(description = "Name of the fire department", example = "OSP Strzyzowice")
+        @field:Schema(description = "Name of the fire department", example = "OSP Gora-Siewierska")
         val name: String,
 
         @field:Schema(description = "Address of the fire department")
@@ -65,7 +65,7 @@ object FiredepartmentDtos {
         @field:Schema(description = "Unique identifier of the fire department", example = "7")
         val firedepartmentId: Int,
 
-        @field:Schema(description = "Name of the fire department", example = "OSP Strzyzowice")
+        @field:Schema(description = "Name of the fire department", example = "OSP Gora-Siewierska")
         val name: String
     )
 }

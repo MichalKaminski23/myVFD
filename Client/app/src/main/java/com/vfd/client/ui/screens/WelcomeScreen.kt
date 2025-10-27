@@ -1,5 +1,7 @@
 package com.vfd.client.ui.screens
 
+import android.content.Context
+import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,12 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.edit
 import androidx.core.os.LocaleListCompat
 import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.texts.AppText
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 fun setAppLanguage(tag: String) {
     AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
@@ -37,7 +41,10 @@ fun setAppTheme(isDark: Boolean) {
 }
 
 @Composable
-fun WelcomeScreen(navController: NavController) {
+fun WelcomeScreen(
+    navController: NavController,
+    @ApplicationContext context: Context
+) {
     AppColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,13 +92,21 @@ fun WelcomeScreen(navController: NavController) {
             AppButton(
                 icon = Icons.Filled.LocationOn,
                 label = "PL",
-                onClick = { setAppLanguage("pl") },
+                onClick = {
+                    setAppLanguage("pl")
+                    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                    prefs.edit { putString("lang_pref", "pl") }
+                },
                 modifier = Modifier.weight(1f),
             )
             AppButton(
                 icon = Icons.Filled.LocationOn,
                 label = "EN",
-                onClick = { setAppLanguage("en") },
+                onClick = {
+                    setAppLanguage("en")
+                    val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+                    prefs.edit { putString("lang_pref", "en") }
+                },
                 modifier = Modifier.weight(1f),
             )
         }

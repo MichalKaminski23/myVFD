@@ -8,4 +8,8 @@ class ResourceConflictException(
     entity: String,
     fieldName: String,
     fieldValue: Any
-) : RuntimeException("$entity with $fieldName '$fieldValue' already exists.")
+) : LocalizedException(
+    "resource.conflict",
+    arrayOf(entity, fieldName, fieldValue),
+    "$entity with $fieldName '$fieldValue' already exists."
+)

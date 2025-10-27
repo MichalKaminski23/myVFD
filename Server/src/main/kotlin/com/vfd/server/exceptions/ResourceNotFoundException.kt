@@ -8,4 +8,8 @@ class ResourceNotFoundException(
     entity: String,
     fieldName: String,
     fieldValue: Any
-) : RuntimeException("$entity with $fieldName '$fieldValue' not found.")
+) : LocalizedException(
+    "resource.not_found",
+    arrayOf(entity, fieldName, fieldValue),
+    "$entity not found with $fieldName : '$fieldValue'"
+)

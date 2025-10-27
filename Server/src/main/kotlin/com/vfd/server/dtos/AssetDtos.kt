@@ -9,33 +9,36 @@ object AssetDtos {
 
     @Schema(description = "DTO used for creating a new asset")
     data class AssetCreate(
-        @field:NotBlank(message = "Name must not be blank.")
-        @field:Size(max = 128, message = "Name must be at most 128 characters.")
-        @field:Schema(description = "Name of the asset", example = "Pump 3000 l/min")
+        @field:NotBlank(message = "{asset.name.not_blank}")
+        @field:Size(max = 128, message = "{asset.name.size}")
+        @field:Schema(description = "Name of the asset", example = "Pompa 3000 l/min")
         val name: String,
 
-        @field:NotBlank(message = "Asset type must not be blank.")
-        @field:Size(max = 16, message = "Asset type must be at most 16 characters.")
-        @field:Schema(description = "Key of the asset type", example = "WaterPump")
+        @field:NotBlank(message = "{asset.assetType.not_blank}")
+        @field:Size(max = 16, message = "{asset.assetType.size}")
+        @field:Schema(description = "Key of the asset type", example = "POMPWODNA")
         val assetType: String,
 
-        @field:Size(max = 512, message = "Description must be at most 512 characters.")
-        @field:Schema(description = "Optional description of the asset", example = "Backup pump used during floods")
+        @field:Size(max = 512, message = "{asset.description.size}")
+        @field:Schema(
+            description = "Optional description of the asset",
+            example = "Pompa zapasowa uzywana podczas powodzi"
+        )
         val description: String? = null
     )
 
     @Schema(description = "DTO used for partially updating an existing asset")
     data class AssetPatch(
-        @field:Size(max = 128, message = "Name must be at most 128 characters.")
-        @field:Schema(description = "Name of the asset", example = "Pump 3000 l/min")
+        @field:Size(max = 128, message = "{asset.name.size}")
+        @field:Schema(description = "Name of the asset", example = "Pompa 3000 l/min")
         val name: String? = null,
 
-        @field:Size(max = 16, message = "Asset type must be at most 16 characters.")
-        @field:Schema(description = "Key of the asset type", example = "WaterPump")
+        @field:Size(max = 16, message = "{asset.assetType.size}")
+        @field:Schema(description = "Key of the asset type", example = "POMPWODNA")
         val assetType: String? = null,
 
-        @field:Size(max = 512, message = "Description must be at most 512 characters.")
-        @field:Schema(description = "Description of the asset", example = "Backup pump used during floods")
+        @field:Size(max = 512, message = "{asset.description.size}")
+        @field:Schema(description = "Description of the asset", example = "Pompa zapasowa uzywana podczas powodzi")
         val description: String? = null
     )
 
@@ -44,40 +47,43 @@ object AssetDtos {
         @field:Schema(description = "Unique identifier of the asset", example = "7")
         val assetId: Int,
 
-        @field:Schema(description = "Firedepartment that owns this asset")
+        @field:Schema(description = "Firedepartment that owns this asset", example = "3")
         val firedepartmentId: Int,
 
-        @field:Schema(description = "Name of the asset", example = "Pump 3000 l/min")
+        @field:Schema(description = "Name of the asset", example = "Pompa 3000 l/min")
         val name: String,
 
-        @field:Schema(description = "Type name of the asset")
+        @field:Schema(description = "Type name of the asset", example = "POMPWODNA")
         val assetTypeName: String,
 
         @field:Schema(
             description = "Optional description of the asset",
-            example = "Backup pump used during floods"
+            example = "Pompa zapasowa uzywana podczas powodzi"
         )
         val description: String?
     )
 
     @Schema(description = "DTO used for creating a new asset for development purposes")
     data class AssetCreateDev(
-        @field:NotNull(message = "Firedepartment ID must not be null.")
+        @field:NotNull(message = "{asset.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the fire department owning the asset", example = "7")
         val firedepartmentId: Int,
 
-        @field:NotBlank(message = "Name must not be blank.")
-        @field:Size(max = 128, message = "Name must be at most 128 characters.")
-        @field:Schema(description = "Name of the asset", example = "Pump 3000 l/min")
+        @field:NotBlank(message = "{asset.name.not_blank}")
+        @field:Size(max = 128, message = "{asset.name.size}")
+        @field:Schema(description = "Name of the asset", example = "Pompa 3000 l/min")
         val name: String,
 
-        @field:NotBlank(message = "Asset type must not be blank.")
-        @field:Size(max = 16, message = "Asset type must be at most 16 characters.")
-        @field:Schema(description = "Key of the asset type", example = "WaterPump")
+        @field:NotBlank(message = "{asset.assetType.not_blank}")
+        @field:Size(max = 16, message = "{asset.assetType.size}")
+        @field:Schema(description = "Key of the asset type", example = "POMPWODNA")
         val assetType: String,
 
-        @field:Size(max = 512, message = "Description must be at most 512 characters.")
-        @field:Schema(description = "Optional description of the asset", example = "Backup pump used during floods")
+        @field:Size(max = 512, message = "{asset.description.size}")
+        @field:Schema(
+            description = "Optional description of the asset",
+            example = "Pompa zapasowa uzywana podczas powodzi"
+        )
         val description: String? = null
     )
 }

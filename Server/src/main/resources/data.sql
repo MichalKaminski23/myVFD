@@ -1,24 +1,24 @@
 INSERT INTO Addresses (country, voivodeship, city, postal_code, street, apart_number, house_number)
-VALUES ('Polska', 'Śląskie', 'Strzyżowice', '00-001', 'Belna', '1A', '10'),
-       ('Polska', 'Śląskie', 'Dąbie', '10-001', 'Pszczela', NULL, '5'),
-       ('Polska', 'Śląskie', 'Psary', '20-001', 'Kolejowa', '2', '20');
+VALUES ('Polska', 'Slaskie', 'Strzyzowice', '00-001', 'Belna', '1A', '10'),
+       ('Polska', 'Slaskie', 'Dąbie', '10-001', 'Pszczela', NULL, '5'),
+       ('Polska', 'Slaskie', 'Psary', '20-001', 'Kolejowa', '2', '20');
 
 INSERT INTO Asset_Types (asset_type, name)
-VALUES ('POMPWODNA', 'Ciężka pompa wodna'),
-       ('W52', 'Wąż strażacki 52 mm'),
-       ('AODO', 'Aparat ochrony dróg oddechowych'),
-       ('GBA', 'Gaśniczy Beczka Autopompa'),
-       ('GCBA', 'Ciężki Gaśniczy Beczka Autopompa');
+VALUES ('POMPWODNA', 'Ciezka pompa wodna'),
+       ('W52', 'Waz strazacki 52 mm'),
+       ('AODO', 'Aparat ochrony drog oddechowych'),
+       ('GBA', 'Gasniczy Beczka Autopompa'),
+       ('GCBA', 'Ciezki Gasniczy Beczka Autopompa');
 
 INSERT INTO Inspection_types (inspection_type, name)
-VALUES ('PRZEG', 'Ogólny przegląd'),
+VALUES ('PRZEG', 'Ogolny przegldd'),
        ('KONS', 'Konserwacja'),
        ('UBEZ', 'Ubezpieczenie');
 
 INSERT INTO Operation_Types (operation_type, name)
 VALUES ('RAT', 'Akcja ratownicza'),
-       ('CWI', 'Ćwiczenia'),
-       ('POZ', 'Pożar');
+       ('ZAL', 'Zalanie'),
+       ('POZ', 'Pozar');
 
 INSERT INTO Firefighter_Activity_Types (firefighter_activity_type, name)
 VALUES ('TREN', 'Trening'),
@@ -83,8 +83,8 @@ VALUES ('Jan', 'Kowalski', 1, '+48123456789', 'jan.kowalski@test.com', '2025-01-
         '2025-08-10 17:55:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS');
 
 INSERT INTO Firedepartments (name, address_id, is_nrfs)
-VALUES ('OSP Strzyżowice', 1, TRUE),
-       ('OSP Dąbie', 2, FALSE);
+VALUES ('OSP Strzyzowice', 1, TRUE),
+       ('OSP Dabie', 2, FALSE);
 
 INSERT INTO Firefighters (firefighter_id, firedepartment_id, role, status)
 VALUES (1, 1, 'PRESIDENT', 'ACTIVE'),
@@ -117,20 +117,20 @@ VALUES (1, 1, 'PRESIDENT', 'ACTIVE'),
 
 INSERT INTO Firefighter_Activities (firefighter_id, firefighter_activity_type, activity_date, expiration_date,
                                     description, status)
-VALUES (1, 'TREN', '2025-07-01 09:00:00', '2026-07-01 09:00:00', 'Basic firefighter training', 'PENDING'),
-       (1, 'TREN', '2025-04-10 11:00:00', '2026-04-10 11:00:00', 'Firefighter refresher course', 'ACTIVE'),
-       (1, 'SZKO', '2025-05-10 11:00:00', '2026-05-10 11:00:00', 'Firefighter heli cert', 'REJECTED'),
-       (2, 'KPP', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'First aid course', 'PENDING'),
-       (2, 'KPP', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'First aid course', 'ACTIVE'),
-       (2, 'KPP', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'First aid course', 'REJECTED'),
-       (3, 'SZKO', '2025-05-15 08:00:00', '2027-05-15 08:00:00', 'Advanced Certification', 'ACTIVE');
+VALUES (1, 'TREN', '2025-07-01 09:00:00', '2026-07-01 09:00:00', 'Trening z ciecia pojazdow', 'PENDING'),
+       (1, 'TREN', '2025-04-10 11:00:00', '2026-04-10 11:00:00', 'Trening z gaszenia traw', 'ACTIVE'),
+       (1, 'SZKO', '2025-05-10 11:00:00', '2026-05-10 11:00:00', 'Szkolenie z ratownictwa wysokosciowego', 'REJECTED'),
+       (2, 'KPP', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'Kurs KPP', 'PENDING'),
+       (2, 'KPP', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'Kurs KPP', 'ACTIVE'),
+       (2, 'KPP', '2025-06-20 10:00:00', '2026-06-20 10:00:00', 'Kurs KPP', 'REJECTED'),
+       (3, 'SZKO', '2025-05-15 08:00:00', '2027-05-15 08:00:00', 'Szkolenie z wyciagania ludzi z wody', 'ACTIVE');
 
 INSERT INTO Assets (firedepartment_id, name, asset_type, description)
 VALUES (1, 'Pompa szlamowa', 'POMPWODNA', 'Pompa szlamowa - do naprawy'),
-       (1, 'Wąż Żółty W52', 'W52', 'Wąż strażacki 52 mm - nowy'),
-       (2, 'Aparat Ochrony Dróg Oddechowych', 'AODO', 'Aparat ochrony dróg oddechowych - sprawny'),
+       (1, 'Waz Zolty W52', 'W52', 'Waz strazacki 52 mm - nowy'),
+       (2, 'Aparat Ochrony Drog Oddechowych', 'AODO', 'Aparat ochrony drog oddechowych - sprawny'),
        (1, 'GCBA 5/32', 'GCBA', 'Nasz kochany MAN TGM 18.340  - w dobrym stanie'),
-       (1, 'GBA 3/16', 'GBA', 'Rosenbauer Panther - wymaga przeglądu');
+       (1, 'GBA 3/16', 'GBA', 'Rosenbauer Panther - wymaga przegladu');
 
 INSERT INTO Inspections (asset_id, inspection_type, inspection_date, expiration_date)
 VALUES (1, 'PRZEG', '2025-06-15 11:00:00', '2026-06-15 11:00:00'),
@@ -141,11 +141,11 @@ VALUES (1, 'PRZEG', '2025-06-15 11:00:00', '2026-06-15 11:00:00'),
 
 INSERT INTO Operations (firedepartment_id, operation_type, address_id, operation_date, operation_end, description)
 VALUES (1, 'RAT', 3, '2025-07-15 13:00:00', '2025-07-15 18:00:00',
-        'Ćwiczenia w OSP - wynoszenie poszkodowane z budynku.'),
-       (1, 'CWI', 2, '2025-07-18 09:00:00', '2025-07-18 17:00:00',
-        'Kurs kwalifikowanej pierwszej pomocy dla strażaków.'),
-       (1, 'POZ', 1, '2025-07-20 14:30:00', '2025-07-20 16:00:00', 'Pożar trawy na wale.'),
-       (2, 'POZ', 2, '2025-07-22 11:00:00', '2025-07-22 13:30:00', 'Wypadek drogowy na DK86.');
+        'Osoba poszkodowana w wypadku rowerowym.'),
+       (1, 'ZAL', 2, '2025-07-18 09:00:00', '2025-07-18 17:00:00',
+        'Zalanie piwnicy w przedszkolu.'),
+       (1, 'POZ', 1, '2025-07-20 14:30:00', '2025-07-20 16:00:00', 'Pozar trawy na wale.'),
+       (2, 'RAT', 2, '2025-07-22 11:00:00', '2025-07-22 13:30:00', 'Wypadek drogowy na DK86.');
 
 INSERT INTO Participations (operation_id, firefighter_id)
 VALUES (1, 1),
@@ -159,9 +159,9 @@ VALUES (1, 1),
        (2, 24);
 
 INSERT INTO Investment_Proposals (firedepartment_id, description, amount, submission_date, status)
-VALUES (1, 'Zakup nowego ciężkiego samochodu do naszego OSP', 1000000.00, '2025-07-10 12:00:00', 'PENDING'),
-       (2, 'Wymiana ubrań koszarowych', 10000.00, '2025-07-12 15:30:00', 'APPROVED'),
-       (1, 'Modernizacja remizy strażackiej', 50000.00, '2025-07-14 09:45:00', 'PENDING');
+VALUES (1, 'Zakup nowego ciezkiego samochodu do naszego OSP', 1000000.00, '2025-07-10 12:00:00', 'PENDING'),
+       (2, 'Wymiana ubran koszarowych', 10000.00, '2025-07-12 15:30:00', 'APPROVED'),
+       (1, 'Modernizacja remizy strazackiej', 50000.00, '2025-07-14 09:45:00', 'PENDING');
 
 INSERT INTO Votes (proposal_id, firefighter_id, vote_value, vote_date)
 VALUES (1, 1, TRUE, '2025-07-11 10:00:00'),
@@ -170,8 +170,8 @@ VALUES (1, 1, TRUE, '2025-07-11 10:00:00'),
        (2, 3, TRUE, '2025-07-13 09:15:00');
 
 INSERT INTO Events(firedepartment_id, header, description, event_date)
-VALUES (1, 'Dzień Ziemniaka', 'Coroczny dzień ziemniaka przy naszej OSP', '2025-08-01 10:00:00'),
-       (1, 'Dzień Bezpieczeństwa',
-        'Piknik sołecki, połączony z pokazami OSP oraz pierwszej pomocy - budynek ZSP u nas na wsi.',
+VALUES (1, 'Dzien Ziemniaka', 'Coroczny dzien ziemniaka przy naszej OSP', '2025-08-01 10:00:00'),
+       (1, 'Dzien Bezpieczenstwa',
+        'Piknik solecki, połaczony z pokazami OSP oraz pierwszej pomocy - budynek ZSP u nas na wsi.',
         '2025-08-05 14:00:00'),
-       (1, 'Zawody Sportowo-Pożarnicze', 'Gminne zawody sportowo-pożarnicze na naszym boisku.', '2025-08-10 09:00:00');
+       (1, 'Zawody Sportowo-Pozarnicze', 'Gminne zawody sportowo-pozarnicze na naszym boisku.', '2025-08-10 09:00:00');

@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -63,7 +64,8 @@ fun AppNavGraph(
         popExitTransition = { slideOutOfContainer(Right) + fadeOut(animationSpec = tween(500)) }
     ) {
         composable("welcomeScreen") {
-            WelcomeScreen(navController = navController)
+            val context = LocalContext.current
+            WelcomeScreen(navController = navController, context = context)
         }
         composable("loginScreen") {
             LoginScreen(navController = navController, snackbarHostState = snackbarHostState)
