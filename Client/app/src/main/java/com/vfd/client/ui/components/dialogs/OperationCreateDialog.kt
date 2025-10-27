@@ -1,7 +1,5 @@
 package com.vfd.client.ui.components.dialogs
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Face
@@ -9,7 +7,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.OperationDtos
 import com.vfd.client.ui.components.elements.AppAddressActions
 import com.vfd.client.ui.components.elements.AppDateTimePicker
@@ -21,7 +21,6 @@ import com.vfd.client.ui.viewmodels.FirefighterViewModel
 import com.vfd.client.ui.viewmodels.OperationTypeViewModel
 import com.vfd.client.ui.viewmodels.OperationViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun OperationCreateDialog(
     operationViewModel: OperationViewModel,
@@ -41,7 +40,7 @@ fun OperationCreateDialog(
     AppFormDialog(
         show = showDialog,
         onDismiss = onDismiss,
-        title = "Create new operation",
+        title = stringResource(id = R.string.operation_create),
         confirmEnabled = operationCreateUiState.operationType.isNotBlank()
                 && operationCreateUiState.address?.country?.isNotBlank() == true &&
                 operationCreateUiState.address?.voivodeship?.isNotBlank() == true &&
@@ -76,7 +75,7 @@ fun OperationCreateDialog(
             selectedCode = operationCreateUiState.operationType,
             codeSelector = { it.operationType },
             labelSelector = { it.name },
-            label = "Choose operation type",
+            label = stringResource(id = R.string.item_type),
             onSelected = { operationType ->
                 operationViewModel.onOperationCreateValueChange {
                     it.copy(
@@ -107,7 +106,7 @@ fun OperationCreateDialog(
                     )
                 }
             },
-            label = "Operation date"
+            label = stringResource(id = R.string.item_date),
         )
         AppDateTimePicker(
             selectedDateTime = operationCreateUiState.operationEnd,
@@ -118,14 +117,14 @@ fun OperationCreateDialog(
                     )
                 }
             },
-            label = "Operation end"
+            label = stringResource(id = R.string.item_end_date),
         )
         AppMultiDropdown(
             items = firefighterUiState.activeFirefighters,
             selectedIds = operationCreateUiState.participantsIds,
             idSelector = { it.firefighterId },
             labelSelector = { it.firstName + " " + it.lastName },
-            label = "Participants",
+            label = stringResource(id = R.string.firefighters),
             onToggle = { id ->
                 operationViewModel.onOperationCreateValueChange { s ->
                     val set = s.participantsIds.toMutableSet()
@@ -159,7 +158,7 @@ fun OperationCreateDialog(
                     it.copy(description = new)
                 }
             },
-            label = "Description",
+            label = stringResource(id = R.string.item_description),
             errorMessage = operationCreateUiState.errorMessage,
             singleLine = false
         )

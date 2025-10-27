@@ -39,10 +39,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vfd.client.R
 import com.vfd.client.ui.theme.appTextFieldColors
 
 @Composable
@@ -101,7 +103,7 @@ fun <T> AppDropdown(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
-            placeholder = { Text("Select...") },
+            placeholder = { stringResource(id = R.string.search) },
             trailingIcon = {
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
@@ -219,7 +221,7 @@ fun <T> AppDropdown(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    "Load more...",
+                                    stringResource(id = R.string.load_more),
                                     textAlign = TextAlign.Center,
                                     fontStyle = FontStyle.Italic,
                                     color = itemTextColor
@@ -237,7 +239,7 @@ fun <T> AppDropdown(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Text(
-                                    "No more items...",
+                                    stringResource(id = R.string.no_more_items),
                                     textAlign = TextAlign.Center,
                                     fontStyle = FontStyle.Italic,
                                     color = itemTextColor.copy(alpha = 0.8f)

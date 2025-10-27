@@ -125,33 +125,36 @@ class MainActivity : AppCompatActivity() {
                             title = {
                                 Text(
                                     when (baseRoute) {
-                                        "meScreen" -> "My Profile"
-                                        "registerScreen" -> "Register"
+                                        "meScreen" -> stringResource(id = R.string.me)
+                                        "registerScreen" -> stringResource(id = R.string.register)
                                         "loginScreen" -> stringResource(id = R.string.login)
-                                        "infoScreen" -> "Information"
-                                        "moderatorScreen" -> "Moderate"
-                                        "newFirefighterScreen" -> "New Firefighters"
-                                        "welcomeScreen" -> "My VFD"
-                                        "firefighterScreen" -> "Firefighters"
-                                        "assets/list", "assets/create" -> "Assets"
-                                        "events/list", "events/create" -> "Events"
-                                        "operations/list", "operations/create" -> "Operations"
-                                        "investments/list", "investments/create" -> "Investments"
+                                        "infoScreen" -> stringResource(id = R.string.information)
+                                        "moderatorScreen" -> stringResource(id = R.string.moderator)
+                                        "newFirefighterScreen" -> stringResource(id = R.string.new_firefighters)
+                                        "welcomeScreen" -> stringResource(id = R.string.welcome)
+                                        "firefighterScreen" -> stringResource(id = R.string.firefighters)
+                                        "assets/list", "assets/create" -> stringResource(id = R.string.assets)
+                                        "events/list", "events/create" -> stringResource(id = R.string.events)
+                                        "operations/list", "operations/create" -> stringResource(id = R.string.operations)
+                                        "investments/list", "investments/create" -> stringResource(
+                                            id = R.string.investments
+                                        )
+
                                         "inspections/list" ->
                                             "${assetName}"
 
                                         "inspections/create" ->
-                                            "Inspections"
+                                            stringResource(id = R.string.inspections)
 
                                         "activities/list" ->
                                             "${firefighterName} ${firefighterLastName}"
 
                                         "activities/create" ->
-                                            "Activities"
+                                            stringResource(id = R.string.activities)
 
-                                        "adminScreen" -> "Admin panel"
+                                        "adminScreen" -> stringResource(id = R.string.admin)
 
-                                        else -> "My VFD"
+                                        else -> stringResource(id = R.string.app_name_short)
                                     }
                                 )
                             },
@@ -185,7 +188,7 @@ class MainActivity : AppCompatActivity() {
                                 if (hasRole) {
                                     val actions = listOf(
                                         NavBarButton(
-                                            "Assets",
+                                            stringResource(id = R.string.assets),
                                             Icons.Default.Build,
                                             {
                                                 navController.navigate("assets/list") {
@@ -195,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                                             badgeCount = assets
                                         ),
                                         NavBarButton(
-                                            "Events",
+                                            stringResource(id = R.string.events),
                                             Icons.Default.Favorite,
                                             {
                                                 navController.navigate("events/list") {
@@ -205,7 +208,7 @@ class MainActivity : AppCompatActivity() {
                                             badgeCount = events
                                         ),
                                         NavBarButton(
-                                            "Operations",
+                                            stringResource(id = R.string.operations),
                                             Icons.Default.Settings,
                                             {
                                                 navController.navigate("operations/list") {
@@ -215,7 +218,7 @@ class MainActivity : AppCompatActivity() {
                                             badgeCount = operations
                                         ),
                                         NavBarButton(
-                                            "Investments",
+                                            stringResource(id = R.string.investments),
                                             Icons.Default.ShoppingCart,
                                             {
                                                 navController.navigate("investments/list") {
@@ -234,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                                 val activity = (LocalContext.current as? Activity)
                                 val actions = listOf(
                                     NavBarButton(
-                                        "Exit",
+                                        stringResource(id = R.string.exit),
                                         Icons.Default.Close,
                                         { activity?.finish() })
                                 )
@@ -256,7 +259,7 @@ class MainActivity : AppCompatActivity() {
                             "adminScreen" -> {
                                 val actions = listOf(
                                     NavBarButton(
-                                        "Back",
+                                        stringResource(id = R.string.back),
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         onClick = {
                                             navController.currentBackStackEntry
@@ -271,7 +274,7 @@ class MainActivity : AppCompatActivity() {
                             "moderatorScreen" -> {
                                 val actions = listOf(
                                     NavBarButton(
-                                        "Firefighters",
+                                        stringResource(id = R.string.firefighters),
                                         Icons.Default.Person,
                                         {
                                             navController.navigate("firefighterScreen") {
@@ -281,7 +284,7 @@ class MainActivity : AppCompatActivity() {
                                         badgeCount = active
                                     ),
                                     NavBarButton(
-                                        "Assets",
+                                        stringResource(id = R.string.assets),
                                         Icons.Default.Build,
                                         {
                                             navController.navigate("assets/list") {
@@ -291,7 +294,7 @@ class MainActivity : AppCompatActivity() {
                                         badgeCount = assets
                                     ),
                                     NavBarButton(
-                                        "Events",
+                                        stringResource(id = R.string.events),
                                         Icons.Default.Favorite,
                                         {
                                             navController.navigate("events/list") {
@@ -301,7 +304,7 @@ class MainActivity : AppCompatActivity() {
                                         badgeCount = events
                                     ),
                                     NavBarButton(
-                                        "Operations",
+                                        stringResource(id = R.string.operations),
                                         Icons.Default.Settings,
                                         {
                                             navController.navigate("operations/list") {
@@ -311,7 +314,7 @@ class MainActivity : AppCompatActivity() {
                                         badgeCount = operations
                                     ),
                                     NavBarButton(
-                                        "Investments",
+                                        stringResource(id = R.string.investments),
                                         Icons.Default.ShoppingCart,
                                         {
                                             navController.navigate("investments/list") {
@@ -327,11 +330,11 @@ class MainActivity : AppCompatActivity() {
                             "firefighterScreen" -> {
                                 val actions = listOf(
                                     NavBarButton(
-                                        "Back",
+                                        stringResource(id = R.string.back),
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() }),
                                     NavBarButton(
-                                        "Pending Firefighters",
+                                        stringResource(id = R.string.new_firefighters),
                                         Icons.Default.Person,
                                         { navController.navigate("newFirefighterScreen") },
                                         badgeCount = pending
@@ -348,14 +351,14 @@ class MainActivity : AppCompatActivity() {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
                                     NavBarButton(
-                                        "Back",
+                                        stringResource(id = R.string.back),
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() }),
                                 )
                                 if (canCreateThings) {
                                     actions.add(
                                         NavBarButton(
-                                            "Create asset",
+                                            stringResource(id = R.string.asset_create),
                                             Icons.Default.Build,
                                             {
                                                 navController.navigate("assets/create") {
@@ -373,14 +376,14 @@ class MainActivity : AppCompatActivity() {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
                                     NavBarButton(
-                                        "Back",
+                                        stringResource(id = R.string.back),
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() }),
                                 )
                                 if (canCreateThings) {
                                     actions.add(
                                         NavBarButton(
-                                            "Create inspection",
+                                            stringResource(id = R.string.inspection_create),
                                             Icons.Default.DateRange,
                                             onClick = {
                                                 val currentAssetId =
@@ -408,7 +411,7 @@ class MainActivity : AppCompatActivity() {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
                                     NavBarButton(
-                                        "Back",
+                                        stringResource(id = R.string.back),
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() }),
                                 )
@@ -419,7 +422,7 @@ class MainActivity : AppCompatActivity() {
                                 if (from == "moderator" || from == "member") {
                                     actions.add(
                                         NavBarButton(
-                                            "Create activity",
+                                            stringResource(id = R.string.activity_create),
                                             Icons.Default.DateRange,
                                             onClick = {
                                                 navController.navigate("activities/create${firefighterIdArg?.let { "?firefighterId=$it" } ?: ""}") {
@@ -437,14 +440,14 @@ class MainActivity : AppCompatActivity() {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
                                     NavBarButton(
-                                        "Back",
+                                        stringResource(id = R.string.back),
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() }),
                                 )
                                 if (canCreateThings) {
                                     actions.add(
                                         NavBarButton(
-                                            "Create event",
+                                            stringResource(id = R.string.event_create),
                                             Icons.Default.DateRange,
                                             {
                                                 navController.navigate("events/create") {
@@ -461,14 +464,14 @@ class MainActivity : AppCompatActivity() {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
                                     NavBarButton(
-                                        "Back",
+                                        stringResource(id = R.string.back),
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() }),
                                 )
                                 if (canCreateThings) {
                                     actions.add(
                                         NavBarButton(
-                                            "Create operation",
+                                            stringResource(id = R.string.operation_create),
                                             Icons.Default.Settings,
                                             {
                                                 navController.navigate("operations/create") {
@@ -485,14 +488,14 @@ class MainActivity : AppCompatActivity() {
                                 val actions = mutableListOf<NavBarButton>()
                                 actions.add(
                                     NavBarButton(
-                                        "Back",
+                                        stringResource(id = R.string.back),
                                         Icons.AutoMirrored.Filled.ArrowBack,
                                         { navController.popBackStack() }),
                                 )
                                 if (canCreateThings) {
                                     actions.add(
                                         NavBarButton(
-                                            "Create investment",
+                                            stringResource(id = R.string.investment_create),
                                             Icons.Default.ShoppingCart,
                                             {
                                                 navController.navigate("investments/create") {
@@ -528,7 +531,7 @@ class MainActivity : AppCompatActivity() {
 private fun GoBackButton(navController: NavHostController) {
     val actions = listOf(
         NavBarButton(
-            "Back",
+            stringResource(id = R.string.back),
             Icons.AutoMirrored.Filled.ArrowBack,
             { navController.popBackStack() })
     )

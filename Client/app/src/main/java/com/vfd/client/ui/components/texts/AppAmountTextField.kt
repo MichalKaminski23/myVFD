@@ -7,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import com.vfd.client.R
 import java.math.BigDecimal
 import java.text.DecimalFormatSymbols
 import kotlin.math.min
@@ -16,7 +18,7 @@ import kotlin.math.min
 fun AppAmountTextField(
     amount: BigDecimal?,
     onAmountChange: (BigDecimal?) -> Unit,
-    label: String = "Amount",
+    label: String = stringResource(id = R.string.amount),
     maxFractionDigits: Int = 2,
     modifier: Modifier = Modifier
 ) {
@@ -67,6 +69,6 @@ fun AppAmountTextField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         singleLine = true,
         modifier = modifier,
-        errorMessage = if (amount == null && text.isNotBlank()) "Invalid amount" else null
+        errorMessage = if (amount == null && text.isNotBlank()) stringResource(id = R.string.invalid_amount) else null
     )
 }

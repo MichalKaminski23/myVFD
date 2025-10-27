@@ -1,7 +1,5 @@
 package com.vfd.client.ui.components.dialogs
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.SnackbarHostState
@@ -9,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterActivityDtos
 import com.vfd.client.ui.components.elements.AppDateTimePicker
 import com.vfd.client.ui.components.elements.AppDropdown
@@ -19,7 +19,6 @@ import com.vfd.client.ui.viewmodels.FirefighterActivityTypeViewModel
 import com.vfd.client.ui.viewmodels.FirefighterActivityViewModel
 import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FirefighterActivityCreateDialog(
     firefighterActivityViewModel: FirefighterActivityViewModel,
@@ -49,7 +48,7 @@ fun FirefighterActivityCreateDialog(
     AppFormDialog(
         show = showDialog,
         onDismiss = onDismiss,
-        title = "Create new activity",
+        title = stringResource(id = R.string.activity_create),
         confirmEnabled =
             firefighterActivityCreateUiState.activityType.isNotBlank() &&
                     firefighterActivityCreateUiState.activityDate != null &&
@@ -74,7 +73,7 @@ fun FirefighterActivityCreateDialog(
             selectedCode = firefighterActivityCreateUiState.activityType,
             codeSelector = { it.firefighterActivityType },
             labelSelector = { it.name },
-            label = "Choose activity type",
+            label = stringResource(id = R.string.item_type),
             onSelected = { firefighterActivityType ->
                 firefighterActivityViewModel.onActivityCreateValueChange() {
                     it.copy(
@@ -107,7 +106,7 @@ fun FirefighterActivityCreateDialog(
                     )
                 }
             },
-            label = "Activity date"
+            label = stringResource(id = R.string.item_date),
         )
         AppDateTimePicker(
             selectedDateTime = firefighterActivityCreateUiState.expirationDate,
@@ -118,7 +117,7 @@ fun FirefighterActivityCreateDialog(
                     )
                 }
             },
-            label = "Expiration date"
+            label = stringResource(id = R.string.item_end_date),
         )
         AppTextField(
             value = firefighterActivityCreateUiState.description,
@@ -127,7 +126,7 @@ fun FirefighterActivityCreateDialog(
                     it.copy(description = new)
                 }
             },
-            label = "Description",
+            label = stringResource(id = R.string.item_description),
             errorMessage = firefighterActivityCreateUiState.errorMessage,
             singleLine = false
         )

@@ -11,8 +11,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.PasswordDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.texts.AppTextField
@@ -33,21 +35,21 @@ fun AppPasswordChangeForm(
     AppTextField(
         value = currentPassword,
         onValueChange = { currentPassword = it },
-        label = "Current password",
+        label = stringResource(id = R.string.password),
         errorMessage = fieldErrors["currentPassword"],
         visualTransformation = PasswordVisualTransformation()
     )
     AppTextField(
         value = newPassword,
         onValueChange = { newPassword = it },
-        label = "New password",
+        label = stringResource(id = R.string.new_password),
         errorMessage = fieldErrors["newPassword"],
         visualTransformation = PasswordVisualTransformation()
     )
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         AppButton(
             icon = Icons.Default.Check,
-            label = "Save",
+            label = stringResource(id = R.string.save),
             onClick = { onSubmit(PasswordDtos.PasswordChange(currentPassword, newPassword)) },
             modifier = Modifier.weight(1f),
             enabled = currentPassword.isNotBlank() && newPassword.isNotBlank() && !isLoading,
@@ -55,7 +57,7 @@ fun AppPasswordChangeForm(
         )
         AppButton(
             icon = Icons.Default.Close,
-            label = "Cancel",
+            label = stringResource(id = R.string.cancel),
             onClick = {
                 onCancel()
             },

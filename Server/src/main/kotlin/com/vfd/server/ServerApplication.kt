@@ -11,4 +11,6 @@ fun main(args: Array<String>) {
 
     println("Server is running...")
 }
-// TODO -> !!!zmiana języka na polski oraz zmiana motywu (przyciski)!!!; poprawki w kodzie, uzupełnienia, refektoryzacja itp.
+// TODO -> !!!dokończyć zmieniać tekst, dodać zmianę motywu,
+//  zastanowić się co z errorami po stronie backendu,
+//  poczyścić kod, poprawić żeby było schludnie i przejrzyście tak samo jak np. w Asset!!!

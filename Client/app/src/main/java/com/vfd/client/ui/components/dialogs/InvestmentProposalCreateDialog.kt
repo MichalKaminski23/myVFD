@@ -3,6 +3,8 @@ package com.vfd.client.ui.components.dialogs
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.stringResource
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.InvestmentProposalDtos
 import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppAmountTextField
@@ -24,7 +26,7 @@ fun InvestmentProposalCreateDialog(
     AppFormDialog(
         show = showDialog,
         onDismiss = onDismiss,
-        title = "Create new investment",
+        title = stringResource(id = R.string.investment_create),
         confirmEnabled = investmentProposalCreateUiState.description.isNotBlank()
                 && investmentProposalCreateUiState.amount != null
                 && !investmentProposalCreateUiState.isLoading,
@@ -49,7 +51,7 @@ fun InvestmentProposalCreateDialog(
                     )
                 }
             },
-            label = "Description",
+            label = stringResource(id = R.string.item_description),
             errorMessage = investmentProposalCreateUiState.errorMessage
         )
 
@@ -60,7 +62,7 @@ fun InvestmentProposalCreateDialog(
                     it.copy(amount = new)
                 }
             },
-            label = "Amount"
+            label = stringResource(id = R.string.amount),
         )
     }
 }

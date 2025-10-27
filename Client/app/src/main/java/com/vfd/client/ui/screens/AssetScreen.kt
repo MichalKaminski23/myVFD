@@ -24,9 +24,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AssetDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.ui.components.buttons.AppButton
@@ -120,7 +122,6 @@ fun AssetScreen(
         isLoading = assetUiState.isLoading,
         searchQuery = searchQuery,
         onSearchChange = { searchQuery = it },
-        searchPlaceholder = "Search assets...",
         filter = { asset, query ->
             val fullInfo =
                 "${'$'}{asset.name} ${'$'}{asset.assetTypeName} ${'$'}{asset.description.orEmpty()}"
@@ -130,8 +131,6 @@ fun AssetScreen(
                     asset.description?.contains(query, ignoreCase = true) == true ||
                     fullInfo.contains(query, ignoreCase = true)
         },
-        emptyText = "There aren't any assets in your VFD or the assets are still loading",
-        emptyFilteredText = "No assets match your search",
         hasMore = hasMore,
         onLoadMore = {
             if (hasMore && !assetUiState.isLoading) assetViewModel.getAssets(page = assetUiState.page + 1)
@@ -157,7 +156,7 @@ fun AssetScreen(
                                     it.copy(name = new, nameTouched = true)
                                 }
                             },
-                            label = "Name",
+                            label = stringResource(id = R.string.item_name),
                             errorMessage = assetUpdateUiState.errorMessage
                         )
 
@@ -166,7 +165,7 @@ fun AssetScreen(
                             selectedCode = effectiveSelectedCode,
                             codeSelector = { it.assetType },
                             labelSelector = { it.name },
-                            label = "Choose asset type",
+                            label = stringResource(id = R.string.item_type),
                             onSelected = { assetType ->
                                 assetViewModel.onAssetUpdateValueChange {
                                     it.copy(assetType = assetType.assetType)
@@ -193,14 +192,14 @@ fun AssetScreen(
                                     it.copy(description = new, descriptionTouched = true)
                                 }
                             },
-                            label = "Description",
+                            label = stringResource(id = R.string.item_description),
                             errorMessage = assetUpdateUiState.errorMessage,
                             singleLine = false
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             AppButton(
                                 icon = Icons.Default.Check,
-                                label = "Save",
+                                label = stringResource(id = R.string.save),
                                 onClick = {
                                     asset.assetId.let { id ->
                                         val assetDto = AssetDtos.AssetPatch(
@@ -225,7 +224,7 @@ fun AssetScreen(
                             )
                             AppButton(
                                 icon = Icons.Default.Close,
-                                label = "Cancel",
+                                label = stringResource(id = R.string.cancel),
                                 onClick = { editingAssetId = null },
                                 modifier = Modifier.weight(1f)
                             )
@@ -242,7 +241,7 @@ fun AssetScreen(
                     if (currentFirefighterUiState.currentFirefighter?.role.toString() == FirefighterRole.PRESIDENT.toString()) {
                         AppButton(
                             icon = Icons.Default.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = {
                                 editingAssetId = asset.assetId
                                 val preselectedCode = assetTypeUiState.assetTypes
@@ -270,7 +269,7 @@ fun AssetScreen(
                         ) {
                             AppButton(
                                 icon = Icons.Default.Warning,
-                                label = "Inspections",
+                                label = stringResource(id = R.string.inspections),
                                 onClick = {
                                     val encodedName = Uri.encode(asset.name)
                                     navController.navigate("inspections/list?assetId=${asset.assetId}&assetName=$encodedName")

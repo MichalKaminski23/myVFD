@@ -1,7 +1,5 @@
 package com.vfd.client.ui.components.dialogs
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.SnackbarHostState
@@ -9,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.InspectionDtos
 import com.vfd.client.ui.components.elements.AppDateTimePicker
 import com.vfd.client.ui.components.elements.AppDropdown
@@ -17,7 +17,6 @@ import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.viewmodels.InspectionTypeViewModel
 import com.vfd.client.ui.viewmodels.InspectionViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InspectionCreateDialog(
     inspectionViewModel: InspectionViewModel,
@@ -43,7 +42,7 @@ fun InspectionCreateDialog(
     AppFormDialog(
         show = showDialog,
         onDismiss = onDismiss,
-        title = "Create new inspection",
+        title = stringResource(id = R.string.inspection_create),
         confirmEnabled = inspectionCreateUiState.assetId > 0 &&
                 inspectionCreateUiState.inspectionType.isNotBlank()
                 && inspectionCreateUiState.inspectionDate != null
@@ -67,7 +66,7 @@ fun InspectionCreateDialog(
             selectedCode = inspectionCreateUiState.inspectionType,
             codeSelector = { it.inspectionType },
             labelSelector = { it.name },
-            label = "Choose inspection type",
+            label = stringResource(id = R.string.item_type),
             onSelected = { inspectionType ->
                 inspectionViewModel.onInspectionCreateValueChange {
                     it.copy(
@@ -99,7 +98,7 @@ fun InspectionCreateDialog(
                     )
                 }
             },
-            label = "Inspection date"
+            label = stringResource(id = R.string.item_date),
         )
         AppDateTimePicker(
             selectedDateTime = inspectionCreateUiState.expirationDate,
@@ -110,7 +109,7 @@ fun InspectionCreateDialog(
                     )
                 }
             },
-            label = "Expiration date"
+            label = stringResource(id = R.string.item_end_date),
         )
     }
 }

@@ -16,8 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.vfd.client.R
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.texts.AppErrorText
@@ -28,8 +30,8 @@ fun AppFormDialog(
     show: Boolean,
     onDismiss: () -> Unit,
     title: String,
-    confirmLabel: String = "Save",
-    cancelLabel: String = "Cancel",
+    confirmLabel: String = stringResource(id = R.string.save),
+    cancelLabel: String = stringResource(id = R.string.cancel),
     confirmEnabled: Boolean,
     confirmLoading: Boolean = false,
     errorMessage: String? = null,

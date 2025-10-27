@@ -15,8 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.ui.theme.appTextFieldColors
 
 @Composable
@@ -24,7 +26,7 @@ fun AppSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search...",
+    placeholder: String = stringResource(id = R.string.search),
     enabled: Boolean = true,
     loading: Boolean = false,
 ) {
@@ -39,7 +41,7 @@ fun AppSearchBar(
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search"
+                contentDescription = stringResource(id = R.string.search),
             )
         },
         trailingIcon = {
@@ -56,7 +58,7 @@ fun AppSearchBar(
                     IconButton(onClick = { onQueryChange("") }) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Clear"
+                            contentDescription = stringResource(id = R.string.clear),
                         )
                     }
                 }

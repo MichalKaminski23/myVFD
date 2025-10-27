@@ -12,8 +12,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.texts.AppTextField
 
@@ -37,7 +39,7 @@ fun AppSearchHoursForm(
                 quarterInput = digits
             }
         },
-        label = "Quarter (1-4)",
+        label = stringResource(id = R.string.quarter),
         errorMessage = errorMessage,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
     )
@@ -46,14 +48,14 @@ fun AppSearchHoursForm(
         onValueChange = { raw ->
             yearInput = raw.filter(Char::isDigit).take(4)
         },
-        label = "Year (YYYY)",
+        label = stringResource(id = R.string.year),
         errorMessage = errorMessage,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
     )
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         AppButton(
             icon = Icons.Default.ThumbUp,
-            label = "Show",
+            label = stringResource(id = R.string.show),
             onClick = {
                 val quarter = quarterInput.toIntOrNull() ?: 0
                 val year = yearInput.toIntOrNull() ?: 0
@@ -64,7 +66,7 @@ fun AppSearchHoursForm(
         )
         AppButton(
             icon = Icons.Default.Close,
-            label = "Cancel",
+            label = stringResource(id = R.string.cancel),
             onClick = { onCancel() },
             modifier = Modifier.weight(1f)
         )

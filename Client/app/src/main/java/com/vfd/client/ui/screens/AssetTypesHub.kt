@@ -18,7 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AssetTypeDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.cards.AppAssetTypeCard
@@ -71,25 +73,28 @@ fun AssetTypesHub(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Create",
+                        label = stringResource(id = R.string.create),
                         onClick = { mode = "create" },
                         modifier = Modifier.weight(1f)
                     )
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Edit",
+                        label = stringResource(id = R.string.edit),
                         onClick = { mode = "edit" },
                         modifier = Modifier.weight(1f)
                     )
                 }
-                AppText("New asset type", style = MaterialTheme.typography.headlineSmall)
+                AppText(
+                    stringResource(id = R.string.new_asset_type),
+                    style = MaterialTheme.typography.headlineSmall
+                )
 
                 AppTextField(
                     value = assetTypeCreateUiState.assetType,
                     onValueChange = { new ->
                         assetTypeViewModel.onAssetTypeCreateValueChange { it.copy(assetType = new) }
                     },
-                    label = "Type",
+                    label = stringResource(id = R.string.type_code),
                     errorMessage = assetTypeCreateUiState.errorMessage
                 )
 
@@ -98,13 +103,13 @@ fun AssetTypesHub(
                     onValueChange = { new ->
                         assetTypeViewModel.onAssetTypeCreateValueChange { it.copy(name = new) }
                     },
-                    label = "Name",
+                    label = stringResource(id = R.string.item_name),
                     errorMessage = assetTypeCreateUiState.errorMessage
                 )
 
                 AppButton(
                     icon = Icons.Filled.Edit,
-                    label = "Save",
+                    label = stringResource(id = R.string.save),
                     onClick = {
                         assetTypeViewModel.createAssetType(
                             assetTypeDto = AssetTypeDtos.AssetTypeCreate(
@@ -129,20 +134,23 @@ fun AssetTypesHub(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Create",
+                            label = stringResource(id = R.string.create),
                             onClick = { mode = "create" },
                             modifier = Modifier.weight(1f)
                         )
                         AppButton(
                             icon = Icons.Filled.Edit,
-                            label = "Edit",
+                            label = stringResource(id = R.string.edit),
                             onClick = { mode = "edit" },
                             modifier = Modifier.weight(1f)
                         )
                     }
                 }
                 item {
-                    AppText("Edit asset type", style = MaterialTheme.typography.headlineSmall)
+                    AppText(
+                        stringResource(id = R.string.edit_asset_type),
+                        style = MaterialTheme.typography.headlineSmall
+                    )
                 }
 
                 items(assetTypesUiState.assetTypes) { assetType ->
@@ -155,13 +163,13 @@ fun AssetTypesHub(
                                         it.copy(name = new, nameTouched = true)
                                     }
                                 },
-                                label = "Name",
+                                label = stringResource(id = R.string.type_code),
                                 errorMessage = assetTypeUpdateUiState.errorMessage
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Save",
+                                    label = stringResource(id = R.string.save),
                                     onClick = {
                                         val assetTypeDto =
                                             AssetTypeDtos.AssetTypePatch(
@@ -177,7 +185,7 @@ fun AssetTypesHub(
                                 )
                                 AppButton(
                                     icon = Icons.Filled.Edit,
-                                    label = "Cancel",
+                                    label = stringResource(id = R.string.cancel),
                                     onClick = {
                                         editingAssetTypeCode = null
                                         assetTypeViewModel.onAssetTypeUpdateValueChange {
@@ -194,7 +202,7 @@ fun AssetTypesHub(
                         AppAssetTypeCard(assetType, actions = {
                             AppButton(
                                 icon = Icons.Filled.Edit,
-                                label = "Edit",
+                                label = stringResource(id = R.string.edit),
                                 onClick = {
                                     editingAssetTypeCode = assetType.assetType
                                     assetTypeViewModel.onAssetTypeUpdateValueChange {
@@ -215,7 +223,7 @@ fun AssetTypesHub(
                 item {
                     AppButton(
                         icon = Icons.Filled.Edit,
-                        label = "Load more",
+                        label = stringResource(id = R.string.load_more),
                         onClick = {
                             if (!assetTypesUiState.isLoading && assetTypesUiState.page + 1 < assetTypesUiState.totalPages) {
                                 assetTypeViewModel.getAllAssetTypes(

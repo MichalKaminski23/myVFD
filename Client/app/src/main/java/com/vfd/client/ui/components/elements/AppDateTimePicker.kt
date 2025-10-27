@@ -2,8 +2,6 @@ package com.vfd.client.ui.components.elements
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,7 +22,6 @@ import kotlinx.datetime.toKotlinLocalDateTime
 import java.util.Calendar
 import java.time.LocalDateTime as JavaLocalDateTime
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppDateTimePicker(
     label: String,

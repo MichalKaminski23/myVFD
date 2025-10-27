@@ -1,17 +1,16 @@
 package com.vfd.client.ui.components.dialogs
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.stringResource
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.EventDtos
 import com.vfd.client.ui.components.elements.AppDateTimePicker
 import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.EventViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EventCreateDialog(
     eventViewModel: EventViewModel,
@@ -26,7 +25,7 @@ fun EventCreateDialog(
     AppFormDialog(
         show = showDialog,
         onDismiss = onDismiss,
-        title = "Create new event",
+        title = stringResource(id = R.string.event_create),
         confirmEnabled = eventCreateUiState.description.isNotBlank()
                 && eventCreateUiState.eventDate != null
                 && eventCreateUiState.header.isNotBlank()
@@ -49,7 +48,7 @@ fun EventCreateDialog(
             onValueChange = { new ->
                 eventViewModel.onEventCreateValueChange { it.copy(header = new) }
             },
-            label = "Header",
+            label = stringResource(id = R.string.item_header),
             errorMessage = eventCreateUiState.errorMessage
         )
 
@@ -60,7 +59,7 @@ fun EventCreateDialog(
                     it.copy(eventDate = newDateTime)
                 }
             },
-            label = "Event date"
+            label = stringResource(id = R.string.item_date),
         )
 
         AppTextField(
@@ -68,7 +67,7 @@ fun EventCreateDialog(
             onValueChange = { new ->
                 eventViewModel.onEventCreateValueChange { it.copy(description = new) }
             },
-            label = "Description",
+            label = stringResource(id = R.string.item_description),
             errorMessage = eventCreateUiState.errorMessage,
             singleLine = false
         )

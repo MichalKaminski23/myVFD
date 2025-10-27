@@ -8,8 +8,10 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AddressDtos
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.texts.AppTextField
@@ -33,25 +35,25 @@ fun AppUserEditForm(
     AppTextField(
         value = state.firstName,
         onValueChange = onFirstNameChange,
-        label = "First name",
+        label = stringResource(id = R.string.first_name),
         errorMessage = state.fieldErrors["firstName"]
     )
     AppTextField(
         value = state.lastName,
         onValueChange = onLastNameChange,
-        label = "Last name",
+        label = stringResource(id = R.string.last_name),
         errorMessage = state.fieldErrors["lastName"]
     )
     AppTextField(
         value = state.emailAddress,
         onValueChange = onEmailAddressChange,
-        label = "Email address",
+        label = stringResource(id = R.string.email_address),
         errorMessage = state.fieldErrors["emailAddress"]
     )
     AppTextField(
         value = state.phoneNumber,
         onValueChange = onPhoneNumberChange,
-        label = "Phone number",
+        label = stringResource(id = R.string.phone_number),
         errorMessage = state.fieldErrors["phoneNumber"],
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
     )
@@ -78,7 +80,7 @@ fun AppUserEditForm(
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         AppButton(
             icon = Icons.Default.Check,
-            label = "Save",
+            label = stringResource(id = R.string.save),
             onClick = onSave,
             modifier = Modifier.weight(1f),
             enabled = saveEnabled,
@@ -86,7 +88,7 @@ fun AppUserEditForm(
         )
         AppButton(
             icon = Icons.Default.Close,
-            label = "Cancel",
+            label = stringResource(id = R.string.cancel),
             onClick = onCancel,
             modifier = Modifier.weight(1f)
         )

@@ -5,7 +5,9 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AssetDtos
 import com.vfd.client.ui.components.elements.AppDropdown
 import com.vfd.client.ui.components.globals.AppUiEvents
@@ -29,7 +31,7 @@ fun AssetCreateDialog(
     AppFormDialog(
         show = showDialog,
         onDismiss = onDismiss,
-        title = "Create new asset",
+        title = stringResource(id = R.string.asset_create),
         confirmEnabled = assetCreateUiState.name.isNotBlank()
                 && assetCreateUiState.assetType.isNotBlank()
                 && !assetCreateUiState.isLoading,
@@ -51,7 +53,7 @@ fun AssetCreateDialog(
             onValueChange = { new ->
                 assetViewModel.onAssetCreateValueChange { it.copy(name = new) }
             },
-            label = "Name",
+            label = stringResource(id = R.string.item_name),
             errorMessage = assetCreateUiState.errorMessage
         )
 
@@ -60,7 +62,7 @@ fun AssetCreateDialog(
             selectedCode = assetCreateUiState.assetType,
             codeSelector = { it.assetType },
             labelSelector = { it.name },
-            label = "Choose asset type",
+            label = stringResource(id = R.string.item_type),
             onSelected = { type ->
                 assetViewModel.onAssetCreateValueChange { it.copy(assetType = type.assetType) }
             },
@@ -80,7 +82,7 @@ fun AssetCreateDialog(
             onValueChange = { new ->
                 assetViewModel.onAssetCreateValueChange { it.copy(description = new) }
             },
-            label = "Description",
+            label = stringResource(id = R.string.item_description),
             errorMessage = assetCreateUiState.errorMessage,
             singleLine = false
         )

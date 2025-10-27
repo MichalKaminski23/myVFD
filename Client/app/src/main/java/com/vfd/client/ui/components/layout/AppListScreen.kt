@@ -8,7 +8,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 import com.vfd.client.ui.components.buttons.AppLoadMoreButton
 import com.vfd.client.ui.components.elements.AppSearchBar
 import com.vfd.client.ui.components.texts.AppErrorText
@@ -20,10 +22,10 @@ fun <T> AppListScreen(
     isLoading: Boolean,
     searchQuery: String,
     onSearchChange: (String) -> Unit,
-    searchPlaceholder: String,
+    searchPlaceholder: String = stringResource(id = R.string.search),
     filter: (T, String) -> Boolean,
-    emptyText: String,
-    emptyFilteredText: String,
+    emptyText: String = stringResource(id = R.string.data_load_empty),
+    emptyFilteredText: String = stringResource(id = R.string.search_empty),
     hasMore: Boolean,
     onLoadMore: () -> Unit,
     errorMessage: String?,

@@ -9,7 +9,9 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.vfd.client.R
 
 @Composable
 fun AppLoadMoreButton(
@@ -28,9 +30,9 @@ fun AppLoadMoreButton(
         AppButton(
             icon = Icons.AutoMirrored.Filled.Send,
             label = when {
-                isLoading -> "Loading..."
-                hasMore -> "Load more"
-                else -> "No more items"
+                isLoading -> stringResource(id = R.string.loading)
+                hasMore -> stringResource(id = R.string.load_more)
+                else -> stringResource(id = R.string.no_more_items)
             },
             onClick = onLoadMore,
             enabled = hasMore && !isLoading,

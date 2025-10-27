@@ -23,9 +23,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vfd.client.R
 import com.vfd.client.ui.components.buttons.AppButton
 import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.globals.AppLoadingBar
@@ -89,22 +91,12 @@ fun AdminScreen(
     LaunchedEffect(Unit) {
         userViewModel.getUserByEmailAddress()
         firefighterViewModel.getFirefighterByEmailAddress()
-//        firedepartmentViewModel.getFiredepartments()
-//        assetTypeViewModel.getAllAssetTypes()
-//        firefighterActivityTypeViewModel.getAllFirefighterActivityTypes()
-//        inspectionTypeViewModel.getAllInspectionTypes()
-//        operationTypeViewModel.getAllOperationTypes()
 
         RefreshManager.events.collect { event ->
             when (event) {
                 is RefreshEvent.AdminScreen -> {
                     userViewModel.getUserByEmailAddress()
                     firefighterViewModel.getFirefighterByEmailAddress()
-//                    firedepartmentViewModel.getFiredepartments()
-//                    assetTypeViewModel.getAllAssetTypes()
-//                    firefighterActivityTypeViewModel.getAllFirefighterActivityTypes()
-//                    inspectionTypeViewModel.getAllInspectionTypes()
-//                    operationTypeViewModel.getAllOperationTypes()
                 }
 
                 else -> {}
@@ -139,7 +131,7 @@ fun AdminScreen(
             when (section) {
                 AdminSection.Dashboard -> {
                     AppText(
-                        "Hello, ${currentUserUiState.currentUser?.firstName.orEmpty()} ${currentUserUiState.currentUser?.lastName.orEmpty()}!",
+                        text = "${stringResource(id = R.string.hello)} ${currentUserUiState.currentUser?.firstName.orEmpty()} ${currentUserUiState.currentUser?.lastName.orEmpty()}!",
                         style = MaterialTheme.typography.headlineLarge
                     )
                     DashboardGrid(
@@ -206,13 +198,29 @@ private fun DashboardGrid(
     modifier: Modifier = Modifier
 ) {
     val tiles = listOf(
-        Triple("Firedepartments", Icons.Filled.Home, onOpenFiredepartments),
-        Triple("Presidents", Icons.Filled.Person, onOpenPresidents),
-        Triple("Asset types", Icons.Filled.Edit, onOpenAssetTypes),
-        Triple("Activity types", Icons.Filled.Edit, onOpenFirefighterActivityTypes),
-        Triple("Inspection types", Icons.Filled.Edit, onOpenInspectionTypes),
-        Triple("Operation types", Icons.Filled.Edit, onOpenOperationTypes),
-        Triple("Logout", Icons.AutoMirrored.Filled.ArrowBack, onLogout),
+        Triple(
+            stringResource(id = R.string.firedepartments),
+            Icons.Filled.Home,
+            onOpenFiredepartments
+        ),
+        Triple(stringResource(id = R.string.presidents), Icons.Filled.Person, onOpenPresidents),
+        Triple(stringResource(id = R.string.asset_types), Icons.Filled.Edit, onOpenAssetTypes),
+        Triple(
+            stringResource(id = R.string.firefighter_activity_types),
+            Icons.Filled.Edit,
+            onOpenFirefighterActivityTypes
+        ),
+        Triple(
+            stringResource(id = R.string.inspection_types),
+            Icons.Filled.Edit,
+            onOpenInspectionTypes
+        ),
+        Triple(
+            stringResource(id = R.string.operation_types),
+            Icons.Filled.Edit,
+            onOpenOperationTypes
+        ),
+        Triple(stringResource(id = R.string.logout), Icons.AutoMirrored.Filled.ArrowBack, onLogout),
     )
 
     LazyVerticalGrid(
