@@ -35,7 +35,7 @@ fun FirefighterActivityCreateDialog(
 
     LaunchedEffect(showDialog, firefighterId) {
         if (showDialog && (firefighterId ?: -1) > 0) {
-            firefighterActivityViewModel.onActivityCreateValueChange() {
+            firefighterActivityViewModel.onActivityCreateValueChange {
                 it.copy(firefighterId = firefighterId!!)
             }
         }
@@ -71,7 +71,7 @@ fun FirefighterActivityCreateDialog(
             labelSelector = { it.name },
             label = stringResource(id = R.string.item_type),
             onSelected = { firefighterActivityType ->
-                firefighterActivityViewModel.onActivityCreateValueChange() {
+                firefighterActivityViewModel.onActivityCreateValueChange {
                     it.copy(
                         activityType = firefighterActivityType.firefighterActivityType
                     )
@@ -118,7 +118,7 @@ fun FirefighterActivityCreateDialog(
         AppTextField(
             value = firefighterActivityCreateUiState.description,
             onValueChange = { new ->
-                firefighterActivityViewModel.onActivityCreateValueChange() {
+                firefighterActivityViewModel.onActivityCreateValueChange {
                     it.copy(description = new)
                 }
             },

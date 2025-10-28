@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
@@ -32,7 +31,6 @@ import com.vfd.client.utils.RefreshManager
 @Composable
 fun NewFirefighterScreen(
     firefighterViewModel: FirefighterViewModel,
-    navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
     val pendingFirefightersUiState by firefighterViewModel.pendingFirefightersUiState.collectAsState()

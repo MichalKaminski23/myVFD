@@ -49,7 +49,7 @@ interface FirefighterApi {
     @DELETE("api/firefighters/my/{firefighterId}")
     suspend fun deleteFirefighter(
         @Path("firefighterId") firefighterId: Int
-    ): Unit
+    )
 
     @GET("api/firefighters/my/hours")
     suspend fun getHoursForQuarter(

@@ -63,18 +63,18 @@ object UserDtos {
         val active: Boolean
     )
 
-    @Serializable
-    data class UserModeratorResponse(
-        val userId: Int,
-
-        val firstName: String,
-
-        val lastName: String,
-
-        val emailAddress: String,
-
-        val phoneNumber: String,
-
-        val active: Boolean
-    )
+//    @Serializable
+//    data class UserModeratorResponse(
+//        val userId: Int,
+//
+//        val firstName: String,
+//
+//        val lastName: String,
+//
+//        val emailAddress: String,
+//
+//        val phoneNumber: String,
+//
+//        val active: Boolean
+//    )
 }

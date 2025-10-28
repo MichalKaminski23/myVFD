@@ -1,5 +1,6 @@
 package com.vfd.client.ui.components.texts
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,7 +21,7 @@ fun AppAmountTextField(
     onAmountChange: (BigDecimal?) -> Unit,
     label: String = stringResource(id = R.string.amount),
     maxFractionDigits: Int = 2,
-    modifier: Modifier = Modifier
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
     val sep = remember { DecimalFormatSymbols.getInstance().decimalSeparator }
     var text by remember(amount) {

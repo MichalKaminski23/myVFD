@@ -31,14 +31,14 @@ class FirefighterActivityTypeRepository @Inject constructor(
     ): ApiResult<PageResponse<FirefighterActivityTypeDtos.FirefighterActivityTypeResponse>> =
         safeApiCall { firefighterActivityTypeApi.getAllFirefighterActivityTypes(page, size, sort) }
 
-    suspend fun getFirefighterActivityTypeByCode(
-        firefighterActivityTypeCode: String
-    ): ApiResult<FirefighterActivityTypeDtos.FirefighterActivityTypeResponse> =
-        safeApiCall {
-            firefighterActivityTypeApi.getFirefighterActivityTypeByCode(
-                firefighterActivityTypeCode
-            )
-        }
+//    suspend fun getFirefighterActivityTypeByCode(
+//        firefighterActivityTypeCode: String
+//    ): ApiResult<FirefighterActivityTypeDtos.FirefighterActivityTypeResponse> =
+//        safeApiCall {
+//            firefighterActivityTypeApi.getFirefighterActivityTypeByCode(
+//                firefighterActivityTypeCode
+//            )
+//        }
 
     suspend fun updateFirefighterActivityType(
         firefighterActivityTypeCode: String,

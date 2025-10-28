@@ -27,10 +27,10 @@ class OperationTypeRepository @Inject constructor(
     ): ApiResult<PageResponse<OperationTypeDtos.OperationTypeResponse>> =
         safeApiCall { operationTypeApi.getAllOperationTypes(page, size, sort) }
 
-    suspend fun getOperationTypeByCode(
-        operationTypeCode: String
-    ): ApiResult<OperationTypeDtos.OperationTypeResponse> =
-        safeApiCall { operationTypeApi.getOperationTypeByCode(operationTypeCode) }
+//    suspend fun getOperationTypeByCode(
+//        operationTypeCode: String
+//    ): ApiResult<OperationTypeDtos.OperationTypeResponse> =
+//        safeApiCall { operationTypeApi.getOperationTypeByCode(operationTypeCode) }
 
     suspend fun updateOperationType(
         operationTypeCode: String,

@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterActivityDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
@@ -45,11 +44,8 @@ fun FirefighterActivityScreen(
     firefighterActivityViewModel: FirefighterActivityViewModel,
     firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel,
     firefighterViewModel: FirefighterViewModel,
-    navController: NavController,
     firefighterId: Int? = null,
     snackbarHostState: SnackbarHostState,
-    firefighterName: String? = null,
-    firefighterLastName: String? = null
 ) {
 
     val firefighterActivityUiState by firefighterActivityViewModel.firefighterActivityUiState.collectAsState()
@@ -247,7 +243,7 @@ fun FirefighterActivityScreen(
                             AppTextField(
                                 value = firefighterActivityUpdateUiState.description,
                                 onValueChange = { new ->
-                                    firefighterActivityViewModel.onActivityUpdateValueChange() {
+                                    firefighterActivityViewModel.onActivityUpdateValueChange {
                                         it.copy(description = new, descriptionTouched = true)
                                     }
                                 },
@@ -355,7 +351,7 @@ fun FirefighterActivityScreen(
                                         firefighterActivityTypeUiState.firefighterActivityTypes
                                             .firstOrNull { it.name == activity.firefighterActivityTypeName }
                                             ?.firefighterActivityType ?: ""
-                                    firefighterActivityViewModel.onActivityUpdateValueChange() {
+                                    firefighterActivityViewModel.onActivityUpdateValueChange {
                                         it.copy(
                                             activityType = preselectedCode,
                                             activityDate = activity.activityDate,
@@ -383,7 +379,7 @@ fun FirefighterActivityScreen(
                             label = stringResource(id = R.string.edit),
                             onClick = {
                                 editingFirefighterActivityId = activity.firefighterActivityId
-                                firefighterActivityViewModel.onActivityUpdateValueChange() {
+                                firefighterActivityViewModel.onActivityUpdateValueChange {
                                     it.copy(
                                         status = activity.status,
                                         statusTouched = false,

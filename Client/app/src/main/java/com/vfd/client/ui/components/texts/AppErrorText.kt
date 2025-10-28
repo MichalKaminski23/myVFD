@@ -19,7 +19,7 @@ fun AppErrorText(
         color = MaterialTheme.colorScheme.error,
         style = MaterialTheme.typography.bodyMedium,
         textAlign = TextAlign.Center,
-        modifier = Modifier
+        modifier = modifier
             .padding(6.dp)
             .fillMaxWidth()
     )

@@ -17,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.EventDtos
 import com.vfd.client.data.remote.dtos.FirefighterRole
@@ -37,7 +36,6 @@ import com.vfd.client.utils.RefreshManager
 fun EventScreen(
     eventViewModel: EventViewModel,
     firefighterViewModel: FirefighterViewModel,
-    navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
     val eventUiState = eventViewModel.eventUiState.collectAsState().value

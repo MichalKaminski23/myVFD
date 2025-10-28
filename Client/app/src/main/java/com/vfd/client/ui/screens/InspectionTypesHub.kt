@@ -162,7 +162,7 @@ fun InspectionTypesHub(
                             AppTextField(
                                 value = inspectionTypeUpdateUiState.name,
                                 onValueChange = { new ->
-                                    inspectionTypeViewModel.onInspectionTypeUpdateValueChange() {
+                                    inspectionTypeViewModel.onInspectionTypeUpdateValueChange {
                                         it.copy(name = new, nameTouched = true)
                                     }
                                 },

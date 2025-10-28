@@ -141,13 +141,13 @@ class MainActivity : AppCompatActivity() {
                                         )
 
                                         "inspections/list" ->
-                                            "${assetName}"
+                                            "$assetName"
 
                                         "inspections/create" ->
                                             stringResource(id = R.string.inspections)
 
                                         "activities/list" ->
-                                            "${firefighterName} ${firefighterLastName}"
+                                            "$firefighterName $firefighterLastName"
 
                                         "activities/create" ->
                                             stringResource(id = R.string.activities)

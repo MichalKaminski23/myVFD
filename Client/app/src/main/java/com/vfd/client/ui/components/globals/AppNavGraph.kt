@@ -1,6 +1,5 @@
 package com.vfd.client.ui.components.globals
 
-import android.net.Uri
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Left
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Right
 import androidx.compose.animation.core.tween
@@ -112,7 +111,7 @@ fun AppNavGraph(
             )
         }
         composable("infoScreen") {
-            InfoScreen(navController = navController)
+            InfoScreen()
         }
         composable("moderatorScreen") { backStackEntry ->
             val firefighterViewModel: FirefighterViewModel = hiltViewModel(backStackEntry)
@@ -136,7 +135,7 @@ fun AppNavGraph(
             val firefighterViewModel: FirefighterViewModel = hiltViewModel(backStackEntry)
             NewFirefighterScreen(
                 firefighterViewModel = firefighterViewModel,
-                navController = navController, snackbarHostState = snackbarHostState
+                snackbarHostState = snackbarHostState
             )
         }
         composable("firefighterScreen") { backStackEntry ->
@@ -239,15 +238,13 @@ fun AppNavGraph(
                 val assetIdArg = backStackEntry.arguments?.getInt("assetId")
                 val assetId = assetIdArg?.takeIf { it != -1 }
 
-                val assetNameArg = backStackEntry.arguments?.getString("assetName")
-                val assetName = assetNameArg?.let { Uri.decode(it) }
+//                val assetNameArg = backStackEntry.arguments?.getString("assetName")
+//                val assetName = assetNameArg?.let { Uri.decode(it) }
 
                 InspectionScreen(
-                    navController = navController,
                     snackbarHostState = snackbarHostState,
                     inspectionViewModel = inspectionViewModel,
                     assetId = assetId,
-                    assetName = assetName,
                     inspectionTypeViewModel = inspectionTypeViewModel,
                     firefighterViewModel = firefighterViewModel
                 )
@@ -322,22 +319,19 @@ fun AppNavGraph(
                 val firefighterIdArg = backStackEntry.arguments?.getInt("firefighterId")
                 val firefighterId = firefighterIdArg?.takeIf { it != -1 }
 
-                val firefighterNameArg = backStackEntry.arguments?.getString("firstName")
-                val firefighterName = firefighterNameArg?.let { Uri.decode(it) }
+//                val firefighterNameArg = backStackEntry.arguments?.getString("firstName")
+//                val firefighterName = firefighterNameArg?.let { Uri.decode(it) }
+//
+//                val lastNameArg = backStackEntry.arguments?.getString("lastName")
+//                val lastName = lastNameArg?.let { Uri.decode(it) }
 
-                val lastNameArg = backStackEntry.arguments?.getString("lastName")
-                val lastName = lastNameArg?.let { Uri.decode(it) }
-
-                val from =
-                    backStackEntry.arguments?.getString("from")?.takeIf { it?.isNotBlank() == true }
+//                val from =
+//                    backStackEntry.arguments?.getString("from")?.takeIf { it?.isNotBlank() == true }
 
                 FirefighterActivityScreen(
-                    navController = navController,
                     snackbarHostState = snackbarHostState,
                     firefighterActivityViewModel = firefighterActivityViewModel,
                     firefighterId = firefighterId,
-                    firefighterName = firefighterName,
-                    firefighterLastName = lastName,
                     firefighterActivityTypeViewModel = firefighterActivityTypeViewModel,
                     firefighterViewModel = firefighterViewModel
                 )
@@ -385,7 +379,6 @@ fun AppNavGraph(
                 val firefighterViewModel: FirefighterViewModel = hiltViewModel(parentEntry)
 
                 EventScreen(
-                    navController = navController,
                     snackbarHostState = snackbarHostState,
                     eventViewModel = eventViewModel,
                     firefighterViewModel = firefighterViewModel
@@ -418,7 +411,6 @@ fun AppNavGraph(
                 val firefighterViewModel: FirefighterViewModel = hiltViewModel(parentEntry)
 
                 OperationScreen(
-                    navController = navController,
                     snackbarHostState = snackbarHostState,
                     operationViewModel = operationViewModel,
                     operationTypeViewModel = operationTypeViewModel,
@@ -460,7 +452,6 @@ fun AppNavGraph(
                 val voteViewModel: VoteViewModel = hiltViewModel(parentEntry)
 
                 InvestmentProposalScreen(
-                    navController = navController,
                     snackbarHostState = snackbarHostState,
                     investmentProposalViewModel = investmentProposalViewModel,
                     firefighterViewModel = firefighterViewModel,

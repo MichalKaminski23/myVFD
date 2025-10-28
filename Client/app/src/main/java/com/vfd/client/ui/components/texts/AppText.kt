@@ -1,5 +1,6 @@
 package com.vfd.client.ui.components.texts
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,7 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 fun AppText(
     text: String,
     color: Color = Color.Unspecified,
-    modifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     style: TextStyle
 ) {
     Text(

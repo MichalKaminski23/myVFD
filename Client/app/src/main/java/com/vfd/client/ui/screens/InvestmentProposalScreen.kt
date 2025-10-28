@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterRole
 import com.vfd.client.data.remote.dtos.InvestmentProposalDtos
@@ -43,7 +42,6 @@ fun InvestmentProposalScreen(
     investmentProposalViewModel: InvestmentProposalViewModel,
     firefighterViewModel: FirefighterViewModel,
     voteViewModel: VoteViewModel,
-    navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
     val investmentProposalUiState by investmentProposalViewModel.investmentProposalUiState.collectAsState()
@@ -183,7 +181,7 @@ fun InvestmentProposalScreen(
                         AppTextField(
                             value = investmentProposalUpdatelUiState.description,
                             onValueChange = { new ->
-                                investmentProposalViewModel.onInvestmentProposalUpdateValueChange() {
+                                investmentProposalViewModel.onInvestmentProposalUpdateValueChange {
                                     it.copy(description = new, descriptionTouched = true)
                                 }
                             },

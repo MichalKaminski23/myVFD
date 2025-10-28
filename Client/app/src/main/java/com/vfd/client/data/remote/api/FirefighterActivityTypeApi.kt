@@ -23,10 +23,10 @@ interface FirefighterActivityTypeApi {
         @Query("sort") sort: String = "firefighterActivityType,asc"
     ): PageResponse<FirefighterActivityTypeDtos.FirefighterActivityTypeResponse>
 
-    @GET("api/firefighter-activity-types/{firefighterActivityTypeCode}")
-    suspend fun getFirefighterActivityTypeByCode(
-        @Path("firefighterActivityTypeCode") firefighterActivityTypeCode: String
-    ): FirefighterActivityTypeDtos.FirefighterActivityTypeResponse
+//    @GET("api/firefighter-activity-types/{firefighterActivityTypeCode}")
+//    suspend fun getFirefighterActivityTypeByCode(
+//        @Path("firefighterActivityTypeCode") firefighterActivityTypeCode: String
+//    ): FirefighterActivityTypeDtos.FirefighterActivityTypeResponse
 
     @PATCH("api/firefighter-activity-types/{firefighterActivityTypeCode}")
     suspend fun updateFirefighterActivityType(

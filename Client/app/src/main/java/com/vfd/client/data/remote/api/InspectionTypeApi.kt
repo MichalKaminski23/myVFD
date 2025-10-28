@@ -23,10 +23,10 @@ interface InspectionTypeApi {
         @Query("sort") sort: String = "inspectionType,asc"
     ): PageResponse<InspectionTypeDtos.InspectionTypeResponse>
 
-    @GET("api/inspection-types/{inspectionTypeCode}")
-    suspend fun getInspectionTypeByCode(
-        @Path("inspectionTypeCode") inspectionTypeCode: String
-    ): InspectionTypeDtos.InspectionTypeResponse
+//    @GET("api/inspection-types/{inspectionTypeCode}")
+//    suspend fun getInspectionTypeByCode(
+//        @Path("inspectionTypeCode") inspectionTypeCode: String
+//    ): InspectionTypeDtos.InspectionTypeResponse
 
     @PATCH("api/inspection-types/{inspectionTypeCode}")
     suspend fun updateInspectionType(

@@ -209,7 +209,7 @@ fun OperationTypesHub(
                                 label = stringResource(id = R.string.edit),
                                 onClick = {
                                     editingOperationTypeCode = operationType.operationType
-                                    operationTypeViewModel.onOperationTypeUpdateValueChange() {
+                                    operationTypeViewModel.onOperationTypeUpdateValueChange {
                                         it.copy(
                                             name = operationType.name,
                                             nameTouched = false,

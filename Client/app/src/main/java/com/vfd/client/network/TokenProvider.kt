@@ -1,8 +1,7 @@
-package com.vfd.client.data.repositories
+package com.vfd.client.network
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -22,10 +21,10 @@ class TokenProvider @Inject constructor(
         token
     }
 
-    suspend fun saveToken(token: String) {
-        dataStore.edit { prefs ->
-            prefs[TOKEN_KEY] = token
-        }
-    }
+//    suspend fun saveToken(token: String) {
+//        dataStore.edit { prefs ->
+//            prefs[TOKEN_KEY] = token
+//        }
+//    }
 
 }

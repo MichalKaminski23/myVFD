@@ -171,7 +171,7 @@ fun FirefighterActivityTypesHub(
                             AppTextField(
                                 value = firefighterActivityTypeUpdateUiState.name,
                                 onValueChange = { new ->
-                                    firefighterActivityTypeViewModel.onFirefighterActivityTypeUpdateValueChange() {
+                                    firefighterActivityTypeViewModel.onFirefighterActivityTypeUpdateValueChange {
                                         it.copy(name = new, nameTouched = true)
                                     }
                                 },

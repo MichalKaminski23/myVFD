@@ -27,10 +27,10 @@ class InspectionTypeRepository @Inject constructor(
     ): ApiResult<PageResponse<InspectionTypeDtos.InspectionTypeResponse>> =
         safeApiCall { inspectionTypeApi.getAllInspectionTypes(page, size, sort) }
 
-    suspend fun getInspectionTypeByCode(
-        inspectionTypeCode: String
-    ): ApiResult<InspectionTypeDtos.InspectionTypeResponse> =
-        safeApiCall { inspectionTypeApi.getInspectionTypeByCode(inspectionTypeCode) }
+//    suspend fun getInspectionTypeByCode(
+//        inspectionTypeCode: String
+//    ): ApiResult<InspectionTypeDtos.InspectionTypeResponse> =
+//        safeApiCall { inspectionTypeApi.getInspectionTypeByCode(inspectionTypeCode) }
 
     suspend fun updateInspectionType(
         inspectionTypeCode: String,

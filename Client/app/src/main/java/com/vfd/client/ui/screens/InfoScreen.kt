@@ -6,7 +6,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.ui.components.elements.AppColumn
 import com.vfd.client.ui.components.elements.AppHorizontalDivider
@@ -14,7 +13,7 @@ import com.vfd.client.ui.components.texts.AppText
 
 
 @Composable
-fun InfoScreen(navController: NavController) {
+fun InfoScreen() {
     AppColumn(
         modifier = Modifier
             .verticalScroll(rememberScrollState())

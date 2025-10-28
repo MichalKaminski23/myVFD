@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.InspectionDtos
 import com.vfd.client.ui.components.buttons.AppButton
@@ -40,10 +39,8 @@ fun InspectionScreen(
     inspectionViewModel: InspectionViewModel,
     inspectionTypeViewModel: InspectionTypeViewModel,
     firefighterViewModel: FirefighterViewModel,
-    navController: NavController,
     snackbarHostState: SnackbarHostState,
     assetId: Int? = null,
-    assetName: String? = null
 ) {
     val inspectionUiState by inspectionViewModel.inspectionUiState.collectAsState()
     val inspectionTypeUiState by inspectionTypeViewModel.inspectionTypeUiState.collectAsState()
@@ -218,7 +215,7 @@ fun InspectionScreen(
                             val preselectedCode = inspectionTypeUiState.inspectionTypes
                                 .firstOrNull { it.name == inspection.inspectionTypeName }
                                 ?.inspectionType ?: ""
-                            inspectionViewModel.onInspectionUpdateValueChange() {
+                            inspectionViewModel.onInspectionUpdateValueChange {
                                 it.copy(
                                     inspectionType = preselectedCode,
                                     inspectionDate = inspection.inspectionDate,
