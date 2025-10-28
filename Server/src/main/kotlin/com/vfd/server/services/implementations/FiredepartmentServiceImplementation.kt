@@ -51,7 +51,7 @@ class FiredepartmentServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = FIREDEPARTMENT_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "name,asc",
             maxSize = 200
         )
@@ -97,7 +97,7 @@ class FiredepartmentServiceImplementation(
         return firedepartmentMapper.toFiredepartmentDto(firedepartmentRepository.save(firedepartment))
     }
 
-    private val FIREDEPARTMENT_ALLOWED_SORTS = setOf(
+    private val sorts = setOf(
         "firedepartmentId",
         "name",
         "nrfs",
@@ -130,7 +130,7 @@ class FiredepartmentServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = FIREDEPARTMENT_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "name,asc",
             maxSize = 200
         )
@@ -158,7 +158,7 @@ class FiredepartmentServiceImplementation(
         firedepartmentDto.name?.let { newName ->
             firedepartmentRepository.assertNameNotUsedByOther(newName, firedepartmentId)
         }
-        
+
         val firedepartment = firedepartmentRepository.findByIdOrThrow(firedepartmentId)
 
         firedepartmentDto.address?.let { addressDto ->

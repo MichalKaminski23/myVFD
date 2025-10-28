@@ -9,11 +9,11 @@ object FirefighterDtos {
     data class FirefighterCreate(
         @field:NotNull(message = "{firefighter.userId.not_null}")
         @field:Schema(description = "ID of the user to assign as a firefighter", example = "7")
-        val userId: Int,
+        var userId: Int,
 
         @field:NotNull(message = "{firefighter.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the fire department to assign the firefighter to", example = "7")
-        val firedepartmentId: Int,
+        var firedepartmentId: Int,
     )
 
     data class FirefighterCreateByEmailAddress(
@@ -22,11 +22,11 @@ object FirefighterDtos {
             description = "Email address of the user to assign as a firefighter",
             example = "superZiutek@test.com"
         )
-        val userEmailAddress: String,
+        var userEmailAddress: String,
 
         @field:NotNull(message = "{firefighter.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the fire department to assign the firefighter to", example = "7")
-        val firedepartmentId: Int
+        var firedepartmentId: Int
     )
 
     @Schema(description = "DTO used for partially updating a firefighter record")

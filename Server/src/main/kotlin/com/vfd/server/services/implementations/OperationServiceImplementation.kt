@@ -43,7 +43,7 @@ class OperationServiceImplementation(
 
         participants.forEach { it.requireSameFiredepartment(firedepartment.firedepartmentId!!) }
 
-        validateDates(operationDto.operationDate, operationDto.operationEnd, "Operation")
+        validateDates(operationDto.operationDate, operationDto.operationEnd)
 
         val operation = operationMapper.toOperationEntity(operationDto).apply {
             this.firedepartment = firedepartment
@@ -73,7 +73,7 @@ class OperationServiceImplementation(
             page,
             size,
             sort,
-            OPERATION_ALLOWED_SORTS,
+            sorts,
             "operationDate,desc",
             200
         )
@@ -104,7 +104,7 @@ class OperationServiceImplementation(
         val effectiveInspectionDate = operationDto.operationDate ?: operationDto.operationDate
         val effectiveExpirationDate = operationDto.operationEnd ?: operationDto.operationEnd
 
-        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Operation")
+        validateDates(effectiveInspectionDate, effectiveExpirationDate)
 
         operationDto.participantsIds?.let { ids ->
             val participants = firefighterRepository.findAllById(ids)
@@ -133,7 +133,7 @@ class OperationServiceImplementation(
         )
     }
 
-    private val OPERATION_ALLOWED_SORTS = setOf(
+    private val sorts = setOf(
         "operationId",
         "address.addressId",
         "operationType.operationType"
@@ -157,7 +157,7 @@ class OperationServiceImplementation(
 
         operation.participants = firefighterRepository.findAllById(operationDto.participantIds).toMutableSet()
 
-        validateDates(operationDto.operationDate, operationDto.operationEnd, "Operation")
+        validateDates(operationDto.operationDate, operationDto.operationEnd)
 
         return operationMapper.toOperationDto(
             operationRepository.save(operation)
@@ -175,7 +175,7 @@ class OperationServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = OPERATION_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "operationId,asc",
             maxSize = 200
         )
@@ -215,7 +215,7 @@ class OperationServiceImplementation(
         val effectiveInspectionDate = operationDto.operationDate ?: operationDto.operationDate
         val effectiveExpirationDate = operationDto.operationEnd ?: operationDto.operationEnd
 
-        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Operation")
+        validateDates(effectiveInspectionDate, effectiveExpirationDate)
 
         operationMapper.patchOperation(operationDto, operation)
 

@@ -1,4 +1,4 @@
-package com.vfd.server.services
+package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.AuthResponseDto
 import com.vfd.server.dtos.PasswordDtos
@@ -8,7 +8,7 @@ import com.vfd.server.mappers.UserMapper
 import com.vfd.server.repositories.UserRepository
 import com.vfd.server.securities.JwtTokenProvider
 import com.vfd.server.securities.UserPrincipal
-import com.vfd.server.services.implementations.AddressServiceImplementation
+import com.vfd.server.services.AuthService
 import com.vfd.server.shared.assertNotExistsByEmail
 import com.vfd.server.shared.assertNotExistsByPhone
 import com.vfd.server.shared.findByEmailOrThrow

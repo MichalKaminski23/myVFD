@@ -12,5 +12,5 @@ interface AuthService {
 
     fun generateJwt(emailAddress: String, password: String): String
 
-    fun changePassword(emailAddress: String, passwordDto: PasswordDtos.PasswordChange): Unit
+    fun changePassword(emailAddress: String, passwordDto: PasswordDtos.PasswordChange)
 }

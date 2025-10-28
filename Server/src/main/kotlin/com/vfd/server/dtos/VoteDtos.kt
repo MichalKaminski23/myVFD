@@ -10,11 +10,11 @@ object VoteDtos {
     data class VoteCreate(
         @field:NotNull(message = "{vote.investmentProposalId.not_null}")
         @field:Schema(description = "ID of the investment proposal being voted on", example = "7")
-        val investmentProposalId: Int,
+        var investmentProposalId: Int,
 
         @field:NotNull(message = "{vote.voteValue.not_null}")
         @field:Schema(description = "Value of the vote (true for yes, false for no)", example = "true")
-        val voteValue: Boolean
+        var voteValue: Boolean
     )
 
     @Schema(description = "DTO used for modifying an existing vote")
@@ -45,14 +45,14 @@ object VoteDtos {
     data class VoteCreateDev(
         @field:NotNull(message = "{vote.investmentProposalId.not_null}")
         @field:Schema(description = "ID of the investment proposal being voted on", example = "7")
-        val investmentProposalId: Int,
+        var investmentProposalId: Int,
 
         @field:NotNull(message = "{vote.firefighterId.not_null}")
         @field:Schema(description = "ID of the firefighter casting the vote", example = "7")
-        val firefighterId: Int,
+        var firefighterId: Int,
 
         @field:NotNull(message = "{vote.voteValue.not_null}")
         @field:Schema(description = "Value of the vote (true for yes, false for no)", example = "true")
-        val voteValue: Boolean
+        var voteValue: Boolean
     )
 }

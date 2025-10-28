@@ -58,7 +58,7 @@ class AssetServiceImplementation(
             page,
             size,
             sort,
-            ASSET_ALLOWED_SORTS,
+            sorts,
             "name,asc",
             200
         )
@@ -98,7 +98,7 @@ class AssetServiceImplementation(
         return assetMapper.toAssetDto(assetRepository.save(asset))
     }
 
-    private val ASSET_ALLOWED_SORTS = setOf("assetId", "name", "assetType.assetType")
+    private val sorts = setOf("assetId", "name", "assetType.assetType")
 
     @Transactional
     override fun createAssetDev(assetDto: AssetDtos.AssetCreateDev): AssetDtos.AssetResponse {
@@ -121,7 +121,7 @@ class AssetServiceImplementation(
             page,
             size,
             sort,
-            ASSET_ALLOWED_SORTS,
+            sorts,
             "assetId,asc",
             200
         )

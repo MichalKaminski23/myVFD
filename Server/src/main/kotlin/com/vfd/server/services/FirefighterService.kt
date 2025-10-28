@@ -5,8 +5,8 @@ import com.vfd.server.shared.PageResponse
 
 interface FirefighterService {
 
+
     fun createFirefighter(
-        emailAddress: String,
         firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse
 

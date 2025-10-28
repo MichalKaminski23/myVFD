@@ -15,7 +15,7 @@ class FirefighterActivityTypeServiceImplementation(
     private val firefighterActivityTypeMapper: FirefighterActivityTypeMapper
 ) : FirefighterActivityTypeService {
 
-    private val FIREFIGHTER_ACTIVITY_TYPES__ALLOWED_SORTS = setOf("firefighterActivityType", "name")
+    private val sorts = setOf("firefighterActivityType", "name")
 
     @Transactional
     override fun createFirefighterActivityType(
@@ -43,7 +43,7 @@ class FirefighterActivityTypeServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = FIREFIGHTER_ACTIVITY_TYPES__ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "firefighterActivityType,asc",
             maxSize = 200
         )

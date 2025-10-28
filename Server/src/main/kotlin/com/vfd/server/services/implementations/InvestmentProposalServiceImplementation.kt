@@ -1,12 +1,15 @@
 package com.vfd.server.services.implementations
 
 import com.vfd.server.dtos.InvestmentProposalDtos
+import com.vfd.server.entities.FirefighterStatus
 import com.vfd.server.entities.InvestmentProposalStatus
 import com.vfd.server.exceptions.InvalidStatusException
 import com.vfd.server.mappers.InvestmentProposalMapper
 import com.vfd.server.repositories.*
 import com.vfd.server.services.InvestmentProposalService
 import com.vfd.server.shared.*
+import org.springframework.context.MessageSource
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -19,18 +22,24 @@ class InvestmentProposalServiceImplementation(
     private val firedepartmentRepository: FiredepartmentRepository,
     private val userRepository: UserRepository,
     private val firefighterRepository: FirefighterRepository,
-    private val voteRepository: VoteRepository
+    private val voteRepository: VoteRepository,
+    private val messageSource: MessageSource
 ) : InvestmentProposalService {
 
     fun validateStatus(status: String?) {
+        if (status == null) return
         try {
-            InvestmentProposalStatus.valueOf(status!!)
-        } catch (exception: IllegalArgumentException) {
-            throw InvalidStatusException(
-                "Invalid status: ${status!!}. Allowed: ${
-                    InvestmentProposalStatus.entries.joinToString()
-                }"
+            InvestmentProposalStatus.valueOf(status)
+        } catch (_: IllegalArgumentException) {
+            val locale = LocaleContextHolder.getLocale()
+            val allowed = FirefighterStatus.entries.joinToString()
+            val message = messageSource.getMessage(
+                "invalid.status",
+                arrayOf(status, allowed),
+                "Invalid status: $status. Allowed: $allowed",
+                locale
             )
+            throw InvalidStatusException(message!!)
         }
     }
 
@@ -77,7 +86,7 @@ class InvestmentProposalServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = INVESTMENT_PROPOSAL_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "submissionDate,desc",
             maxSize = 200
         )
@@ -130,7 +139,7 @@ class InvestmentProposalServiceImplementation(
         )
     }
 
-    private val INVESTMENT_PROPOSAL_ALLOWED_SORTS = setOf(
+    private val sorts = setOf(
         "investmentProposalId",
         "createdAt",
         "firedepartment.firedepartmentId"
@@ -167,7 +176,7 @@ class InvestmentProposalServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = INVESTMENT_PROPOSAL_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "investmentProposalId,asc",
             maxSize = 200
         )

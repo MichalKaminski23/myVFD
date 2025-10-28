@@ -17,6 +17,7 @@ class LocaleConfig {
         return resolver
     }
 
+    @Suppress("UsePropertyAccessSyntax")
     @Bean
     fun messageSource(): MessageSource {
         val messageSource = ResourceBundleMessageSource()

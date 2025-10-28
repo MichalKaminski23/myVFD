@@ -34,7 +34,7 @@ class InspectionServiceImplementation(
 
         val inspectionType = inspectionTypeRepository.findByIdOrThrow(inspectionDto.inspectionType)
 
-        validateDates(inspectionDto.inspectionDate, inspectionDto.expirationDate, "Inspection")
+        validateDates(inspectionDto.inspectionDate, inspectionDto.expirationDate)
 
         val inspection = inspectionMapper.toInspectionEntity(inspectionDto).apply {
             this.asset = asset
@@ -64,7 +64,7 @@ class InspectionServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = INSPECTION_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "expirationDate,asc",
             maxSize = 200
         )
@@ -94,7 +94,7 @@ class InspectionServiceImplementation(
         val effectiveInspectionDate = inspectionDto.inspectionDate ?: inspection.inspectionDate
         val effectiveExpirationDate = inspectionDto.expirationDate ?: inspection.expirationDate
 
-        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Inspection")
+        validateDates(effectiveInspectionDate, effectiveExpirationDate)
 
         inspectionMapper.patchInspection(inspectionDto, inspection)
 
@@ -108,7 +108,7 @@ class InspectionServiceImplementation(
         return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
     }
 
-    private val INSPECTION_ALLOWED_SORTS = setOf(
+    private val sorts = setOf(
         "inspectionId",
         "inspectionDate",
         "expirationDate",
@@ -127,7 +127,7 @@ class InspectionServiceImplementation(
         val inspectionType = inspectionTypeRepository.findByIdOrThrow(inspectionDto.inspectionType)
         inspection.inspectionType = inspectionType
 
-        validateDates(inspectionDto.inspectionDate, inspectionDto.expirationDate, "Inspection")
+        validateDates(inspectionDto.inspectionDate, inspectionDto.expirationDate)
 
         return inspectionMapper.toInspectionDto(inspectionRepository.save(inspection))
     }
@@ -143,7 +143,7 @@ class InspectionServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = INSPECTION_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "inspectionId,asc",
             maxSize = 200
         )
@@ -171,7 +171,7 @@ class InspectionServiceImplementation(
         val effectiveInspectionDate = inspectionDto.inspectionDate ?: inspection.inspectionDate
         val effectiveExpirationDate = inspectionDto.expirationDate ?: inspection.expirationDate
 
-        validateDates(effectiveInspectionDate, effectiveExpirationDate, "Inspection")
+        validateDates(effectiveInspectionDate, effectiveExpirationDate)
 
         inspectionMapper.patchInspection(inspectionDto, inspection)
 

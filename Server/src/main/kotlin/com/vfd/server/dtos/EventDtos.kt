@@ -24,7 +24,7 @@ object EventDtos {
 
         @field:NotNull(message = "{event.eventDate.not_null}")
         @field:Schema(description = "Date and time of the event", example = "2025-09-01T18:00:00")
-        val eventDate: LocalDateTime
+        var eventDate: LocalDateTime
     )
 
     @Schema(description = "DTO used to partially update an event")
@@ -66,7 +66,7 @@ object EventDtos {
     data class EventCreateDev(
         @field:NotNull(message = "{event.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the firedepartment the event belongs to", example = "7")
-        val firedepartmentId: Int,
+        var firedepartmentId: Int,
 
         @field:NotBlank(message = "{event.header.not_blank}")
         @field:Size(max = 128, message = "{event.header.size}")
@@ -82,6 +82,6 @@ object EventDtos {
 
         @field:NotNull(message = "{event.eventDate.not_null}")
         @field:Schema(description = "Date and time of the event", example = "2025-09-01T18:00:00")
-        val eventDate: LocalDateTime
+        var eventDate: LocalDateTime
     )
 }

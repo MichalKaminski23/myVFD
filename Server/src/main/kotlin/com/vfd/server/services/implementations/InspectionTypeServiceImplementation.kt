@@ -14,7 +14,7 @@ class InspectionTypeServiceImplementation(
     private val inspectionTypeMapper: InspectionTypeMapper
 ) : InspectionTypeService {
 
-    private val INSPECTION_TYPE_ALLOWED_SORTS = setOf("inspectionType", "name")
+    private val sorts = setOf("inspectionType", "name")
 
     @Transactional
     override fun createInspectionType(
@@ -41,7 +41,7 @@ class InspectionTypeServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = INSPECTION_TYPE_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "inspectionType,asc",
             maxSize = 200
         )

@@ -35,7 +35,7 @@ class AddressServiceImplementation(
         return existingAddress ?: addressRepository.save(addressMapper.toAddressEntity(addressDto))
     }
 
-    private val ADDRESS_ALLOWED_SORTS = setOf(
+    private val sorts = setOf(
         "addressId", "country", "voivodeship",
         "city", "postalCode", "street", "apartNumber", "houseNumber"
     )
@@ -55,7 +55,7 @@ class AddressServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = ADDRESS_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "addressId,asc",
             maxSize = 200
         )

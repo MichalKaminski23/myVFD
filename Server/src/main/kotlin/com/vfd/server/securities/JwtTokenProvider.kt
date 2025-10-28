@@ -13,17 +13,10 @@ import java.util.*
 
 @Component
 class JwtTokenProvider(
-    @Value("\${jwt.secret}") val jwtSecret: String,
-    @Value("\${jwt.expiration-ms:3600000}") private val jwtExpirationMs: Long
+    @param:Value("\${jwt.secret}") val jwtSecret: String,
+    @param:Value("\${jwt.expiration-ms:3600000}") private val jwtExpirationMs: Long
 ) {
     private val key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret))
-
-    //ENV:
-    /*
-    setx DB_USER "adminVFD"
-    setx DB_PASS "Dupa12345!"
-    setx JWT_SECRET "EcXtfPavv247GKJQnLRyEg4bJJzhC52pqAHj7PIPQ5Qw7JfNh426QLPvcVKkCATpVdrT5EJd6rDz7yN/ghXcUg=="
-     */
 
     fun generateToken(auth: Authentication): String {
         val principal = auth.principal as UserPrincipal
@@ -54,11 +47,11 @@ class JwtTokenProvider(
         return try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
             true
-        } catch (exception: ExpiredJwtException) {
+        } catch (_: ExpiredJwtException) {
             false
-        } catch (exception: JwtException) {
+        } catch (_: JwtException) {
             false
-        } catch (exception: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             false
         }
     }

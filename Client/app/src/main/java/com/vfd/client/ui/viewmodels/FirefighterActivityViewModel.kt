@@ -271,7 +271,7 @@ class FirefighterActivityViewModel @Inject constructor(
 
                     _firefighterActivityUiState.value =
                         _firefighterActivityUiState.value.copy(activities = updatedActivities)
-                    _uiEvent.send(UiEvent.Error(context.getString(R.string.error)))
+                    _uiEvent.send(UiEvent.Success(context.getString(R.string.success)))
                 }
 
                 is ApiResult.Error -> {

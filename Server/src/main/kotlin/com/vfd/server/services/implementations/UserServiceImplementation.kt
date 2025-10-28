@@ -61,7 +61,7 @@ class UserServiceImplementation(
         return userMapper.toUserDto(user)
     }
 
-    private val USER_ALLOWED_SORTS = setOf(
+    private val sorts = setOf(
         "userId",
         "firstName",
         "lastName",
@@ -79,7 +79,7 @@ class UserServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = USER_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "userId,asc",
             maxSize = 200
         )

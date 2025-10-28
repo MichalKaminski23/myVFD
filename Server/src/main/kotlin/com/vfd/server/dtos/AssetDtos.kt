@@ -67,7 +67,7 @@ object AssetDtos {
     data class AssetCreateDev(
         @field:NotNull(message = "{asset.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the fire department owning the asset", example = "7")
-        val firedepartmentId: Int,
+        var firedepartmentId: Int,
 
         @field:NotBlank(message = "{asset.name.not_blank}")
         @field:Size(max = 128, message = "{asset.name.size}")

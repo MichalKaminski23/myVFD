@@ -23,7 +23,7 @@ object InvestmentProposalDtos {
         @field:JsonFormat(shape = JsonFormat.Shape.STRING)
         @field:Digits(integer = 12, fraction = 2, message = "{investment.amount.digits}")
         @field:PositiveOrZero(message = "{investment.amount.positive_or_zero}")
-        val amount: BigDecimal
+        var amount: BigDecimal
     )
 
     @Schema(description = "DTO used for partially updating an investment proposal")
@@ -82,7 +82,7 @@ object InvestmentProposalDtos {
     data class InvestmentProposalCreateDev(
         @field:NotNull(message = "{investment.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the fire department proposing the investment", example = "7")
-        val firedepartmentId: Int,
+        var firedepartmentId: Int,
 
         @field:NotBlank(message = "{investment.description.not_blank}")
         @field:Size(max = 512, message = "{investment.description.size}")
@@ -94,13 +94,13 @@ object InvestmentProposalDtos {
 
         @field:NotNull(message = "{investment.submissionDate.not_null}")
         @field:Schema(description = "Date of the submission", example = "2025-08-03T15:00:00")
-        val submissionDate: LocalDateTime,
+        var submissionDate: LocalDateTime,
 
         @field:NotNull(message = "{investment.amount.not_null}")
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
         @field:JsonFormat(shape = JsonFormat.Shape.STRING)
         @field:Digits(integer = 12, fraction = 2, message = "{investment.amount.digits}")
         @field:PositiveOrZero(message = "{investment.amount.positive_or_zero}")
-        val amount: BigDecimal
+        var amount: BigDecimal
     )
 }

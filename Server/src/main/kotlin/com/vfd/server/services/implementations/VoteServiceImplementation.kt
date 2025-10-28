@@ -74,7 +74,7 @@ class VoteServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = VOTE_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "voteId,asc",
             maxSize = 200
         )
@@ -115,7 +115,7 @@ class VoteServiceImplementation(
         return voteMapper.toVoteDto(voteRepository.save(vote))
     }
 
-    private val VOTE_ALLOWED_SORTS = setOf(
+    private val sorts = setOf(
         "voteId",
         "voteDate",
         "value",
@@ -144,7 +144,7 @@ class VoteServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = VOTE_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "voteId,asc",
             maxSize = 200
         )

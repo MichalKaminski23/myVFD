@@ -348,49 +348,57 @@ private fun FirefighterSection(
         }
 
         FirefighterStatus.ACTIVE.toString() -> {
-
-            AppFirefighterCard(
-                firefighter,
-                quarterHours = currentFirefighterUiState.currentFirefighter?.hours,
-                firedepartment = firedepartmentDetailUiState.firedepartment!!,
-                actions = {
-                    if (showHourInputsInitial) {
-                        AppSearchHoursForm(
-                            visible = showHourInputsInitial,
-                            errorMessage = currentFirefighterUiState.errorMessage,
-                            onSubmit = { year, quarter ->
-                                firefighterViewModel.getHoursForQuarter(year, quarter)
-                            },
-                            onCancel = { showHourInputsInitial = false }
-                        )
-                    }
-                    if (!showHourInputsInitial) {
-                        AppButton(
-                            icon = Icons.Default.ThumbUp,
-                            label = stringResource(id = R.string.show_hours),
-                            onClick = { showHourInputsInitial = true }
-                        )
-                    }
-                    val count = expiringCounts[firefighter.firefighterId] ?: 0
-                    BadgedBox(
-                        badge = {
-                            if (count > 0) {
-                                Badge { Text("$count") }
+            currentFirefighterUiState.currentFirefighter?.let { firefighter ->
+                firedepartmentDetailUiState.firedepartment?.let { firedepartment ->
+                    AppFirefighterCard(
+                        firefighter,
+                        quarterHours = currentFirefighterUiState.currentFirefighter?.hours,
+                        firedepartment = firedepartment,
+                        actions = {
+                            if (showHourInputsInitial) {
+                                AppSearchHoursForm(
+                                    visible = showHourInputsInitial,
+                                    errorMessage = currentFirefighterUiState.errorMessage,
+                                    onSubmit = { year, quarter ->
+                                        firefighterViewModel.getHoursForQuarter(year, quarter)
+                                    },
+                                    onCancel = { showHourInputsInitial = false }
+                                )
+                            }
+                            if (!showHourInputsInitial) {
+                                AppButton(
+                                    icon = Icons.Default.ThumbUp,
+                                    label = stringResource(id = R.string.show_hours),
+                                    onClick = { showHourInputsInitial = true }
+                                )
+                            }
+                            val count = expiringCounts[firefighter.firefighterId] ?: 0
+                            BadgedBox(
+                                badge = {
+                                    if (count > 0) {
+                                        Badge { Text("$count") }
+                                    }
+                                }
+                            ) {
+                                AppButton(
+                                    icon = Icons.Default.Warning,
+                                    label = stringResource(id = R.string.activities),
+                                    onClick = {
+                                        val encodedName = Uri.encode(firefighter.firstName)
+                                        val encodedLastName = Uri.encode(firefighter.lastName)
+                                        navController.navigate("activities/list?firefighterId=${firefighter.firefighterId}&firstName=$encodedName&lastName=$encodedLastName&from=member")
+                                    }
+                                )
                             }
                         }
-                    ) {
-                        AppButton(
-                            icon = Icons.Default.Warning,
-                            label = stringResource(id = R.string.activities),
-                            onClick = {
-                                val encodedName = Uri.encode(firefighter.firstName)
-                                val encodedLastName = Uri.encode(firefighter.lastName)
-                                navController.navigate("activities/list?firefighterId=${firefighter.firefighterId}&firstName=$encodedName&lastName=$encodedLastName&from=member")
-                            }
-                        )
-                    }
+                    )
+                } ?: run {
+                    AppText(
+                        stringResource(id = R.string.loading),
+                        style = MaterialTheme.typography.headlineLarge
+                    )
                 }
-            )
+            }
         }
 
         FirefighterStatus.REJECTED.toString(),

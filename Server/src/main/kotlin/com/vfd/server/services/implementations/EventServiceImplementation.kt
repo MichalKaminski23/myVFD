@@ -54,7 +54,7 @@ class EventServiceImplementation(
             page,
             size,
             sort,
-            EVENT_ALLOWED_SORTS,
+            sorts,
             "eventDate,asc",
             200
         )
@@ -85,7 +85,7 @@ class EventServiceImplementation(
         return eventMapper.toEventDto(eventRepository.save(event))
     }
 
-    private val EVENT_ALLOWED_SORTS = setOf(
+    private val sorts = setOf(
         "eventId",
         "header",
         "eventDate",
@@ -115,7 +115,7 @@ class EventServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = EVENT_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "eventDate,desc",
             maxSize = 200
         )

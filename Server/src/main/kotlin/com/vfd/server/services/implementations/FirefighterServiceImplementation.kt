@@ -12,6 +12,8 @@ import com.vfd.server.repositories.FirefighterRepository
 import com.vfd.server.repositories.UserRepository
 import com.vfd.server.services.FirefighterService
 import com.vfd.server.shared.*
+import org.springframework.context.MessageSource
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -22,34 +24,45 @@ class FirefighterServiceImplementation(
     private val firefighterRepository: FirefighterRepository,
     private val firefighterMapper: FirefighterMapper,
     private val userRepository: UserRepository,
-    private val firedepartmentRepository: FiredepartmentRepository
+    private val firedepartmentRepository: FiredepartmentRepository,
+    private val messageSource: MessageSource
 ) : FirefighterService {
 
     fun validateStatus(status: String?) {
+        if (status == null) return
         try {
-            FirefighterStatus.valueOf(status!!)
-        } catch (exception: IllegalArgumentException) {
-            throw InvalidStatusException(
-                "Invalid status: ${status!!}. Allowed: ${
-                    FirefighterStatus.entries.joinToString()
-                }"
+            FirefighterStatus.valueOf(status)
+        } catch (_: IllegalArgumentException) {
+            val locale = LocaleContextHolder.getLocale()
+            val allowed = FirefighterStatus.entries.joinToString()
+            val message = messageSource.getMessage(
+                "invalid.status",
+                arrayOf(status, allowed),
+                "Invalid status: $status. Allowed: $allowed",
+                locale
             )
+            throw InvalidStatusException(message!!)
         }
     }
 
-    fun validateRole(role: String?) {
+    fun validateRole(status: String?) {
+        if (status == null) return
         try {
-            FirefighterRole.valueOf(role!!)
-        } catch (exception: IllegalArgumentException) {
-            throw InvalidStatusException(
-                "Invalid role: ${role!!}. Allowed: ${
-                    FirefighterRole.entries.joinToString()
-                }"
+            FirefighterRole.valueOf(status)
+        } catch (_: IllegalArgumentException) {
+            val locale = LocaleContextHolder.getLocale()
+            val allowed = FirefighterStatus.entries.joinToString()
+            val message = messageSource.getMessage(
+                "invalid.role",
+                arrayOf(status, allowed),
+                "Invalid role: $status. Allowed: $allowed",
+                locale
             )
+            throw InvalidStatusException(message!!)
         }
     }
 
-    private val PROTECTED_ROLES = setOf(
+    private val roles = setOf(
         FirefighterRole.ADMIN,
         FirefighterRole.PRESIDENT,
         FirefighterRole.MEMBER
@@ -57,7 +70,6 @@ class FirefighterServiceImplementation(
 
     @Transactional
     override fun createFirefighter(
-        emailAddress: String,
         firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse {
 
@@ -133,7 +145,7 @@ class FirefighterServiceImplementation(
             page,
             size,
             sort,
-            FIREFIGHTER_ALLOWED_SORTS,
+            sorts,
             "user.firstName,asc",
             200
         )
@@ -214,7 +226,7 @@ class FirefighterServiceImplementation(
             page,
             size,
             sort,
-            FIREFIGHTER_ALLOWED_SORTS,
+            sorts,
             "user.firstName,asc",
             200
         )
@@ -242,7 +254,7 @@ class FirefighterServiceImplementation(
 
         firefighterDeleted.requireSameFiredepartment(firedepartmentId)
 
-        if (PROTECTED_ROLES.contains(firefighterDeleted.role)) {
+        if (roles.contains(firefighterDeleted.role)) {
             throw InvalidStatusException("Cannot delete firefighter with role ${firefighterDeleted.role}")
         }
 
@@ -273,7 +285,7 @@ class FirefighterServiceImplementation(
         return firefighterRepository.getHoursForQuarter(firefighter.firefighterId!!, year, quarter)
     }
 
-    private val FIREFIGHTER_ALLOWED_SORTS = setOf(
+    private val sorts = setOf(
         "firefighterId",
         "user.firstName",
         "user.lastName",
@@ -316,7 +328,7 @@ class FirefighterServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = FIREFIGHTER_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "firefighterId,asc",
             maxSize = 200
         )

@@ -1,3 +1,5 @@
+@file:Suppress("EmptyMethod")
+
 package com.vfd.server
 
 import org.junit.jupiter.api.Test

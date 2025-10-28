@@ -12,7 +12,7 @@ object InspectionDtos {
     data class InspectionCreate(
         @field:NotNull(message = "{inspection.assetId.not_null}")
         @field:Schema(description = "ID of the asset being inspected", example = "7")
-        val assetId: Int,
+        var assetId: Int,
 
         @field:NotBlank(message = "{inspection.inspectionType.not_blank}")
         @field:Size(max = 16, message = "{inspection.inspectionType.size}")
@@ -21,7 +21,7 @@ object InspectionDtos {
 
         @field:NotNull(message = "{inspection.inspectionDate.not_null}")
         @field:Schema(description = "Date when the inspection was performed", example = "2025-08-03T10:00:00")
-        val inspectionDate: LocalDateTime,
+        var inspectionDate: LocalDateTime,
 
         @field:Schema(description = "Expiration date of the inspection validity", example = "2026-08-03T00:00:00")
         val expirationDate: LocalDateTime? = null

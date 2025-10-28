@@ -44,10 +44,9 @@ class FirefighterController(
     @PostMapping("/my")
     @ResponseStatus(HttpStatus.CREATED)
     fun createFirefighter(
-        @AuthenticationPrincipal principal: UserDetails,
         @Valid @RequestBody firefighterDto: FirefighterDtos.FirefighterCreate
     ): FirefighterDtos.FirefighterResponse =
-        firefighterService.createFirefighter(principal.username, firefighterDto)
+        firefighterService.createFirefighter(firefighterDto)
 
     @Operation(
         summary = "Create a new firefighter by email address",

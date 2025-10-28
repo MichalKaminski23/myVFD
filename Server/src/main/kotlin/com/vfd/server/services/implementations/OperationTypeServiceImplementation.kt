@@ -14,7 +14,7 @@ class OperationTypeServiceImplementation(
     private val operationTypeMapper: OperationTypeMapper
 ) : OperationTypeService {
 
-    private val OPERATION_TYPE_ALLOWED_SORTS = setOf("operationType", "name")
+    private val sorts = setOf("operationType", "name")
 
     @Transactional
     override fun createOperationType(
@@ -41,7 +41,7 @@ class OperationTypeServiceImplementation(
             page = page,
             size = size,
             sort = sort,
-            allowedFields = OPERATION_TYPE_ALLOWED_SORTS,
+            allowedFields = sorts,
             defaultSort = "operationType,asc",
             maxSize = 200
         )

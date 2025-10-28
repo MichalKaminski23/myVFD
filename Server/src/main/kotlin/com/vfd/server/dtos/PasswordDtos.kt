@@ -11,12 +11,12 @@ object PasswordDtos {
     @Schema(description = "DTO used for changing user password")
     data class PasswordChange(
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @field:JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @field:NotBlank(message = "{password.current.not_blank}")
         @field:Schema(description = "Current password", example = "OldPass123!")
         val currentPassword: String,
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @field:JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @field:NotBlank(message = "{password.new.not_blank}")
         @field:Size(min = 8, max = 128, message = "{password.new.size}")
         @field:Pattern(

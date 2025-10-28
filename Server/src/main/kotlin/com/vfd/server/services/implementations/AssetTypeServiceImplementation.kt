@@ -14,7 +14,7 @@ class AssetTypeServiceImplementation(
     private val assetTypeMapper: AssetTypeMapper
 ) : AssetTypeService {
 
-    private val ASSET_TYPE_ALLOWED_SORTS = setOf("assetType", "name")
+    private val sorts = setOf("assetType", "name")
 
     @Transactional
     override fun createAssetType(assetTypeDto: AssetTypeDtos.AssetTypeCreate): AssetTypeDtos.AssetTypeResponse {
@@ -33,7 +33,7 @@ class AssetTypeServiceImplementation(
             page,
             size,
             sort,
-            ASSET_TYPE_ALLOWED_SORTS,
+            sorts,
             "assetType,asc",
             200
         )

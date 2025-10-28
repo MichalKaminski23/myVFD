@@ -117,11 +117,11 @@ fun FirefighterActivityRepository.findByIdOrThrow(firefighterActivityId: Int): F
         ResourceNotFoundException("firefighter.activity", "id", firefighterActivityId)
     }
 
-fun FirefighterActivity.requireSameFirefighter(firefighterId: Int) {
-    if (this.firefighter?.firefighterId != firefighterId) {
-        throw ForbiddenException("forbidden.text")
-    }
-}
+//fun FirefighterActivity.requireSameFirefighter(firefighterId: Int) {
+//    if (this.firefighter?.firefighterId != firefighterId) {
+//        throw ForbiddenException("forbidden.text")
+//    }
+//}
 
 fun FirefighterActivityTypeRepository.findByIdOrThrow(firefighterActivityType: String): FirefighterActivityType =
     findById(firefighterActivityType).orElseThrow {

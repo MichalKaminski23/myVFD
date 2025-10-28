@@ -22,11 +22,11 @@ object OperationDtos {
 
         @field:NotNull(message = "{operation.operationDate.not_null}")
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-03T13:30:00")
-        val operationDate: LocalDateTime,
+        var operationDate: LocalDateTime,
 
         @field:NotNull(message = "{operation.operationEnd.not_null}")
         @field:Schema(description = "Date and time when the operation ended", example = "2025-08-03T15:05:00")
-        val operationEnd: LocalDateTime,
+        var operationEnd: LocalDateTime,
 
         @field:Size(max = 512, message = "{operation.description.size}")
         @field:Schema(
@@ -99,7 +99,7 @@ object OperationDtos {
     data class OperationCreateDev(
         @field:NotNull(message = "{operation.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the fire department executing the operation", example = "7")
-        val firedepartmentId: Int,
+        var firedepartmentId: Int,
 
         @field:NotBlank(message = "{operation.operationType.not_blank}")
         @field:Size(max = 16, message = "{operation.operationType.size}")
@@ -112,11 +112,11 @@ object OperationDtos {
 
         @field:NotNull(message = "{operation.operationDate.not_null}")
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-03T13:30:00")
-        val operationDate: LocalDateTime,
+        var operationDate: LocalDateTime,
 
         @field:NotNull(message = "{operation.operationEnd.not_null}")
         @field:Schema(description = "Date and time when the operation ended", example = "2025-08-03T15:05:00")
-        val operationEnd: LocalDateTime,
+        var operationEnd: LocalDateTime,
 
         @field:Size(max = 512, message = "{operation.description.size}")
         @field:Schema(

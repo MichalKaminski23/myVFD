@@ -17,7 +17,7 @@ object FirefighterActivityDtos {
 
         @field:NotNull(message = "{firefighterActivity.activityDate.not_null}")
         @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
-        val activityDate: LocalDateTime,
+        var activityDate: LocalDateTime,
 
         @field:Schema(description = "Expiration date of the activity", example = "2025-08-03T15:00:00")
         val expirationDate: LocalDateTime? = null,
@@ -86,7 +86,7 @@ object FirefighterActivityDtos {
     data class FirefighterActivityCreateDev(
         @field:NotNull(message = "{firefighterActivity.firefighterId.not_null}")
         @field:Schema(description = "ID of the firefighter performing the activity", example = "7")
-        val firefighterId: Int,
+        var firefighterId: Int,
 
         @field:NotBlank(message = "{firefighterActivity.type.not_blank}")
         @field:Size(max = 16, message = "{firefighterActivity.type.size}")
@@ -95,7 +95,7 @@ object FirefighterActivityDtos {
 
         @field:NotNull(message = "{firefighterActivity.activityDate.not_null}")
         @field:Schema(description = "Date of the activity", example = "2025-08-03T15:00:00")
-        val activityDate: LocalDateTime,
+        var activityDate: LocalDateTime,
 
         @field:Schema(description = "Expiration date of the activity", example = "2025-08-03T15:00:00")
         val expirationDate: LocalDateTime? = null,

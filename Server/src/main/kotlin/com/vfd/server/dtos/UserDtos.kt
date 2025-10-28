@@ -44,7 +44,7 @@ object UserDtos {
         @field:Schema(description = "User's phone number", example = "+48123123123")
         val phoneNumber: String,
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @param:JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @field:NotBlank(message = "{password.new.not_blank}")
         @field:Size(min = 8, max = 128, message = "{password.new.size}")
         @field:Pattern(
@@ -63,7 +63,7 @@ object UserDtos {
         @field:Schema(description = "User's email address", example = "jan.kowalski@test.com")
         val emailAddress: String,
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @param:JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @field:NotBlank(message = "{password.new.not_blank}")
         @field:Size(min = 8, max = 128, message = "{password.new.size}")
         @field:Pattern(
@@ -100,7 +100,7 @@ object UserDtos {
         @field:Schema(description = "User's phone number", example = "+48123123123")
         val phoneNumber: String? = null,
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @param:JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         @field:Size(min = 8, max = 128, message = "{password.new.size}")
         @field:Pattern(
             regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
