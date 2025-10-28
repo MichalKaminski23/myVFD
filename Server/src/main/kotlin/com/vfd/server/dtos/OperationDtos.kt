@@ -11,37 +11,37 @@ object OperationDtos {
 
     @Schema(description = "DTO used for creating a new emergency operation")
     data class OperationCreate(
-        @field:NotBlank(message = "Operation type must not be blank.")
-        @field:Size(max = 16, message = "Operation type must be at most 16 characters.")
-        @field:Schema(description = "Type code of the operation", example = "Fire")
+        @field:NotBlank(message = "{operation.operationType.not_blank}")
+        @field:Size(max = 16, message = "{operation.operationType.size}")
+        @field:Schema(description = "Type code of the operation", example = "POZ")
         val operationType: String,
 
         @field:Valid
         @field:Schema(description = "Address of the fire department")
         val address: AddressDtos.AddressCreate,
 
-        @field:NotNull(message = "Operation date must not be null.")
+        @field:NotNull(message = "{operation.operationDate.not_null}")
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-03T13:30:00")
         val operationDate: LocalDateTime,
 
-        @field:NotNull(message = "Operation end date must not be null.")
+        @field:NotNull(message = "{operation.operationEnd.not_null}")
         @field:Schema(description = "Date and time when the operation ended", example = "2025-08-03T15:05:00")
         val operationEnd: LocalDateTime,
 
-        @field:Size(max = 512, message = "Description must be at most 512 characters.")
+        @field:Size(max = 512, message = "{operation.description.size}")
         @field:Schema(
             description = "Description of the operation",
-            example = "Extinguishing residential building fire."
+            example = "Gaszenie pozaru budynku mieszkalnego."
         )
         val description: String,
 
-        @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[12, 15, 18]")
+        @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[1, 2, 6]")
         val participantsIds: Set<Int>
     )
 
     @Schema(description = "DTO used for partially updating an operation")
     data class OperationPatch(
-        @field:Schema(description = "Type code of the operation", example = "Fire")
+        @field:Schema(description = "Type code of the operation", example = "POZ")
         val operationType: String? = null,
 
         @field:Valid
@@ -54,14 +54,14 @@ object OperationDtos {
         @field:Schema(description = "Date and time when the operation ended", example = "2025-08-03T15:05:00")
         val operationEnd: LocalDateTime? = null,
 
-        @field:Size(max = 512, message = "Description must be at most 512 characters.")
+        @field:Size(max = 512, message = "{operation.description.size}")
         @field:Schema(
             description = "Description of the operation",
-            example = "Extinguishing residential building fire."
+            example = "Gaszeenie pozaru budynku mieszkalnego."
         )
         val description: String? = null,
 
-        @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[12, 15, 18]")
+        @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[1, 2, 6]")
         val participantsIds: Set<Int>? = null
     )
 
@@ -70,13 +70,13 @@ object OperationDtos {
         @field:Schema(description = "Unique identifier of the operation", example = "7")
         val operationId: Int,
 
-        @field:Schema(description = "Fire department that executed the operation")
+        @field:Schema(description = "Fire department that executed the operation", example = "3")
         val firedepartmentId: Int,
 
         @field:Schema(description = "Address where the operation took place")
         val address: AddressDtos.AddressResponse,
 
-        @field:Schema(description = "Type of the operation")
+        @field:Schema(description = "Type of the operation", example = "POZ")
         val operationTypeName: String,
 
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-03T13:30:00")
@@ -87,45 +87,45 @@ object OperationDtos {
 
         @field:Schema(
             description = "Description of the operation",
-            example = "Extinguishing residential building fire."
+            example = "Gaszenie pozaru budynku mieszkalnego."
         )
         val description: String,
 
-        @field:Schema(description = "List of firefighters who participated in the operation")
+        @field:Schema(description = "List of firefighters who participated in the operation", example = "[1, 2, 6]")
         val participants: List<FirefighterDtos.FirefighterResponseShort>
     )
 
     @Schema(description = "DTO used for creating a new emergency operation for development purposes")
     data class OperationCreateDev(
-        @field:NotNull(message = "Firedepartment ID must not be null.")
+        @field:NotNull(message = "{operation.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the fire department executing the operation", example = "7")
         val firedepartmentId: Int,
 
-        @field:NotBlank(message = "Operation type must not be blank.")
-        @field:Size(max = 16, message = "Operation type must be at most 16 characters.")
-        @field:Schema(description = "Type code of the operation", example = "Fire")
+        @field:NotBlank(message = "{operation.operationType.not_blank}")
+        @field:Size(max = 16, message = "{operation.operationType.size}")
+        @field:Schema(description = "Type code of the operation", example = "POZ")
         val operationType: String,
 
         @field:Valid
         @field:Schema(description = "Address of the fire department")
         val address: AddressDtos.AddressCreate,
 
-        @field:NotNull(message = "Operation date must not be null.")
+        @field:NotNull(message = "{operation.operationDate.not_null}")
         @field:Schema(description = "Date and time when the operation occurred", example = "2025-08-03T13:30:00")
         val operationDate: LocalDateTime,
-        
-        @field:NotNull(message = "Operation end date must not be null.")
+
+        @field:NotNull(message = "{operation.operationEnd.not_null}")
         @field:Schema(description = "Date and time when the operation ended", example = "2025-08-03T15:05:00")
         val operationEnd: LocalDateTime,
 
-        @field:Size(max = 512, message = "Description must be at most 512 characters.")
+        @field:Size(max = 512, message = "{operation.description.size}")
         @field:Schema(
             description = "Description of the operation",
-            example = "Extinguishing residential building fire."
+            example = "Gaszenie pozaru budynku mieszkalnego."
         )
         val description: String,
 
-        @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[12, 15, 18]")
+        @field:Schema(description = "List of firefighter IDs participating in the operation", example = "[1, 2, 7]")
         val participantIds: MutableSet<Int> = linkedSetOf()
     )
 }

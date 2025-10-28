@@ -8,7 +8,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterActivityDtos
 import com.vfd.client.ui.components.elements.AppDateTimePicker
@@ -17,13 +16,11 @@ import com.vfd.client.ui.components.globals.AppUiEvents
 import com.vfd.client.ui.components.texts.AppTextField
 import com.vfd.client.ui.viewmodels.FirefighterActivityTypeViewModel
 import com.vfd.client.ui.viewmodels.FirefighterActivityViewModel
-import com.vfd.client.ui.viewmodels.FirefighterViewModel
 
 @Composable
 fun FirefighterActivityCreateDialog(
     firefighterActivityViewModel: FirefighterActivityViewModel,
-    firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel = hiltViewModel(),
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
+    firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel,
     showDialog: Boolean,
     onDismiss: () -> Unit,
     snackbarHostState: SnackbarHostState,
@@ -33,7 +30,6 @@ fun FirefighterActivityCreateDialog(
     val firefighterActivityCreateUiState =
         firefighterActivityViewModel.firefighterActivityCreateUiState.collectAsState().value
     val firefighterActivityTypeUiState by firefighterActivityTypeViewModel.firefighterActivityTypeUiState.collectAsState()
-    val currentFirefighterUiState by firefighterViewModel.currentFirefighterUiState.collectAsState()
 
     AppUiEvents(firefighterActivityViewModel.uiEvents, snackbarHostState)
 

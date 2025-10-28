@@ -10,16 +10,16 @@ object InspectionDtos {
 
     @Schema(description = "DTO used for creating a new inspection record")
     data class InspectionCreate(
-        @field:NotNull(message = "Asset ID must not be null.")
+        @field:NotNull(message = "{inspection.assetId.not_null}")
         @field:Schema(description = "ID of the asset being inspected", example = "7")
         val assetId: Int,
 
-        @field:NotBlank(message = "Inspection type must not be blank.")
-        @field:Size(max = 16, message = "Inspection type must be at most 16 characters.")
-        @field:Schema(description = "Code of the inspection type", example = "Technical")
+        @field:NotBlank(message = "{inspection.inspectionType.not_blank}")
+        @field:Size(max = 16, message = "{inspection.inspectionType.size}")
+        @field:Schema(description = "Code of the inspection type", example = "PRZEG")
         val inspectionType: String,
 
-        @field:NotNull(message = "Inspection date must not be null.")
+        @field:NotNull(message = "{inspection.inspectionDate.not_null}")
         @field:Schema(description = "Date when the inspection was performed", example = "2025-08-03T10:00:00")
         val inspectionDate: LocalDateTime,
 
@@ -29,8 +29,8 @@ object InspectionDtos {
 
     @Schema(description = "DTO used for partially updating an inspection")
     data class InspectionPatch(
-        @field:Size(max = 16, message = "Inspection type must be at most 16 characters.")
-        @field:Schema(description = "Code of the inspection type", example = "Technical")
+        @field:Size(max = 16, message = "{inspection.inspectionType.size}")
+        @field:Schema(description = "Code of the inspection type", example = "PRZEG")
         val inspectionType: String? = null,
 
         @field:Schema(description = "Date when the inspection was performed", example = "2025-09-10T09:00:00")
@@ -45,10 +45,10 @@ object InspectionDtos {
         @field:Schema(description = "Unique identifier of the inspection", example = "7")
         val inspectionId: Int,
 
-        @field:Schema(description = "Asset that was inspected")
+        @field:Schema(description = "Asset that was inspected", example = "15")
         val assetId: Int,
 
-        @field:Schema(description = "Type of the inspection")
+        @field:Schema(description = "Type of the inspection", example = "PRZEG")
         val inspectionTypeName: String,
 
         @field:Schema(description = "Date when the inspection was performed", example = "2025-08-03T10:00:00")

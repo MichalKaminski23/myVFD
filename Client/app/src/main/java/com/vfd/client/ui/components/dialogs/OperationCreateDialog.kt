@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.OperationDtos
 import com.vfd.client.ui.components.elements.AppAddressActions
@@ -24,8 +23,8 @@ import com.vfd.client.ui.viewmodels.OperationViewModel
 @Composable
 fun OperationCreateDialog(
     operationViewModel: OperationViewModel,
-    operationTypeViewModel: OperationTypeViewModel = hiltViewModel(),
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
+    operationTypeViewModel: OperationTypeViewModel,
+    firefighterViewModel: FirefighterViewModel,
     showDialog: Boolean,
     onDismiss: () -> Unit,
     snackbarHostState: SnackbarHostState

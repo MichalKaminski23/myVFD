@@ -1,16 +1,19 @@
 package com.vfd.client.data.repositories
 
+import android.content.Context
 import com.vfd.client.data.remote.api.FiredepartmentApi
 import com.vfd.client.data.remote.dtos.FiredepartmentDtos
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.PageResponse
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class FiredepartmentRepository @Inject constructor(
     private val firedepartmentApi: FiredepartmentApi,
-    json: Json
-) : BaseRepository(json) {
+    json: Json,
+    @ApplicationContext override val context: Context
+) : BaseRepository(json, context) {
 
     suspend fun createFiredepartment(firedepartmentDto: FiredepartmentDtos.FiredepartmentCreate): ApiResult<FiredepartmentDtos.FiredepartmentResponse> =
         safeApiCall { firedepartmentApi.createFiredepartment(firedepartmentDto) }

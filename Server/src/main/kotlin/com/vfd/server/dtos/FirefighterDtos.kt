@@ -7,25 +7,25 @@ object FirefighterDtos {
 
     @Schema(description = "DTO used for creating a new firefighter record")
     data class FirefighterCreate(
-        @field:NotNull(message = "User ID must not be null.")
+        @field:NotNull(message = "{firefighter.userId.not_null}")
         @field:Schema(description = "ID of the user to assign as a firefighter", example = "7")
         val userId: Int,
 
-        @field:NotNull(message = "Firedepartment ID must not be null.")
+        @field:NotNull(message = "{firefighter.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the fire department to assign the firefighter to", example = "7")
         val firedepartmentId: Int,
     )
 
     data class FirefighterCreateByEmailAddress(
-        @field:NotNull(message = "User email address must not be null.")
+        @field:NotNull(message = "{firefighter.userEmailAddress.not_null}")
         @field:Schema(
             description = "Email address of the user to assign as a firefighter",
-            example = "presidentStr@test.com"
+            example = "superZiutek@test.com"
         )
         val userEmailAddress: String,
 
-        @field:NotNull(message = "Firedepartment ID must not be null.")
-        @field:Schema(description = "ID of the fire department to assign the firefighter to")
+        @field:NotNull(message = "{firefighter.firedepartmentId.not_null}")
+        @field:Schema(description = "ID of the fire department to assign the firefighter to", example = "7")
         val firedepartmentId: Int
     )
 
@@ -45,22 +45,22 @@ object FirefighterDtos {
         @field:Schema(description = "Unique identifier of the firefighter", example = "7")
         val firefighterId: Int,
 
-        @field:Schema(description = "Name of the firefighter", example = "Arek")
+        @field:Schema(description = "Name of the firefighter", example = "Super")
         val firstName: String,
 
-        @field:Schema(description = "Surname of the firefighter", example = "Niemusialski")
+        @field:Schema(description = "Surname of the firefighter", example = "Ziutek")
         val lastName: String,
 
-        @field:Schema(description = "Email address of the firefighter", example = "Arek@test.com")
+        @field:Schema(description = "Email address of the firefighter", example = "superZiutek@test.com")
         val emailAddress: String,
 
-        @field:Schema(description = "User assigned to this firefighter record")
+        @field:Schema(description = "User assigned to this firefighter record", example = "15")
         val userId: Int,
 
-        @field:Schema(description = "Fire department the firefighter is part of")
+        @field:Schema(description = "Fire department the firefighter is part of", example = "3")
         val firedepartmentId: Int,
 
-        @field:Schema(description = "Name of the fire department the firefighter is part of", example = "OSP Dabie")
+        @field:Schema(description = "Name of the fire department the firefighter is part of", example = "OSP Ziutkowo")
         val firedepartmentName: String,
 
         @field:Schema(description = "Role assigned to the firefighter", example = "MEMBER")
@@ -78,13 +78,13 @@ object FirefighterDtos {
         @field:Schema(description = "Unique identifier of the firefighter", example = "7")
         val firefighterId: Int,
 
-        @field:Schema(description = "Name of the firefighter", example = "Arek")
+        @field:Schema(description = "Name of the firefighter", example = "Super")
         val firstName: String,
 
-        @field:Schema(description = "Surname of the firefighter", example = "Niemusialski")
+        @field:Schema(description = "Surname of the firefighter", example = "Ziutek")
         val lastName: String,
 
-        @field:Schema(description = "Email address of the firefighter", example = "Arek@test.com")
+        @field:Schema(description = "Email address of the firefighter", example = "superZiutek@test.com")
         val emailAddress: String
     )
 }

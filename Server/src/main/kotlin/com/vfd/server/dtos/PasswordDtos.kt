@@ -12,16 +12,16 @@ object PasswordDtos {
     data class PasswordChange(
 
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @field:NotBlank(message = "Current password must not be blank.")
+        @field:NotBlank(message = "{password.current.not_blank}")
         @field:Schema(description = "Current password", example = "OldPass123!")
         val currentPassword: String,
 
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @field:NotBlank(message = "New password must not be blank.")
-        @field:Size(min = 8, max = 128, message = "Password must be between 8 and 128 characters.")
+        @field:NotBlank(message = "{password.new.not_blank}")
+        @field:Size(min = 8, max = 128, message = "{password.new.size}")
         @field:Pattern(
             regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
-            message = "Password must contain at least one uppercase letter, one digit, and one special character."
+            message = "{password.new.pattern}"
         )
         @field:Schema(description = "New password", example = "NewPass123!")
         val newPassword: String

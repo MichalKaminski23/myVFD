@@ -8,11 +8,11 @@ object VoteDtos {
 
     @Schema(description = "DTO used for casting a new vote on an investment proposal")
     data class VoteCreate(
-        @field:NotNull(message = "Proposal ID must not be null.")
+        @field:NotNull(message = "{vote.investmentProposalId.not_null}")
         @field:Schema(description = "ID of the investment proposal being voted on", example = "7")
         val investmentProposalId: Int,
 
-        @field:NotNull(message = "Vote value must not be null.")
+        @field:NotNull(message = "{vote.voteValue.not_null}")
         @field:Schema(description = "Value of the vote (true for yes, false for no)", example = "true")
         val voteValue: Boolean
     )
@@ -28,10 +28,10 @@ object VoteDtos {
         @field:Schema(description = "Unique identifier of the vote", example = "7")
         val voteId: Int,
 
-        @field:Schema(description = "Proposal on which the vote was cast")
+        @field:Schema(description = "Proposal on which the vote was cast", example = "3")
         val investmentProposalId: Int,
 
-        @field:Schema(description = "Firefighter who cast the vote")
+        @field:Schema(description = "Firefighter who cast the vote", example = "5")
         val firefighterId: Int,
 
         @field:Schema(description = "Value of the vote (true for yes, false for no)", example = "true")
@@ -43,15 +43,15 @@ object VoteDtos {
 
     @Schema(description = "DTO used for casting a new vote on an investment proposal for development purposes")
     data class VoteCreateDev(
-        @field:NotNull(message = "Proposal ID must not be null.")
+        @field:NotNull(message = "{vote.investmentProposalId.not_null}")
         @field:Schema(description = "ID of the investment proposal being voted on", example = "7")
         val investmentProposalId: Int,
 
-        @field:NotNull(message = "Firefighter ID must not be null.")
+        @field:NotNull(message = "{vote.firefighterId.not_null}")
         @field:Schema(description = "ID of the firefighter casting the vote", example = "7")
         val firefighterId: Int,
 
-        @field:NotNull(message = "Vote value must not be null.")
+        @field:NotNull(message = "{vote.voteValue.not_null}")
         @field:Schema(description = "Value of the vote (true for yes, false for no)", example = "true")
         val voteValue: Boolean
     )

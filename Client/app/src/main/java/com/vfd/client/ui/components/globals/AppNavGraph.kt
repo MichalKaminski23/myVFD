@@ -40,12 +40,21 @@ import com.vfd.client.ui.screens.NewFirefighterScreen
 import com.vfd.client.ui.screens.OperationScreen
 import com.vfd.client.ui.screens.RegisterScreen
 import com.vfd.client.ui.screens.WelcomeScreen
+import com.vfd.client.ui.viewmodels.AssetTypeViewModel
 import com.vfd.client.ui.viewmodels.AssetViewModel
+import com.vfd.client.ui.viewmodels.AuthViewModel
 import com.vfd.client.ui.viewmodels.EventViewModel
+import com.vfd.client.ui.viewmodels.FiredepartmentViewModel
+import com.vfd.client.ui.viewmodels.FirefighterActivityTypeViewModel
 import com.vfd.client.ui.viewmodels.FirefighterActivityViewModel
+import com.vfd.client.ui.viewmodels.FirefighterViewModel
+import com.vfd.client.ui.viewmodels.InspectionTypeViewModel
 import com.vfd.client.ui.viewmodels.InspectionViewModel
 import com.vfd.client.ui.viewmodels.InvestmentProposalViewModel
+import com.vfd.client.ui.viewmodels.OperationTypeViewModel
 import com.vfd.client.ui.viewmodels.OperationViewModel
+import com.vfd.client.ui.viewmodels.UserViewModel
+import com.vfd.client.ui.viewmodels.VoteViewModel
 
 
 @Composable
@@ -67,31 +76,101 @@ fun AppNavGraph(
             val context = LocalContext.current
             WelcomeScreen(navController = navController, context = context)
         }
-        composable("loginScreen") {
-            LoginScreen(navController = navController, snackbarHostState = snackbarHostState)
+        composable("loginScreen") { backStackEntry ->
+            val authViewModel: AuthViewModel = hiltViewModel(backStackEntry)
+            val userViewModel: UserViewModel = hiltViewModel(backStackEntry)
+            val firefighterViewModel: FirefighterViewModel = hiltViewModel(backStackEntry)
+            LoginScreen(
+                authViewModel = authViewModel,
+                userViewModel = userViewModel,
+                firefighterViewModel = firefighterViewModel,
+                navController = navController, snackbarHostState = snackbarHostState
+            )
         }
-        composable("registerScreen") {
-            RegisterScreen(navController = navController, snackbarHostState = snackbarHostState)
+        composable("registerScreen") { backStackEntry ->
+            val authViewModel: AuthViewModel = hiltViewModel(backStackEntry)
+            RegisterScreen(
+                authViewModel = authViewModel,
+                navController = navController, snackbarHostState = snackbarHostState
+            )
         }
-        composable("meScreen") {
-            MeScreen(navController = navController, snackbarHostState = snackbarHostState)
+        composable("meScreen") { backStackEntry ->
+            val firefighterViewModel: FirefighterViewModel = hiltViewModel(backStackEntry)
+            val userViewModel: UserViewModel = hiltViewModel(backStackEntry)
+            val authViewModel: AuthViewModel = hiltViewModel(backStackEntry)
+            val firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(backStackEntry)
+            val firefighterActivityViewModel: FirefighterActivityViewModel =
+                hiltViewModel(backStackEntry)
+
+            MeScreen(
+                firefighterViewModel = firefighterViewModel,
+                userViewModel = userViewModel,
+                authViewModel = authViewModel,
+                firedepartmentViewModel = firedepartmentViewModel,
+                firefighterActivityViewModel = firefighterActivityViewModel,
+                navController = navController, snackbarHostState = snackbarHostState
+            )
         }
         composable("infoScreen") {
             InfoScreen(navController = navController)
         }
-        composable("moderatorScreen") {
-            ModeratorScreen(navController = navController, snackbarHostState = snackbarHostState)
+        composable("moderatorScreen") { backStackEntry ->
+            val firefighterViewModel: FirefighterViewModel = hiltViewModel(backStackEntry)
+            val userViewModel: UserViewModel = hiltViewModel(backStackEntry)
+            val authViewModel: AuthViewModel = hiltViewModel(backStackEntry)
+            val firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(backStackEntry)
+            val firefighterActivityViewModel: FirefighterActivityViewModel =
+                hiltViewModel(backStackEntry)
+
+            ModeratorScreen(
+                firefighterViewModel = firefighterViewModel,
+                userViewModel = userViewModel,
+                authViewModel = authViewModel,
+                firedepartmentViewModel = firedepartmentViewModel,
+                firefighterActivityViewModel = firefighterActivityViewModel,
+                navController = navController,
+                snackbarHostState = snackbarHostState
+            )
         }
-        composable("newFirefighterScreen") {
+        composable("newFirefighterScreen") { backStackEntry ->
+            val firefighterViewModel: FirefighterViewModel = hiltViewModel(backStackEntry)
             NewFirefighterScreen(
+                firefighterViewModel = firefighterViewModel,
                 navController = navController, snackbarHostState = snackbarHostState
             )
         }
-        composable("firefighterScreen") {
-            FirefighterScreen(navController = navController, snackbarHostState = snackbarHostState)
+        composable("firefighterScreen") { backStackEntry ->
+            val firefighterViewModel: FirefighterViewModel = hiltViewModel(backStackEntry)
+            val firefighterActivityViewModel: FirefighterActivityViewModel =
+                hiltViewModel(backStackEntry)
+            FirefighterScreen(
+                firefighterViewModel = firefighterViewModel,
+                firefighterActivityViewModel = firefighterActivityViewModel,
+                navController = navController, snackbarHostState = snackbarHostState
+            )
         }
-        composable("adminScreen") {
-            AdminScreen(navController = navController, snackbarHostState = snackbarHostState)
+        composable("adminScreen") { backStackEntry ->
+            val firefighterViewModel: FirefighterViewModel = hiltViewModel(backStackEntry)
+            val userViewModel: UserViewModel = hiltViewModel(backStackEntry)
+            val authViewModel: AuthViewModel = hiltViewModel(backStackEntry)
+            val firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(backStackEntry)
+            val assetTypeViewModel: AssetTypeViewModel = hiltViewModel(backStackEntry)
+            val firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel =
+                hiltViewModel(backStackEntry)
+            val inspectionTypeViewModel: InspectionTypeViewModel = hiltViewModel(backStackEntry)
+            val operationTypeViewModel: OperationTypeViewModel = hiltViewModel(backStackEntry)
+            AdminScreen(
+                firefighterViewModel = firefighterViewModel,
+                userViewModel = userViewModel,
+                authViewModel = authViewModel,
+                firedepartmentViewModel = firedepartmentViewModel,
+                assetTypeViewModel = assetTypeViewModel,
+                firefighterActivityTypeViewModel = firefighterActivityTypeViewModel,
+                inspectionTypeViewModel = inspectionTypeViewModel,
+                operationTypeViewModel = operationTypeViewModel,
+                navController = navController,
+                snackbarHostState = snackbarHostState
+            )
         }
 
         navigation(startDestination = "assets/list", route = "assets_graph") {
@@ -101,11 +180,17 @@ fun AppNavGraph(
                     navController.getBackStackEntry("assets_graph")
                 }
                 val assetViewModel: AssetViewModel = hiltViewModel(parentEntry)
+                val assetTypeViewModel: AssetTypeViewModel = hiltViewModel(parentEntry)
+                val firefighterViewModel: FirefighterViewModel = hiltViewModel(parentEntry)
+                val inspectionViewModel: InspectionViewModel = hiltViewModel(parentEntry)
 
                 AssetScreen(
                     navController = navController,
                     snackbarHostState = snackbarHostState,
-                    assetViewModel = assetViewModel
+                    assetViewModel = assetViewModel,
+                    assetTypeViewModel = assetTypeViewModel,
+                    firefighterViewModel = firefighterViewModel,
+                    inspectionViewModel = inspectionViewModel
                 )
             }
 
@@ -114,9 +199,11 @@ fun AppNavGraph(
                     navController.getBackStackEntry("assets_graph")
                 }
                 val assetViewModel: AssetViewModel = hiltViewModel(parentEntry)
+                val assetTypeViewModel: AssetTypeViewModel = hiltViewModel(parentEntry)
 
                 AssetCreateDialog(
                     assetViewModel = assetViewModel,
+                    assetTypeViewModel = assetTypeViewModel,
                     showDialog = true,
                     onDismiss = { navController.popBackStack() },
                     snackbarHostState = snackbarHostState
@@ -146,6 +233,8 @@ fun AppNavGraph(
                     navController.getBackStackEntry("inspections_graph")
                 }
                 val inspectionViewModel: InspectionViewModel = hiltViewModel(parentEntry)
+                val inspectionTypeViewModel: InspectionTypeViewModel = hiltViewModel(parentEntry)
+                val firefighterViewModel: FirefighterViewModel = hiltViewModel(parentEntry)
 
                 val assetIdArg = backStackEntry.arguments?.getInt("assetId")
                 val assetId = assetIdArg?.takeIf { it != -1 }
@@ -158,7 +247,9 @@ fun AppNavGraph(
                     snackbarHostState = snackbarHostState,
                     inspectionViewModel = inspectionViewModel,
                     assetId = assetId,
-                    assetName = assetName
+                    assetName = assetName,
+                    inspectionTypeViewModel = inspectionTypeViewModel,
+                    firefighterViewModel = firefighterViewModel
                 )
             }
 
@@ -179,9 +270,11 @@ fun AppNavGraph(
                     navController.getBackStackEntry("inspections_graph")
                 }
                 val inspectionViewModel: InspectionViewModel = hiltViewModel(parentEntry)
+                val inspectionTypeViewModel: InspectionTypeViewModel = hiltViewModel(parentEntry)
 
                 InspectionCreateDialog(
                     inspectionViewModel = inspectionViewModel,
+                    inspectionTypeViewModel = inspectionTypeViewModel,
                     showDialog = true,
                     onDismiss = { navController.popBackStack() },
                     snackbarHostState = snackbarHostState,
@@ -222,6 +315,9 @@ fun AppNavGraph(
                 }
                 val firefighterActivityViewModel: FirefighterActivityViewModel =
                     hiltViewModel(parentEntry)
+                val firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel =
+                    hiltViewModel(parentEntry)
+                val firefighterViewModel: FirefighterViewModel = hiltViewModel(parentEntry)
 
                 val firefighterIdArg = backStackEntry.arguments?.getInt("firefighterId")
                 val firefighterId = firefighterIdArg?.takeIf { it != -1 }
@@ -241,7 +337,9 @@ fun AppNavGraph(
                     firefighterActivityViewModel = firefighterActivityViewModel,
                     firefighterId = firefighterId,
                     firefighterName = firefighterName,
-                    firefighterLastName = lastName
+                    firefighterLastName = lastName,
+                    firefighterActivityTypeViewModel = firefighterActivityTypeViewModel,
+                    firefighterViewModel = firefighterViewModel
                 )
             }
 
@@ -263,9 +361,12 @@ fun AppNavGraph(
                 }
                 val firefighterActivityViewModel: FirefighterActivityViewModel =
                     hiltViewModel(parentEntry)
+                val firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel =
+                    hiltViewModel(parentEntry)
 
                 FirefighterActivityCreateDialog(
                     firefighterActivityViewModel = firefighterActivityViewModel,
+                    firefighterActivityTypeViewModel = firefighterActivityTypeViewModel,
                     showDialog = true,
                     onDismiss = { navController.popBackStack() },
                     snackbarHostState = snackbarHostState,
@@ -281,11 +382,13 @@ fun AppNavGraph(
                     navController.getBackStackEntry("events_graph")
                 }
                 val eventViewModel: EventViewModel = hiltViewModel(parentEntry)
+                val firefighterViewModel: FirefighterViewModel = hiltViewModel(parentEntry)
 
                 EventScreen(
                     navController = navController,
                     snackbarHostState = snackbarHostState,
-                    eventViewModel = eventViewModel
+                    eventViewModel = eventViewModel,
+                    firefighterViewModel = firefighterViewModel
                 )
             }
 
@@ -311,11 +414,15 @@ fun AppNavGraph(
                     navController.getBackStackEntry("operations_graph")
                 }
                 val operationViewModel: OperationViewModel = hiltViewModel(parentEntry)
+                val operationTypeViewModel: OperationTypeViewModel = hiltViewModel(parentEntry)
+                val firefighterViewModel: FirefighterViewModel = hiltViewModel(parentEntry)
 
                 OperationScreen(
                     navController = navController,
                     snackbarHostState = snackbarHostState,
-                    operationViewModel = operationViewModel
+                    operationViewModel = operationViewModel,
+                    operationTypeViewModel = operationTypeViewModel,
+                    firefighterViewModel = firefighterViewModel
                 )
             }
 
@@ -324,9 +431,13 @@ fun AppNavGraph(
                     navController.getBackStackEntry("operations_graph")
                 }
                 val operationViewModel: OperationViewModel = hiltViewModel(parentEntry)
+                val operationTypeViewModel: OperationTypeViewModel = hiltViewModel(parentEntry)
+                val firefighterViewModel: FirefighterViewModel = hiltViewModel(parentEntry)
 
                 OperationCreateDialog(
                     operationViewModel = operationViewModel,
+                    operationTypeViewModel = operationTypeViewModel,
+                    firefighterViewModel = firefighterViewModel,
                     showDialog = true,
                     onDismiss = { navController.popBackStack() },
                     snackbarHostState = snackbarHostState
@@ -345,11 +456,15 @@ fun AppNavGraph(
                 }
                 val investmentProposalViewModel: InvestmentProposalViewModel =
                     hiltViewModel(parentEntry)
+                val firefighterViewModel: FirefighterViewModel = hiltViewModel(parentEntry)
+                val voteViewModel: VoteViewModel = hiltViewModel(parentEntry)
 
                 InvestmentProposalScreen(
                     navController = navController,
                     snackbarHostState = snackbarHostState,
-                    investmentProposalViewModel = investmentProposalViewModel
+                    investmentProposalViewModel = investmentProposalViewModel,
+                    firefighterViewModel = firefighterViewModel,
+                    voteViewModel = voteViewModel
                 )
             }
 

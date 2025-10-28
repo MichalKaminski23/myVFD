@@ -6,7 +6,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AssetDtos
 import com.vfd.client.ui.components.elements.AppDropdown
@@ -18,7 +17,7 @@ import com.vfd.client.ui.viewmodels.AssetViewModel
 @Composable
 fun AssetCreateDialog(
     assetViewModel: AssetViewModel,
-    assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
+    assetTypeViewModel: AssetTypeViewModel,
     showDialog: Boolean,
     onDismiss: () -> Unit,
     snackbarHostState: SnackbarHostState

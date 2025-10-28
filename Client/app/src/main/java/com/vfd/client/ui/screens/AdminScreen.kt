@@ -57,14 +57,14 @@ enum class AdminSection {
 
 @Composable
 fun AdminScreen(
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
-    userViewModel: UserViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = hiltViewModel(),
-    firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(),
-    assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
-    firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel = hiltViewModel(),
-    inspectionTypeViewModel: InspectionTypeViewModel = hiltViewModel(),
-    operationTypeViewModel: OperationTypeViewModel = hiltViewModel(),
+    firefighterViewModel: FirefighterViewModel,
+    userViewModel: UserViewModel,
+    authViewModel: AuthViewModel,
+    firedepartmentViewModel: FiredepartmentViewModel,
+    assetTypeViewModel: AssetTypeViewModel,
+    firefighterActivityTypeViewModel: FirefighterActivityTypeViewModel,
+    inspectionTypeViewModel: InspectionTypeViewModel,
+    operationTypeViewModel: OperationTypeViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
 ) {
@@ -148,6 +148,7 @@ fun AdminScreen(
                             authViewModel.logout()
                             navController.navigate("welcomeScreen") {
                                 popUpTo("moderatorScreen") { inclusive = true }
+                                launchSingleTop = true
                             }
                         },
                         modifier = Modifier.weight(1f)

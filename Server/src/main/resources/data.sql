@@ -11,7 +11,7 @@ VALUES ('POMPWODNA', 'Ciezka pompa wodna'),
        ('GCBA', 'Ciezki Gasniczy Beczka Autopompa');
 
 INSERT INTO Inspection_types (inspection_type, name)
-VALUES ('PRZEG', 'Ogolny przegldd'),
+VALUES ('PRZEG', 'Ogolny przeglad'),
        ('KONS', 'Konserwacja'),
        ('UBEZ', 'Ubezpieczenie');
 

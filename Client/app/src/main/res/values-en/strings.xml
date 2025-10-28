@@ -122,4 +122,9 @@
     <string name="selected">Selected</string>
     <string name="success">Success!</string>
     <string name="error">Error!</string>
+    <string name="server_error">Server error</string>
+    <string name="validation_error">Validation error</string>
+    <string name="connection_timed_out">Connection timed out. Please try again.</string>
+    <string name="network_error">Network error: could not connect to server.</string>
+    <string name="unexpected_error">Unexpected error</string>
 </resources>

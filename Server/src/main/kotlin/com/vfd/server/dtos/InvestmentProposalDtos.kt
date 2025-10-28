@@ -10,35 +10,35 @@ object InvestmentProposalDtos {
 
     @Schema(description = "DTO used for creating a new investment proposal")
     data class InvestmentProposalCreate(
-        @field:NotBlank(message = "Description must not be blank.")
-        @field:Size(max = 512, message = "Description must bet at most 512 characters.")
+        @field:NotBlank(message = "{investment.description.not_blank}")
+        @field:Size(max = 512, message = "{investment.description.size}")
         @field:Schema(
             description = "Description of the investment proposal",
-            example = "Purchase of a new thermal imaging camera"
+            example = "Zakup nowej kamery termowizyjnej"
         )
         val description: String,
 
-        @field:NotNull(message = "Amount must not be null.")
+        @field:NotNull(message = "{investment.amount.not_null}")
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
         @field:JsonFormat(shape = JsonFormat.Shape.STRING)
-        @field:Digits(integer = 12, fraction = 2)
-        @field:PositiveOrZero
+        @field:Digits(integer = 12, fraction = 2, message = "{investment.amount.digits}")
+        @field:PositiveOrZero(message = "{investment.amount.positive_or_zero}")
         val amount: BigDecimal
     )
 
     @Schema(description = "DTO used for partially updating an investment proposal")
     data class InvestmentProposalPatch(
-        @field:Size(max = 512, message = "Description must be at most 512 characters.")
+        @field:Size(max = 512, message = "{investment.description.size}")
         @field:Schema(
             description = "Description of the investment proposal",
-            example = "Purchase of a new thermal imaging camera"
+            example = "Zakup nowej kamery termowizyjnej"
         )
         val description: String? = null,
 
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
         @field:JsonFormat(shape = JsonFormat.Shape.STRING)
-        @field:Digits(integer = 12, fraction = 2)
-        @field:PositiveOrZero
+        @field:Digits(integer = 12, fraction = 2, message = "{investment.amount.digits}")
+        @field:PositiveOrZero(message = "{investment.amount.positive_or_zero}")
         val amount: BigDecimal? = null,
 
         @Schema(allowableValues = ["PENDING", "APPROVED", "REJECTED", "CANCELLED"])
@@ -51,10 +51,10 @@ object InvestmentProposalDtos {
         @field:Schema(description = "Unique identifier of the investment proposal", example = "7")
         val investmentProposalId: Int,
 
-        @field:Schema(description = "Fire department that submitted the proposal")
+        @field:Schema(description = "Fire department that submitted the proposal", example = "3")
         val firedepartmentId: Int,
 
-        @field:Schema(description = "Description of the proposal", example = "Purchase of a new thermal imaging camera")
+        @field:Schema(description = "Description of the proposal", example = "Zakup nowej kamery termowizyjnej")
         val description: String,
 
         @field:Schema(description = "Proposed amount", example = "24999.99")
@@ -80,24 +80,27 @@ object InvestmentProposalDtos {
 
     @Schema(description = "DTO used for creating a new investment proposal for development purposes")
     data class InvestmentProposalCreateDev(
-        @field:NotNull(message = "Firedepartment ID must not be null.")
+        @field:NotNull(message = "{investment.firedepartmentId.not_null}")
         @field:Schema(description = "ID of the fire department proposing the investment", example = "7")
         val firedepartmentId: Int,
 
-        @field:NotBlank(message = "Description must not be blank.")
-        @field:Size(max = 512, message = "Description must bet at most 512 characters.")
+        @field:NotBlank(message = "{investment.description.not_blank}")
+        @field:Size(max = 512, message = "{investment.description.size}")
         @field:Schema(
             description = "Description of the investment proposal",
-            example = "Purchase of a new thermal imaging camera"
+            example = "Zakup nowej kamery termowizyjnej"
         )
         val description: String,
 
-        @field:NotNull(message = "Submission date must not be null.")
+        @field:NotNull(message = "{investment.submissionDate.not_null}")
         @field:Schema(description = "Date of the submission", example = "2025-08-03T15:00:00")
         val submissionDate: LocalDateTime,
 
-        @field:NotNull(message = "Amount must not be null.")
+        @field:NotNull(message = "{investment.amount.not_null}")
         @field:Schema(description = "Proposed investment amount", example = "24999.99")
+        @field:JsonFormat(shape = JsonFormat.Shape.STRING)
+        @field:Digits(integer = 12, fraction = 2, message = "{investment.amount.digits}")
+        @field:PositiveOrZero(message = "{investment.amount.positive_or_zero}")
         val amount: BigDecimal
     )
 }

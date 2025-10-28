@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterRole
@@ -42,8 +41,8 @@ import com.vfd.client.utils.RefreshManager
 @Composable
 fun InvestmentProposalScreen(
     investmentProposalViewModel: InvestmentProposalViewModel,
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
-    voteViewModel: VoteViewModel = hiltViewModel(),
+    firefighterViewModel: FirefighterViewModel,
+    voteViewModel: VoteViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {

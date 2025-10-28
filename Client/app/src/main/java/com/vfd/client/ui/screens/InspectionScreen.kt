@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.InspectionDtos
@@ -39,8 +38,8 @@ import com.vfd.client.utils.RefreshManager
 @Composable
 fun InspectionScreen(
     inspectionViewModel: InspectionViewModel,
-    inspectionTypeViewModel: InspectionTypeViewModel = hiltViewModel(),
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
+    inspectionTypeViewModel: InspectionTypeViewModel,
+    firefighterViewModel: FirefighterViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
     assetId: Int? = null,

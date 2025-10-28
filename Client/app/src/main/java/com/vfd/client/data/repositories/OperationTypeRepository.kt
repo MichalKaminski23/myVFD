@@ -1,16 +1,19 @@
 package com.vfd.client.data.repositories
 
+import android.content.Context
 import com.vfd.client.data.remote.api.OperationTypeApi
 import com.vfd.client.data.remote.dtos.OperationTypeDtos
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.PageResponse
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class OperationTypeRepository @Inject constructor(
     private val operationTypeApi: OperationTypeApi,
-    json: Json
-) : BaseRepository(json) {
+    json: Json,
+    @ApplicationContext override val context: Context
+) : BaseRepository(json, context) {
 
     suspend fun createOperationType(
         operationTypeDto: OperationTypeDtos.OperationTypeCreate

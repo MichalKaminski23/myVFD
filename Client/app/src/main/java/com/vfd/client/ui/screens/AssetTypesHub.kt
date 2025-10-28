@@ -163,7 +163,7 @@ fun AssetTypesHub(
                                         it.copy(name = new, nameTouched = true)
                                     }
                                 },
-                                label = stringResource(id = R.string.type_code),
+                                label = stringResource(id = R.string.item_name),
                                 errorMessage = assetTypeUpdateUiState.errorMessage
                             )
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

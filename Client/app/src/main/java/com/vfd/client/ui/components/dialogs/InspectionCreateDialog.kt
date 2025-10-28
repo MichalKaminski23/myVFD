@@ -8,7 +8,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.InspectionDtos
 import com.vfd.client.ui.components.elements.AppDateTimePicker
@@ -20,7 +19,7 @@ import com.vfd.client.ui.viewmodels.InspectionViewModel
 @Composable
 fun InspectionCreateDialog(
     inspectionViewModel: InspectionViewModel,
-    inspectionTypeViewModel: InspectionTypeViewModel = hiltViewModel(),
+    inspectionTypeViewModel: InspectionTypeViewModel,
     showDialog: Boolean,
     onDismiss: () -> Unit,
     snackbarHostState: SnackbarHostState,

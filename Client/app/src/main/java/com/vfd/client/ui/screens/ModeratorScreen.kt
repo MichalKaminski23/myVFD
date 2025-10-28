@@ -54,11 +54,11 @@ import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun ModeratorScreen(
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
-    userViewModel: UserViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = hiltViewModel(),
-    firedepartmentViewModel: FiredepartmentViewModel = hiltViewModel(),
-    firefighterActivityViewModel: FirefighterActivityViewModel = hiltViewModel(),
+    firefighterViewModel: FirefighterViewModel,
+    userViewModel: UserViewModel,
+    authViewModel: AuthViewModel,
+    firedepartmentViewModel: FiredepartmentViewModel,
+    firefighterActivityViewModel: FirefighterActivityViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
 ) {

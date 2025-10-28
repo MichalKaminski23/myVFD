@@ -123,4 +123,9 @@
     <string name="selected">Wybrani</string>
     <string name="success">Sukces!</string>
     <string name="error">Błąd!</string>
+    <string name="server_error">Błąd serwera</string>
+    <string name="validation_error">Błąd walidacji</string>
+    <string name="connection_timed_out">Przekroczono limit czasu połączenia. Spróbuj ponownie.</string>
+    <string name="network_error">Błąd sieciowy: nie można połączyć się z serwerem.</string>
+    <string name="unexpected_error">Nieoczekiwany błąd</string>
 </resources>

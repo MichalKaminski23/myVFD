@@ -1,16 +1,19 @@
 package com.vfd.client.data.repositories
 
+import android.content.Context
 import com.vfd.client.data.remote.api.InspectionApi
 import com.vfd.client.data.remote.dtos.InspectionDtos
 import com.vfd.client.utils.ApiResult
 import com.vfd.client.utils.PageResponse
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class InspectionRepository @Inject constructor(
     private val inspectionApi: InspectionApi,
-    json: Json
-) : BaseRepository(json) {
+    json: Json,
+    @ApplicationContext override val context: Context
+) : BaseRepository(json, context) {
 
     suspend fun createInspection(
         inspectionDto: InspectionDtos.InspectionCreate

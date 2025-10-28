@@ -1,8 +1,6 @@
 package com.vfd.client.ui.screens
 
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
@@ -26,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AssetDtos
@@ -46,13 +43,12 @@ import com.vfd.client.utils.RefreshManager
 import com.vfd.client.utils.daysUntilSomething
 import kotlinx.datetime.toLocalDateTime
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AssetScreen(
     assetViewModel: AssetViewModel,
-    assetTypeViewModel: AssetTypeViewModel = hiltViewModel(),
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
-    inspectionViewModel: InspectionViewModel = hiltViewModel(),
+    assetTypeViewModel: AssetTypeViewModel,
+    firefighterViewModel: FirefighterViewModel,
+    inspectionViewModel: InspectionViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {

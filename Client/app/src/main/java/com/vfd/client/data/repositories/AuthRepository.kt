@@ -1,5 +1,6 @@
 package com.vfd.client.data.repositories
 
+import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -9,6 +10,7 @@ import com.vfd.client.data.remote.dtos.AuthResponseDto
 import com.vfd.client.data.remote.dtos.PasswordDtos
 import com.vfd.client.data.remote.dtos.UserDtos
 import com.vfd.client.utils.ApiResult
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -18,7 +20,8 @@ class AuthRepository @Inject constructor(
     private val authApi: AuthApi,
     json: Json,
     private val dataStore: DataStore<Preferences>,
-) : BaseRepository(json) {
+    @ApplicationContext override val context: Context
+) : BaseRepository(json, context) {
 
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("auth_token")

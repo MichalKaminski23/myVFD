@@ -15,7 +15,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.FirefighterRole
@@ -30,9 +29,9 @@ import com.vfd.client.ui.viewmodels.UserViewModel
 
 @Composable
 fun LoginScreen(
-    authViewModel: AuthViewModel = hiltViewModel(),
-    userViewModel: UserViewModel = hiltViewModel(),
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
+    firefighterViewModel: FirefighterViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
 ) {

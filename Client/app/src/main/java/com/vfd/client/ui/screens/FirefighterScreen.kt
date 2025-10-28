@@ -16,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.ui.components.buttons.AppButton
@@ -32,8 +31,8 @@ import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun FirefighterScreen(
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
-    firefighterActivityViewModel: FirefighterActivityViewModel = hiltViewModel(),
+    firefighterViewModel: FirefighterViewModel,
+    firefighterActivityViewModel: FirefighterActivityViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {

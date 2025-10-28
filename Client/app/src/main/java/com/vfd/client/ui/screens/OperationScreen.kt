@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.vfd.client.R
 import com.vfd.client.data.remote.dtos.AddressDtos
@@ -43,8 +42,8 @@ import com.vfd.client.utils.RefreshManager
 @Composable
 fun OperationScreen(
     operationViewModel: OperationViewModel,
-    operationTypeViewModel: OperationTypeViewModel = hiltViewModel(),
-    firefighterViewModel: FirefighterViewModel = hiltViewModel(),
+    operationTypeViewModel: OperationTypeViewModel,
+    firefighterViewModel: FirefighterViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
