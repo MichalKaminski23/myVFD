@@ -37,6 +37,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
 
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
