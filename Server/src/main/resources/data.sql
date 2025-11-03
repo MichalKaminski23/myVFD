@@ -31,7 +31,7 @@ VALUES ('Jan', 'Kowalski', 1, '+48123456789', 'jan.kowalski@test.com', '2025-01-
         '2025-07-20 12:00:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
        ('Anna', 'Nowak', 2, '+48987654321', 'anna.nowak@test.com', '2025-02-15 09:30:00', '2025-07-22 16:45:00',
         TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
-       ('Piotr', 'Wisniewski', 3, '+48111222333', 'piotr.wisniewski@test.com', '2025-03-10 10:15:00',
+       ('Piotr', 'Wisniewski', 3, '+48111222339', 'piotr.wisniewski@test.com', '2025-03-10 10:15:00',
         '2025-07-23 09:20:00', FALSE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
        ('Katarzyna', 'Wojcik', 1, '+48444555666', 'katarzyna.wojcik@test.com;', '2025-04-05 11:45:00',
         '2025-07-24 14:30:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
@@ -78,9 +78,7 @@ VALUES ('Jan', 'Kowalski', 1, '+48123456789', 'jan.kowalski@test.com', '2025-01-
        ('Alicja', 'Zyga', 2, '+48505753301', 'alicja.zyga@test.com', '2025-07-21 10:25:00',
         '2025-08-10 17:35:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
        ('Alicja', 'Terlin', 2, '+48505750090', 'alicja.terlin@test.com', '2025-07-21 10:15:00',
-        '2025-08-10 17:45:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
-       ('Michal', 'Kozak', 1, '+48515515515', 'michal.kozak@test.com', '2025-07-21 10:55:00',
-        '2025-08-10 17:55:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS');
+        '2025-08-10 17:45:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS');
 
 INSERT INTO Firedepartments (name, address_id, is_nrfs)
 VALUES ('OSP Strzyzowice', 1, TRUE),
@@ -112,8 +110,7 @@ VALUES (1, 1, 'PRESIDENT', 'ACTIVE'),
        (23, 1, 'MEMBER', 'ACTIVE'),
        (24, 1, 'MEMBER', 'ACTIVE'),
        (25, 1, 'MEMBER', 'ACTIVE'),
-       (26, 1, 'MEMBER', 'ACTIVE'),
-       (27, 1, 'ADMIN', 'ACTIVE');
+       (26, 1, 'MEMBER', 'ACTIVE');
 
 INSERT INTO Firefighter_Activities (firefighter_id, firefighter_activity_type, activity_date, expiration_date,
                                     description, status)
