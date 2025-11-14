@@ -33,8 +33,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL =
-        "http://192.168.2.149:8080" // PC -> http://192.168.2.149:8080; LAPTOP -> "http://192.168.0.53:8080"
+    private const val BASE_URL = "http://192.168.2.149:8080"
 
     @Provides
     @Singleton

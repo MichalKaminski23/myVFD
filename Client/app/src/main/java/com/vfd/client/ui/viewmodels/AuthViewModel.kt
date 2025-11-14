@@ -76,30 +76,6 @@ class AuthViewModel @Inject constructor(
         _loginUiState.value = field(_loginUiState.value)
     }
 
-    init {
-        _registerUiState.value = RegisterUiState(
-            firstName = "Arek",
-            lastName = "Niemusialski",
-            address = AddressDtos.AddressCreate(
-                country = "Poland",
-                voivodeship = "Silesian",
-                city = "Dabie",
-                postalCode = "42-690",
-                street = "Starawies",
-                houseNumber = "12",
-                apartNumber = "12"
-            ),
-            emailAddress = "arek@test.com",
-            phoneNumber = "123123123",
-            password = "Dupa12345!"
-        )
-
-        _loginUiState.value = LoginUiState(
-            emailAddress = "jan.kowalski@test.com",
-            password = "Dupa12345!"
-        )
-    }
-
     val token = authRepository.getToken()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(100000000), null)
 

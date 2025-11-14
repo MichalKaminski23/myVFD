@@ -23,10 +23,6 @@ interface OperationTypeApi {
         @Query("sort") sort: String = "operationType,asc"
     ): PageResponse<OperationTypeDtos.OperationTypeResponse>
 
-//    @GET("api/operation-types/{operationTypeCode}")
-//    suspend fun getOperationTypeByCode(
-//        @Path("operationTypeCode") operationTypeCode: String
-//    ): OperationTypeDtos.OperationTypeResponse
 
     @PATCH("api/operation-types/{operationTypeCode}")
     suspend fun updateOperationType(

@@ -238,9 +238,6 @@ fun AppNavGraph(
                 val assetIdArg = backStackEntry.arguments?.getInt("assetId")
                 val assetId = assetIdArg?.takeIf { it != -1 }
 
-//                val assetNameArg = backStackEntry.arguments?.getString("assetName")
-//                val assetName = assetNameArg?.let { Uri.decode(it) }
-
                 InspectionScreen(
                     snackbarHostState = snackbarHostState,
                     inspectionViewModel = inspectionViewModel,
@@ -318,15 +315,6 @@ fun AppNavGraph(
 
                 val firefighterIdArg = backStackEntry.arguments?.getInt("firefighterId")
                 val firefighterId = firefighterIdArg?.takeIf { it != -1 }
-
-//                val firefighterNameArg = backStackEntry.arguments?.getString("firstName")
-//                val firefighterName = firefighterNameArg?.let { Uri.decode(it) }
-//
-//                val lastNameArg = backStackEntry.arguments?.getString("lastName")
-//                val lastName = lastNameArg?.let { Uri.decode(it) }
-
-//                val from =
-//                    backStackEntry.arguments?.getString("from")?.takeIf { it?.isNotBlank() == true }
 
                 FirefighterActivityScreen(
                     snackbarHostState = snackbarHostState,

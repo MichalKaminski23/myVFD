@@ -147,7 +147,6 @@ fun MeScreen(
                     userViewModel.getUserByEmailAddress()
                     firefighterViewModel.getFirefighterByEmailAddress()
                     firedepartmentViewModel.getFiredepartment()
-                    //firefighterActivityViewModel.getFirefighterActivities(page = 0, refresh = true)
                 }
 
                 else -> {}
