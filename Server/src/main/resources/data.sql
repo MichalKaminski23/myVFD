@@ -1,7 +1,8 @@
 INSERT INTO Addresses (country, voivodeship, city, postal_code, street, apart_number, house_number)
 VALUES ('Polska', 'Slaskie', 'Strzyzowice', '00-001', 'Belna', '1A', '10'),
        ('Polska', 'Slaskie', 'Dąbie', '10-001', 'Pszczela', NULL, '5'),
-       ('Polska', 'Slaskie', 'Psary', '20-001', 'Kolejowa', '2', '20');
+       ('Polska', 'Slaskie', 'Psary', '20-001', 'Kolejowa', '2', '20'),
+       ('Polska', 'Slaskie', 'Strzyzowice', '00-001', '1-go Maja', '0', '22');
 
 INSERT INTO Asset_Types (asset_type, name)
 VALUES ('POMPWODNA', 'Ciezka pompa wodna'),
@@ -27,7 +28,7 @@ VALUES ('TREN', 'Trening'),
 
 INSERT INTO Users (first_name, last_name, address_id, phone_number, email_address, created_at, logged_at, is_active,
                    password_hash)
-VALUES ('Jan', 'Kowalski', 1, '+48123456789', 'jan.kowalski@test.com', '2025-01-01 08:00:00',
+VALUES ('Jan', 'Kowalski', 4, '+48123456789', 'jan.kowalski@test.com', '2025-01-01 08:00:00',
         '2025-07-20 12:00:00', TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),
        ('Anna', 'Nowak', 2, '+48987654321', 'anna.nowak@test.com', '2025-02-15 09:30:00', '2025-07-22 16:45:00',
         TRUE, '$2a$10$J//IgZVeyG5bD/fOEwdXpOfUmddLn9gcsunMFyNdGTa1qoRiBzIpS'),

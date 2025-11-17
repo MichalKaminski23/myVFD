@@ -255,7 +255,7 @@ class FirefighterServiceImplementation(
         firefighterDeleted.requireSameFiredepartment(firedepartmentId)
 
         if (roles.contains(firefighterDeleted.role)) {
-            throw InvalidStatusException("Cannot delete firefighter with role ${firefighterDeleted.role}")
+            throw InvalidStatusException("firefighter.delete ${firefighterDeleted.role}")
         }
 
         userDeleted.firefighter = null
@@ -273,13 +273,13 @@ class FirefighterServiceImplementation(
         val firefighter = firefighterRepository.findByIdOrThrow(user.userId!!)
 
         if (quarter !in 1..4) {
-            throw InvalidNumberException("Quarter must be between 1 and 4")
+            throw InvalidNumberException("hours.quarter")
         }
 
         val now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
 
         if (year !in 0..now.year) {
-            throw InvalidNumberException("Year must be between 0 and can't be grater than today")
+            throw InvalidNumberException("hours.year")
         }
 
         return firefighterRepository.getHoursForQuarter(firefighter.firefighterId!!, year, quarter)

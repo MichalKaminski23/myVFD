@@ -14,7 +14,7 @@ fun AppOperationCard(
         listOf(
             "\uD83E\uDD1D ${operation?.operationTypeName}",
             "\uD83D\uDCC6 ${stringResource(id = R.string.item_date)}: ${operation?.operationDate}",
-            "\uD83D\uDCC6 ${stringResource(id = R.string.item_end_date)}:",
+            "\uD83D\uDCC6 ${stringResource(id = R.string.item_end_date)}: ${operation?.operationEnd}",
             "✏\uFE0F ${stringResource(id = R.string.item_description)}: ${operation?.description}",
             "🏠 ${operation?.address?.country}, ${operation?.address?.voivodeship}, " +
                     "${operation?.address?.street} ${operation?.address?.houseNumber}/${operation?.address?.apartNumber ?: ""} " +
